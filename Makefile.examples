@@ -1,0 +1,183 @@
+## Midifile programs makefile for linux/cygwin or OS X on Intel computers.
+##
+## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+## Creation Date: Sun Apr  3 15:34:28 PDT 2005
+## Last Modified: Thu Jun 18 13:24:31 PDT 2009
+## Filename:      ...midifile/Makefile.programs
+##
+## Description:   This Makefile creates example programs which utilize the
+##                lib/libmidifile.a library for linux/cygwin or OS X, using 
+##                gcc 2.7.2.1 or higher.  Also, gives basic guidelines of 
+##                how to compile for Windows using MinGW.
+##
+## To run this makefile, type (without quotes) "make -f Makefile.examples",
+## Although it is intended to be used the file "Makefile" which runs this
+## makefile with the command "make examples".  Note that you have to first
+## create the library file with the makefile "Makefile.library" (by typing
+## the command "make library"). 
+##
+## Without arguments, this makefile will compile all example programs.
+## If you give a program name as an argument, it will compile 
+## just that program. E.g.: "make -f Makefile.examples blank" or used
+## in conjunction with "Makefile", type "make blank", which will
+## compile the "./examples/blank.cpp" program and place it in the 
+## ./bin directory.
+##
+
+###########################################################################
+#                                                                         #
+#  Operating System OSTYPEs available in the midifile library             #
+#  compilation:                                                           #
+#                                                                         #
+#      HPUX   = Hewlett-Packard Unix Workstations.                        #
+#      IRIX   = SGI computers with IRIX OS.                               #
+#      LINUX  = Linux running on intel computers                          #
+#      NEXTI  = NeXT OS on Intel Hardware                                 #
+#      NEXTM  = NeXT OS on Motorola Hardware                              #
+#      OSXPC  = Apple Macintosh OS 10.x, Intel CPU                        #
+#      OSXOLD = Apple Macintosh OS 10.x, PowerPC CPU                      #
+#      SUN    = Sun SPARCstations                                         #
+#      VISUAL = Windows 95/NT using Microsoft Visual C++ 6.0              #
+#                                                                         #
+# Look at the sigConfiguration.h file for various things which need       #
+# to be defined specifically for each OS.  Only one of these defines      #
+# can be defined at a time.                                               #
+#                                                                         #
+###########################################################################
+#
+# You can set the OSTYPE variable by uncommenting one of the lines below;
+# otherwise, it will be set automatically in the next section of the
+# Makefile if the configuration should be OSXPC or LINUX.  For example,
+# if you need to compile for OSXOLD (OS X on a PowerPC), then you would
+# need to uncomment out the OSTYPE = OSXOLD line below.
+
+#OSTYPE = LINUX
+#OSTYPE = OSXPC
+#OSTYPE = OSXOLD
+ARCH = 
+
+# If OSTYPE is not defined, then this IF-statement will be run:
+ifeq ($(origin OSTYPE), undefined)
+   ifeq ($(shell uname),Darwin)
+      OSTYPE = OSXPC
+      # the following line forces the library to be compiled for 
+      # 32-bit architectures (particularly when compiling on a 64-bit computer):
+      ARCH = -m32 -arch i386
+   else 
+      OSTYPE = LINUX
+   endif
+endif
+# Next IF-statement needed for some versions of make which already set OSTYPE:
+ifeq ($(OSTYPE),linux)
+   OSTYPE = LINUX
+endif
+
+# Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.
+# so select EXTEN = .exe when compiling in cygwin. (Need a test for cygwin
+# so that the EXTEN variable is setup automatically...)
+EXTEN     =
+# EXTEN   = .exe
+
+
+###########################################################################
+#                                                                         #
+# Beginning of user-modifiable configuration variables                    #
+#                                                                         #
+
+SRCDIR    = examples
+INCDIR    = include
+OBJDIR    = obj
+LIBDIR    = lib
+LIBFILE   = midifile
+TARGDIR   = bin
+# LANG=C: Nuts to the GCC error beautification committee.
+COMPILER  = LANG=C g++ $(ARCH)
+
+# MinGW compiling setup (used to compile for Microsoft Windows but actual
+# compiling can be done in Linux). You have to install MinGW and these
+# variables will probably have to be changed to the correct paths:
+#COMPILER  = /opt/xmingw/bin/i386-mingw32msvc-g++
+#OBJDIR    = obj-win
+#TARGDIR   = bin-win
+#LIBDIR    = lib-win
+#POSTFLAGS = -Wl,--export-all-symbols -Wl,--enable-auto-import \
+#            -Wl,--no-whole-archive -lmingw32 -L$(LIBDIR) -l$(LIBFILE)
+
+DEFINES   = $(addprefix -D,$(OSTYPE))
+DEFINES  += $(addprefix -D,$(OSSUBTYPE))
+
+PREFLAGS  = -O3 -Wall -I$(INCDIR) $(DEFINES)
+
+# Add -DOLDCPP if using an older C++ compiler
+#PREFLAGS += -DOLDCPP
+
+# Add -static flag to compile without dynamics libraries for better portability:
+#PREFLAGS += -static
+
+POSTFLAGS ?= -L$(LIBDIR) -l$(LIBFILE)
+
+#                                                                         #
+# End of user-modifiable variables.                                       #
+#                                                                         #
+###########################################################################
+
+
+# setting up the directory paths to search for program source code
+vpath %.cpp   $(SRCDIR)
+
+# generating a list of the programs to compile with "make all"
+PROGS1=$(notdir $(patsubst %.cpp,%,$(wildcard $(SRCDIR)/*.cpp)))
+PROGS=$(PROGS1)
+
+# Targets which don't actually refer to files
+.PHONY : bin examples src include obj
+
+
+###########################################################################
+#                                                                         #
+#                                                                         #
+
+examples: all
+all: bin $(addprefix $(TARGDIR)/,$(PROGS))
+	@echo Finished compiling all programs.
+
+info:
+	@echo "Programs to compile: $(PROGS)" | fmt
+
+bin:
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir -p $(TARGDIR)
+endif
+
+$(TARGDIR)/henonfile:
+	-echo Skipping henonfile.cpp since it needs external functions.
+$(TARGDIR)/mid2hum:
+	-echo Skipping mid2hum.cpp since it needs external functions.
+$(TARGDIR)/peep2midi:
+	-echo Skipping peep2midi.cpp since it needs external functions.
+
+
+###########################################################################
+#
+# Defining explicit rules for program sourcefile dependencies:
+#
+
+$(TARGDIR)/% : $(notdir %.cpp)
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir -p $(TARGDIR)
+endif
+	$(COMPILER) $(PREFLAGS) -o $@ $< $(POSTFLAGS) \
+	&& strip $@$(EXTEN)
+
+% : $(notdir %.cpp)
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir -p $(TARGDIR)
+endif
+	$(COMPILER) $(PREFLAGS) -o $(TARGDIR)/$@ $< $(POSTFLAGS) \
+	&& strip $(TARGDIR)/$@$(EXTEN)
+
+#                                                                         #
+#                                                                         #
+###########################################################################
+
+

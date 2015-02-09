@@ -1,0 +1,7 @@
+
+.*
+!.gitignore
+
+bin
+obj
+lib

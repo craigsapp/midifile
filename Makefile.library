@@ -1,0 +1,202 @@
+##
+## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+## Creation Date: Sun Apr  3 00:51:10 PST 2005
+## Last Modified: Thu Jun 18 13:14:14 PDT 2009
+## Filename:      ...midifile/Makefile.library
+##
+## Description:   This Makefile creates the Midifile library 
+##                lib/libmidifile.a for linux/cygwin or OS X, using 
+##                gcc 2.7.2.1 or higher.  Also, gives basic guidelines 
+##                for how to compile for Windows using MinGW.
+##
+## To run this makefile, type (without quotes) "make -f Makefile.library",
+## Although it is intended to be used by the file "Makefile" which runs this
+## makefile with the command "make library".  After the library file is 
+## created, you can compile specific programs with the Makefile.examples
+## file.
+##
+
+###########################################################################
+#                                                                         #
+#  Operating System OSTYPEs available in the Midifile library             #
+#  compilation:                                                           #
+#                                                                         #
+#      HPUX   = Hewlett-Packard Unix Workstations.                        #
+#      IRIX   = SGI computers with IRIX OS.                               #
+#      LINUX  = Linux running on intel computers                          #
+#      NEXTI  = NeXT OS on Intel Hardware                                 #
+#      NEXTM  = NeXT OS on Motorola Hardware                              #
+#      OSXPC  = Apple Macintosh OS 10.x, Intel CPU                        #
+#      OSXOLD = Apple Macintosh OS 10.x, PowerPC CPU                      #
+#      SUN    = Sun SPARCstations                                         #
+#      VISUAL = Windows 95/NT using Microsoft Visual C++ 6.0              #
+#                                                                         #
+# Look at the sigConfiguration.h file for various things which need       #
+# to be defined specifically for each OS.  Only one of these defines      #
+# can be defined at a time.                                               #
+#                                                                         #
+###########################################################################
+#
+# You can set the OSTYPE variable by uncommenting one of the lines below;
+# otherwise, it will be set automatically in the next section of the
+# Makefile if the configuration should be OSXPC or LINUX.  For example,
+# if you need to compile for OSXOLD (OS X on a PowerPC), then you would
+# need to uncomment out the OSTYPE = OSXOLD line below.
+
+#OSTYPE = LINUX
+#OSTYPE = OSXPC
+#OSTYPE = OSXOLD
+ARCH =
+
+# If OSTYPE is not defined, then this IF-statement will be run:
+ifeq ($(origin OSTYPE), undefined)
+   ifeq ($(shell uname),Darwin)
+      OSTYPE = OSXPC
+      # the following line forces the library to be compiled for 
+      # 32-bit architectures (particularly when compiling on a 64-bit computer):
+      ARCH = -m32 -arch i386
+   else 
+      OSTYPE = LINUX
+   endif
+endif
+# Next IF-statement needed for some versions of make which already set OSTYPE:
+ifeq ($(OSTYPE),linux)
+   OSTYPE = LINUX
+endif
+
+
+###########################################################################
+#                                                                         #
+# Beginning of user-modifiable configuration variables                    #
+#                                                                         #
+
+OBJDIR    = obj
+SRCDIR    = src
+INCDIR    = include
+LIBDIR    = lib
+LIBFILE   = libmidifile.a
+# LANG=C: Nuts to the GCC error beautification committee.
+COMPILER  = LANG=C g++ $(ARCH)
+AR        = ar
+RANLIB    = ranlib
+
+# MinGW compiling setup (used to compile for Microsoft Windows but actual
+# compiling can also be done in Linux). You have to install MinGW and these
+# variables will probably have to be changed to the correct paths:
+#COMPILER = /opt/xmingw/bin/i386-mingw32msvc-g++
+#AR      = /opt/xmingw/bin/i386-mingw32msvc-ar
+#RANLIB  = /opt/xmingw/bin/i386-mingw32msvc-ranlib
+#OBJDIR  = obj-win
+#LIBDIR  = lib-win
+
+DEFINES   = $(addprefix -D,$(OSTYPE))
+# If using an older C++ compiler (pre 1999), uncomment out the following line:
+#DEFINES += -DOLDCPP
+
+PREFLAGS  = -c -g -Wall -O3 $(DEFINES) -I$(INCDIR)
+
+#                                                                         #
+# End of user-modifiable variables.                                       #
+#                                                                         #
+###########################################################################
+
+# setting up the directory paths to search for dependency files
+vpath %.h   $(INCDIR):$(SRCDIR)
+vpath %.cpp $(SRCDIR):$(INCDIR)
+vpath %.o   $(OBJDIR)
+
+# generating a list of the object files
+OBJS = $(notdir $(patsubst %.cpp,%.o,$(wildcard $(SRCDIR)/*.cpp)))
+
+# targets which don't actually refer to files
+.PHONY : all clean makedirs 
+
+
+###########################################################################
+#                                                                         #
+# Hardware Configurations:                                                #
+#                                                                         #
+
+all: makedirs $(OBJS)
+
+   ifeq ($(OSTYPE),LINUX)
+	@echo "Creating midifile library file for linux ..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o 
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+   endif
+
+   ifeq ($(OSTYPE),OSXOLD)
+	@echo "Creating midifile library file for OSX (PowerPC)..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o 
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+   endif
+
+   ifeq ($(OSTYPE),OSXPC)
+	@echo "Creating midifile library file for OSX (Intel)..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o 
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+   endif
+
+   ifeq ($(OSTYPE),VISUAL)
+	echo "This makefile doesn\'t work with Visual C++."
+   endif
+
+clean:
+	@echo Erasing object files:
+	-rm -f $(OBJDIR)/*.o
+	@echo Erasing obj directory:
+	-rmdir $(OBJDIR)
+
+makedirs: 
+	-mkdir $(OBJDIR)
+	-mkdir $(LIBDIR)
+
+
+###########################################################################
+#                                                                         #
+# defining an explicit rule for object file dependencies                  #
+#                                                                         #
+
+
+%.o : %.cpp
+	$(COMPILER) $(PREFLAGS) -o $(OBJDIR)/$(notdir $@) $<
+
+#                                                                         #
+###########################################################################
+
+
+###########################################################################
+#                                                                         #
+# Dependencies -- generated with the following command in                 #
+#      the src directory (in bash shell):                                 #
+#                                                                         #
+#   cd src                                                                #
+#   for i in *.cpp                                                        #
+#   do                                                                    #
+#      cc -I../include -MM $i | sed 's/\.\.\/include\///g'                #
+#      echo ""                                                            #
+#   done                                                                  #
+#                                                                         #
+# Or in a csh-type shell (such as tcsh):                                  #
+#                                                                         #
+#   cd src                                                                #
+#   foreach i (*.cpp)                                                     #
+#      cc -I../include -MM $i | sed 's/\.\.\/include\///g'                #
+#      echo ""                                                            #
+#   end                                                                   #
+#                                                                         #
+
+FileIO.o: FileIO.cpp sigConfiguration.h FileIO.h
+
+MidiFile.o: MidiFile.cpp MidiFile.h FileIO.h Array.h SigCollection.h \
+  SigCollection.cpp Array.cpp
+
+Options.o: Options.cpp Options.h Array.h SigCollection.h SigCollection.cpp \
+  Array.cpp Options_private.h
+
+Options_private.o: Options_private.cpp Options_private.h
+
+
