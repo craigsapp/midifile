@@ -1,65 +1,95 @@
-## main Midifile GNU makefile for Linux/Cygwin and OS X on Intel computers.
+##
+## Main GNU makefile for Midifile library.
 ##
 ## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 ## Creation Date: Sun Apr  3 00:44:44 PST 2005
-## Last Modified: Sun Jun 21 12:17:38 PDT 2009
-## Filename:      ...midifile/Makefile
+## Last Modified: Mon Feb  9 12:59:54 PST 2015
+## Filename:      midifile/Makefile
+## Website:       http://midifile.sapp.org
+## Syntax:        GNU Makefile
+## Description:   This Makefile can create the Midifile library and/or
+##                example programs which use the Midifile library.
 ##
-## Description: This Makefile can create the Midifile library or 
-##              example programs which use the Midifile library with 
-##              linux/cygwin or OS X using g++ (gcc 2.7.2.1 or later).
-##
-## To run this makefile, type (without quotes) "make library", then
-## "make examples".
+## To run this makefile, type:
+##     make library
+## then:
+##     make programs
+## Or type:
+##     make
+## to compile both the library and the programs at the same time.
 ##
 
-MAKE = make
+
+
+##############################
+##
+## Targets:
+##
 
 # targets which don't actually refer to files
-.PHONY : src lib examples include bin clean info
+.PHONY : all info library examples programs bin options clean
 
-###########################################################################
-#                                                                         #
-#                                                                         #
 
-all: info library examples
+all: info library programs
+
 
 info:
 	@echo ""
-	@echo This makefile will create either the Midifile library or will
-	@echo compile the Midifile programs.  You may have to make the library
-	@echo first if it does not exist. Type one of the following:
-	@echo "   $(MAKE) library"
+	@echo This makefile will compile the Midifile library and/or
+	@echo the Midifile programs.  You may have to make the library
+	@echo first if compiling the programs. Type one of the following:
+	@echo "   make library"
 	@echo or
-	@echo "   $(MAKE) examples"
+	@echo "   make programs"
 	@echo ""
 	@echo To compile a specific program called xxx, type:
-	@echo "   $(MAKE) xxx"
+	@echo "   make xxx"
 	@echo ""
-	@echo Typing \"make\" alone will compile both the library and all examples.
+	@echo Typing \"make\" alone will compile both the library and all programs.
 	@echo ""
 
-library: 
+
+library:
 	$(MAKE) -f Makefile.library
+
 
 clean:
 	$(MAKE) -f Makefile.library clean
 	-rm -rf bin
 	-rm -rf lib
 
-examples:
+
+bin:      programs
+examples: programs
 programs:
-	$(MAKE) -f Makefile.examples
+	$(MAKE) -f Makefile.programs
 
-%: 
-	-mkdir -p bin
+
+options:
+# The Options class is borrowed from optionlib:
+#     https://github.com/craigsapp/optionlib
+# This code downloads the most recent version of the Option class, and the
+# Option class should not be modified within this library.  The Option
+# class is only needed by some of the example programs.  It is not 
+# necessary if you only want to use the compiled MidiFile library.
+ifneq ($(shell which wget),)
+	wget https://raw.githubusercontent.com/craigsapp/optionlib/master/src/Options.cpp -O src/Options.cpp
+	wget https://raw.githubusercontent.com/craigsapp/optionlib/master/include/Options.h -O include/Options.h
+else ifneq ($(shell which curl),)
+	curl https://raw.githubusercontent.com/craigsapp/optionlib/master/src/Options.cpp -o src/Options.cpp
+	curl https://raw.githubusercontent.com/craigsapp/optionlib/master/include/Options.h -O include/Options.h
+endif
+
+
+
+##############################
+##
+## Default target: compile a particular program:
+##
+
+%:
+	@-mkdir -p bin
 	@echo compiling file $@
-	$(MAKE) -f Makefile.examples $@
-	
-
-#                                                                         #
-#                                                                         #
-###########################################################################
-
+	$(MAKE) -f Makefile.programs $@
 
 

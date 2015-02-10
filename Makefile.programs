@@ -1,0 +1,211 @@
+##
+## Makefile to compile examples programs that use the Midifile library.
+##
+## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+## Creation Date: Sun Apr  3 15:34:28 PDT 2005
+## Last Modified: Mon Feb  9 13:42:32 PST 2015
+## Filename:      midifile/Makefile.programs
+## Website:       http://midifile.sapp.org
+## Syntax:        GNU Makefile
+##
+## Description:   This Makefile creates example programs which utilize the
+##                lib/libmidifile.a library.
+##
+## To run this makefile, type (without quotes) "make -f Makefile.examples",
+## Although it is intended to be used the file "Makefile" which runs this
+## makefile with the command "make examples".  Note that you have to first
+## create the library file with the makefile "Makefile.library" (by typing
+## the command "make library").
+##
+## Without arguments, this makefile will compile all example programs.
+## If you give a program name as an argument, it will compile
+## just that program. E.g.: "make -f Makefile.examples blank" or used
+## in conjunction with "Makefile", type "make blank", which will
+## compile the "./examples/blank.cpp" program and place it in the
+## ./bin directory.
+##
+
+##############################
+##
+## Operating-system specific settings:
+##
+
+ARCH   =
+ENV    =
+OSTYPE =
+ifeq ($(shell uname),Darwin)
+   # This is an Apple OS X computer.
+   OSTYPE = OSX
+
+   # The MACOSX_DEPLOYMENT_TARGET allows you to compile on newer OS X computers,
+   # but allows the code to run on older OS X computers.  In this case the
+   # minimum OS version target will be 10.6:
+   ENV = MACOSX_DEPLOYMENT_TARGET=10.6
+
+   # The ARCH setting below forces the library to be compiled for
+   # 32-bit architectures in OS X.  Uncomment the ARCH variable below
+   # if compiling on a 64-bit computer, but you want 32-bit version
+   # (for linking with other 32-bit libraries).
+   #ARCH = -m32 -arch i386
+else
+   # This is probably a linux computer.
+   OSTYPE = LINUX
+
+   # The ARCH variable has to be set up slightly different for 32-bit compiling:
+   #ARCH = -m32
+endif
+
+# Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.
+# so set EXTEN = .exe when compiling in cygwin. (Need a test for cygwin
+# so that the EXTEN variable is setup automatically...)
+EXTEN     =
+# EXTEN   = .exe
+
+
+##############################
+#
+# User-modifiable configuration variables:
+#
+
+SRCDIR    = src-programs
+INCDIR    = include
+OBJDIR    = obj
+LIBDIR    = lib
+LIBFILE   = midifile
+TARGDIR   = bin
+COMPILER  = LANG=C $(ENV) g++ $(ARCH)
+DEFINES   = 
+PREFLAGS  = -O3 -Wall -I$(INCDIR) $(DEFINES)
+# Add -static flag to compile without dynamics libraries for better portability:
+#PREFLAGS += -static
+
+# Using C++ 2011 standard:
+PREFLAGS += -std=c++11
+
+# MinGW compiling setup (used to compile for Microsoft Windows but actual
+# compiling can be done in Linux). You have to install MinGW and these
+# variables will probably have to be changed to the correct paths:
+#COMPILER  = /opt/xmingw/bin/i386-mingw32msvc-g++
+#OBJDIR    = obj-win
+#TARGDIR   = bin-win
+#LIBDIR    = lib-win
+#POSTFLAGS = -Wl,--export-all-symbols -Wl,--enable-auto-import \
+#            -Wl,--no-whole-archive -lmingw32 -L$(LIBDIR) -l$(LIBFILE)
+
+POSTFLAGS ?= -L$(LIBDIR) -l$(LIBFILE)
+
+#                                                                         #
+# End of user-modifiable variables.                                       #
+#                                                                         #
+###########################################################################
+
+
+# setting up the directory paths to search for program source code
+vpath %.cpp   $(SRCDIR)
+
+# generating a list of the programs to compile with "make all"
+PROGS1=$(notdir $(patsubst %.cpp,%,$(wildcard $(SRCDIR)/*.cpp)))
+PROGS=$(PROGS1)
+
+
+##############################
+##
+## Targets:
+##
+
+# targets which don't actually refer to files
+.PHONY : all info library examples programs bin options clean 
+
+examples: all
+all: bin $(addprefix $(TARGDIR)/,$(PROGS))
+	@echo Finished compiling all programs.
+
+
+info:
+	@echo "Programs to compile: $(PROGS)" | fmt
+
+
+bin:
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir -p $(TARGDIR)
+endif
+
+
+$(TARGDIR)/henonfile:
+	-echo Skipping henonfile.cpp since it needs external library.
+$(TARGDIR)/mid2hum:
+	-echo Skipping mid2hum.cpp since it needs external library.
+$(TARGDIR)/peep2midi:
+	-echo Skipping peep2midi.cpp since it needs external library.
+
+$(TARGDIR)/binasc:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/createmidifile:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/drumtab:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/mid2mat:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midi2binasc:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midi2melody:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midi2notes:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midi2skini:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midi2text:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midicat:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midiexcerpt:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/midimixup:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/miditime:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/perfid:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/text2midi:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/textmidi:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/tobin:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/todec:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+$(TARGDIR)/tohex:
+	@echo Skipping $@ until it is updated to C++11 + STL.
+
+
+
+##############################
+#
+# Default targets:
+#
+
+$(TARGDIR)/% : $(notdir %.cpp)
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir -p $(TARGDIR)
+endif
+ifeq ($(wildcard $(LIBDIR)),)
+	$(MAKE) -f Makefile.library
+endif
+	@echo [CC] $@
+	@$(COMPILER) $(PREFLAGS) -o $@ $< $(POSTFLAGS) \
+		&& strip $@$(EXTEN)
+
+
+% : $(notdir %.cpp)
+ifeq ($(wildcard $(TARGDIR)),)
+	-mkdir -p $(TARGDIR)
+endif
+ifeq ($(wildcard $(LIBDIR)),)
+	$(MAKE) -f Makefile.library
+endif
+	@echo [CC] $@
+	@$(COMPILER) $(PREFLAGS) -o $(TARGDIR)/$@ $< $(POSTFLAGS) \
+		&& strip $(TARGDIR)/$@$(EXTEN)
+
+
+
