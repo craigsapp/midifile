@@ -146,8 +146,6 @@ $(TARGDIR)/drumtab:
 	@echo Skipping $@ until it is updated to C++11 + STL.
 $(TARGDIR)/mid2mat:
 	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midi2binasc:
-	@echo Skipping $@ until it is updated to C++11 + STL.
 $(TARGDIR)/midi2melody:
 	@echo Skipping $@ until it is updated to C++11 + STL.
 $(TARGDIR)/midi2notes:

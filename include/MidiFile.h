@@ -95,6 +95,7 @@ class MidiFile {
    public:
                 MidiFile                  (void);
                 MidiFile                  (const char* aFile);
+                MidiFile                  (const string& aFile);
                ~MidiFile                  ();
 
       void      absoluteTime              (void);
@@ -127,6 +128,7 @@ class MidiFile {
       void      joinTracks                (void);
       void      mergeTracks               (int aTrack1, int aTrack2);
       int       read                      (const char* aFile);
+      int       read                      (const string& aFile);
       int       read                      (istream& istream);
 
       void      setTicksPerQuarterNote    (int ticks);
@@ -141,9 +143,11 @@ class MidiFile {
       void      sortTracks                (void);
       void      splitTracks               (void);
       int       write                     (const char* aFile);
+      int       write                     (const string& aFile);
       int       write                     (ostream& out);
       ostream&  printHex                  (ostream& out);
       void      setFilename               (const char* aname);
+      void      setFilename               (const string& aname);
       const char* getFilename             (void);
 
       // access to convenience functions in MFEvent:

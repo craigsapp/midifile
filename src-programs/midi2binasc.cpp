@@ -122,13 +122,13 @@ void printMidiEvent(MFEvent& event) {
    switch (commandbyte & 0xf0) {
    case 0x90:
    case 0x80:
-      for (i=1; i<event.data.getSize(); i++) {
+      for (i=1; i<(int)event.data.size(); i++) {
          cout << " ";
          printDecByte(event.data[i]);
       }
       break;
    default:
-      for (i=1; i<event.data.getSize(); i++) {
+      for (i=1; i<(int)event.data.size(); i++) {
          cout << " ";
          printHexByte(event.data[i]);
       }
@@ -182,7 +182,7 @@ int getTrackByteCount(MidiFile& midifile, int track) {
    for (i=0; i<eventcount; i++) {
       event = midifile.getEvent(track, i); 
       sum += getVlvSize(event.time);
-      sum += event.data.getSize();
+      sum += event.data.size();
    }
    return sum;
 }
@@ -283,7 +283,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -293,7 +293,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    debugQ   = opts.getBoolean("debug");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 

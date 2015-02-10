@@ -476,6 +476,24 @@ MidiFile::MidiFile(const char* filename) {
 }
 
 
+MidiFile::MidiFile(const string& filename) { 
+   ticksPerQuarterNote = 48;             // time base of file
+   trackCount = 1;                       // # of tracks in file
+   theTrackState = TRACK_STATE_SPLIT;    // joined or split
+   theTimeState = TIME_STATE_DELTA;      // absolute or delta
+   events.resize(1);
+   events[0] = new vector<MFEvent>;
+   events[0]->clear();
+   readFileName.resize(1);
+   readFileName[0] = '\0';
+   read(filename);
+   timemap.clear();
+   timemapvalid = 0;
+}
+
+
+
+
 
 //////////////////////////////
 //
@@ -517,6 +535,11 @@ void MidiFile::setFilename(const char* aname) {
       readFileName.resize(len+1);
       strncpy(readFileName.data(), aname, len);
    }
+}
+
+
+void MidiFile::setFilename(const string& aname) {
+   MidiFile::setFilename(aname.data());
 }
 
 
@@ -1058,6 +1081,26 @@ int MidiFile::read(const char* filename) {
 
 
 //
+// string version of read().
+//
+
+
+int MidiFile::read(const string& filename) { 
+   timemapvalid = 0;
+   setFilename(filename);
+
+   fstream input;
+   input.open(filename, ios::binary | ios::in);
+
+   if (!input.is_open()) {
+      return 0;
+   }
+
+   return MidiFile::read(input);
+}
+
+
+//
 // istream version of read().
 //
 
@@ -1505,6 +1548,10 @@ int MidiFile::write(const char* filename) {
    return status;
 }
 
+
+int MidiFile::write(const string& filename) {
+   return MidiFile::write(filename.data());
+}
 
 
 //////////////////////////////
@@ -2248,7 +2295,7 @@ int MidiFile::secondsearch(const void* A, const void* B) {
 //      the order of the bytes to create the return value.
 //
 
-ulong readLittleEndian4Bytes(istream& input) {
+ulong MidiFile::readLittleEndian4Bytes(istream& input) {
    uchar buffer[4] = {0};
    input.read((char*)buffer, 4);
    if (input.eof()) {

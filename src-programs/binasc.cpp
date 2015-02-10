@@ -1,41 +1,27 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Apr 28 15:09:31 GMT-0800 1997
-// Last Modified: Mon Jan 19 02:41:56 GMT-0800 1998
-// Last Modified: Thu Oct 22 16:47:41 PDT 1998
-// Last Modified: Fri Sep 15 01:03:43 PDT 2006 (upgraded to ANSI C99 C++)
-// Filename:      .../lang/c/binasc/binasc.cpp
-// Syntax:        C++
-// $Smake:        smake -v linux %f
-// $Smake-linux:  g++ -DLINUX -O3 -o %b %f Options.cpp FileIO.cpp && strip %b
+// Last Modified: Fri Sep 15 01:03:43 PDT 2006 Upgraded to ANSI C99 C++.
+// Last Modified: Fri Sep 15 01:03:43 PDT 2006 Upgraded to C++11.
+// Filename:      midifile/src-programs/binasc.cpp
+// Syntax:        C++11
 //
 
 #include <ctype.h>     
 #include <string.h>
-
 #include "Options.h"
-#include "FileIO.h"
-
-#ifndef OLDCPP
-   #include <iostream>
-   #include <fstream>
-   #include <iomanip>
-   using namespace std;
-#else
-   #include <iostream.h>
-   #include <fstream.h>
-   #include <iomanip.h>
-#endif
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+using namespace std;
    
-
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
 
-
 // global variables:
-Options options;            // command-line options
-FileIO  outputCompiled;     // output for compilation
+Options  options;            // command-line options
+ofstream outputCompiled;     // output for compilation
 
 
 // function declarations:
@@ -46,11 +32,11 @@ void manual(void);
 void outputStyleAscii(const char* filename);
 void outputStyleBinary(const char* filename);
 void outputStyleBoth(const char* filename);
-void processAsciiWord(const char* word, int lineNumber, FileIO& out);
-void processBinaryWord(const char* word, int lineNumber, FileIO& out);
-void processDecimalWord(const char* word, int lineNumber, FileIO& out);
-void processHexadecimalWord(const char* word, int lineNumber, FileIO& out);
-void processLine(char* word, int lineNumber, FileIO& out);
+void processAsciiWord(const char* word, int lineNumber, ostream& out);
+void processBinaryWord(const char* word, int lineNumber, ostream& out);
+void processDecimalWord(const char* word, int lineNumber, ostream& out);
+void processHexadecimalWord(const char* word, int lineNumber, ostream& out);
+void processLine(char* word, int lineNumber, ostream& out);
 void usage(const char* command);
 
 
@@ -405,7 +391,7 @@ void outputStyleBoth(const char* filename) {
 
 #define WORD_SEPARATORS " \n\t"
 
-void processLine(char* inputLine, int lineCount, FileIO& out) {
+void processLine(char* inputLine, int lineCount, ostream& out) {
    char* word = strtok(inputLine, WORD_SEPARATORS);
    while (word != NULL) {
       if (word[0] == ';') {
@@ -431,7 +417,7 @@ void processLine(char* inputLine, int lineCount, FileIO& out) {
 //     constituent bytes
 //
 
-void processDecimalWord(const char* word, int lineNumber, FileIO& out) {
+void processDecimalWord(const char* word, int lineNumber, ostream& out) {
    int length = strlen(word);       // length of ascii binary number
    int byteCount = -1;              // number of bytes to output
    int quoteIndex = -1;             // index of decimal specifier
@@ -719,7 +705,7 @@ void processDecimalWord(const char* word, int lineNumber, FileIO& out) {
 //     its constituent byte
 //
 
-void processHexadecimalWord(const char* word, int lineNumber, FileIO& out) {
+void processHexadecimalWord(const char* word, int lineNumber, ostream& out) {
    int length = strlen(word);
    uchar outputByte;
 
@@ -747,7 +733,7 @@ void processHexadecimalWord(const char* word, int lineNumber, FileIO& out) {
 //     its constituent byte
 //
 
-void processAsciiWord(const char* word, int lineNumber, FileIO& out) {
+void processAsciiWord(const char* word, int lineNumber, ostream& out) {
    int length = strlen(word);
    uchar outputByte;
   
@@ -781,7 +767,7 @@ void processAsciiWord(const char* word, int lineNumber, FileIO& out) {
 //     its constituent byte
 //
 
-void processBinaryWord(const char* word, int lineNumber, FileIO& out) {
+void processBinaryWord(const char* word, int lineNumber, ostream& out) {
    int length = strlen(word);       // length of ascii binary number
    int commaIndex = -1;             // index location of comma in number
    int leftDigits = -1;             // number of digits to left of comma
