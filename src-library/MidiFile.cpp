@@ -232,7 +232,11 @@ void MFEvent::setCommandNibble(int value) {
    if (data.size() < 1) {
       data.resize(1);
    }
-   data[0] = (data[0] & 0x0f) | ((uchar)(value & 0xf0));
+   if (value < 0x0f) {
+      data[0] = (data[0] & 0x0f) | ((uchar)((value << 4) & 0xf0));
+   } else {
+      data[0] = (data[0] & 0x0f) | ((uchar)(value & 0xf0));
+   } 
 }
 
 
