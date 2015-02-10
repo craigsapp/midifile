@@ -12,18 +12,13 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <iostream>
+#include <iomanip>
 
-#ifndef OLDCPP
-   #include <iostream>
-   #include <iomanip>
-   using namespace std;
-#else
-   #include <iostream.h>
-   #include <iomanip.h>
-#endif
+using namespace std;
 
-int atohd(const char* aNumber);
-void exitUsage(const char* command);
+int   atohd       (const char* aNumber);
+void  exitUsage   (const char* command);
 
 
 int main(int argc, char* argv[]) {
@@ -62,5 +57,3 @@ void exitUsage(const char* command) {
 
 
 
-
-// md5sum: 543dd03e0826448ab89c069d5cf9fa0a tohex.cpp [20050403]

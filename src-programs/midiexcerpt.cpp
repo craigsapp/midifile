@@ -16,6 +16,8 @@
 #include "PerlRegularExpression.h"
 #include <stdlib.h>
 
+using namespace std;
+
 // function declarations:
 void   checkOptions        (Options& opts);
 void   example             (void);

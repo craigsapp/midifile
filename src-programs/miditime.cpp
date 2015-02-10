@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
 // Creation Date: Mon Jul 26 13:10:22 PDT 2010
-// Last Modified: Mon Jul 26 13:10:26 PDT 2010
+// Last Modified: Mon Feb  9 20:34:40 PST 2015 Updated for C++11.
 // Filename:      ...sig/doc/examples/all/miditime/miditime.cpp
 // Syntax:        C++
 // 
@@ -11,8 +11,10 @@
 
 #include "Options.h"
 #include "MidiFile.h"
-#include "PerlRegularExpression.h"
 #include <stdlib.h>
+#include <iostream>
+
+using namespace std;
 
 // function declarations:
 void   checkOptions        (Options& opts);
@@ -68,7 +70,7 @@ void processMidiFile(MidiFile& midifile) {
       cout << timeinsecs << "\t";
       cout << track << "\t";
       cout << i << "\t";
-      for (j=0; j<ptr->data.getSize(); j++) {
+      for (j=0; j<ptr->data.size(); j++) {
          if (j == 0) {
             cout << "0x" << hex << (int)ptr->data[j] << dec << " "; 
          } else {
@@ -104,7 +106,7 @@ void checkOptions(Options& opts) {
       cout << "compiled: " << __DATE__ << endl;
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    }
    if (opts.getBoolean("example")) {
@@ -128,6 +130,7 @@ void example(void) {
 }
  
 
+
 //////////////////////////////
 //
 // usage -- how to run the midiexcerpt program on the command line.
@@ -140,4 +143,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: 822f2f40a04df44843b7c9ce27b34f4a miditime.cpp [20100903]
+

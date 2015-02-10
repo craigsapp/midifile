@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jan 22 22:09:46 PST 2002
 // Last Modified: Mon Jul 23 01:43:43 PDT 2007 (copied from mid2mat)
+// Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/.cpp
 // Syntax:        C++; museinfo
@@ -11,20 +12,15 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
+#include <iomanip>
+#include <vector>
 
-#ifndef OLDCPP
-   #include <iostream>
-   #include <iomanip>
-   using namespace std;
-#else
-   #include <iostream.h>
-   #include <iomanip.h>
-#endif
+using namespace std;
 
 #define TICK 1
 #define BEAT 2
@@ -64,9 +60,9 @@ const char *GMinstrument[128] = {
    "applause",  "ringwhsl"
 };                            
 
-Array<int> legend_instr;
-Array<int> legend_opcode;
-Array<int> legend_controller;
+vector<int> legend_instr;
+vector<int> legend_opcode;
+vector<int> legend_controller;
 
 typedef unsigned char uchar;
 
@@ -83,51 +79,44 @@ char    arrayname[1024] = {0};  // used with -n option
 int     timetype = SEC;
 double  tempo    = 60.0;
 int     maxcount = 100000;
-Array<Array<double> > matlabarray;
-Array<int> channelfilter;
+vector<vector<double> > matlabarray;
+vector<int> channelfilter;
 
 // function declarations:
 void      convertMidiFile       (MidiFile& midifile, 
-                                 Array<Array<double> >& matlab);
+                                 vector<vector<double> >& matlab);
 void      setTempo              (MidiFile& midifile, int index, double& tempo);
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
 void      usage                 (const char* command);
 double    getTime               (int ticks, double tempo, int tpq);
 void      processMetaEvent      (MidiFile& midifile, int i, 
-                                 Array<double>& event);
-void      printEvent            (Array<double>& event);
+                                 vector<double>& event);
+void      printEvent            (vector<double>& event);
 void      printLegend           (MidiFile& midifile);
 void      printMatlabArray      (MidiFile& midifile, 
-                                 Array<Array<double> >& matlab);
-void      sortArray             (Array<Array<double> >& matlab);
+                                 vector<vector<double> >& matlab);
+void      sortArray             (vector<vector<double> >& matlab);
 int       eventcmp              (const void* a, const void* b);
 
 void      printNotesData       (MidiFile& midifile, 
-                                 Array<Array<double> >& matlab);
-void      printNotesEvent      (Array<double>& event);
-void      setFilterOptions     (Array<int>& channelfilter, const char* exclude);
+                                 vector<vector<double> >& matlab);
+void      printNotesEvent      (vector<double>& event);
+void      setFilterOptions     (vector<int>& channelfilter, const char* exclude);
 
 
 //////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
 
-   channelfilter.setSize(16);
-   channelfilter.allowGrowth(0);
-   channelfilter.setAll(1);
+   channelfilter.assign(16, 1);
  
-   matlabarray.setSize(100000);
-   matlabarray.setSize(0);
-   matlabarray.setGrowth(1000000); 
-   matlabarray.allowGrowth();
+   matlabarray.reserve(100000);
+   matlabarray.clear();
 
-   legend_instr.setSize(128);
-   legend_instr.allowGrowth(0);
-   legend_opcode.setSize(128);
-   legend_opcode.allowGrowth(0);
-   legend_controller.setSize(128);
-   legend_controller.allowGrowth(0);
+   legend_instr.resize(128);
+   legend_opcode.resize(128);
+   legend_controller.resize(128);
 
    checkOptions(options, argc, argv);
    MidiFile midifile(options.getArg(1));
@@ -147,14 +136,12 @@ int main(int argc, char* argv[]) {
 // convertMidiFile --
 //
 
-void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
+void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
    midifile.absoluteTime();
    midifile.joinTracks();
-   Array<double> event(8);
-   event.allowGrowth(0);
-
-   Array<double> ontimes(128);
-   Array<int> onvelocities(128);
+   vector<double> event(8);
+   vector<double> ontimes(128);
+   vector<int> onvelocities(128);
    int i;
    for (i=0; i<128; i++) {
       ontimes[i] = -1.0;
@@ -176,7 +163,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
       if (verboseQ) {
          cout << ">>> " << (int)midifile.getEvent(0,i).data[0] << "\n";
       }
-      event.setAll(unused);
+      event.assign(event.size(), unused);
       command = midifile.getEvent(0, i).data[0] & 0xf0;
       channel = midifile.getEvent(0, i).data[0] & 0x0f;
 
@@ -189,7 +176,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
          }
       }
 
-      if (midifile.getEvent(0,i).data[0] & 0x0f == 0x09) {
+      if ((midifile.getEvent(0,i).data[0] & 0x0f) == 0x09) {
           continue;
       }
       if (command == 0xf0) { 
@@ -289,7 +276,7 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
       }
 
       if (event[1] != unused) {
-         matlab.append(event);
+         matlab.push_back(event);
       }
    }
 
@@ -302,8 +289,8 @@ void convertMidiFile(MidiFile& midifile, Array<Array<double> >& matlab) {
 // processMetaEvent -- print the meta event
 //
 
-void processMetaEvent(MidiFile& midifile, int i, Array<double>& event) {
-   Array<uchar>& data = midifile.getEvent(0,i).data;
+void processMetaEvent(MidiFile& midifile, int i, vector<double>& event) {
+   vector<uchar>& data = midifile.getEvent(0,i).data;
 
    switch (data[1]) {
       case 0x58:  // time signature
@@ -397,10 +384,8 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    double newtempo = 0.0;
    static int count = 0;
    count++;
-   Array<double> event;
-   event.setSize(7);
-   event.allowGrowth(0);
-   event.setAll(unused);
+   vector<double> event;
+   event.assign(7, unused);
 
    MFEvent& mididata = midifile.getEvent(0, index);
 
@@ -424,7 +409,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
                  midifile.getTicksPerQuarterNote());
          event[1] = OP_TEMPO;
          event[2] = newtempo;
-         matlabarray.append(event); 
+         matlabarray.push_back(event); 
       }
    }
    tempo = newtempo;
@@ -468,7 +453,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -480,11 +465,11 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    maxcount = opts.getInteger("max"); 
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
-   setFilterOptions(channelfilter, opts.getString("exclude"));
+   setFilterOptions(channelfilter, opts.getString("exclude").data());
    if (opts.getBoolean("no-drum")) {
       // turn off MIDI channel 10
       channelfilter[9] = 0;
@@ -494,7 +479,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    secQ  = opts.getBoolean("seconds");
    msecQ = opts.getBoolean("milliseconds");
    beatQ = opts.getBoolean("beats");
-   strcpy(arrayname, opts.getString("name"));
+   strcpy(arrayname, opts.getString("name").data());
 
    if (tickQ) {
       timetype = TICK;
@@ -531,7 +516,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 // setFilterOptions --
 //
 
-void setFilterOptions(Array<int>& channelfilter, const char* exclude) {
+void setFilterOptions(vector<int>& channelfilter, const char* exclude) {
    int length = strlen(exclude);
    int character;
    int i;
@@ -735,12 +720,12 @@ void printLegend(MidiFile& midifile) {
    cout << "% unused parameter marker: " << unused << "\n";
    // check for opcodes used in data:
    sum = 0;
-   for (i=0; i<legend_opcode.getSize(); i++) {
+   for (i=0; i<(int)legend_opcode.size(); i++) {
       sum += legend_opcode[i];
    }
    if (sum > 0) {
       cout << "% " << sum << " opcodes are present in the data:\n";
-      for (i=0; i<legend_opcode.getSize(); i++) {
+      for (i=0; i<(int)legend_opcode.size(); i++) {
          if (legend_opcode[i]) {
             switch (i*1000) {
                case OP_NOTE:
@@ -806,12 +791,12 @@ void printLegend(MidiFile& midifile) {
 
    // check for instruments to list:
    sum = 0;
-   for (i=0; i<legend_instr.getSize(); i++) {
+   for (i=0; i<(int)legend_instr.size(); i++) {
       sum += legend_instr[i];
    }
    if (sum > 0) {
       cout << "% " << sum << " instrument timbres are present in the data:\n";
-      for (i=0; i<legend_instr.getSize(); i++) {
+      for (i=0; i<(int)legend_instr.size(); i++) {
          if (legend_instr[i]) {
             cout << "%\tinstrument number " << i << "\t= " 
                  << GMinstrument[i] << "\n";
@@ -821,12 +806,12 @@ void printLegend(MidiFile& midifile) {
 
    // check for controllers to list:
    sum = 0;
-   for (i=0; i<legend_controller.getSize(); i++) {
+   for (i=0; i<(int)legend_controller.size(); i++) {
       sum += legend_controller[i];
    }
    if (sum > 0) {
       cout << "% " << sum << " types of controllers are present in the data:\n";
-      for (i=0; i<legend_controller.getSize(); i++) {
+      for (i=0; i<(int)legend_controller.size(); i++) {
          if (legend_controller[i]) {
             cout << "%\tcontroller " << GMcontrollers[i] << "\n";
          }
@@ -844,11 +829,11 @@ void printLegend(MidiFile& midifile) {
 // printMatlabArray -- print the Matlab array representing the MIDI file.
 //
 
-void printMatlabArray(MidiFile& midifile, Array<Array<double> >& matlab) {
+void printMatlabArray(MidiFile& midifile, vector<vector<double> >& matlab) {
    int i;
    sortArray(matlab);
    cout << arrayname << " = [\n";
-   for (i=0; i<matlab.getSize(); i++) {
+   for (i=0; i<(int)matlab.size(); i++) {
       printEvent(matlab[i]);
    }
    cout << "];\n";
@@ -860,11 +845,11 @@ void printMatlabArray(MidiFile& midifile, Array<Array<double> >& matlab) {
 // printNotesData  -- print the Matlab array representing the MIDI file.
 //
 
-void printNotesData(MidiFile& midifile, Array<Array<double> >& matlab) {
+void printNotesData(MidiFile& midifile, vector<vector<double> >& matlab) {
    int i;
    sortArray(matlab);
    // cout << arrayname << " = [\n";
-   for (i=0; i<matlab.getSize(); i++) {
+   for (i=0; i<(int)matlab.size(); i++) {
       printNotesEvent(matlab[i]);
    }
    // cout << "];\n";
@@ -879,8 +864,8 @@ void printNotesData(MidiFile& midifile, Array<Array<double> >& matlab) {
 //   the notes may be slightly out of time order.
 //
 
-void sortArray(Array<Array<double> >& matlab) {
-   qsort(matlab.getBase(), matlab.getSize(), sizeof(Array<double>), eventcmp);
+void sortArray(vector<vector<double> >& matlab) {
+   qsort(matlab.data(), matlab.size(), sizeof(vector<double>), eventcmp);
 }
 
 
@@ -892,8 +877,8 @@ void sortArray(Array<Array<double> >& matlab) {
 // 
 
 int eventcmp(const void* a, const void* b) {
-   Array<double>& A = *((Array<double>*)a);
-   Array<double>& B = *((Array<double>*)b);
+   vector<double>& A = *((vector<double>*)a);
+   vector<double>& B = *((vector<double>*)b);
 
    if (A[0] < B[0]) {
       return -1;
@@ -911,11 +896,11 @@ int eventcmp(const void* a, const void* b) {
 // printEvent -- print the event
 //
 
-void printEvent(Array<double>& event) {
+void printEvent(vector<double>& event) {
    int i;
-   for (i=0; i<event.getSize(); i++) {
+   for (i=0; i<(int)event.size(); i++) {
       cout << event[i];
-      if (i<event.getSize()-1) {
+      if (i<(int)event.size()-1) {
          cout << ",\t";
       }
    }
@@ -935,7 +920,7 @@ void printEvent(Array<double>& event) {
 //            event[5] = (midifile.getEvent(0, i).data[0] & 0x0f);
 //            event[6] = midifile.getEvent(0, i).track;
 
-void printNotesEvent(Array<double>& event) {
+void printNotesEvent(vector<double>& event) {
    if (int(event[1]+0.5) != OP_NOTE) {
       // ignore items which are not notes.
       return;
@@ -961,9 +946,9 @@ void printNotesEvent(Array<double>& event) {
    cout << endl;
 
 /*   int i;
-   for (i=0; i<event.getSize(); i++) {
+   for (i=0; i<(int)event.size(); i++) {
       cout << event[i];
-      if (i<event.getSize()-1) {
+      if (i<(int)event.size()-1) {
          cout << ",\t";
       }
    }
@@ -972,4 +957,4 @@ void printNotesEvent(Array<double>& event) {
 }
 
 
-// md5sum: 20be1ed577b3174cdde760bc9690d0e9 midi2notes.cpp [20110711]
+

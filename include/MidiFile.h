@@ -26,11 +26,11 @@
 #ifndef _MIDIfILE_H_INCLUDED
 #define _MIDIfILE_H_INCLUDED
 
-using namespace std;
-
 #include <vector>
 #include <istream>
 #include <fstream>
+
+using namespace std;
 
 typedef unsigned char  uchar;
 typedef unsigned short ushort;

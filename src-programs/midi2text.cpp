@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jan 22 22:09:46 PST 2002
 // Last Modified: Tue Jan 22 22:09:48 PST 2002
+// Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/midi2text.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/midi2text.cpp
 // Syntax:        C++; museinfo
@@ -11,13 +12,15 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 typedef unsigned char uchar;
-
 
 // user interface variables
 Options options;
@@ -53,8 +56,8 @@ void convertMidiFileToText(MidiFile& midifile) {
    midifile.absoluteTime();
    midifile.joinTracks();
 
-   Array<double> ontimes(128);
-   Array<int> onvelocities(128);
+   vector<double> ontimes(128);
+   vector<int> onvelocities(128);
    int i;
    for (i=0; i<128; i++) {
       ontimes[i] = -1.0;
@@ -152,7 +155,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -163,7 +166,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    maxcount = opts.getInteger("max"); 
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
@@ -193,4 +196,3 @@ void usage(const char* command) {
 
 
 
-// md5sum: 6228e3df0855cfa017d06dd9a0c498e4 midi2text.cpp [20110711]

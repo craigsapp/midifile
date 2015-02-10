@@ -103,18 +103,16 @@ OBJS = $(notdir $(patsubst %.cpp,%.o,$(wildcard $(SRCDIR)/*.cpp)))
 
 
 all: makedirs $(OBJS)
-ifeq ($(OSTYPE),LINUX)
-	@echo "Creating midifile library file for linux ..."
-	-rm -f $(LIBDIR)/$(LIBFILE)
-	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o
-	$(RANLIB) $(LIBDIR)/$(LIBFILE)
-else ifeq ($(OSTYPE),OSXPC)
+ifeq ($(OSTYPE),OSX)
 	@echo "Creating midifile library file for OSX (Intel)..."
 	-rm -f $(LIBDIR)/$(LIBFILE)
 	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o
 	$(RANLIB) $(LIBDIR)/$(LIBFILE)
 else
-	echo "Unkown operating system type."
+	@echo "Creating midifile library file for linux ..."
+	-rm -f $(LIBDIR)/$(LIBFILE)
+	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o
+	$(RANLIB) $(LIBDIR)/$(LIBFILE)
 endif
 
 

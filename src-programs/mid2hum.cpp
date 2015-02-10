@@ -48,21 +48,12 @@
 #include "HumdrumFile.h"
 #include <math.h>
 #include <cctype>
+#include <iostream>
+#include <sstream>
+#define SSTREAM stringstream
+#define CSTRING str().c_str()
 
-#ifndef OLDCPP
-   #include <sstream>
-   #define SSTREAM stringstream
-   #define CSTRING str().c_str()
-   using namespace std;
-#else
-   #ifdef VISUAL
-      #include <strstrea.h>    /* for Windows 95 */
-   #else
-      #include <strstream.h>
-   #endif
-   #define SSTREAM strstream
-   #define CSTRING str()
-#endif
+using namespace std;
 
 
 class MidiInfo {

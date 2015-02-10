@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Apr  3 23:43:56 PDT 2013
 // Last Modified: Thu Apr  4 01:39:09 PDT 2013
+// Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/midi2binasc.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/midi2binasc.cpp
 // Syntax:        C++; museinfo
@@ -13,18 +14,12 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <iostream>
+#include <iomanip>
 
-#ifndef OLDCPP
-   #include <iostream>
-   #include <iomanip>
-   using namespace std;
-#else
-   #include <iostream.h>
-   #include <iomanip.h>
-#endif
+using namespace std;
 
 typedef unsigned char uchar;
-
 
 void    convertMidiFile         (MidiFile& midifile);
 void    printMidiHeader         (MidiFile& midifile);
@@ -321,4 +316,5 @@ void usage(const char* command) {
    cout << "Usage: " << command << " midifile" << endl;
 }
 
-// md5sum: a1a30253aa8cf823d34ba8acff2d05c0 midi2binasc.cpp [20130420]
+
+

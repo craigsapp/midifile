@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
 // Creation Date: Thu Dec  2 12:45:43 PST 1999
-// Last Modified: Thu Dec  2 13:53:31 PST 1999
+// Last Modified: Mon Feb  9 20:36:34 PST 2015 Updated for C++11.
 // Filename:      midimixup.cpp
 // Syntax:        C++
 // 
@@ -12,13 +12,9 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <iostream>
 
-#ifndef OLDCPP
-   #include <iostream>
-#else
-   #include <iostream.h>
-#endif
-
+using namespace std;
 
 // function declarations:
 void adjustTime(int deviation, int& aTime);
@@ -110,7 +106,7 @@ void checkOptions(Options& opts) {
       cout << "compiled: " << __DATE__ << endl;
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    }
    if (opts.getBoolean("example")) {
@@ -121,12 +117,12 @@ void checkOptions(Options& opts) {
    // must have two filenames on the command-line
    if (opts.getArgCount() == 1) {
       cout << "Need an output file specified." << endl;
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
    if (opts.getArgCount() != 2) {
       cout << "Error: need one input and one output MIDI filename." << endl;
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    } 
 
@@ -170,4 +166,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: cf2e5559e7e3e8b36b93c0f569425bf9 midimixup.cpp [20050403]
+

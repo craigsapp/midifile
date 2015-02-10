@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jun  6 20:41:53 PDT 2002
 // Last Modified: Mon Jun 10 08:04:06 PDT 2002
+// Last Modified: Mon Feb  9 21:01:00 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/midi2skini.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/midi2skini.cpp
 // Syntax:        C++; museinfo
@@ -12,14 +13,10 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <iostream>
+#include <iomanip>
 
-#ifndef OLDCPP
-   #include <iomanip>
-   using namespace std;
-#else
-   #include <iomanip.h>
-#endif
-
+using namespace std;
 
 // user interface variables:
 Options options;
@@ -120,7 +117,7 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
          cout << curtime << "\t" << event.track << "\t"
               << (int)event.data[1] << "\t" << (int)event.data[2] << endl;
       }
-   } else if ((event.data.getSize() > 3) && (event.data[0] == 0xff) &&
+   } else if ((event.data.size() > 3) && (event.data[0] == 0xff) &&
          (event.data[1] == 0x51)) {
       // Tempo meta event
       int microseconds = (unsigned int)event.data[3];
@@ -130,7 +127,7 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
       microseconds |= (unsigned int)event.data[5];
       tempo = 1000000.0 / microseconds * 60.0;
       cout << "// time:=" << curtime << " tempo: " << tempo << endl;
-   } else if ((event.data.getSize() > 3) && (event.data[0] == 0xff) &&
+   } else if ((event.data.size() > 3) && (event.data[0] == 0xff) &&
          (event.data[1] == 0x03)) {
       // Track name MIDI meta event
       if (track >= 0 && track != event.track) { return; }
@@ -138,7 +135,7 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
       cout << " time:=" << curtime;
       cout << " track:" << event.track;
       cout << " text: ";
-      for (i=3; i<event.data.getSize(); i++) {
+      for (i=3; i<(int)event.data.size(); i++) {
          cout << (char)event.data[i];
       }
       cout << endl;
@@ -149,7 +146,7 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
            << " time:=" << curtime 
            << " track:" << event.track 
            << " midi-data: ";
-      for (i=0; i<event.data.getSize(); i++) {
+      for (i=0; i<(int)event.data.size(); i++) {
            cout << (int)event.data[i] << " ";
       }
       cout << endl;
@@ -183,7 +180,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -195,7 +192,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    maxcount = opts.getInteger("max"); 
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 }
@@ -231,4 +228,3 @@ void usage(const char* command) {
 
 
 
-// md5sum: 98a724a80b9410bc053e07d72fc0c8d1 midi2skini.cpp [20110711]

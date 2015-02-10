@@ -802,6 +802,7 @@ int MidiFile::addTrack(int count) {
 }
 
 
+
 //////////////////////////////
 //
 // MidiFile::allocateEvents --
@@ -810,8 +811,7 @@ int MidiFile::addTrack(int count) {
 void MidiFile::allocateEvents(int track, int aSize) {
    int oldsize = events[track]->size();
    if (oldsize < aSize) {
-      events[track]->resize(aSize);
-      events[track]->resize(oldsize);
+      events[track]->reserve(aSize);
    } 
 }
 
@@ -1090,7 +1090,7 @@ int MidiFile::read(const string& filename) {
    setFilename(filename);
 
    fstream input;
-   input.open(filename, ios::binary | ios::in);
+   input.open(filename.data(), ios::binary | ios::in);
 
    if (!input.is_open()) {
       return 0;
@@ -1110,7 +1110,6 @@ int MidiFile::read(istream& input) {
    int    character;
    // uchar  buffer[123456] = {0};
    ulong  longdata;
-   uchar  chardata;
    ushort shortdata;
 
 
@@ -1125,7 +1124,7 @@ int MidiFile::read(istream& input) {
    } else if (character != 'M') {
       cout << "File " << filename << " is not a MIDI file" << endl;
       cout << "Expecting 'M' at first byte but got '" 
-           << chardata << "'" << endl;
+           << character << "'" << endl;
       return 0;
    }
 
@@ -1137,7 +1136,7 @@ int MidiFile::read(istream& input) {
    } else if (character != 'T') {
       cout << "File " << filename << " is not a MIDI file" << endl;
       cout << "Expecting 'T' at first byte but got '" 
-           << chardata << "'" << endl;
+           << character << "'" << endl;
       return 0;
    }
 
@@ -1149,7 +1148,7 @@ int MidiFile::read(istream& input) {
    } else if (character != 'h') {
       cout << "File " << filename << " is not a MIDI file" << endl;
       cout << "Expecting 'h' at first byte but got '" 
-           << chardata << "'" << endl;
+           << character << "'" << endl;
       return 0;
    }
 
@@ -1161,7 +1160,7 @@ int MidiFile::read(istream& input) {
    } else if (character != 'd') {
       cout << "File " << filename << " is not a MIDI file" << endl;
       cout << "Expecting 'd' at first byte but got '" 
-           << chardata << "'" << endl;
+           << character << "'" << endl;
       return 0;
    }
 
@@ -1264,7 +1263,7 @@ int MidiFile::read(istream& input) {
       } else if (character != 'M') {
          cout << "File " << filename << " is not a MIDI file" << endl;
          cout << "Expecting 'M' at first byte in track but got '" 
-              << chardata << "'" << endl;
+              << character << "'" << endl;
          return 0;
       }
 
@@ -1277,7 +1276,7 @@ int MidiFile::read(istream& input) {
       } else if (character != 'T') {
          cout << "File " << filename << " is not a MIDI file" << endl;
          cout << "Expecting 'T' at first byte in track but got '" 
-              << chardata << "'" << endl;
+              << character << "'" << endl;
          return 0;
       }
 
@@ -1290,7 +1289,7 @@ int MidiFile::read(istream& input) {
       } else if (character != 'r') {
          cout << "File " << filename << " is not a MIDI file" << endl;
          cout << "Expecting 'r' at first byte in track but got '" 
-              << chardata << "'" << endl;
+              << character << "'" << endl;
          return 0;
       }
 
@@ -1303,7 +1302,7 @@ int MidiFile::read(istream& input) {
       } else if (character != 'k') {
          cout << "File " << filename << " is not a MIDI file" << endl;
          cout << "Expecting 'k' at first byte in track but got '" 
-              << chardata << "'" << endl;
+              << character << "'" << endl;
          return 0;
       }
 

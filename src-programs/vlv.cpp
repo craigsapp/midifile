@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Jan 13 08:31:19 PST 1999
-// Last Modified: Mon Feb  9 15:55:56 PST 2015
+// Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      midifile/src-programs/vlv.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -12,10 +12,10 @@
 
 #include "Options.h"
 #include <stdlib.h>
-
 #include <string>
 #include <iostream>
 #include <iomanip>
+
 using namespace std;
 
 #define DECODE 0
@@ -297,7 +297,6 @@ void usage(const string& command) {
    "\n"
    << endl;
 }
-
 
 
 

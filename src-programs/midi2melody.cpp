@@ -1,17 +1,21 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Jun 30 11:52:06 PDT 2001
-// Last Modified: Sat Jun 30 11:52:09 PDT 2001
+// Last Modified: Mon Feb  9 21:14:03 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/midi2melody.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/midi2melody.cpp
 // Syntax:        C++; museinfo
 //
-// Description:   Converts a single melody MIDI file/track into an ASCII text 
+// Description:   Converts a single melody MIDI file/track into an ASCII text
 //	          format with starting time and pitch.
 //
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <vector>
+#include <iostream>
+
+using namespace std;
 
 class Melody {
    public:
@@ -28,9 +32,9 @@ int     track = 0;          // used with the -t option
 void      checkOptions      (Options& opts, int argc, char** argv);
 void      example           (void);
 void      usage             (const char* command);
-void      convertToMelody   (MidiFile& midifile, SigCollection<Melody>& melody);
-void      printMelody       (SigCollection<Melody>& melody, int tpq);
-void      sortMelody        (SigCollection<Melody>& melody);
+void      convertToMelody   (MidiFile& midifile, vector<Melody>& melody);
+void      printMelody       (vector<Melody>& melody, int tpq);
+void      sortMelody        (vector<Melody>& melody);
 int       notecompare       (const void* a, const void* b);
 
 //////////////////////////////////////////////////////////////////////////
@@ -39,7 +43,7 @@ int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile midifile(options.getArg(1));
 
-   SigCollection<Melody> melody;
+   vector<Melody> melody;
    convertToMelody(midifile, melody);
    sortMelody(melody);
    printMelody(melody, midifile.getTicksPerQuarterNote());
@@ -52,11 +56,11 @@ int main(int argc, char* argv[]) {
 
 //////////////////////////////
 //
-// sortMelody -- 
+// sortMelody --
 //
 
-void sortMelody(SigCollection<Melody>& melody) {
-   qsort(melody.getBase(), melody.getSize(), sizeof(Melody), notecompare);
+void sortMelody(vector<Melody>& melody) {
+   qsort(melody.data(), melody.size(), sizeof(Melody), notecompare);
 }
 
 
@@ -67,27 +71,27 @@ void sortMelody(SigCollection<Melody>& melody) {
 //   only print the highest voice if multiple notes played together.
 //
 
-void printMelody(SigCollection<Melody>& melody, int tpq) {
+void printMelody(vector<Melody>& melody, int tpq) {
    int i;
    double delta = 0;
 
-   if (melody.getSize() < 1) {
+   if (melody.size() < 1) {
       return;
    }
 
    Melody temp;
-   temp.time = melody[melody.getSize()-1].time +
-               melody[melody.getSize()-1].duration;
+   temp.time = melody[melody.size()-1].time +
+               melody[melody.size()-1].duration;
    temp.pitch = 0;
    temp.duration = 0;
-   melody.append(temp);
+   melody.push_back(temp);
 
-   for (i=0; i<melody.getSize()-1; i++) {
+   for (i=0; i<(int)melody.size()-1; i++) {
       delta = melody[i+1].time - melody[i].time;
       if (delta == 0) {
          continue;
       }
-      
+
       cout << (double)melody[i].time/tpq
            << "\t" << melody[i].pitch
            // << "\t" << (double)melody[i].duration/tpq
@@ -98,7 +102,7 @@ void printMelody(SigCollection<Melody>& melody, int tpq) {
               << "\n";
       }
    }
-   cout << (double)melody[melody.getSize()-1].time/tpq
+   cout << (double)melody[melody.size()-1].time/tpq
         << "\t" << 0
         << "\n";
 }
@@ -110,7 +114,7 @@ void printMelody(SigCollection<Melody>& melody, int tpq) {
 // convertToMelody --
 //
 
-void convertToMelody(MidiFile& midifile, SigCollection<Melody>& melody) {
+void convertToMelody(MidiFile& midifile, vector<Melody>& melody) {
    midifile.absoluteTime();
    if (track < 0 || track >= midifile.getNumTracks()) {
       cout << "Invalid track: " << track << " Maximum track is: "
@@ -118,16 +122,15 @@ void convertToMelody(MidiFile& midifile, SigCollection<Melody>& melody) {
    }
    int numEvents = midifile.getNumEvents(track);
 
-   Array<int> state(128);   // for keeping track of the note states
-   
+   vector<int> state(128);   // for keeping track of the note states
+
    int i;
    for (i=0; i<128; i++) {
       state[i] = -1;
    }
 
-   melody.setSize(numEvents);
-   melody.setSize(0);
-   melody.allowGrowth(1);
+   melody.reserve(numEvents);
+   melody.clear();
 
    Melody mtemp;
    int command;
@@ -156,7 +159,7 @@ noteoff:
          mtemp.time = state[pitch];
          mtemp.duration = midifile.getEvent(track, i).time - state[pitch];
          mtemp.pitch = pitch;
-         melody.append(mtemp);
+         melody.push_back(mtemp);
          state[pitch] = -1;
       }
    }
@@ -166,18 +169,18 @@ noteoff:
 
 //////////////////////////////
 //
-// checkOptions -- 
+// checkOptions --
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("t|track=i:0",  "Track from which to extract melody"); 
+   opts.define("t|track=i:0",  "Track from which to extract melody");
 
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -188,7 +191,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -196,7 +199,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
@@ -253,5 +256,4 @@ int notecompare(const void* a, const void* b) {
 }
 
 
-    
-// md5sum: d8201865177b80aa72106e3198962cdc midi2melody.cpp [20050403]
+

@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
 // Creation Date: Sat Nov 27 11:43:31 PST 1999
 // Last Modified: Mon Nov 29 14:01:34 PST 1999
+// Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      ...sig/doc/examples/all/textmidi/textmidi.cpp
 // Syntax:        C++
 // 
@@ -10,24 +11,20 @@
 
 #include "Options.h"
 #include "MidiFile.h"
+#include <iostream>
 
-#ifndef OLDCPP
-   #include <iostream>
-#else
-   #include <iostream.h>
-#endif
+using namespace std;
 
 #define STYLE_TIME_DELTA      'd'
 #define STYLE_TIME_ABSOLUTE   'a'
-
 
 // global variables:
 int timestyle = STYLE_TIME_DELTA;    // command-line style options (-a | -d)
 
 // function declarations:
-void checkOptions(Options& opts);
-void example(void);
-void usage(const char* command);
+void  checkOptions    (Options& opts);
+void  example         (void);
+void  usage           (const char* command);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -84,7 +81,7 @@ void checkOptions(Options& opts) {
       cout << "compiled: " << __DATE__ << endl;
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    }
    if (opts.getBoolean("example")) {
@@ -95,7 +92,7 @@ void checkOptions(Options& opts) {
    // can only have one output filename
    if (opts.getArgCount() == 0) {
       cout << "Error: need one input MIDI file." << endl;
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    } 
 
@@ -120,6 +117,7 @@ void example(void) {
 }
  
 
+
 //////////////////////////////
 //
 // usage -- how to run the textmidi program on the command line.
@@ -142,4 +140,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: ea58b85465863add414fb98e3c9d5f27 textmidi.cpp [20050403]
+

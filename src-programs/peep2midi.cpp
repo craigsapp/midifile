@@ -12,7 +12,6 @@
 #include "MidiFile.h"
 #include "humdrum.h"
 #include "Options.h"
-
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>

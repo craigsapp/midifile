@@ -27,10 +27,10 @@
 ##
 
 # targets which don't actually refer to files
-.PHONY : all info library examples programs bin options clean
+.PHONY : all info library examples programs bin options clean lib
 
 
-all: info library programs
+all: info library programs lib
 
 
 info:
@@ -49,6 +49,7 @@ info:
 	@echo ""
 
 
+lib: library
 library:
 	$(MAKE) -f Makefile.library
 

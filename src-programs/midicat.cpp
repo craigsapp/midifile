@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Oct 16 07:34:30 PDT 2012
-// Last Modified: Tue Oct 16 07:34:35 PDT 2012
+// Last Modified: Mon Feb  9 20:40:50 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/midicat.cpp
 // Web Address:   http://museinfo.sapp.org/examples/museinfo/midi/midicat.cpp
 // Syntax:        C++; museinfo
@@ -11,11 +11,10 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <iostream>
+#include <vector>
 
-#ifndef OLDCPP
-   using namespace std;
-#endif
-
+using namespace std;
 
 // user interface variables
 Options options;
@@ -40,7 +39,7 @@ int main(int argc, char* argv[]) {
    int i;
    int initQ = 0;
    for (i=1; i<=options.getArgCount(); i++) {
-      appendMidi(outfile, options.getArg(i), seconds, initQ++);
+      appendMidi(outfile, options.getArg(i).data(), seconds, initQ++);
    }
 
    // insert an end-of track Meta Event
@@ -48,7 +47,7 @@ int main(int argc, char* argv[]) {
    MFEvent mfevent;
    mfevent.time = tpq;
    mfevent.track = 0;
-   mfevent.data.setSize(3);
+   mfevent.data.resize(3);
    mfevent.data[0] = 0xff;
    mfevent.data[1] = 0x2f;
    mfevent.data[2] = 0;
@@ -108,8 +107,8 @@ void appendMidi(MidiFile& outfile, const char* filename,
       // If quarter note is 120 bpm, that is 0.5 seconds or 500000 usec.
       // In hex 500000 is 07 a1 20
       // Tempo meta event:  ff 51 03 07 a1 20
-      Array<uchar> bpm120;
-      bpm120.setSize(3);
+      vector<uchar> bpm120;
+      bpm120.resize(3);
       bpm120[0] = 0x07;
       bpm120[1] = 0xa1;
       bpm120[2] = 0x20;
@@ -155,7 +154,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -163,7 +162,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    if (opts.getArgCount() <= 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
@@ -195,4 +194,3 @@ void usage(const char* command) {
 
 
 
-// md5sum: 5d4a449e44f7b6989a9484a18d261929 midicat.cpp [20121112]

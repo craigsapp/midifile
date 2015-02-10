@@ -16,9 +16,10 @@
 #include "Convert.h"
 #include "Options.h"
 #include "CircularBuffer.h"
-
 #include <string.h>
 #include <stdio.h>
+
+using namespace std;
 
 
 // function declarations:

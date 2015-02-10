@@ -2,6 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jan 22 16:46:19 PST 2002
 // Last Modified: Fri Dec 13 22:27:44 PST 2002 (added channel option)
+// Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      ...sig/examples/all/text2midi.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/text2midi.cpp
 // Syntax:        C++; museinfo
@@ -12,10 +13,12 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#include <iostream>
+
+using namespace std;
 
 typedef unsigned char uchar;
 
@@ -40,14 +43,11 @@ void      usage                 (const char* command);
 
 int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
-   #ifndef OLDCPP
-      fstream textfile(options.getArg(1), ios::in);
-   #else
-      fstream textfile(options.getArg(1), ios::in | ios::nocreate);
-   #endif
+
+   fstream textfile(options.getArg(1).data(), ios::in);
    if (!textfile.is_open()) {
       cout << "Error: cannot read input text file." << endl;
-      usage(options.getCommand());
+      usage(options.getCommand().data());
       exit(1);
    }
    MidiFile midifile;
@@ -69,14 +69,14 @@ int main(int argc, char* argv[]) {
 //
 
 void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
-   Array<uchar> mididata;
+   vector<uchar> mididata;
    midifile.setTicksPerQuarterNote(tpq);
    midifile.absoluteTime();
    midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for 
                                                     // max expected MIDI events
 
    // write the tempo to the midifile
-   mididata.setSize(6);
+   mididata.resize(6);
    mididata[0] = 0xff;      // meta message
    mididata[1] = 0x51;      // tempo change
    mididata[2] = 0x03;      // three bytes to follow
@@ -121,7 +121,7 @@ void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
               << "\tnote=" << note << "\tvel=" << vel << endl;
       }
 
-      mididata.setSize(3);
+      mididata.resize(3);
       mididata[0] = 0x90 | channel;       // note on command
       mididata[1] = (uchar)(note & 0x7f);
       mididata[2] = (uchar)(vel & 0x7f);
@@ -251,7 +251,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -268,7 +268,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    if (opts.getArgCount() != 2) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
@@ -298,4 +298,4 @@ void usage(const char* command) {
 
 
 
-// md5sum: dd6bd80ed83fb71bd24755bca31eec61 text2midi.cpp [20050403]
+

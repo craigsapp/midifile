@@ -1,8 +1,8 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jun 18 12:14:03 PDT 2002
-// Last Modified: Tue Jun 18 12:14:06 PDT 2002
-// Filename:      ...sig/examples/all/perfid.cpp
+// Last Modified: Mon Feb  9 20:28:07 PST 2015 Updated for C++11.
+// Filename:      midifile/src-programs/perfid.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/perfid.cpp
 // Syntax:        C++; museinfo
 //
@@ -12,13 +12,11 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <iostream>
+#include <iomanip>
+#include <vector>
 
-#ifndef OLDCPP
-   #include <iomanip>
-   using namespace std;
-#else
-   #include <iomanip.h>
-#endif
+using namespace std;
 
 // user interface variables:
 Options options;
@@ -32,15 +30,15 @@ int     fileQ    = 0;          // print file name before id
 // function declarations:
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
-void      getNoteOnDeltas       (Array<int>& noteondeltas, 
+void      getNoteOnDeltas       (vector<int>& noteondeltas, 
                                  MidiFile& midifile);
-void      addNoteOnEvents       (Array<int>& noteondeltas, MidiFile& midifile,
+void      addNoteOnEvents       (vector<int>& noteondeltas, MidiFile& midifile,
                                  int track);
 void      usage                 (const char* command);
 int       intcompare            (const void* a, const void* b);
-void      sortArray             (Array<int>& noteondeltas);
-void      printDeltas           (Array<int>& noteondeltas);
-void      printID               (Array<int>& noteondeltas);
+void      sortArray             (vector<int>& noteondeltas);
+void      printDeltas           (vector<int>& noteondeltas);
+void      printID               (vector<int>& noteondeltas);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -49,9 +47,9 @@ int main(int argc, char* argv[]) {
    MidiFile midifile;
    midifile.read(options.getArg(1));
    midifile.absoluteTime();
-   Array<int> noteondeltas;
-   noteondeltas.setSize(maxcount);
-   noteondeltas.setSize(0);
+   vector<int> noteondeltas;
+   noteondeltas.reserve(maxcount);
+   noteondeltas.clear();
    midifile.joinTracks();
    getNoteOnDeltas(noteondeltas, midifile);
    if (rawQ) {
@@ -72,13 +70,13 @@ int main(int argc, char* argv[]) {
 // printDeltas --
 //
 
-void printDeltas(Array<int>& noteondeltas) {
+void printDeltas(vector<int>& noteondeltas) {
    int i;
    int count = 1;
-   if (noteondeltas.getSize() == 0) {
+   if (noteondeltas.size() == 0) {
       return;
    }
-   for (i=1; i<noteondeltas.getSize(); i++) {
+   for (i=1; i<noteondeltas.size(); i++) {
       if (noteondeltas[i] != noteondeltas[i-1]) {
          cout << count << "\t" << noteondeltas[i-1] << "\n";
          count = 1;
@@ -86,7 +84,7 @@ void printDeltas(Array<int>& noteondeltas) {
          count++;
       }
    }
-   cout << count << "\t" << noteondeltas.last() << "\n";
+   cout << count << "\t" << noteondeltas.back() << "\n";
 }
 
 
@@ -96,34 +94,34 @@ void printDeltas(Array<int>& noteondeltas) {
 // printID --
 //
 
-void printID(Array<int>& noteondeltas) {
+void printID(vector<int>& noteondeltas) {
    if (fileQ) {
       cout << options.getArg(1) << "\t";
    }
    int i;
    int count = 1;
-   if (noteondeltas.getSize() == 0) {
+   if (noteondeltas.size() == 0) {
       cout << "Empty" << endl;
       return;
    }
-   Array<int> deltas;
-   Array<int> hist;
-   deltas.setSize(noteondeltas.getSize());
-   hist.setSize(noteondeltas.getSize());
-   deltas.setSize(0);
-   hist.setSize(0);
-   for (i=1; i<noteondeltas.getSize(); i++) {
+   vector<int> deltas;
+   vector<int> hist;
+   deltas.reserve(noteondeltas.size());
+   hist.reserve(noteondeltas.size());
+   deltas.clear();
+   hist.clear();
+   for (i=1; i<noteondeltas.size(); i++) {
       if (noteondeltas[i] != noteondeltas[i-1]) {
-         deltas.append(noteondeltas[i-1]);
-         hist.append(count);
+         deltas.push_back(noteondeltas[i-1]);
+         hist.push_back(count);
          count = 1;
       } else {
          count++;
       }
    }
-   deltas.append(noteondeltas.last());
-   hist.append(count);
-   int size = deltas.getSize();
+   deltas.push_back(noteondeltas.back());
+   hist.push_back(count);
+   int size = deltas.size();
    if (size > 2) {
       if (deltas[0] == 0 && hist[0] > 10 && deltas[1] >= 10) {
          cout << "Quantized" << endl;
@@ -151,7 +149,7 @@ void printID(Array<int>& noteondeltas) {
 // getNoteOnDeltas --
 //
 
-void getNoteOnDeltas(Array<int>& noteondeltas, MidiFile& midifile) {
+void getNoteOnDeltas(vector<int>& noteondeltas, MidiFile& midifile) {
    int i;
    for (i=0; i<midifile.getNumTracks(); i++) {
       addNoteOnEvents(noteondeltas, midifile, i);
@@ -167,8 +165,8 @@ void getNoteOnDeltas(Array<int>& noteondeltas, MidiFile& midifile) {
 // sortArray --
 //
 
-void sortArray(Array<int>& noteondeltas) {
-   qsort(noteondeltas.getBase(), noteondeltas.getSize(), sizeof(int), intcompare);
+void sortArray(vector<int>& noteondeltas) {
+   qsort(noteondeltas.data(), noteondeltas.size(), sizeof(int), intcompare);
 
 }
 
@@ -197,7 +195,7 @@ int intcompare(const void* a, const void* b) {
 //                    track.
 //
 
-void addNoteOnEvents(Array<int>& noteondeltas, MidiFile& midifile,
+void addNoteOnEvents(vector<int>& noteondeltas, MidiFile& midifile,
       int track) {
    int i;
    int lasttime = -1;
@@ -213,7 +211,7 @@ void addNoteOnEvents(Array<int>& noteondeltas, MidiFile& midifile,
             } else {
                delta = event.time - lasttime;
                if (delta < cutoff) {
-                  noteondeltas.append(delta);
+                  noteondeltas.push_back(delta);
                }
                lasttime = event.time;
             }
@@ -253,7 +251,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -267,7 +265,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    fileQ    = opts.getBoolean("file");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 }
@@ -294,4 +292,3 @@ void usage(const char* command) {
 
 
 
-// md5sum: 123fb815d981e38fc24a183785895361 perfid.cpp [20110711]

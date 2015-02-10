@@ -12,16 +12,12 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <iostream>
 
-#ifndef OLDCPP
-   #include <iostream>
-   using namespace std;
-#else
-   #include <iostream.h>
-#endif
+using namespace std;
 
-unsigned long atohd(const char* aNumber);
-void exitUsage(const char* command);
+unsigned long atohd      (const char* aNumber);
+void          exitUsage  (const char* command);
 
 
 int main(int argc, char* argv[]) {
@@ -84,5 +80,3 @@ void exitUsage(const char* command) {
 
 
 
-
-// md5sum: e2b078b11047d7492612359bea1d39c7 todec.cpp [20050403]

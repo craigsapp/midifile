@@ -127,7 +127,7 @@ info:
 
 bin:
 ifeq ($(wildcard $(TARGDIR)),)
-	-mkdir -p $(TARGDIR)
+	@-mkdir -p $(TARGDIR)
 endif
 
 
@@ -137,43 +137,12 @@ $(TARGDIR)/mid2hum:
 	-echo Skipping mid2hum.cpp since it needs external library.
 $(TARGDIR)/peep2midi:
 	-echo Skipping peep2midi.cpp since it needs external library.
+$(TARGDIR)/midiexcerpt:
+	@echo Skipping $@ until PerlRegularExpressions class is added.
 
 $(TARGDIR)/binasc:
 	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/createmidifile:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/drumtab:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/mid2mat:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midi2melody:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midi2notes:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midi2skini:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midi2text:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midicat:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midiexcerpt:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/midimixup:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/miditime:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/perfid:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/text2midi:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/textmidi:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/tobin:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/todec:
-	@echo Skipping $@ until it is updated to C++11 + STL.
-$(TARGDIR)/tohex:
-	@echo Skipping $@ until it is updated to C++11 + STL.
+
 
 
 
@@ -184,7 +153,7 @@ $(TARGDIR)/tohex:
 
 $(TARGDIR)/% : $(notdir %.cpp)
 ifeq ($(wildcard $(TARGDIR)),)
-	-mkdir -p $(TARGDIR)
+	@-mkdir -p $(TARGDIR)
 endif
 ifeq ($(wildcard $(LIBDIR)),)
 	$(MAKE) -f Makefile.library
@@ -196,7 +165,7 @@ endif
 
 % : $(notdir %.cpp)
 ifeq ($(wildcard $(TARGDIR)),)
-	-mkdir -p $(TARGDIR)
+	@-mkdir -p $(TARGDIR)
 endif
 ifeq ($(wildcard $(LIBDIR)),)
 	$(MAKE) -f Makefile.library
