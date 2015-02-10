@@ -6,7 +6,7 @@
 // Syntax:        C++; museinfo
 //
 // Description:   Convert Performance Expression Extraction Program
-//		  output data into MIDI data.
+//                output data into MIDI data.
 //
 
 #include "MidiFile.h"
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
 //////////////////////////////
 //
-// createMidiFile -- 
+// createMidiFile --
 //   input humdrum file data should be in simple columns in this order:
 //
 //  **data	**data	**data	**data	**data
@@ -105,7 +105,7 @@ void createMidiFile(MidiFile& midifile, HumdrumFile& infile) {
       sscanf(infile[i][0], "%lf", &floatval);
       intval = int(floatval * 1000.0 + 0.5);
       millitimes.append(intval);
-      
+
       sscanf(infile[i][1], "%lf", &floatval);
       velocities.append(floatval);
       if (floatval < dmin) { dmin = floatval; }
@@ -153,7 +153,7 @@ void createMidiFile(MidiFile& midifile, HumdrumFile& infile) {
       vel = int(velocities[i] * dyndiff + mindyn + 0.5);
       if (vel < 1) { vel = 1; }
       if (vel > 127) { vel = 127; }
-      
+
       event[0] = 0x90; // note-on
       event[1] = keynum[i];
       event[2] = vel;
@@ -168,10 +168,10 @@ void createMidiFile(MidiFile& midifile, HumdrumFile& infile) {
    event[1] = 0x2f;
    event[2] = 0;
    for (i=0; i<midifile.getTrackCount(); i++) {
-	     
+	
       if (i>0) {
          // have to lengthen the last note in track due to bugs
-         // in various MIDI playback programs which clip 
+         // in various MIDI playback programs which clip
          // the last chord of a file
          midifile.getEvent(i, midifile.getNumEvents(i)-1).time += 1500;
       }
@@ -183,7 +183,7 @@ void createMidiFile(MidiFile& midifile, HumdrumFile& infile) {
       if (infile[i].isBibliographic() || infile[i].isGlobalComment()) {
          // 0x01 is a text event
          midifile.addMetaEvent(0, i, 0x01, infile[i].getLine());
-      } 
+      }
    }
 
    // sort the ontimes and offtimes so they are in correct time order:
@@ -210,7 +210,7 @@ int getTrackNumber(const char* string) {
 
 //////////////////////////////
 //
-// getMIDIKeyNum -- 
+// getMIDIKeyNum --
 //
 
 int getMIDIKeyNum(const char* string) {
@@ -256,20 +256,20 @@ int getMIDIKeyNum(const char* string) {
 
 //////////////////////////////
 //
-// checkOptions -- 
+// checkOptions --
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("o|output=s",  "output midi file name"); 
-   opts.define("r|range=s",   "dynamics range"); 
+   opts.define("o|output=s",  "output midi file name");
+   opts.define("r|range=s",   "dynamics range");
 
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
 
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -320,7 +320,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       mindyn = 20;
       maxdyn = 120;
    }
-	     
+	
 }
 
 

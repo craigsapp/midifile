@@ -1,11 +1,11 @@
 //
-// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Nov 27 11:43:31 PST 1999
 // Last Modified: Mon Nov 29 14:01:34 PST 1999
 // Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
 // Filename:      ...sig/doc/examples/all/textmidi/textmidi.cpp
 // Syntax:        C++
-// 
+//
 // Description:   Reads a MIDI file and converts data to/from ASCII text.
 //
 
@@ -30,7 +30,7 @@ void  usage           (const char* command);
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;          
+   int       status;
    MidiFile  inputfile;
    Options   options(argc, argv);
 
@@ -69,7 +69,7 @@ void checkOptions(Options& opts) {
    opts.define("version=b");
    opts.define("example=b");
    opts.define("help=b");
-   opts.process();              
+   opts.process();
 
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -87,14 +87,14 @@ void checkOptions(Options& opts) {
    if (opts.getBoolean("example")) {
       example();
       exit(0);
-   }               
+   }
 
    // can only have one output filename
    if (opts.getArgCount() == 0) {
       cout << "Error: need one input MIDI file." << endl;
       usage(opts.getCommand().data());
       exit(1);
-   } 
+   }
 
    if (opts.getBoolean("absolute")) {
       timestyle = STYLE_TIME_ABSOLUTE;
@@ -115,7 +115,7 @@ void example(void) {
    "       textmidi -a midifile.mid | more                                   \n"
    << endl;
 }
- 
+
 
 
 //////////////////////////////
@@ -136,7 +136,7 @@ void usage(const char* command) {
    "   --options = list of all options, aliases and default values.          \n"
    "                                                                         \n"
    "                                                                         \n"
-   << endl;               
+   << endl;
 }
 
 

@@ -66,7 +66,7 @@ void convertMidiFile(MidiFile& midifile) {
    printMidiHeader(midifile);
    int trackcount = midifile.getTrackCount();
    for (int i=0; i<trackcount; i++) {
-      printTrack(midifile, i);  
+      printTrack(midifile, i);
    }
 }
 
@@ -88,7 +88,7 @@ void printTrack(MidiFile& midifile, int track) {
         << endl;
 
    cout << endl;
-   
+
    // print the list of events in the track
    MFEvent event;
    int eventcount = midifile.getEventCount(track);
@@ -128,7 +128,7 @@ void printMidiEvent(MFEvent& event) {
          printHexByte(event.data[i]);
       }
    }
-   
+
    cout << endl;
 }
 
@@ -136,7 +136,7 @@ void printMidiEvent(MFEvent& event) {
 
 //////////////////////////////
 //
-// printDecByte -- 
+// printDecByte --
 //
 
 void printDecByte(int value) {
@@ -175,7 +175,7 @@ int getTrackByteCount(MidiFile& midifile, int track) {
    MFEvent event;
 
    for (i=0; i<eventcount; i++) {
-      event = midifile.getEvent(track, i); 
+      event = midifile.getEvent(track, i);
       sum += getVlvSize(event.time);
       sum += event.data.size();
    }
@@ -222,9 +222,9 @@ int getVlvSize(int value) {
 
 void printMidiHeader(MidiFile& midifile) {
    // print MIDI file header marker
-   cout << "+M +T +h +d			; MIDI file header chunk marker" << endl;
+   cout << "+M +T +h +d\t\t\t; MIDI file header chunk marker" << endl;
    // print the number of bytes in the MIDI file to follow (always 6):
-   cout << "4'6				; bytes in header to follow" << endl;
+   cout << "4'6\t\t\t\t; bytes in header to follow" << endl;
    // print the format (0 = single track, 1 = multitrack)
    // The MidiFile class does not exactly keep track of this value.
    // It will presume that a single track file is a type-0 MIDI file
@@ -245,7 +245,7 @@ void printMidiHeader(MidiFile& midifile) {
    }
    cout << endl;
 
-   // print the ticks per quarter note.  The ticks per quarter note 
+   // print the ticks per quarter note.  The ticks per quarter note
    // can be SMPTE or regular.  Assuming regular at the moment.
    int ticks = midifile.getTicksPerQuarterNote();
    cout << "2'" << ticks << "\t\t\t\t; ticks per quarter note" << endl;
@@ -255,19 +255,19 @@ void printMidiHeader(MidiFile& midifile) {
 
 //////////////////////////////
 //
-// checkOptions -- 
+// checkOptions --
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("debug=b",  "debug mode to find errors in input file");
 
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
 
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "

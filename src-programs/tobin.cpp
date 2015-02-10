@@ -49,7 +49,7 @@ int atohd(const char* aNumber) {
       return atoi(aNumber);
    }
 }
-      
+
 
 
 void exitUsage(const char* command) {

@@ -4,7 +4,7 @@
 // Last Modified: Tue Jan 27 21:23:19 GMT-0800 1998
 // Last Modified: Wed Jun  7 20:55:18 PDT 2000 (added signed/unsigned option)
 // Filename:      ...sig/doc/examples/all/todec/todec.cpp
-// Syntax:        C++ 
+// Syntax:        C++
 // $Smake:        g++ -o %b %f && strip %b
 //
 
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 unsigned long atohd(const char* aNumber) {
    return (int)strtoul(aNumber, (char**)NULL, 16);
 }
-      
+
 
 
 void exitUsage(const char* command) {

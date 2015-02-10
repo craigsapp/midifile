@@ -6,7 +6,7 @@
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //
-// Description:   Converts any note-off messages in the for "9? ?? 00" to 
+// Description:   Converts any note-off messages in the for "9? ?? 00" to
 //                "8? ?? 00".
 //
 
@@ -22,7 +22,7 @@ Options  options;              // for command-line processing
 
 // function declarations:
 void     checkOptions        (Options& opts);
-void     convertFile         (const string& inputfilename, 
+void     convertFile         (const string& inputfilename,
                               const string& outputfilename);
 void     example             (void);
 void     usage               (const string& command);
@@ -34,9 +34,7 @@ void     usage               (const string& command);
 int main(int argc, char** argv) {
    options.setOptions(argc, argv);
    checkOptions(options);
-
    convertFile(options.getArg(1), options.getArg(2));
-
    return 0;
 }
 
@@ -50,22 +48,16 @@ int main(int argc, char** argv) {
 //
 
 void convertFile(const string& inputfilename, const string& outputfilename) {
-   MidiFile infile(inputfilename);
-   int i, j;
-   int channel;
-   int command;
-   for (i=0; i<infile.getTrackCount(); i++) {
-      for (j=0; j<infile.getEventCount(i); j++) {
-         if (!infile.isNoteOff(i, j)) {
+   MidiFile midifile(inputfilename);
+   for (int i=0; i<midifile.getTrackCount(); i++) {
+      for (int j=0; j<midifile.getEventCount(i); j++) {
+         if (!midifile.isNoteOff(i, j)) {
             continue;
          }
-         channel = infile.getEvent(i, j).data[0] & 0x0f;
-         command = 0x80 | channel;
-         infile.getEvent(i, j).data[0] = command;
+         midifile.setCommandNibble(i, j, 0x80);
       }
    }
-
-   infile.write(outputfilename);
+   midifile.write(outputfilename);
 }
 
 

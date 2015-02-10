@@ -87,6 +87,12 @@ class MFEvent {
       int       isTimbre                  (void);
       int       getCommandNibble          (void);
       int       getChannelNibble          (void);
+      int       getChannel                (void);
+
+      void      setCommandByte            (int value);
+      void      setCommandNibble          (int value);
+      void      setChannelNibble          (int value);
+      void      setChannel                (int value);
 };
 
 
@@ -164,7 +170,12 @@ class MidiFile {
       int       isTimbre                  (int track, int index);
       int       getCommandNibble          (int track, int index);
       int       getChannelNibble          (int track, int index);
+      int       getChannel                (int track, int index);
       int       getTrack                  (int track, int index);
+      void      setCommandNibble          (int track, int index, int value);
+      void      setCommandByte            (int track, int index, int value);
+      void      setChannelNibble          (int track, int index, int value);
+      void      setChannel                (int track, int index, int value);
 
       // static functions:
       static uchar  readByte              (istream& input);

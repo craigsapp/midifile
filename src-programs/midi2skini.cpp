@@ -7,7 +7,7 @@
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/midi2skini.cpp
 // Syntax:        C++; museinfo
 //
-// Description:   Description: Converts a Standard MIDI file into the 
+// Description:   Description: Converts a Standard MIDI file into the
 //                SKINI data format.
 //
 
@@ -28,7 +28,7 @@ int     maxcount = 100000;     // maxiumum number of notes expected
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
 void      printMidiAsSkini      (MidiFile& midifile);
-void      processEvent          (MFEvent& event, double& tempo, 
+void      processEvent          (MFEvent& event, double& tempo,
                                  double& curtime);
 void      usage                 (const char* command);
 
@@ -84,7 +84,7 @@ void printMidiAsSkini(MidiFile& midifile) {
 void processEvent(MFEvent& event, double& tempo, double& curtime) {
    int i;
 
-   if (((event.data[0] & 0xf0) == 0x80) || (((event.data[0] & 0xf0) == 0x90) && 
+   if (((event.data[0] & 0xf0) == 0x80) || (((event.data[0] & 0xf0) == 0x90) &&
          (event.data[2] == 0)) ) {
       // note-off MIDI message
       if (track >= 0 && track != event.track) { return; }
@@ -143,8 +143,8 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
       // a MIDI event with an unknown mapping into SKINI, print as comment
       if (track >= 0 && track != event.track) { return; }
       cout << "//"
-           << " time:=" << curtime 
-           << " track:" << event.track 
+           << " time:=" << curtime
+           << " track:" << event.track
            << " midi-data: ";
       for (i=0; i<(int)event.data.size(); i++) {
            cout << (int)event.data[i] << " ";
@@ -161,15 +161,15 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
    opts.define("t|track=i:-1", "which track to extract");
    opts.define("max=i:100000", "maximum number of notes expected in input");
    opts.define("debug=b",  "debug mode to find errors in input file");
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -189,7 +189,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 
    track    = opts.getInteger("track");
    debugQ   = opts.getBoolean("debug");
-   maxcount = opts.getInteger("max"); 
+   maxcount = opts.getInteger("max");
 
    if (opts.getArgCount() != 1) {
       usage(opts.getCommand().data());

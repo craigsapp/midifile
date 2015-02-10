@@ -1,10 +1,10 @@
 //
-// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jul 26 13:10:22 PDT 2010
 // Last Modified: Mon Feb  9 20:34:40 PST 2015 Updated for C++11.
 // Filename:      ...sig/doc/examples/all/miditime/miditime.cpp
 // Syntax:        C++
-// 
+//
 // Description:   Displays the absolute tick time and absolute time
 //                in seconds for MIDI events in a MIDI file, along with
 //                the track information.
@@ -29,7 +29,7 @@ double endtime   = 0.0;    // used with -e option
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;          
+   int       status;
    MidiFile  inputfile;
    Options   options(argc, argv);
 
@@ -72,9 +72,9 @@ void processMidiFile(MidiFile& midifile) {
       cout << i << "\t";
       for (j=0; j<ptr->data.size(); j++) {
          if (j == 0) {
-            cout << "0x" << hex << (int)ptr->data[j] << dec << " "; 
+            cout << "0x" << hex << (int)ptr->data[j] << dec << " ";
          } else {
-            cout << (int)ptr->data[j] << " "; 
+            cout << (int)ptr->data[j] << " ";
          }
       }
       cout << endl;
@@ -94,7 +94,7 @@ void checkOptions(Options& opts) {
    opts.define("version=b");
    opts.define("example=b");
    opts.define("help=b");
-   opts.process();              
+   opts.process();
 
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -112,7 +112,7 @@ void checkOptions(Options& opts) {
    if (opts.getBoolean("example")) {
       example();
       exit(0);
-   }               
+   }
 
 }
 
@@ -128,7 +128,7 @@ void example(void) {
    "#                                                                        \n"
    << endl;
 }
- 
+
 
 
 //////////////////////////////
@@ -139,7 +139,7 @@ void example(void) {
 void usage(const char* command) {
    cout <<
    "                                                                         \n"
-   << endl;               
+   << endl;
 }
 
 

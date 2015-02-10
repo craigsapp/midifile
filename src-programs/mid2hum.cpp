@@ -13,7 +13,7 @@
 //                open-ended problem.  I am not going to go through the
 //                trouble of writing a robust converter.  For more complicated
 //                MIDI to Humdrum conversions, I suggest the following method:
-// 
+//
 //                If you want to convert MIDI files into Humdrum files,
 //                I would suggest that you use the xml2hum program:
 //                   http://museinfo.sapp.org/examples/humdrum/xml2hum.cpp
@@ -32,7 +32,7 @@
 //                lyrics
 //                clean up rhythm on slightly shortened or lengthend notes.
 // Done:
-//                key signatures 
+//                key signatures
 //                barlines (only for constant meters)
 //                time signatures
 //                chord notes (partly done, but not robust)
@@ -114,9 +114,9 @@ int       MidiInfoCompare   (const void* a, const void* b);
 void      printRestCorrection (ostream& out, int restcorr, int tqp);
 void      processMetaMessage(MidiFile& midifile, int track, int event,
                              Array<MetaInfo>& metadata);
-void      printMetaData     (ostream& out, Array<MetaInfo>& metadata, 
+void      printMetaData     (ostream& out, Array<MetaInfo>& metadata,
                              int metaindex);
-void      splitDataWithMeasure(ostream& out, HumdrumFile& hfile, int index, 
+void      splitDataWithMeasure(ostream& out, HumdrumFile& hfile, int index,
                              int& measurenum, double firstdur);
 void      printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile);
 void      checkOptions      (Options& opts, int argc, char** argv);
@@ -584,7 +584,7 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
       } else {
          tempfile.clear();
          tempfile.read(*buffstream);
-         delete buffstream; 
+         delete buffstream;
          buffstream = new SSTREAM;
          printHumdrumFileWithBarlines(*buffstream, tempfile);
          (*buffstream) << ends;
@@ -624,14 +624,14 @@ void printMetaData(ostream& out, Array<MetaInfo>& metadata, int metaindex) {
          for (ii=0; ii<metadata[metaindex].tsize; ii++) {
             if (std::isprint(metadata[metaindex].text[ii])) {
                count++;
-            } 
+            }
          }
          if (count > 0) {
             out << "! ";
             for (ii=0; ii<metadata[metaindex].tsize; ii++) {
                if (std::isprint(metadata[metaindex].text[ii])) {
                   out << metadata[metaindex].text[ii];
-               } 
+               }
             }
             out << "\n";
          }
@@ -643,14 +643,14 @@ void printMetaData(ostream& out, Array<MetaInfo>& metadata, int metaindex) {
          for (ii=0; ii<metadata[metaindex].tsize; ii++) {
             if (std::isprint(metadata[metaindex].text[ii])) {
                count++;
-            } 
+            }
          }
          if (count > 0) {
             out << "! ";
             for (ii=0; ii<metadata[metaindex].tsize; ii++) {
                if (std::isprint(metadata[metaindex].text[ii])) {
                   out << metadata[metaindex].text[ii];
-               } 
+               }
             }
             out << "\n";
          }
@@ -788,7 +788,7 @@ void printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile) {
          bpos = (hfile[i].getAbsBeat() - pickupbeat) /
                    timesigtop*4.0 / timesigbottom;
          startmeasure = (int)bpos;
-         endmeasure = (int)(bpos + Convert::kernToDuration(hfile[i][0]) / 
+         endmeasure = (int)(bpos + Convert::kernToDuration(hfile[i][0]) /
                       timesigtop*4.0 / timesigbottom - 0.001);
          if (fabs(bpos - (int)bpos) < 0.001) {
             out << "=";
@@ -804,7 +804,7 @@ void printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile) {
          if (startmeasure == endmeasure) {
             out << hfile[i] << "\n";
          } else {
-            firstdur = ((double)endmeasure * timesigtop / 
+            firstdur = ((double)endmeasure * timesigtop /
                          4.0 * timesigbottom) - hfile[i].getAbsBeat();
             splitDataWithMeasure(out, hfile, i, measurenum, firstdur);
          }
@@ -822,7 +822,7 @@ void printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile) {
 // splitDataWithMeasure --
 //
 
-void splitDataWithMeasure(ostream& out, HumdrumFile& hfile, int index, 
+void splitDataWithMeasure(ostream& out, HumdrumFile& hfile, int index,
       int& measurenum, double firstdur) {
    double seconddur = Convert::kernToDuration(hfile[index][0]) - firstdur;
    int i;
@@ -889,13 +889,13 @@ Here are the options available with the mid2hum program:
                    printed in score format.  You will need to correct
                    the rhythm in the individual parts, and then use
                    the Humdrum assemble command to combine the files together.
--r		== output the Humdrum spines in reverse ordering.  The default
+-r              == output the Humdrum spines in reverse ordering.  The default
                    method is from the last track to the first track in the
                    MIDI file which usually corresponds to the lowest part
                    to highest part respectively which is the standard
                    ordering of parts in a Humdrum file.
--M		== don't print measure numbers.  This is useful if measure 
-                   numbers need to be edited separately, or there was a 
+-M              == don't print measure numbers.  This is useful if measure
+                   numbers need to be edited separately, or there was a
                    measure counting problem in the program.
 -p 0.0          == specify a pickup-duration with which the music starts.
                    The duration specified after the -p option is the number
@@ -910,11 +910,11 @@ Here are the options available with the mid2hum program:
 -q 0.25         == often score-based MIDI files contain durations which are
                    not precisely legato, and a small rest is placed after
                    the note.  This option quantizes the ending position of
-                   a note to the nearest rhythmic value (by default to the 
+                   a note to the nearest rhythmic value (by default to the
                    nearest sixteenth note.)
 --version=b     == print when the program was compiled, and what version
                    is it.
---options       == print a list of all possible command-line options for 
+--options       == print a list of all possible command-line options for
                    the program.
 
 */

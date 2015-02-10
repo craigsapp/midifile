@@ -7,7 +7,7 @@
 // Syntax:        C++; museinfo
 //
 // Description:   Converts a single melody MIDI file/track into an ASCII text
-//	          format with starting time and pitch.
+//                format with starting time and pitch.
 //
 
 #include "MidiFile.h"

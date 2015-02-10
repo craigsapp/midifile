@@ -7,7 +7,7 @@
 // Syntax:        C++11
 //
 
-#include <ctype.h>     
+#include <ctype.h>
 #include <string.h>
 #include "Options.h"
 #include <iostream>
@@ -15,7 +15,7 @@
 #include <iomanip>
 
 using namespace std;
-   
+
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
@@ -46,7 +46,7 @@ void usage(const char* command);
 int main(int argc, char* argv[]) {
    options.setOptions(argc, argv);
    checkOptions(options);
-   
+
    for (int i=0; i<options.getArgCount(); i++) {
       if (options.getBoolean("compile")) {
          compileFile(options.getArg(i+1));
@@ -116,7 +116,7 @@ void checkOptions(Options& opts) {
       exit(0);
    }
 
-   
+
    if (opts.getBoolean("compile") && strlen(opts.getString("compile")) == 0) {
       cerr << "Error: you must specify an output file when using the -c option"
            << endl;
@@ -133,7 +133,7 @@ void checkOptions(Options& opts) {
    if (strlen(opts.getString("compile")) > 0) {
       outputCompiled.open(opts.getString("compile"), ios::out);
       if (!outputCompiled.is_open()) {
-         cerr << "Error opening output file: " << opts.getString("compile") 
+         cerr << "Error opening output file: " << opts.getString("compile")
               << endl;
          exit(1);
       }
@@ -172,7 +172,7 @@ void compileFile(const char* filename) {
       infile.getline(inputLine, 1024, '\n');
       lineCount++;
    }
-   infile.close();   
+   infile.close();
 }
 
 
@@ -232,7 +232,7 @@ void outputStyleAscii (const char* filename) {
       lastType = type;
       if (isprint(ch) && !isspace(ch)) {
          type = 1;
-      } else {        
+      } else {
          type = 0;
       }
 
@@ -253,8 +253,8 @@ void outputStyleAscii (const char* filename) {
             lineCount += index;
             index = 0;
          }
-      } 
-     
+      }
+
       if (type == 1) {
          outputWord[index++] = ch;
       }
@@ -296,7 +296,7 @@ void outputStyleBinary(const char* filename) {
    ch = infile.get();
 
    if (infile.eof()) {
-      cout << "End of the file right away!" << endl; 
+      cout << "End of the file right away!" << endl;
    }
 
    while (!infile.eof()) {
@@ -317,7 +317,7 @@ void outputStyleBinary(const char* filename) {
    }
    infile.close();
 }
-   
+
 
 
 //////////////////////////////
@@ -337,7 +337,7 @@ void outputStyleBoth(const char* filename) {
    int index = 0;                 // current character in asciiLine
    uchar ch;                      // current input byte
    ifstream infile;               // file to be read from
- 
+
    infile.open(filename);
    if (!infile.is_open()) {
       cerr << "Error opening file: " << filename << endl;
@@ -348,14 +348,14 @@ void outputStyleBoth(const char* filename) {
    while (!infile.eof()) {
       if (index == 0) {
          asciiLine[index++] = ';';
-         cout << ' '; 
+         cout << ' ';
       }
       if (ch < 0x10) {
          cout << '0';
       }
       cout << hex << (int)ch << ' ';
       currentByte++;
-  
+
       asciiLine[index++] = ' ';
       if (isprint(ch)) {
          asciiLine[index++] = ch;
@@ -367,7 +367,7 @@ void outputStyleBoth(const char* filename) {
       if (currentByte >= maxByteInLine) {
          cout << '\n';
          asciiLine[index] = '\0';
-         cout << asciiLine << "\n\n"; 
+         cout << asciiLine << "\n\n";
          currentByte = 0;
          index = 0;
       }
@@ -382,7 +382,7 @@ void outputStyleBoth(const char* filename) {
 
    infile.close();
 }
-   
+
 
 
 ///////////////////////////////
@@ -432,7 +432,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
       switch (word[i]) {
          case '\'':
             if (quoteIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "extra quote in decimal number" << endl;
                exit(1);
@@ -442,16 +442,16 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
             break;
          case '-':
             if (signIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
-               cerr << "cannot have more than two minus signs in number" 
+               cerr << "cannot have more than two minus signs in number"
                     << endl;
                exit(1);
             } else {
                signIndex = i;
             }
             if (i == 0 || word[i-1] != '\'') {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "minus sign must immediately follow quote mark" << endl;
                exit(1);
@@ -459,13 +459,13 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
             break;
          case '.':
             if (quoteIndex == -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "cannot have decimal marker before quote" << endl;
                exit(1);
             }
             if (periodIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "extra period in decimal number" << endl;
                exit(1);
@@ -476,13 +476,13 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
          case 'u':
          case 'U':
             if (quoteIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "cannot have endian specified after quote" << endl;
                exit(1);
             }
             if (endianIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "extra \"u\" in decimal number" << endl;
                exit(1);
@@ -490,10 +490,10 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
                endianIndex = i;
             }
             break;
-         case '8': 
+         case '8':
          case '1': case '2': case '3': case '4':
             if (quoteIndex == -1 && byteCount != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
                cerr << "invalid byte specificaton before quote in "
                     << "decimal number" << endl;
@@ -504,15 +504,15 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
             break;
          case '0': case '5': case '6': case '7': case '9':
             if (quoteIndex == -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word 
+               cerr << "Error on line " << lineNumber << " at token: " << word
                     << endl;
-               cerr << "cannot have numbers before quote in decimal number" 
+               cerr << "cannot have numbers before quote in decimal number"
                     << endl;
                exit(1);
             }
             break;
          default:
-            cerr << "Error on line " << lineNumber << " at token: " << word 
+            cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "Invalid character in decimal number"
                     " (character number " << i <<")" << endl;
@@ -523,12 +523,12 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
    // there must be a quote character to indicate a decimal number
    // and there must be a decimal number after the quote
    if (quoteIndex == -1) {
-      cerr << "Error on line " << lineNumber << " at token: " << word 
+      cerr << "Error on line " << lineNumber << " at token: " << word
            << endl;
       cerr << "there must be a quote to signify a decimal number" << endl;
       exit(1);
    } else if (quoteIndex == length - 1) {
-      cerr << "Error on line " << lineNumber << " at token: " << word 
+      cerr << "Error on line " << lineNumber << " at token: " << word
            << endl;
       cerr << "there must be a decimal number after the quote" << endl;
       exit(1);
@@ -536,7 +536,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
 
    // 8 byte decimal output can only occur if reading a double number
    if (periodIndex == -1 && byteCount == 8) {
-      cerr << "Error on line " << lineNumber << " at token: " << word 
+      cerr << "Error on line " << lineNumber << " at token: " << word
            << endl;
       cerr << "only floating-point numbers can use 8 bytes" << endl;
       exit(1);
@@ -547,7 +547,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
       if (byteCount == -1) {
          byteCount = 4;
       }
-   } 
+   }
 
    // process any floating point numbers possibilities
    if (periodIndex != -1) {
@@ -566,18 +566,18 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
            if (endianIndex == -1) {
               out.writeBigEndian(doubleOutput);
            } else {
-              out.writeLittleEndian(doubleOutput); 
+              out.writeLittleEndian(doubleOutput);
            }
            return;
            break;
          default:
-            cerr << "Error on line " << lineNumber << " at token: " << word 
+            cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "floating-point numbers can be only 4 or 8 bytes" << endl;
             exit(1);
       }
    }
-   
+
    // process any integer decimal number possibilities
 
    // default integer size is one byte, if size is not specified, then
@@ -587,7 +587,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
       if (signIndex != -1) {
          long tempLong = atoi(&word[quoteIndex + 1]);
          if (tempLong > 127 || tempLong < -128) {
-            cerr << "Error on line " << lineNumber << " at token: " << word 
+            cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "Decimal number out of range from -128 to 127" << endl;
             exit(1);
@@ -599,7 +599,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
          ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
          uchar ucharOutput = (uchar)tempLong;
          if (tempLong > 255 || tempLong < 0) {
-            cerr << "Error on line " << lineNumber << " at token: " << word 
+            cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "Decimal number out of range from 0 to 255" << endl;
             exit(1);
@@ -648,7 +648,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
       case 3:
          {
          if (signIndex != -1) {
-            cerr << "Error on line " << lineNumber << " at token: " << word 
+            cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "negative decimal numbers cannot be stored in 3 bytes"
                  << endl;
@@ -690,7 +690,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
          }
          break;
       default:
-         cerr << "Error on line " << lineNumber << " at token: " << word 
+         cerr << "Error on line " << lineNumber << " at token: " << word
               << endl;
          cerr << "invalid byte count specification for decimal number" << endl;
          exit(1);
@@ -721,7 +721,7 @@ void processHexadecimalWord(const char* word, int lineNumber, ostream& out) {
       cerr << "Invalid character in hexadecimal number." << endl;
       exit(1);
    }
-   
+
    outputByte = (uchar)strtol(word, (char**)NULL, 16);
    out << outputByte;
 }
@@ -737,7 +737,7 @@ void processHexadecimalWord(const char* word, int lineNumber, ostream& out) {
 void processAsciiWord(const char* word, int lineNumber, ostream& out) {
    int length = strlen(word);
    uchar outputByte;
-  
+
    if (word[0] != '+') {
       cerr << "Error on line " << lineNumber << " at token: " << word << endl;
       cerr << "character byte must start with \'+\' sign: " << endl;
@@ -746,7 +746,7 @@ void processAsciiWord(const char* word, int lineNumber, ostream& out) {
 
    if (length > 2) {
       cerr << "Error on line " << lineNumber << " at token: " << word << endl;
-      cerr << "character byte word is too long -- specify only one character" 
+      cerr << "character byte word is too long -- specify only one character"
            << endl;
       exit(1);
    }
@@ -758,7 +758,7 @@ void processAsciiWord(const char* word, int lineNumber, ostream& out) {
    }
    out << outputByte;
 }
-  
+
 
 
 
@@ -779,7 +779,7 @@ void processBinaryWord(const char* word, int lineNumber, ostream& out) {
    for (i=0; i<length; i++) {
       if (word [i] == ',') {
          if (commaIndex != -1) {
-            cerr << "Error on line " << lineNumber << " at token: " << word 
+            cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "extra comma in binary number" << endl;
             exit(1);
@@ -787,7 +787,7 @@ void processBinaryWord(const char* word, int lineNumber, ostream& out) {
             commaIndex = i;
          }
       } else if (!(word[i] == '1' || word[i] == '0')) {
-         cerr << "Error on line " << lineNumber << " at token: " << word 
+         cerr << "Error on line " << lineNumber << " at token: " << word
               << endl;
          cerr << "Invalid character in binary number"
                  " (character is " << word[i] <<")" << endl;
@@ -808,7 +808,7 @@ void processBinaryWord(const char* word, int lineNumber, ostream& out) {
       exit(1);
    }
 
-   // figure out how many digits there are in binary number 
+   // figure out how many digits there are in binary number
    // number must be able to fit into one byte.
    if (commaIndex != -1) {
       leftDigits = commaIndex;
@@ -834,16 +834,16 @@ void processBinaryWord(const char* word, int lineNumber, ostream& out) {
    }
 
    // OK, we have a valid binary number, so calculate the byte
-   
+
    uchar output = 0;
-   
+
    // if no comma in binary number
    if (commaIndex == -1) {
       for (i=0; i<length; i++) {
          output = output << 1;
          output |= word[i] - '0';
       }
-   } 
+   }
    // if comma in binary number
    else {
       for (i=0; i<leftDigits; i++) {
@@ -860,7 +860,7 @@ void processBinaryWord(const char* word, int lineNumber, ostream& out) {
    // send the byte to the output
    out << output;
 }
-         
+
 
 
 //////////////////////////////
@@ -871,7 +871,7 @@ void processBinaryWord(const char* word, int lineNumber, ostream& out) {
 //
 
 void usage(const char* command) {
-   cout << 
+   cout <<
    "                                                                     \n"
    "For converting/compiling a binary file to/from an ASCII listing of   \n"
    "individual bytes of the file.                                        \n"
@@ -896,7 +896,7 @@ void usage(const char* command) {
 //
 
 void manual(void) {
-cout << 
+cout <<
 "binasc: binary/ascii file viewing/creation\n"
 "\n"
 "1. Displaying ASCII codes for bytes in a file.\n"

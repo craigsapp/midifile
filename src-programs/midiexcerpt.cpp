@@ -1,10 +1,10 @@
 //
-// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jul 22 18:59:27 PDT 2010
 // Last Modified: Thu Jul 22 18:59:30 PDT 2010
 // Filename:      ...sig/doc/examples/all/midiexcerpt/midiexcerpt.cpp
 // Syntax:        C++
-// 
+//
 // Description:   Extracts a time region from a MIDI file.  Notes
 //                starting before the start time will be ignored.
 //                Notes not ending before the end time of the file
@@ -23,7 +23,7 @@ void   checkOptions        (Options& opts);
 void   example             (void);
 void   usage               (const char* command);
 double getTimeInSeconds    (const char* timestring);
-void   extractMidi         (MidiFile& outputfile, MidiFile& inputfile, 
+void   extractMidi         (MidiFile& outputfile, MidiFile& inputfile,
                             double starttime, double endtime);
 int    getStartIndex       (MidiFile& midifile, int starttick);
 int    getStopIndex        (MidiFile& midifile, int startindex, int stoptick);
@@ -35,7 +35,7 @@ double endtime   = 0.0;    // used with -e option
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;          
+   int       status;
    MidiFile  inputfile;
    MidiFile  outputfile;
    Options   options(argc, argv);
@@ -58,13 +58,13 @@ int main(int argc, char** argv) {
 
 //////////////////////////////
 //
-// extractMidi -- Extract a time range from a MIDI file.  If the 
-//      endtime is negative, then that means through the end of the 
+// extractMidi -- Extract a time range from a MIDI file.  If the
+//      endtime is negative, then that means through the end of the
 //      original MIDI file.
 //
 //
 
-void extractMidi(MidiFile& outputfile, MidiFile& inputfile, double starttime, 
+void extractMidi(MidiFile& outputfile, MidiFile& inputfile, double starttime,
      double endtime) {
 
    outputfile.absoluteTime();
@@ -174,7 +174,7 @@ void extractMidi(MidiFile& outputfile, MidiFile& inputfile, double starttime,
    }
 
    // Turn off any notes which are still on...
-   
+
    int k;
    eventcopy.data.setSize(3);
    eventcopy.time = stoptick - starttick;
@@ -256,7 +256,7 @@ void checkOptions(Options& opts) {
    opts.define("version=b");
    opts.define("example=b");
    opts.define("help=b");
-   opts.process();              
+   opts.process();
 
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -274,7 +274,7 @@ void checkOptions(Options& opts) {
    if (opts.getBoolean("example")) {
       example();
       exit(0);
-   }               
+   }
 
    // can only have one output filename
    if (opts.getArgCount() != 2) {
@@ -282,7 +282,7 @@ void checkOptions(Options& opts) {
       cout << endl;
       usage(opts.getCommand());
       exit(1);
-   } 
+   }
 
    starttime = getTimeInSeconds(opts.getString("begin"));
    if (opts.getBoolean("duration")) {
@@ -342,7 +342,7 @@ void example(void) {
    "# textmidi examples:                                                     \n"
    << endl;
 }
- 
+
 
 //////////////////////////////
 //
@@ -352,7 +352,7 @@ void example(void) {
 void usage(const char* command) {
    cout <<
    "                                                                         \n"
-   << endl;               
+   << endl;
 }
 
 

@@ -1,10 +1,10 @@
 //
-// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat May 17 19:34:13 PDT 2003
 // Last Modified: Mon Feb  9 21:23:13 PST 2015 Updated for C++11.
 // Filename:      ...sig/doc/examples/all/drumtab/drumtab.cpp
 // Syntax:        C++
-// 
+//
 // Description:   Demonstration of how to convert a drum tab into
 //                a Multi-track MIDI file with one track for each
 //                drum part.
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 //
 
 void AddDrumTrack(MidiFile& midifile, int* data, int instrument, int ticks) {
-   vector<uchar> midievent;   // temporary storage for MIDI events 
+   vector<uchar> midievent;   // temporary storage for MIDI events
    midievent.resize(3);       // set the size of the array to 3 bytes
    midievent[2] = 64;         // set the loudness to a constant value
    int notestate = 0;         // 0 = off, 1 = on

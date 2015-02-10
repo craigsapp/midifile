@@ -33,7 +33,7 @@ int     channel = 0;            // default channel
 // function declarations:
 void      convertTextToMidiFile (istream& textfile, MidiFile& midifile);
 void      adjustbuffer          (char* buffer);
-void      readvalues            (char* buffer, int& eventtype, double& start, 
+void      readvalues            (char* buffer, int& eventtype, double& start,
                                  double& dur, int& note, int& vel);
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 
    midifile.sortTracks();
    midifile.write(options.getArg(2));
-   
+
    return 0;
 }
 
@@ -72,7 +72,7 @@ void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
    vector<uchar> mididata;
    midifile.setTicksPerQuarterNote(tpq);
    midifile.absoluteTime();
-   midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for 
+   midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for
                                                     // max expected MIDI events
 
    // write the tempo to the midifile
@@ -141,14 +141,14 @@ void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
 //     returns 0 if no parameters were readable.
 //
 
-void readvalues(char* buffer, int& eventtype, double& start, double& dur, 
+void readvalues(char* buffer, int& eventtype, double& start, double& dur,
    int& note, int& vel) {
    char *ptr = NULL;
    ptr = strtok(buffer, " \t\n");
    if (ptr == NULL) {
       eventtype = 0;
       return;
-   } 
+   }
 
    if (strcmp(ptr, "note") != 0) {
       eventtype = 0;
@@ -226,13 +226,13 @@ void adjustbuffer(char* buffer) {
 
 //////////////////////////////
 //
-// checkOptions -- 
+// checkOptions --
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
 
    opts.define("c|channel=i:0","MIDI Channel to play notes on (offset from 0)");
@@ -240,7 +240,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("max=i:100000", "maximum number of notes expected in input");
 
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -259,7 +259,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    debugQ   = opts.getBoolean("debug");
-   maxcount = opts.getInteger("max"); 
+   maxcount = opts.getInteger("max");
    channel  = opts.getInteger("channel");
    if (channel < 0) {
       channel = 0;

@@ -30,7 +30,7 @@ int     fileQ    = 0;          // print file name before id
 // function declarations:
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
-void      getNoteOnDeltas       (vector<int>& noteondeltas, 
+void      getNoteOnDeltas       (vector<int>& noteondeltas,
                                  MidiFile& midifile);
 void      addNoteOnEvents       (vector<int>& noteondeltas, MidiFile& midifile,
                                  int track);
@@ -201,7 +201,7 @@ void addNoteOnEvents(vector<int>& noteondeltas, MidiFile& midifile,
    int lasttime = -1;
    MFEvent event;
    int delta = 0;
-   
+
    for (i=0; i<midifile.getNumEvents(track); i++) {
       event = midifile.getEvent(track, i);
       if ((event.data[0] & 0xf0) == 0x90) {
@@ -228,9 +228,9 @@ void addNoteOnEvents(vector<int>& noteondeltas, MidiFile& midifile,
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
 
    opts.define("t|track=i:-1", "which track to extract");
@@ -240,7 +240,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("debug=b",  "debug mode to find errors in input file");
 
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -260,7 +260,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 
    track    = opts.getInteger("track");
    debugQ   = opts.getBoolean("debug");
-   maxcount = opts.getInteger("max"); 
+   maxcount = opts.getInteger("max");
    rawQ     = opts.getBoolean("raw");
    fileQ    = opts.getBoolean("file");
 

@@ -25,7 +25,7 @@ int    binaryQ         = 1;    // used with -a option
 void      checkOptions      (Options& opts, int argc, char** argv);
 void      example           (void);
 void      usage             (const char* command);
-void      appendMidi        (MidiFile& outfile, const char* filename, 
+void      appendMidi        (MidiFile& outfile, const char* filename,
                              double seconds, int initQ);
 
 //////////////////////////////////////////////////////////////////////////
@@ -68,10 +68,10 @@ int main(int argc, char* argv[]) {
 
 //////////////////////////////
 //
-// appendMidi -- 
+// appendMidi --
 //
 
-void appendMidi(MidiFile& outfile, const char* filename, 
+void appendMidi(MidiFile& outfile, const char* filename,
       double seconds, int initQ) {
    MidiFile infile(filename);
    infile.joinTracks();
@@ -99,7 +99,7 @@ void appendMidi(MidiFile& outfile, const char* filename,
 
    // presuming constant tpq for different files.
    tpq = outfile.getTicksPerQuarterNote();
-   
+
    if (seconds > 0.0) {
       // insert a tempo marking of 120, and then a pause related to how
       // long in second to wait until next MIDI file contents.
@@ -112,7 +112,7 @@ void appendMidi(MidiFile& outfile, const char* filename,
       bpm120[0] = 0x07;
       bpm120[1] = 0xa1;
       bpm120[2] = 0x20;
-      
+
       outfile.addMetaEvent(0, 0, 0x51, bpm120);
       infile.getEvent(0,0).time = int(seconds * 2 * tpq + 0.5);
    }

@@ -1,10 +1,10 @@
 //
-// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Dec  2 12:45:43 PST 1999
 // Last Modified: Mon Feb  9 20:36:34 PST 2015 Updated for C++11.
 // Filename:      midimixup.cpp
 // Syntax:        C++
-// 
+//
 // Description:   Reads a standard MIDI file, adjusts the timing of
 //                the events in a random manner, then writes the file
 //                back out to a standard MIDI file.
@@ -94,7 +94,7 @@ void checkOptions(Options& opts) {
    opts.define("version=b");
    opts.define("example=b");
    opts.define("help=b");
-   opts.process();              
+   opts.process();
 
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -112,7 +112,7 @@ void checkOptions(Options& opts) {
    if (opts.getBoolean("example")) {
       example();
       exit(0);
-   }               
+   }
 
    // must have two filenames on the command-line
    if (opts.getArgCount() == 1) {
@@ -124,7 +124,7 @@ void checkOptions(Options& opts) {
       cout << "Error: need one input and one output MIDI filename." << endl;
       usage(opts.getCommand().data());
       exit(1);
-   } 
+   }
 
    maxdev = opts.getInteger("max-deviation");
 }
@@ -143,7 +143,7 @@ void example(void) {
    << endl;
 }
 
- 
+
 
 //////////////////////////////
 //
@@ -162,7 +162,7 @@ void usage(const char* command) {
    "   --options = list of all options, aliases and default values.          \n"
    "                                                                         \n"
    "                                                                         \n"
-   << endl;               
+   << endl;
 }
 
 

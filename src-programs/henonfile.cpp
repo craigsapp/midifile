@@ -8,7 +8,7 @@
 // Syntax:        C++; museinfo
 //
 // Description:   Creates a fractal melodic line based on the
-//		  Henon Map.  Output can be either a MIDI file or
+//                Henon Map.  Output can be either a MIDI file or
 //                plain text.
 //
 
@@ -41,8 +41,8 @@ Options     options;
 int         maxcount  = 10000;  // used with the -n option
 double      alpha = -1.56693;   // used with the -a option
 double      beta  = -0.011811;  // used with the -b option
-double      x0 = 0.0;           // x-axis starting point 
-double      y0e = 0.0;          // y-axis starting point 
+double      x0 = 0.0;           // x-axis starting point
+double      y0e = 0.0;          // y-axis starting point
 int         textQ = 0;          // used with the --text option
 int         guidoQ = 0;         // used with the -g option
 int         humdrumQ = 0;       // used with the -u option
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
 
    MidiFile midifile;
    midifile.setTicksPerQuarterNote(tpq);
-   midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for 
+   midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for
                                                     // max expected MIDI events
    notelist.setSize(maxcount+10);
    notelist.setSize(0);
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
 // createHenon --
 //
 
-void createHenon(double alpha, double beta, double x0, double y0e, 
+void createHenon(double alpha, double beta, double x0, double y0e,
    int maxcount, MidiFile& midifile) {
 
    double x = x0;
@@ -124,7 +124,7 @@ void createHenon(double alpha, double beta, double x0, double y0e,
       newy = x;
       x = newx;
       y = newy;
-   
+
       key = (int)((x + 1.0)/2.0 * 127.0 + 0.5);
       if (key < minNote) {
          key = 0;
@@ -140,7 +140,7 @@ void createHenon(double alpha, double beta, double x0, double y0e,
       if (textQ) {
          cout << key << "\n";
          if (termination != 0) {
-            cout << "REPEAT" << termination << endl; 
+            cout << "REPEAT" << termination << endl;
             exit(0);
          }
       } else {
@@ -158,13 +158,13 @@ void createHenon(double alpha, double beta, double x0, double y0e,
 
 //////////////////////////////
 //
-// storeInMidiFile -- 
+// storeInMidiFile --
 //
 
 void storeInMidiFile(MidiFile& midifile, int key) {
    static int timer = tpq;   // start after one beat (for patch change)
    char note = (char)key;
- 
+
    // don't store extreme notes -- this gives interesting rhythms sometimes.
    if (key < minNote || key > maxNote) {
       note = 0;
@@ -187,7 +187,7 @@ void storeInMidiFile(MidiFile& midifile, int key) {
 
 //////////////////////////////
 //
-// checkTermination -- 
+// checkTermination --
 //
 
 int checkTermination(int key) {
@@ -220,7 +220,7 @@ int checkTermination(int key) {
    }
 
    // no 1-9 period cycles detected
-   return 0; 
+   return 0;
 
 }
 
@@ -229,7 +229,7 @@ int checkTermination(int key) {
 
 //////////////////////////////
 //
-// checkOptions -- 
+// checkOptions --
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
@@ -248,12 +248,12 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("d|divisions=i:4",      "Number of notes per quarter note");
    opts.define("r|allow-repeats=b",    "Do not stop at cyclical patterns");
 
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -386,7 +386,7 @@ void printHumdrumNotation(void) {
       if ((i+1) % 32 == 0) {
          cout << "=" << (i / 32) + 2 << "\n";
       }
-	        
+
    }
    cout << "*-" << endl;
 }

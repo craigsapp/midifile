@@ -1,10 +1,10 @@
 //
-// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu> 
+// Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jan  8 10:08:15 PST 2002
 // Last Modified: Mon Feb  9 21:24:41 PST 2015 Updated for C++11.
 // Filename:      ...sig/doc/examples/all/createmidifile/createmidifile.cpp
 // Syntax:        C++
-// 
+//
 // Description:   Demonstration of how to create a Multi-track MIDI file.
 //
 
@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
    outputfile.absoluteTime();  // time information stored as absolute time
                                // (will be coverted to delta time when written)
    outputfile.addTrack(2);     // Add another two tracks to the MIDI file
-   vector<uchar> midievent;     // temporary storage for MIDI events 
+   vector<uchar> midievent;     // temporary storage for MIDI events
    midievent.resize(3);        // set the size of the array to 3 bytes
    int tpq = 120;              // default value in MIDI file is 48
    outputfile.setTicksPerQuarterNote(tpq);
@@ -92,7 +92,7 @@ MFEvent& getEvent(int aTrack, int anIndex);
 int getTimeState(void);
    Indicates if the timestate is TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
 int getTrackState(void);
-   Indicates if the tracks are being processed as multiple tracks or 
+   Indicates if the tracks are being processed as multiple tracks or
    as a single track.
 int getTicksPerQuarterNote(void);
    Returns the ticks per quarter note value from the MIDI file.

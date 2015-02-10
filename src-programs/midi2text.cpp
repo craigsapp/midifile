@@ -76,7 +76,7 @@ void convertMidiFileToText(MidiFile& midifile) {
          // store note-on velocity and time
          key = midifile.getEvent(0, i).data[1];
          vel = midifile.getEvent(0, i).data[2];
-         ontimes[key] = midifile.getEvent(0, i).time * 60.0 / tempo / 
+         ontimes[key] = midifile.getEvent(0, i).time * 60.0 / tempo /
                midifile.getTicksPerQuarterNote();
          onvelocities[key] = vel;
       } else if (command == 0x90 || command == 0x80) {
@@ -84,12 +84,12 @@ void convertMidiFileToText(MidiFile& midifile) {
          key = midifile.getEvent(0, i).data[1];
          offtime = midifile.getEvent(0, i).time * 60.0 /
                midifile.getTicksPerQuarterNote() / tempo;
-         cout << "note\t" << ontimes[key] 
+         cout << "note\t" << ontimes[key]
               << "\t" << offtime - ontimes[key]
               << "\t" << key << "\t" << onvelocities[key] << endl;
          onvelocities[key] = -1;
          ontimes[key] = -1.0;
-      } 
+      }
 
       // check for tempo indication
       if (midifile.getEvent(0, i).data[0] == 0xff &&
@@ -122,7 +122,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    if (count <= 1) {
       tempo = newtempo;
    } else if (tempo != newtempo) {
-      cout << "; WARNING: change of tempo from " << tempo 
+      cout << "; WARNING: change of tempo from " << tempo
            << " to " << newtempo << " ignored" << endl;
    }
 }
@@ -131,20 +131,20 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
 
 //////////////////////////////
 //
-// checkOptions -- 
+// checkOptions --
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("author=b",  "author of program"); 
+   opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");   
+   opts.define("example=b", "example usages");
    opts.define("h|help=b",  "short description");
 
    opts.define("debug=b",  "debug mode to find errors in input file");
    opts.define("max=i:100000", "maximum number of notes expected in input");
 
    opts.process(argc, argv);
-   
+
    // handle basic options:
    if (opts.getBoolean("author")) {
       cout << "Written by Craig Stuart Sapp, "
@@ -163,7 +163,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    debugQ = opts.getBoolean("debug");
-   maxcount = opts.getInteger("max"); 
+   maxcount = opts.getInteger("max");
 
    if (opts.getArgCount() != 1) {
       usage(opts.getCommand().data());
