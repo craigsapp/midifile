@@ -1,6 +1,7 @@
 
 .*
 !.gitignore
+!.serve
 
 obj
 lib
