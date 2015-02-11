@@ -823,7 +823,7 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
 
 //////////////////////////////
 //
-// addPitchBend -- convert  number in the range from -1 to +1
+// MidiFile::addPitchBend -- convert  number in the range from -1 to +1
 //     into two 7-bit numbers (smallest piece first)
 //
 //   -1.0 maps to 0 (0x0000)
@@ -2034,6 +2034,7 @@ void MidiFile::buildTimeMap(void) {
 }
 
 
+
 //////////////////////////////
 //
 // MidiFile::extractMidiData --
@@ -2175,9 +2176,10 @@ ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
 }
 
 
+
 //////////////////////////////
 //
-// MidiFileWrite::writeVLValue -- write a number to the midifile
+// MidiFile::writeVLValue -- write a number to the midifile
 //    as a variable length value which segments a file into 7-bit
 //    values.  Maximum size of aValue is 0x7fffffff
 //
