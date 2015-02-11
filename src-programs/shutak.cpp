@@ -150,7 +150,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
 
 void getData(vector<vector<int> >& sequence, const string& filename) {
    ifstream infile;
-   infile.open(filename);
+   infile.open(filename.data());
    string line;
    int key;
    stringstream sss;
