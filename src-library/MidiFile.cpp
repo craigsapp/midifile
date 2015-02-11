@@ -970,9 +970,13 @@ void MidiFile::deltaTime(void) {
 
 //////////////////////////////
 //
-// MidiFile::erase -- make the MIDI file empty with one
+// MidiFile::clear -- make the MIDI file empty with one
 //     track with no data in it.
 //
+
+void MidiFile::clear(void) {
+   MidiFile::erase();
+}
 
 void MidiFile::erase(void) {
    int length = getNumTracks();
@@ -987,10 +991,6 @@ void MidiFile::erase(void) {
    timemap.clear();
 }
 
-
-void MidiFile::clear(void) {
-   MidiFile::erase();
-}
 
 
 
