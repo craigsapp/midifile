@@ -210,11 +210,9 @@ void readvalues(char* buffer, int& eventtype, double& start, double& dur,
 
 void adjustbuffer(char* buffer) {
    int i = 0;
-   int comment = 0;
    while (buffer[i] != '\0') {
       buffer[i] = tolower(buffer[i]);
       if (buffer[i] == ';') {
-         comment = 1;
          buffer[i] = '\0';
          return;
       }

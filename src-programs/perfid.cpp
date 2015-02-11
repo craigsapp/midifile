@@ -76,7 +76,7 @@ void printDeltas(vector<int>& noteondeltas) {
    if (noteondeltas.size() == 0) {
       return;
    }
-   for (i=1; i<noteondeltas.size(); i++) {
+   for (i=1; i<(int)noteondeltas.size(); i++) {
       if (noteondeltas[i] != noteondeltas[i-1]) {
          cout << count << "\t" << noteondeltas[i-1] << "\n";
          count = 1;
@@ -110,7 +110,7 @@ void printID(vector<int>& noteondeltas) {
    hist.reserve(noteondeltas.size());
    deltas.clear();
    hist.clear();
-   for (i=1; i<noteondeltas.size(); i++) {
+   for (i=1; i<(int)noteondeltas.size(); i++) {
       if (noteondeltas[i] != noteondeltas[i-1]) {
          deltas.push_back(noteondeltas[i-1]);
          hist.push_back(count);

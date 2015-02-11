@@ -70,7 +70,7 @@ void processMidiFile(MidiFile& midifile) {
       cout << timeinsecs << "\t";
       cout << track << "\t";
       cout << i << "\t";
-      for (j=0; j<ptr->data.size(); j++) {
+      for (j=0; j<(int)ptr->data.size(); j++) {
          if (j == 0) {
             cout << "0x" << hex << (int)ptr->data[j] << dec << " ";
          } else {
