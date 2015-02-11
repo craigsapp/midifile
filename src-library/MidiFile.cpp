@@ -151,6 +151,24 @@ MFEvent& MFEvent::operator=(MFEvent& mfevent) {
 
 
 
+//////////////////////////////
+//
+// MFEvent::setMetaTempo -- Input tempo is in quarter notes per minute.
+//
+
+void MFEvent::setMetaTempo(double tempo) {
+   int microseconds = (int)(60.0 / tempo * 1000000.0 + 0.5);
+   data.resize(6);
+   data[0] = 0xff;
+   data[1] = 0x51;
+   data[2] = 3;
+   data[3] = (microseconds >> 16) & 0xff;
+   data[4] = (microseconds >>  8) & 0xff;
+   data[5] = (microseconds >>  0) & 0xff;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // Convenience functions for parsing MFEvent contents.

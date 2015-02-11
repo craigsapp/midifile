@@ -93,6 +93,8 @@ class MFEvent {
       void      setCommandNibble          (int value);
       void      setChannelNibble          (int value);
       void      setChannel                (int value);
+
+      void      setMetaTempo              (double tempo);
 };
 
 
