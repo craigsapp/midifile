@@ -1873,7 +1873,7 @@ int MidiFile::getAbsoluteTickTime(double starttime) {
 
 //////////////////////////////
 //
-// doTimeInSecondsAnalysis --
+// MidiFile::doTimeInSecondsAnalysis --
 //
 
 void MidiFile::doTimeInSecondsAnalysis(void) {
@@ -1889,8 +1889,8 @@ void MidiFile::doTimeInSecondsAnalysis(void) {
 
 //////////////////////////////
 //
-// linearTickInterpolationAtSecond -- return the tick value at the given
-//    input time.
+// MidiFile::linearTickInterpolationAtSecond -- return the tick value at the
+//    given input time.
 //
 
 int MidiFile::linearTickInterpolationAtSecond(double seconds) {
