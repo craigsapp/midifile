@@ -1,0 +1,30 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	deltaTime
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	absoluteTime
+@SHORTDESC:	Convert timestamps into delta times.
+@LONGDESC:	Convert timestamps into delta times, which means that
+		the time field in the MFEvent structure represents the
+		time since the last event was played.  When a MIDI file
+		is read from a file, this is the default setting.  Typically
+		a MidiFile will be in absolute time when inserting messages
+		so that the messages do not have to be inserted in
+		chronological order.  When finished inserting messages,
+		the tracks can be sorted by absolute time, and then
+		converted to delta time with this function.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

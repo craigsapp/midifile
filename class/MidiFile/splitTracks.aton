@@ -1,0 +1,24 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	splitTracks
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Take joined tracks and split them back into their separate
+		track identities.
+@LONGDESC:	Take joined tracks and split them back into their separate
+		track identities.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

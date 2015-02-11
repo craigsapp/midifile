@@ -1,0 +1,22 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	writeVLValue
+@ACCESS:	private
+@RETURN:	void
+@PARAMETERS:	long value, vector<uchar>& data
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Convert an integer int a list of VLV bytes.
+@LONGDESC:	Convert an integer int a list of VLV bytes.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

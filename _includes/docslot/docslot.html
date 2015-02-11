@@ -1,0 +1,683 @@
+
+<script>
+//
+// Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+// Creation Date: Wed Jan 28 01:45:01 PST 2015
+// Last Modified: Sun Feb  8 22:21:48 PST 2015
+// Filename:      scorelib/_includes/docslot/docslot.html
+// Syntax:        JavaScript 1.5 (EMCAScript 5)
+// vim:           ts=3 ft=javascript hlsearch
+//
+// Description:   This file generates documentation for the Scorelib
+//                class documention. To display the documentation for
+//                a specific function, place a div element such as the
+//                following example where you want the documentation
+//                for the method to appear:
+//                   <div class="docslot" id="ScoreItemBase::operator="></div>
+//                The code in this file will automatically insert the
+//                documentation for the given function inside of the div.
+//                In this case the documentation for
+//                ScoreItemBase::operator= will be inserted.
+//
+</script>
+
+<script src="/javascripts/handlebars-v2.0.0.js"></script>
+<script src="/javascripts/aton.min.js"></script>
+
+<script>
+//
+// Event listeners that manage events related to the documentation.
+//
+
+// This variable is used to keep track of whether or not all
+// examples are currently being shown.  If they are hidden then
+// the examples can be viewed individual by click on the triangle
+// icon to the left of the example's title.  Used with control-E
+// keyboard command.
+var ExampleView = false;
+
+
+
+//////////////////////////////
+//
+// DOMContentLoaded event listener -- After the page has loaded,
+//    download the documentation and insert it into the docslots.
+//
+
+document.addEventListener("DOMContentLoaded", function () {
+	var docslots = document.querySelectorAll(".docslot");
+	var source   = document.getElementById("docslot-main").textContent;
+	var template = Handlebars.compile(source);
+	var matches = window.location.href.match(/#([^\/]+)$/);
+   var matches2;
+   var details;
+   var target = "";
+	if (matches) {
+		// have a download preference for the specific function documetation
+		// that should be viewed.
+		for (var i=0; i<docslots.length; i++) {
+			matches2 = docslots[i].id.match(/\s*(.*)::(.*)\s*/);
+			if (matches[1] === matches2[2]) {
+				insertDocumentation(docslots[i], template);
+				target = docslots[i].id;
+				details = docslots[i].querySelector('details');
+			} else if (docslots[i].id === matches[1]) {
+				insertDocumentation(docslots[i], template);
+				target = docslots[i].id;
+				details = docslots[i].querySelector('details');
+			}
+		}
+	}
+	for (var i=0; i<docslots.length; i++) {
+		if (matches && (target === docslots[i].id)) {
+			continue;
+		}
+		insertDocumentation(docslots[i], template);
+	}
+});
+
+
+
+//////////////////////////////
+//
+// keydown event listener -- This event listener handles keyboard
+//    commands related to the document display.  The keyboard commands are:
+//
+// control-plus  == show full details for all functions on the page.
+// control-minus == hide full details for all functions on the page.
+// control-E     == hide/show all examples in the documentation.
+// shift-click is handled in the next event listener below.
+//
+
+document.addEventListener('keydown', function(event) {
+	if (!event.ctrlKey) {
+		return event;
+	}
+	const EqualsKey = 187;
+	const MinusKey  = 189;
+	const EKey      =  69;
+	switch (event.keyCode) {
+		case EqualsKey:
+			if (typeof openAllDocumentation !== 'undefined') {
+				openAllDocumentation();
+			}
+			break;
+		case MinusKey:
+			if (typeof closeAllDocumentation !== 'undefined') {
+				closeAllDocumentation();
+			}
+			break;
+		case EKey:
+				toggleAllExamplesDisplay();
+			break;
+	}
+});
+
+
+
+//////////////////////////////
+//
+// delegated click event listener -- Shift-clicking on a function heading
+//    will close all other documentation entries and fully open the targeted
+//    one.
+//
+
+document.addEventListener('click', function (event) {
+	if (!event.shiftKey) {
+		return;
+	}
+	if (typeof event.path === 'undefined') {
+		return;
+	}
+	for (var i=0; i<event.path.length; i++) {
+		if (event.path[i].nodeName !== 'DIV') {
+			continue;
+		}
+		if (!event.path[i].className.match(/docslot/)) {
+			continue;
+		}
+		var id = event.path[i].id
+		if (!id) {
+			continue;
+		}
+		exclusiveSlotShow(id);
+		event.preventDefault();
+	}
+});
+
+</script>
+
+
+<style>
+/* CSS controlling style of the documentation */
+
+summary {
+	outline:none; /* prevent a box from showing around summary text */
+}
+
+/* For displaying keyboard short-cut keys. */
+.keyboard-char {
+	background: #999999;
+	box-shadow: 2px 2px 3px #777777;
+	cursor: pointer;
+	cursor: hand;
+	font-size: 80%;
+	color: white;
+	border-radius: 2px;
+	padding-right: 3px;
+	margin-right: 3px;
+	padding-left: 3px;
+	margin-top: 0;
+}
+
+.example-button {
+	/* the button used to expand/collapse example code sections */
+	background: #bb2200;
+	box-shadow: 2px 2px 3px #777777;
+	cursor: pointer;
+	cursor: hand;
+	font-size: 80%;
+	color: white;
+	border-radius: 3px;
+	padding-right: 5px;
+	margin-top: 0;
+	padding-left: 5px;
+	float: right;
+}
+
+.example-output {
+	padding-left:5px;
+	margin-right:-20px !important;
+	background: #888; /* Old browsers */
+	background: -moz-linear-gradient(left,  #888 0%, #888 3%, #3a3c42 91%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#888), color-stop(3%,#888), color-stop(91%,#3a3c42)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  #888 0%,#888 3%,#3a3c42 91%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  #888 0%,#888 3%,#3a3c42 91%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  #888 0%,#888 3%,#3a3c42 91%); /* IE10+ */
+	background: linear-gradient(to right,  #888 0%,#888 3%,#3a3c42 91%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#888', endColorstr='#3a3c42',GradientType=1 ); /* IE6-9 */
+}
+
+</style>
+
+
+{% raw %}
+
+<script>
+//
+// Handlebars templates for generating function documentation:
+//
+</script>
+
+<script id="docslot-main" type="text/x-handlebars-template">
+	{{#if LONGDESC}}
+		<a name="{{METHOD}}"> </a>
+		<details ontoggle='showOrHideShortDescriptionReverse(this);'>
+			<summary>
+			<span class="docslot-short-title">
+				{{METHOD}}
+			</span>
+			<span class='short-desc'> &mdash;
+			{{{SHORTDESC}}}
+			</span>
+			</summary>
+			<div style="margin-left:40px; margin-bottom:20px;">
+				{{#if PARAMETERS }}
+					{{{printDeclarations this}}}
+				{{/if}}
+				{{{codeLink METHOD FILE LINES}}}
+				{{{LONGDESC}}}
+				{{{showExamples EXAMPLE}}}
+			</div>
+		</details>
+	{{else}}
+		<a name="{{METHOD}}"> </a>
+		<span style="padding-left:19px; font-weight:900">
+				{{#if ALIASOF}}
+					&nbsp;&nbsp;
+				{{/if}}
+			{{METHOD}}
+		</span> &mdash;
+			{{{SHORTDESC}}}
+	{{/if}}
+</script>
+
+
+
+<script id="method-example" type="text/x-handlebars-template">
+	<summary>{{{DESCRIPTION}}}</summary>
+	<div class="highlight">
+	<pre style="margin-left:20px; margin-bottom:0; padding:0; padding-left:10px;">
+		<code class="language-javascript" data-lang="javascript">
+{{CODE}}</code>
+	</pre>
+	</div>
+{{#if OUTPUT}}
+	<div class="example-output">output:</div>
+	<div class="highlight">
+	<pre style="margin-left:20px; padding:0; padding-top:12px; padding-left:10px;">
+{{OUTPUT}}
+	</pre>
+	</div>
+{{/if}}
+</script>
+
+
+
+<script id="method-example-single" type="text/x-handlebars-template">
+	<div class="highlight">
+	<pre style="margin-left:20px; margin-bottom:0; padding:0; padding-left:10px;">
+		<code class="language-javascript" data-lang="javascript">
+{{CODE}}</code>
+	</pre>
+	</div>
+{{#if OUTPUT}}
+	<div class="example-output">output:</div>
+	<div class="highlight">
+	<pre style="margin-left:20px; padding:0; padding-top:12px; padding-left:10px;">
+{{OUTPUT}}
+	</pre>
+	</div>
+{{/if}}
+</script>
+
+
+
+<script>
+//
+// Handlebars helper functions
+//
+
+Handlebars.registerHelper('codeLink', function (method, file, linerange) {
+	if (typeof method === 'undefined') { return '' }
+	if (typeof file   === 'undefined') { return '' }
+
+   var url = 'https://github.com/craigsapp/scorelib/tree/master/src-library/'
+	url += file;
+   if (linerange) {
+		url += '#L' + linerange;
+	}
+	var output = '';
+
+	output += '<details>\n';
+	output += '<summary>\n';
+	output += '<a target="new" href="' + url + '">Source code for ' + method + '() on GitHub';
+   output += '</a>\n';
+	output += '</summary>\n';
+	output += '</details>\n';
+
+	return output;
+});
+
+
+function displaySourceBox (method, file) {
+	var target = document.querySelector("div#" + method + '_sourcebox');
+	if (!target) {
+		return;
+	}
+	var sourcebox = '';
+	sourcebox += 'https://sourcegraph.com/github.com/craigsapp';
+	sourcebox += '/RationalNumber/.CommonJSPackage/rational-number/.def/commonjs/';
+	if (file === 'RationalNumber-base.js') {
+		sourcebox += 'lib/RationalNumber-base.js/-/prototype/';
+	} else if (file === 'RationalNumber-math.js') {
+		sourcebox += 'index.js/-/prototype/';
+	} else {
+		return '';
+	}
+	sourcebox += method;
+	sourcebox += '/.sourcebox.js';
+	var testing = '<script src=' + sourcebox + '>';
+	testing += "</scr'; testing += 'ipt> ";
+	target.innerHTML = testing;
+}
+
+
+//////////////////////////////
+//
+// printDeclarations -- Print list of examples for a function entry.
+//     @METHOD:	gcd
+//     @RETURN:	int
+//     @PARAMETERS:	int x, int y
+//
+//     Maps to:   int gcd(int x, int y);
+//
+
+Handlebars.registerHelper('printDeclarations', function (entry) {
+   var output = '';
+
+   if (entry.PARAMETERS instanceof Array) {
+		for (var i=0; i<entry.PARAMETERS.length; i++) {
+   		output += '<span style="color:#000088; font-weight:500;">';
+			if (entry.RETURN instanceof Array) {
+				output += entry.RETURN[i];
+			} else {
+				output += entry.RETURN;
+			}
+			output += ' ';
+			output += '<span class="docslot-long-title">';
+   		output += entry.METHOD;
+			output += '</span>';
+			output += '(';
+			output += entry.PARAMETERS[i];
+			output += ');';
+   		output += '</span>';
+   		output += '</br>';
+		}
+
+	} else {
+   	output += '<span style="color:#000088; font-weight:500;">';
+		if (entry.RETURN instanceof Array) {
+			output += entry.RETURN[0];
+		} else {
+			output += entry.RETURN;
+		}
+		output += ' ';
+		output += '<span class="docslot-long-title">';
+   	output += entry.METHOD;
+		output += '</span>';
+		output += '(';
+		output += entry.PARAMETERS;
+		output += ');';
+   	output += '</span>';
+   	output += '</br>';
+	}
+
+   return output;
+});
+
+
+
+
+//////////////////////////////
+//
+// showExamples -- Print list of examples for a function entry.
+//
+
+Handlebars.registerHelper('showExamples', function (entry) {
+	if (typeof entry === 'undefined') {
+		return 'empty';
+	}
+
+	var source = document.getElementById('method-example').textContent;
+	var template = Handlebars.compile(source);
+	var sourcesingle = document.getElementById('method-example-single')
+								.textContent;
+	var templatesingle = Handlebars.compile(sourcesingle);
+
+	var output = '';
+	if (entry instanceof Array) {
+		output += '<span style="font-weight:700">Examples</span>';
+		output += '<span';
+		output += ' class="example-button"';
+		output += ' onclick="expandAllExamples(this);">'
+		output += 'Expand all';
+		output += '</span>\n';
+		output += '<ol style="padding-left:0; margin-left:0;">\n';
+		for (var i=0; i<entry.length; i++) {
+			output += '<li>\n';
+			output += '<details class="example-details">\n';
+			output += template(entry[i]);
+			output += '</details>\n';
+			output += '</li>\n';
+		}
+		output += '</ol>\n';
+	} else if (!entry.DESCRIPTION.match(/^\s*$/)) {
+	   output = '<details class="example-details">';
+		output += '<summary>';
+		output += '<span style="font-weight:700">Example:</span> ';
+		output += entry.DESCRIPTION;
+		output += '</summary>';
+		output += templatesingle(entry);
+		output += '</details>';
+		output += '<br>';
+	}
+
+	return output;
+});
+
+
+
+</script>
+
+<script>
+//
+// Various JavaScript functions for processing/displaying documentation.
+//
+
+function showOrHideShortDescriptionReverse(target) {
+	// check the first child which should be <details>.
+	// if it is open, then set a hidden style on <details>/<summary>
+	// first child with "short-desc" as the class.  If <details>
+	// is not open, then unhide the same sub-element.
+	if (target.nodeName !== 'DETAILS') {
+		return;
+	}
+
+	// go to the first sub-element which has a class of "short-desc":
+	var shortdesc = target.querySelector('.short-desc');
+	if (!shortdesc) {
+		return;
+	}
+	if (shortdesc.nodeName !== 'SPAN') {
+		return;
+	}
+	var openstate = target.getAttribute('open');
+	if (typeof openstate === 'string') {
+		// hide the short-desc text with visibility:hidden
+		shortdesc.style.visibility = 'hidden';
+	} else {
+		// show the short-desc text with visibility:visible
+		shortdesc.style.visibility = 'visible';
+	}
+}
+
+
+
+//////////////////////////////
+//
+// insertDocumentation -- Download the documentation for a function
+//    and convert it to HTML code on the page.
+//
+
+function insertDocumentation(target, template) {
+	var fullname     = target.id;
+	var matches      = fullname.match(/(.*)::(.*)/);
+	var classname    = matches[1];
+	var functionname = matches[2];
+   functionname = functionname.replace(/=/, "EQUALS");
+   
+	var file    = '/class/' + classname + '/' + functionname + '.aton';
+	var request = new XMLHttpRequest();
+	var matches2;
+	request.open('GET', file);
+	request.addEventListener('load', function () {
+		var atondata = this.responseText;
+		var aton = new ATON;
+		aton.setOnlyChildRoot();
+		var docobj = aton.parse(atondata);
+		var dochtml = template(docobj);
+		target.innerHTML = dochtml;
+		var matches = window.location.href.match(/#([^\/]+)$/);
+		if (matches && (matches[1] === functionname)) {
+			showSlotDocumentation(fullname);
+		}
+	});
+	request.addEventListener('error', function () {
+		console.error(this.statusText);
+	});
+	request.send();
+};
+
+
+
+//////////////////////////////
+//
+// expandAllExamples --
+//
+
+function expandAllExamples(element) {
+	text = element.innerHTML;
+	var detailslist = element.parentNode.querySelectorAll('li > details');
+	var i;
+	if (text.match(/Collapse all/)) {
+		for(i=0; i<detailslist.length; i++) {
+			detailslist[i].removeAttribute('open');
+		}
+		element.textContent = 'Expand all';
+	} else {
+		// expand all examples
+		for(i=0; i<detailslist.length; i++) {
+			detailslist[i].setAttribute('open', true);
+		}
+		element.textContent = 'Collapse all';
+	}
+}
+
+
+
+//////////////////////////////
+//
+// openAllDocumentation -- For every div.docslot on the page, open
+//      the docmentation for it (the fist <details> element).
+//
+
+function openAllDocumentation() {
+	var methodslots = document.querySelectorAll('div.docslot');
+	var i;
+	for (i=0; i<methodslots.length; i++) {
+		var details = methodslots[i].querySelector('details');
+		if (details) {
+			details.setAttribute('open', true);
+		}
+	}
+}
+
+
+
+//////////////////////////////
+//
+// closeAllDocumentation -- For every div.docslot on the page, close
+//      the docmentation for it (the fist <details> element).
+//
+
+function closeAllDocumentation() {
+	var methodslots = document.querySelectorAll('.docslot');
+	var i;
+	for (i=0; i<methodslots.length; i++) {
+		var details = methodslots[i].querySelector('details');
+		if (details) {
+			details.removeAttribute('open');
+		}
+	}
+}
+
+
+
+//////////////////////////////
+//
+// hideAllExamples -- Close every documentation example code box on the page.
+//
+
+function hideAllExamples() {
+	var examples = document.querySelectorAll("details.example-details");
+	for (var i=0; i<examples.length; i++) {
+		examples[i].removeAttribute('open');
+	}
+}
+
+
+
+//////////////////////////////
+//
+// showAllExamples -- Open every documentation example code box on the page.
+//
+
+function showAllExamples() {
+	var examples = document.querySelectorAll("details.example-details");
+	for (var i=0; i<examples.length; i++) {
+		examples[i].setAttribute('open', true);
+	}
+}
+
+
+
+//////////////////////////////
+//
+// toggleAllExamplesDisplay --
+//
+
+function toggleAllExamplesDisplay() {
+	if (ExampleView && (typeof hideAllExamples !== 'undefined')) {
+		hideAllExamples();
+		ExampleView = !ExampleView;
+	} else if (!ExampleView &&
+			(typeof showAllExamples !== 'undefined')) {
+		showAllExamples();
+		ExampleView = !ExampleView;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// showSlotDocumentation -- Open a single documentation entry, closing all
+//     others.
+//
+
+function showSlotDocumentation(id) {
+	var target = document.getElementById(id);
+	if (!target) {
+		return;
+	}
+	closeAllDocumentation();
+	var details = target.querySelectorAll('details');
+	for (var i=0; i<details.length; i++) {
+		details[i].setAttribute('open', true);
+	}
+	//target.scrollIntoView();
+	target.scrollIntoViewIfNeeded();
+}
+
+
+
+//////////////////////////////
+//
+// exclusiveSlotShow -- interface to showSlotDocumentation which
+//     suppresses text selection due to shift-clicking.
+//
+
+function exclusiveSlotShow(id) {
+	if (typeof id !== 'string') {
+		var element = id;
+		while (element) {
+			if (element.nodeName !== 'DIV') {
+				element = element.parentNode;
+				continue;
+			}
+			id = element.id;
+			if (!id) {
+				element = element.parentNode;
+				continue;
+			}
+			break;
+		}
+	}
+	if (!id) {
+		return;
+	}
+	if (document.selection && document.selection.empty) {
+		document.selection.empty();
+	} else if (window.getSelection) {
+		window.getSelection().removeAllRanges();
+	}
+	showSlotDocumentation(id);
+}
+
+
+
+</script>
+
+{% endraw %}
+

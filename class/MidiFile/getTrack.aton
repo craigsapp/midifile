@@ -1,0 +1,25 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	getTrack
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int track, int index
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Get the track number of an MFEvent in the MidiFile.
+@LONGDESC:	Get the track number of an MFEvent in the MidiFile.  The
+		track number may be different from the input parameter
+		track value if the MidiFile is in temporary single-track
+		mode.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

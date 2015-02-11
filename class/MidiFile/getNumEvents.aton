@@ -1,0 +1,22 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	getNumEvents
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int track
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Return the number of events in the specified track.
+@LONGDESC:	Return the number of events in the specified track.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	write
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const char* filename
+@PARAMETERS:	const string& filename
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Write a Standard MIDI file from the MidiFile contents.
+@LONGDESC:	Write a Standard MIDI file from the MidiFile contents.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

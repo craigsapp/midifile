@@ -1,0 +1,22 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	setTicksPerQuarterNote
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int ticks
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Set the ticks-per-quarter note value.
+@LONGDESC:	Set the ticks-per-quarter note value in the MIDI header.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

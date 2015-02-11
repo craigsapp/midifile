@@ -1,0 +1,24 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	addTrack
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@PARAMETERS:	int count
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Added one or more empty tracks to the MidiFile.
+@LONGDESC:	Adds a blank track at the end of the track list.
+		Returns the track number of the added track.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

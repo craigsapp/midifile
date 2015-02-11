@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	getFilename
+@ACCESS:	public
+@RETURN:	const char* 
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Return the filename for the MidiFile.
+@LONGDESC:	Return the filename for the MidiFile.  Return an empty
+		string if not set.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

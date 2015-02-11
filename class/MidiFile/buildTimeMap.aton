@@ -1,0 +1,34 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	buildTimeMap
+@ACCESS:	private
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Create a time map relating ticks to aboslute time.
+@LONGDESC:	Builds an index of the absolute tick values found
+		in a MIDI file and their corresponding time values in
+		seconds, taking into consideration tempo change messages.
+		If not tempo messages are given (or until they are given),
+		then the tempo is set to a default of 120 quarter notes
+		per minute.  If SMPTE time code is used, then the
+		ticks are actually time values (and tempo meta messages
+		should technically be ignored).  Don't build a time map
+		for SMPT ticks, and just calculate the time in seconds
+		from the tick value.  1000 ticks per second SMPTE is the
+		only mode tested (25 frames per second with 40 subframes
+		per frame.).  29 frames per second is actually closer to
+		30, but this is not yet considered.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

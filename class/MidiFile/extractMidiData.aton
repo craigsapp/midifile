@@ -1,0 +1,25 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	extractMidiData
+@ACCESS:	private
+@RETURN:	void
+@PARAMETERS:	istream& input, vector<uchar>& array, uchar& runningCommand
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Extract a MIDI message from the input stream.
+@LONGDESC:	Extract a MIDI message from the input stream.  If the
+		MIDI message is in running mode, use the previous
+		MIDI command; otherwise store the current command byte
+		in case the next message is in running mode.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

@@ -1,0 +1,22 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	unpackVLV
+@ACCESS:	private
+@RETURN:	ulong
+@PARAMETERS:	uchar a, uchar b, uchar c, uchar d, uchar e
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Convert VLV byte list into an unsigned long value.
+@LONGDESC:	Convert VLV byte list into an unsigned long value.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	deleteTrack
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int track
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Remove the specified track from the MidiFile
+@LONGDESC:	Remvoe a track from the MidiFile.  Tracks are numbered
+		starting at track 0.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

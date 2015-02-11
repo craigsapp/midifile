@@ -1,0 +1,24 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	getAbsoluteTickTime
+@ACCESS:	public
+@RETURN:	int 
+@PARAMETERS:	double timeinsec
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Convert a time in seconds into an aboslute tick time.
+@LONDESC:	Convert a time in seconds into an aboslute tick time.
+		If there is no tick entry at the given time in seconds,
+		then interpolte between two values.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

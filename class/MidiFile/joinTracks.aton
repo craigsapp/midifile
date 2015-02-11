@@ -1,0 +1,26 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	joinTracks
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	splitTracks
+@SHORTDESC:	Merge all tracks into a single stream of events.
+@LONGDESC:	Merge the data from all tracks, but keep the identify
+		of the tracks unique so that the function splitTracks()
+		can be called to split the tracks into separate streams
+		again.  The style of the MidiFile when read from a file 
+		is with the tracks split.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

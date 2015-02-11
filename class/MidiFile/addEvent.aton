@@ -1,0 +1,25 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	addEvent
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int track, int time, vector<uchar>& data
+@FILE:		MidiFile.cpp
+@LINES:		694-710
+@SEEALSO:	
+@SHORTDESC:	Create an MFEvent and store at the end of the specified
+		track's event list.  The return value is the index position
+		of the event in the track list.  This index value may become
+		invalid if the track is sorted.
+@LONGDESC:	
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

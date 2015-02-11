@@ -1,0 +1,21 @@
+@@BEGIN:       FunctionDocumentation
+@OBJECT:        MFEvent
+@METHOD:        getTempoBPM
+@RETURN:        
+@PARAMETERS:    
+@FILE:          MFEvent.cpp
+@LINES:         
+@SEEALSO:       
+@SHORTDESC:     
+@LONGDESC:      
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:  EXAMPLE
+
+@@END:  FunctionDocumentation
+
+
+

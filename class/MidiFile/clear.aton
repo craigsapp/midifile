@@ -1,0 +1,24 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	clear
+@ACCESS:	public
+@RETURN:	
+@PARAMETERS:	
+@FILE:		MidiFile.cpp
+@ALIAS:		erase
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Clear all tracks, leaving one track with no data in it.
+@LONGDESC:	Clear all tracks in the MidiFile, leaving one track with no
+		data in it.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

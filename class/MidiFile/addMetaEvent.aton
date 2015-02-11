@@ -1,0 +1,25 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	addMetaEvent
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int track, int time, int type, vector<uchar>& data
+@PARAMETERS:	int track, int time, int type, const char* data
+@FILE:		MidiFile.cpp
+@LINES:		729-770
+@SEEALSO:	
+@SHORTDESC:	Insert a meta message event.
+@LONGDESC:	Insert a meta message event into a the given track and 
+		return the index of the inserted MFEvent in the track list.
+		The const char* version accepts a null-terminated string.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

@@ -1,0 +1,26 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	read
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const char* filename
+@PARAMETERS:	const string& filename
+@PARAMETERS:	istream& input
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Read in a Standard MIDI File.
+@LONGDESC:	Parse a Stdnard MIDI File from either a file or from
+		an already opened input stream, and store its contents
+		in the MidiFile object.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

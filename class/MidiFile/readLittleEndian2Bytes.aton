@@ -1,0 +1,26 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	readLittleEndian2Bytes
+@ACCESS:	public
+@STATIC:	true
+@RETURN:	ushort
+@PARAMETERS:	istream& input
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	readLittleEndian4Bytes
+@SHORTDESC:	Read two bytes from the input stream in little-endian format.
+@LONGDESC:	Read two bytes from the input stream in little-endian format.
+		This means that the first byte read will be the bottom byte
+		in the output integer, and the second byte will be the
+		top byte.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

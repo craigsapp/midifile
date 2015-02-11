@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	makeVLV
+@ACCESS:	private
+@RETURN:	int
+@PARAMETERS:	uchar* buffer, int number
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Convert an integer into a list of variable length value bytes.
+@LONGDESC:	Convert an integer into a list of variable length value bytes.
+		The return value is the number of bytes in the list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+

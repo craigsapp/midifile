@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	readLittleEndian4Bytes
+@ACCESS:	public
+@STATIC:	true
+@RETURN:	ulong
+@PARAMETERS:	istream& input
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Read four bytes from the input stream in little-endian order.
+@LONGDESC:	Read four bytes from the input stream in little-endian order.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@END:	FunctionDocumentation
+
+
+
