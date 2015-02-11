@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	uchar* buffer, int number
 @FILE:		MidiFile.cpp
-@LINES:		
+@LINES:		772-819
 @SEEALSO:	
 @SHORTDESC:	Convert an integer into a list of variable length value bytes.
 @LONGDESC:	Convert an integer into a list of variable length value bytes.

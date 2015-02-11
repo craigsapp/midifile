@@ -1,0 +1,124 @@
+#!/usr/bin/perl
+#
+# Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+# Creation Date: Sat Feb  7 23:17:19 PST 2015
+# Last Modified: Sat Feb  7 23:17:23 PST 2015
+# Filename:      midifile/_includes/docslot/processFiles
+# Syntax:        perl 5
+# vim:           ts=3 expandtab
+#
+# Description:   Add an initial list of functions to the index.  These
+#                will automatically be replaced with complete documentation
+#                for functions, but the pre-filling will make the page
+#                seem complete while the content is loading.
+# 
+#                The content will be filled into <div>s like this:
+#                   <div class="docslot" id="abs"></div>
+#
+
+use strict;
+
+my @files = @ARGV;
+my $classdir    = "../../class";
+
+foreach my $file (@files) {
+   processFile($file);
+}
+
+exit(0);
+
+
+
+##############################
+##
+## processFile --
+##
+## <div class="docslot" id="ScoreItemBase::operator=">
+##      <span class="docslot-short-title" style="padding-left:19px;">
+##          operator=
+##       </span>
+##       <span class='short-desc'> 
+##          &mdash; @SHORTDESC
+##       </span>
+##    </div>
+##
+
+sub processFile {
+   my ($filename) = @_;
+   $filename =~ /(.*)\.[^.]+$/;
+   my $base = $1;
+   my $classname = $base;
+   $classname =~ s/_.*//;
+   my $srcdir = "$classdir/$classname";
+   die if !-d $srcdir;
+
+   open(INDEX, $filename) or die "Cannot read $filename\n";
+   my @contents = <INDEX>;
+   close INDEX;
+
+   my $div;
+   my $titlespan;
+   my $title;
+   my $descspan;
+   my $desc;
+   my $id;
+   my $id2;
+   my $newdesc;
+   open(FILE, ">$filename") or die;
+   foreach my $line (@contents) {
+      if ($line !~ /^(<div[^>]*>)\s*(<span[^>]*>)\s*([^<]+)\s*<\/span>\s*(<span[^>]*>)\s*([^>]*)\s*<\/span>\s*<\/div>/) {
+         print FILE $line;
+         next;
+      } else {
+         $div       = $1;
+         $titlespan = $2;
+         $title     = $3;
+         $descspan  = $4;
+         $desc      = $5;
+         # <div class="docslot" id="ScoreItemBase::operator=">
+         $div =~ /id="([^"]*)"/;
+         $id = $1;
+         if ($id =~ /(.*)::(.*)/) {
+            $classname = $1;
+            $id = $2;
+         } 
+         $id2 = $id;
+         $id2 =~ s/=/EQUALS/g;
+         $newdesc = getDescription($id2, $srcdir);
+         ##      <span class="docslot-short-title" style="padding-left:19px;">
+         ##          operator=
+         ##       </span>
+         ##       <span class='short-desc'> 
+         ##          &mdash; @SHORTDESC
+         ##       </span>
+         print FILE "$div$titlespan$title</span>$descspan &mdash; $newdesc</span></div>\n";
+      }
+   }
+   close FILE;
+}
+
+
+
+##############################
+##
+## getDescription -- Extract @SHORTDESC property from ATON data for function:
+## 
+##   @SHORTDESC:	Short description goes here
+##
+
+sub getDescription {
+   my ($id, $srcdir) = @_;
+   die "Cannot find description for $id\n" if !-r "$srcdir/$id.aton";
+   my $shortdesc = `grep '^\@SHORTDESC:' $srcdir/$id.aton`;
+   $shortdesc =~ /^\@SHORTDESC:\s*(.*)\s*$/;
+   my $description = $1;
+   if ($description =~ /^\s*$/) {
+      die "Description for $id is empty.\n";
+   }
+   my $output;
+   $output .= $description;
+   return $output;
+}
+
+
+

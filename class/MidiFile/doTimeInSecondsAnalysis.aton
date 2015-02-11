@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		
+@LINES:		1873-1882
 @SEEALSO:	
 @SHORTDESC:	Calculate the time in seconds for each event in the MidiFile.
 @LONGDESC:	Calculate the time in seconds for each event in the MidiFile.

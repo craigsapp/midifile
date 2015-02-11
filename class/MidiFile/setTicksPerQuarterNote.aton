@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	int ticks
 @FILE:		MidiFile.cpp
-@LINES:		
+@LINES:		1458-1467
 @SEEALSO:	
 @SHORTDESC:	Set the ticks-per-quarter note value.
 @LONGDESC:	Set the ticks-per-quarter note value in the MIDI header.

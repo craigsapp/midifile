@@ -5,7 +5,7 @@
 @RETURN:	int 
 @PARAMETERS:	double timeinsec
 @FILE:		MidiFile.cpp
-@LINES:		
+@LINES:		1835-1871
 @SEEALSO:	
 @SHORTDESC:	Convert a time in seconds into an aboslute tick time.
 @LONDESC:	Convert a time in seconds into an aboslute tick time.
