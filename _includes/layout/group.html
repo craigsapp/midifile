@@ -1,0 +1,49 @@
+<!-- vim: set ts=3 nowrap : -->
+<!-- Liquid template for Group Quick Navigator
+  --
+  -- This code is inserted onto the left side of the footer for each page.
+  -- The contents is controlled by variables "grouptitle" and "group" set 
+  -- in a liquid header, such as :
+		---
+		grouptitle: ['/formats', 'Data formats']
+		group: [ 
+			['/formats/binary/', binary], 
+			['/formats/pmx/', PMX], 
+			['/formats/ppmx/', PPMX] 
+		]
+		---
+  -- The grouptitle variable is given as a heading for a list of multiple
+  -- links.  The first string in the array is the URL, and the second is the
+  -- text to show for the hyperlink.  The group varaible contains a list of
+  -- links to show after the grouptitle, each separated by a pipe character.
+  -- If any links URL is empty, then don't show as a hyperlink.
+  -->
+
+{% if page.group %}
+	{% if page.grouptitle %}
+		{% if page.grouptitle.size == 2 %}
+			{% if page.grouptitle[0] == page.url %}
+				<span style="font-weight:600;">{{ page.grouptitle[1] }}</span>:&nbsp;&nbsp;
+			{% else %}
+				<a href="{{ page.grouptitle[0] | prepend: site.baseurl }}"><span style="font-weight:600;">{{ page.grouptitle[1] }}</span></a>:&nbsp;&nbsp;
+			{% endif %} 
+		{% else %}
+			{{ page.grouptitle }}:&nbsp;&nbsp;
+		{% endif %}
+	{% endif %}
+
+	{% for item in page.group %}
+		{% if item[0] == page.url %}
+			<span style="font-weight:600;">{{ item[1] }} </span>
+		{% elsif item[0] == '' %}
+			{{ item[1] }}
+		{% else %}
+			<a href={{ item[0] | prepend: site.baseurl }}>{{ item[1] }}</a>
+		{% endif %}
+		{% if forloop.last == false %}
+			&nbsp;|&nbsp;
+		{% endif %}
+	{% endfor %}
+{% else %}
+{% endif %}
+
