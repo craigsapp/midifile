@@ -5,7 +5,7 @@
 @RETURN:	int 
 @PARAMETERS:	double timeinsec
 @FILE:		MidiFile.cpp
-@LINES:		1856-1892
+@LINES:		1862-1898
 @SEEALSO:	
 @SHORTDESC:	Convert a time in seconds into an absolute tick time.
 @LONDESC:	Convert a time in seconds into an absolute tick time.

@@ -6,7 +6,7 @@
 @PARAMETERS:	int track, int index
 @PARAMETERS:	int absoluteTick
 @FILE:		MidiFile.cpp
-@LINES:		1813-1854
+@LINES:		1819-1860
 @SEEALSO:	
 @SHORTDESC:	Return the time in seconds for the specified message or absolute
 		tick time.
