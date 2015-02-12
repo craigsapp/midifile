@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
    for (i=0; i<tutorials.length; i++) {
       var target = tutorials[i].textContent.replace(/\s/g, '');
       var newcontent = "";
-      newcontent += '<a href=tutorial/"#' + target + '">';
+      newcontent += '<a href="tutorial/#' + target + '">';
       newcontent += target;
       newcontent += '</a>';
       tutorials[i].innerHTML = newcontent;
