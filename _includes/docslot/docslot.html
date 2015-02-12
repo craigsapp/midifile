@@ -4,7 +4,7 @@
 // Programmer:    Craig Stuart Sapp <craig.stanford.edu>
 // Creation Date: Wed Jan 28 01:45:01 PST 2015
 // Last Modified: Sun Feb  8 22:21:48 PST 2015
-// Filename:      scorelib/_includes/docslot/docslot.html
+// Filename:      midifile/_includes/docslot/docslot.html
 // Syntax:        JavaScript 1.5 (EMCAScript 5)
 // vim:           ts=3 ft=javascript hlsearch
 //
@@ -292,7 +292,7 @@ Handlebars.registerHelper('codeLink', function (method, file, linerange) {
 	if (typeof method === 'undefined') { return '' }
 	if (typeof file   === 'undefined') { return '' }
 
-   var url = 'https://github.com/craigsapp/scorelib/tree/master/src-library/'
+   var url = 'https://github.com/craigsapp/midifile/tree/master/src-library/'
 	url += file;
    if (linerange) {
 		url += '#L' + linerange;

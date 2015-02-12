@@ -1,5 +1,11 @@
 <header>
-	<h1>Midifile</h1>
+	<h1>
+		{% if page.url == "/" %}
+			Midifile
+		{% else %}
+			<a style="color:#000000;" href="/">Midifile</a>
+		{% endif %}
+	</h1>
 	<h2>
 		{% if page.title %}
 			{{ page.title }}
