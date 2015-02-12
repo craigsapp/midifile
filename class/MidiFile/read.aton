@@ -7,10 +7,10 @@
 @PARAMETERS:	const string& filename
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		1149-1456
+@LINES:		1170-1477
 @SEEALSO:	
 @SHORTDESC:	Read in a Standard MIDI File.
-@LONGDESC:	Parse a Stdnard MIDI File from either a file or from
+@LONGDESC:	Parse a Standard MIDI File from either a file or from
 		an already opened input stream, and store its contents
 		in the MidiFile object.
 

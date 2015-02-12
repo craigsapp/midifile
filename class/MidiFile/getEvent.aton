@@ -5,7 +5,7 @@
 @RETURN:	MFEvent&
 @PARAMETERS:	int track, int index
 @FILE:		MidiFile.cpp
-@LINES:		996-1006
+@LINES:		1006-1016
 @SEEALSO:	
 @SHORTDESC:	Return the event at the given index in the specified track.
 @LONGDESC:	Return the event at the given index in the specified track.

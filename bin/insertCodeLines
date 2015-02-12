@@ -1,0 +1,173 @@
+#!/usr/bin/perl
+#
+# Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+# Creation Date: Sun Feb  8 20:56:03 PST 2015
+# Last Modified: Thu Feb 12 00:31:48 PST 2015
+# Filename:      midifile/bin/insertCodeLines
+# Syntax:        perl 5
+# vim:           ts=3 expandtab hlsearch
+#
+# Description:   Calculate code lines for functions in midifile src files.
+#                and insert the range within the ATON documentation for the
+#                function so that it can be highlighted in the midifile
+#                documentation.
+#
+
+use strict;
+
+my %SrcContents;
+my @files = @ARGV;
+my $urlbase = "https://raw.githubusercontent.com/craigsapp/midifile/master/src-library";
+
+foreach my $file (@files) {
+   processFile($file);
+}
+
+
+
+##############################
+##
+## processFile -- Read an ATON file and insert the source code line range
+##    for the given function in the ATON file (only one function allowed
+##    in each ATON file with this code).
+##
+
+sub processFile {
+   my ($file) = @_;
+   open (FILE, $file) or die "Cannot read $file.";
+   my @contents = <FILE>;
+   close FILE;
+   my $function = getFunctionName($file, @contents);
+   my @src = getSourceContents($file, @contents);
+   my $linerange = getSourceLines($file, $function, @src);
+   print "$function: $linerange\n";
+   my $i;
+   my $line;
+   open (XFILE, ">$file") or die "Cannot write to $file\n";
+   for ($i=0; $i<@contents; $i++) {
+      $line = $contents[$i];
+      chomp $line;
+      if ($line =~ /^\@LINES\s*:/) {
+         print XFILE "\@LINES:\t\t$linerange\n";
+      } else {
+         print XFILE "$line\n";
+      }
+   }
+   close XFILE;
+}
+
+
+
+##############################
+##
+## getSourceLines --
+##
+
+sub getSourceLines {
+   my ($file, $function, @src) = @_;
+   my $startline = -1;
+   my $endline = -1;
+   my $i;
+   my $line;
+   my $fname;
+   my $tline = -1;
+   for ($i=0; $i<@src; $i++) {
+      $line = $src[$i];
+      if ($line =~ /^\/{20}/) {
+         $tline = $i;
+      } elsif ($line !~ /^\//) {
+         $tline = -1;
+      }
+      if ($line =~ /^\/\/\s*[^:]+::([^\s]+)\s*--/) {
+         $fname = $1;
+         if ($fname eq $function) {
+            $startline = $i;
+            last;
+         }
+      }
+   }
+   if ($startline <= 0) {
+      die "Could not find function '$function' in $file. startline = $startline\n";
+   }
+
+   $endline = $startline;
+   for ($i=$startline+1; $i<@src; $i++) {
+      $line = $src[$i];
+      if ($line =~ /^\s*$/) {
+         next;
+      }
+      if ($line =~ /^\/\/\s*[^:]+::([^\s]+)\s*--/) {
+         last;
+      }
+      if ($line =~ /^\//) {
+         next;
+      }
+      $endline = $i;
+   }
+   if ($endline <= $startline) {
+      die "Could not find end line in $file for function $function.\n";
+   }
+
+   if ($startline - $tline < 5) {
+      $startline = $tline;
+   }
+
+   # make start line be one line back and endline one line forward if
+   # those lines are blank.
+   $startline-- if $src[$startline - 1] =~ /^\s*$/;
+   #if (($endline + 1 < @src) && ($src[$endline + 1] =~ /^\s*$/)) {
+   if ($src[$endline + 1] =~ /^\s*$/) {
+      $endline++ 
+   }
+
+   # offset by 1 rather than 0
+   $startline++;
+   $endline++;
+
+   return "$startline-$endline";
+}
+
+
+
+##############################
+##
+## getSourceContents --
+##     @FILE:		ScoreUtility_math.cpp
+##
+
+sub getSourceContents {
+   my ($file, @contents) = @_;
+   my $srcname;
+   foreach my $line (@contents) {
+      if ($line =~ /^\@FILE\s*:\s*([^\s]+)\s*$/) {
+         $srcname = $1;
+         if ($SrcContents{$srcname} !~ /^\s*$/) {
+            return split(/\n/, $SrcContents{$srcname});
+         } else {
+            $SrcContents{$srcname} = `wget "$urlbase/$srcname" -O - 2> /dev/null`;
+            return split(/\n/, $SrcContents{$srcname});
+         }
+      }
+   }
+   die "Cannot find source code filename in $file.\n";
+}
+
+
+
+##############################
+##
+## getFunctionName --
+##
+
+sub getFunctionName {
+   my ($file, @contents) = @_;
+   foreach my $line (@contents) {
+      if ($line =~ /^\@METHOD\s*:\s*([^\s]+)\s*$/) {
+         return $1;
+      }
+   }
+   die "Cannot find function name in $file.\n";
+}
+
+
+

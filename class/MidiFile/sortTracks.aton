@@ -5,10 +5,10 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1500-1511
+@LINES:		1521-1532
 @SEEALSO:	
 @SHORTDESC:	Sort all tracks in the MidiFile by event timestamps.
-@LONGDESC:	Sort all tracks in teh MidiFile by event timestamps.
+@LONGDESC:	Sort all tracks in the MidiFile by event timestamps.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:

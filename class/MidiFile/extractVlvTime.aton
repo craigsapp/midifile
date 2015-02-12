@@ -5,7 +5,7 @@
 @RETURN:	ulong
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		2129-2147
+@LINES:		2150-2168
 @SEEALSO:	
 @SHORTDESC:	Extract a VLV value from the input stream.
 @LONGDESC:	Extract a VLV value from the input stream.

@@ -3,6 +3,7 @@ layout: default
 title: programming tutorial
 ---
 
+{% include docslot/docslot.html %}
 
 <h2> Print a list of notes attacks in a MIDI file </h2>
 
@@ -11,31 +12,12 @@ in the MIDI file.
 
 
 ``` cpp
-#include "MidiFile.h"
-#include "Options.h"
-#include <iostream>
-using namespace std;
-
-int main(int argc char** argv) {
-   Options options;
-   options.process(argc, argv);
-   if (options.getArgCount() != 1) {
-      cerr << "At least one MIDI filename is required.\n";
-      exit(1);
-   }
-   MidiFile midifile;
-   midifile.read(options.getArg(1));
-   midifile.joinTracks();
-   midifile.absoluteTime();
-   int track = 0;
-   for (int i=0; i<midifile.getEventCount(track); i++) {
-      if (!midifile[track][i].isNoteOn()) {
-         continue;
-      }
-      cout << midifile[track][i].time 
-           << '\t' << midifile[track][i].data[2] 
-           << endl;
-   }
-}
+{% include code/notelist.cpp %}
 ```
+
+Functions used in this example:
+
+<div class="docslot" id="MidiFile::read"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::read</span><span class="short-desc"> &mdash; Read in a Standard MIDI File.</span></div>
+<div class="docslot" id="MidiFile::absoluteTime"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::absoluteTime</span><span class="short-desc"> &mdash; Convert event timestamps into Absolute time.</span></div>
+<div class="docslot" id="MidiFile::joinTracks"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::joinTracks</span><span class="short-desc"> &mdash; Merge all tracks into a single stream of events.</span></div>
 

@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	int track, int time, vector<uchar>& data
 @FILE:		MidiFile.cpp
-@LINES:		694-710
+@LINES:		705-721
 @SEEALSO:	
 @SHORTDESC:	Create an MFEvent and store at the end of the specified
 		track's event list.  The return value is the index position

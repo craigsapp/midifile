@@ -6,7 +6,7 @@
 @RETURN:	uchar
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		2419-2435
+@LINES:		2440-2456
 @SEEALSO:	
 @SHORTDESC:	Read one byte from the input stream.
 @LONGDESC:	Read one byte from the input stream.

@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1008-1026
+@LINES:		1029-1047
 @SEEALSO:	
 @SHORTDESC:	Return the delta time ticks units which represent a quarter note.
 @LONGDESC:	Return the delta time ticks units which represent a quarter note.

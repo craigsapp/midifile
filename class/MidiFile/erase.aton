@@ -3,10 +3,10 @@
 @METHOD:	clear
 @ACCESS:	public
 @RETURN:	void
-@PARAMETERS:	voi 
+@PARAMETERS:	void
 @FILE:		MidiFile.cpp
 @ALIAS:		erase
-@LINES:		970-993
+@LINES:		981-1004
 @SEEALSO:	
 @SHORTDESC:	Clear all tracks, leaving one track with no data in it.
 @LONGDESC:	Clear all tracks in the MidiFile, leaving one track with no

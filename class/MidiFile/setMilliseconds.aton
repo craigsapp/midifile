@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1469-1486
+@LINES:		1490-1507
 @SEEALSO:	
 @SHORTDESC:	Set the ticks per quarter note value in the MIDI file header
 		to milliseconds.
@@ -14,7 +14,7 @@
 		highest 8-bits: the SMPTE frame rate (as a negative 2's 
 		compliment value).  The lowest 8-bits: divisions per frame
 		(as a positive number).  For millisecond resolution, the SMPTE
-		value is -25 and the subframe rate is 40 subframe per frame.
+		value is -25 and the sub-frame rate is 40 sub-frame per frame.
 		In hexadecimal these values are: -25 = 111,0111 = 0xe7, and
 		40 = 0010,1000 = 0x28.  So setting the ticks per quarter note
 		value to 0xe728 will cause delta times in the MIDI file to
