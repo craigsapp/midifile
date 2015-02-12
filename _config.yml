@@ -2,29 +2,24 @@
 # http://jekyllrb.com/docs/configuration
 
 # Site settings ###########################################################
-title: Scorelib
+title: Midifile
 email: craig@ccrma.stanford.edu
-description: "Scorelib: C++ parsing library for SCORE data"
+description: "Midifile: C++ parsing library for Standard MIDI Files"
 baseurl: ""
-url: "http://scorelib.sapp.org"
-#twitter_username: jekyllrb
-github_username:  craigsapp/scorelib
+url: "http://midifile.sapp.org"
+github_username:  craigsapp/midifile
 timezone: America/Los_Angeles
 exclude: [
    old,
    bin,
    Makefile,
-   about/Makefile,
-   formats/Makefile,
-   formats/binary/Makefile,
-   formats/pmx/Makefile,
-   formats/ppmx/Makefile,
+   class/Makefile,
    _include/Makefile
 ]
 
 
 # Build settings ##########################################################
-markdown: kramdown
+markdown: redcarpet
 permalink: pretty
 
 
