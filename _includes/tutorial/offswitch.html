@@ -6,29 +6,29 @@
 	Changing note-off message styles
 </summary>
 
-
 The MIDI protocol allows two types of note-off messages: (1) using the 
 a command byte starting with the hex digit "8" which indicates a note
 off for a given key with a given off-velocity, and (2) using note-on
 commands, setting the attack velocity to 0.  
 
-<p>
 The following program can convert between these two different styles.
 The default behavior is to conver all to "8" style note-offs.  If
 the <tt>-0</tt> option is used, the note-offs will be converted
 into the "9" style note-off message which use a zero attack velocity
 within a note-on message.
 
-
 ``` cpp
 {% include tutorial/code/offswitch.cpp %}
 ```
 
-Functions used in this example:
+Library functions used in this example:
 
-<div class="docslot" id="MidiFile::read"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::read</span><span class="short-desc"> &mdash; Read in a Standard MIDI File.</span></div>
-<div class="docslot" id="MidiFile::absoluteTime"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::absoluteTime</span><span class="short-desc"> &mdash; Convert event timestamps into Absolute time.</span></div>
-<div class="docslot" id="MidiFile::joinTracks"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::joinTracks</span><span class="short-desc"> &mdash; Merge all tracks into a single stream of events.</span></div>
+<ul class="function-list">
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::getTrackCount </li>
+<li class="docslot"> MidiFile::getEventCount </li>
+<li class="docslot"> MidiFile::write </li>
+</ul>
 
 
 </details>

@@ -6,31 +6,31 @@
 	Fix track byte counts
 </summary>
 
-
 MIDI track chunks byte counts are often incorrect in Standard
 MIDI files.  This example program shows how to correct the byte
 counts by reading the MIDI file and then writing it out again.
 
-<p>
+
 The MidiFile class ignores the byte-count values when reading
 a MIDI file, so incorret byte counts do not affect it.  When
 writing a file out again, the byte counts is calculated and
 automatically corrected.
 
-<p>
+
 The MidiFile class automatically expands running-status messages,
 so the size of the MIDI file may increase if running-status was
 originally used.
-
 
 ``` cpp
 {% include tutorial/code/fixsize.cpp %}
 ```
 
-Functions used in this example:
+Library functions used in this example:
 
-<div class="docslot" id="MidiFile::read"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::read</span><span class="short-desc"> &mdash; Read in a Standard MIDI File.</span></div>
-<div class="docslot" id="MidiFile::write"><span class="docslot-long-title" style="padding-left:19px;">MidiFile::write</span><span class="short-desc"> &mdash; Write a Standard MIDI File.</span></div>
+<ul class="function-list">
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::write </li>
+</ul>
 
 </details>
 

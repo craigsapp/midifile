@@ -3,7 +3,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig.stanford.edu>
 // Creation Date: Wed Jan 28 01:45:01 PST 2015
-// Last Modified: Sun Feb  8 22:21:48 PST 2015
+// Last Modified: Thu Feb 12 09:48:26 PST 2015 Added sessionStorage use.
 // Filename:      midifile/_includes/docslot/docslot.html
 // Syntax:        JavaScript 1.5 (EMCAScript 5)
 // vim:           ts=3 ft=javascript hlsearch
@@ -482,32 +482,52 @@ function showOrHideShortDescriptionReverse(target) {
 
 function insertDocumentation(target, template) {
 	var fullname     = target.id;
+	if (!fullname) {
+      fullname = target.textContent.replace(/\s/g, '');
+	}
 	var matches      = fullname.match(/(.*)::(.*)/);
 	var classname    = matches[1];
 	var functionname = matches[2];
    functionname = functionname.replace(/=/, "EQUALS");
    
-	var file    = '/class/' + classname + '/' + functionname + '.aton';
-	var request = new XMLHttpRequest();
-	var matches2;
-	request.open('GET', file);
-	request.addEventListener('load', function () {
-		var atondata = this.responseText;
-		var aton = new ATON;
-		aton.setOnlyChildRoot();
-		var docobj = aton.parse(atondata);
-		var dochtml = template(docobj);
-		target.innerHTML = dochtml;
-		var matches = window.location.href.match(/#([^\/]+)$/);
-		if (matches && (matches[1] === functionname)) {
-			showSlotDocumentation(fullname);
-		}
-	});
-	request.addEventListener('error', function () {
-		console.error(this.statusText);
-	});
-	request.send();
+	var local = sessionStorage[classname + '/' + functionname + '.aton'];
+	if (local && !local.match(/^\s*$/)) {
+		processAtonData(local, fullname, target, template);
+   } else {
+		var file    = '/class/' + classname + '/' + functionname + '.aton';
+		var request = new XMLHttpRequest();
+		var matches2;
+		request.open('GET', file);
+		request.addEventListener('load', function () {
+			sessionStorage[classname + '/' + functionname + '.aton'] = 
+					this.responseText;
+			processAtonData(this.responseText, fullname, target, template);
+		});
+		request.addEventListener('error', function () {
+			console.error(this.statusText);
+		});
+		request.send();
+	}
 };
+
+
+
+//////////////////////////////
+//
+// processAtonData --
+//
+
+function processAtonData(atondata, fullname, target, template) {
+	var aton = new ATON;
+	aton.setOnlyChildRoot();
+	var docobj = aton.parse(atondata);
+	var dochtml = template(docobj);
+	target.innerHTML = dochtml;
+	var matches = window.location.href.match(/#([^\/]+)$/);
+	if (matches && (matches[1] === functionname)) {
+		showSlotDocumentation(fullname);
+	}
+}
 
 
 
