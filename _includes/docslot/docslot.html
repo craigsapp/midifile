@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		// that should be viewed.
 		for (var i=0; i<docslots.length; i++) {
 			matches2 = docslots[i].id.match(/\s*(.*)::(.*)\s*/);
-			if (matches[1] === matches2[2]) {
+			if (matches2 && (matches[1] === matches2[2])) {
 				insertDocumentation(docslots[i], template);
 				target = docslots[i].id;
 				details = docslots[i].querySelector('details');

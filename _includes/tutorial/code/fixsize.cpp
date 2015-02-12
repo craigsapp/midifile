@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
 
    Options options;
    options.process(argc, argv);
-   if (options.getArgCount() > 1) {
+   if (options.getArgCount() < 1) {
       cerr << "Usage: " << options.getCommand() << " input(s)\n";
       exit(1);
    }

@@ -23,7 +23,12 @@ int main(int argc, char** argv) {
             continue;
          }
          if (zeroQ) {
+            midifile[track][event].setCommandNibble(0x90);
+            midifile[track][event][2] = 0;
+         } else {
+            midifile[track][event].setCommandNibble(0x80);
          }
+	}
    }
    midifile.write(options.getArg(2));
 
