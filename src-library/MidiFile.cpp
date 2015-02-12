@@ -153,6 +153,17 @@ MFEvent& MFEvent::operator=(MFEvent& mfevent) {
 
 //////////////////////////////
 //
+// MFEvent::operator[] -- Access the MIDI message bytes
+//
+
+uchar& MFEvent::operator[](int index) {
+   return this->data[index];
+}
+
+
+
+//////////////////////////////
+//
 // MFEvent::setMetaTempo -- Input tempo is in quarter notes per minute.
 //
 
@@ -993,7 +1004,6 @@ void MidiFile::erase(void) {
 
 
 
-
 //////////////////////////////
 //
 // MidiFile::getEvent -- return the event at the given index in the
@@ -1002,6 +1012,17 @@ void MidiFile::erase(void) {
 
 MFEvent& MidiFile::getEvent(int aTrack, int anIndex) {
    return (*events[aTrack])[anIndex];
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::operator[] -- return the event list for the specified track.
+//
+
+vector<MFEvent>& MidiFile::operator[](int aTrack) {
+   return *events[aTrack];
 }
 
 

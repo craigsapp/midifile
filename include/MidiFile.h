@@ -65,6 +65,7 @@ class MFEvent {
                 MFEvent    (int aTime, int aTrack, vector<uchar>& someData);
                 MFEvent    (const MFEvent& mfevent);
      MFEvent&   operator=  (MFEvent& mfevent);
+     uchar&     operator[] (int index);
 
                ~MFEvent    ();
 
@@ -115,7 +116,7 @@ class MidiFile {
       int       addMetaEvent              (int aTrack, int aTime, int aType,
                                              const char* metaData);
       int       addPitchBend              (int aTrack, int aTime,
-		                             int aChannel, double amount);
+                                           int aChannel, double amount);
       int       addTrack                  (void);
       int       addTrack                  (int count);
       void      allocateEvents            (int track, int aSize);
@@ -124,6 +125,7 @@ class MidiFile {
       void      erase                     (void);
       void      clear                     (void);
       MFEvent&  getEvent                  (int aTrack, int anIndex);
+      vector<MFEvent>& operator[]         (int aTrack);
       int       getTimeState              (void);
       int       getTrackState             (void);
       int       getTicksPerQuarterNote    (void);
