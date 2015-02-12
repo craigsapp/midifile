@@ -1,0 +1,28 @@
+<head>
+	<!-- vim: set ts=3 : -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>
+		{% if page.title %}
+			{{ page.title }}
+		{% else %}
+			{{ site.title }}
+		{% endif %}
+	</title>
+	<meta name="viewport" content="width=device-width">
+	<meta name="description" content="{{ site.description }}">
+	<link rel="canonical" 
+		href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="{{ "/stylesheets/main.css" | prepend: site.baseurl }}">
+
+	<!-- JavaScript -->
+	<script src="/javascripts/external-links.js"></script>
+	{% if page.javascript %}
+		{% for file in page.javascript %}
+			{% include {{file}} %}
+		{% endfor %}
+	{% endif %}
+
+</head>

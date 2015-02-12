@@ -3,6 +3,8 @@
 !.gitignore
 !.serve
 
+_site
+
 obj
 lib
 bin

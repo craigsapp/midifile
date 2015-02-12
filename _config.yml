@@ -1,0 +1,59 @@
+# Jekyll Configuration Settings
+# http://jekyllrb.com/docs/configuration
+
+# Site settings ###########################################################
+title: Scorelib
+email: craig@ccrma.stanford.edu
+description: "Scorelib: C++ parsing library for SCORE data"
+baseurl: ""
+url: "http://scorelib.sapp.org"
+#twitter_username: jekyllrb
+github_username:  craigsapp/scorelib
+timezone: America/Los_Angeles
+exclude: [
+   old,
+   bin,
+   Makefile,
+   about/Makefile,
+   formats/Makefile,
+   formats/binary/Makefile,
+   formats/pmx/Makefile,
+   formats/ppmx/Makefile,
+   _include/Makefile
+]
+
+
+# Build settings ##########################################################
+markdown: kramdown
+permalink: pretty
+
+
+
+
+###        ________________________________________________________________
+### Notes: ________________________________________________________________
+###        ________________________________________________________________
+
+# YAML front matter #######################################################
+# http://jekyllrb.com/docs/frontmatter
+# publish: false    == don't put file on compiled website
+# layout:  xxxx     == Use the page template found in _layout/xxxx.html
+# permalink: address  == Use this address for the page location (can't
+#                        have any other matching locations on site.
+# category:  
+# categories
+# tags:              == Similar to categories
+#
+# Custom variables:
+# title: A title
+# Then use in body with the string   {{ page.title }}
+
+
+# Liquid templating language ##############################################
+# http://docs.shopify.com/themes/liquid-documentation
+#
+# Liquid cheat sheet
+# http://cheat.markdunkley.com
+
+
+
