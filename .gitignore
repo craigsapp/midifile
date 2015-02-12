@@ -2,6 +2,7 @@
 .*
 !.gitignore
 
+temp
 bin
 obj
 lib
