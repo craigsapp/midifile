@@ -129,12 +129,11 @@ class MidiFile {
       int       getTimeState              (void);
       int       getTrackState             (void);
       int       getTicksPerQuarterNote    (void);
-      int       getTrackCount             (void);
       int       getTrackCountAsType1      (void);
+      int       getTrackCount             (void);
       int       getNumTracks              (void);
+      int       getEventCount             (int aTrack);
       int       getNumEvents              (int aTrack);
-      int       getEventCount             (int aTrack) 
-                                             { return getNumEvents(aTrack); }
       void      joinTracks                (void);
       void      mergeTracks               (int aTrack1, int aTrack2);
       int       read                      (const char* aFile);

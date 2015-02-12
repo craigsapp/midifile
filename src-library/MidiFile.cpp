@@ -1057,6 +1057,7 @@ int MidiFile::getTrackCount(void) {
    return events.size();
 }
 
+
 int MidiFile::getNumTracks(void) {
    return events.size();
 }
@@ -1065,9 +1066,14 @@ int MidiFile::getNumTracks(void) {
 
 //////////////////////////////
 //
-// MidiFile::getNumEvents -- returns the number of events
+// MidiFile::getEventCount -- returns the number of events
 //   in a given track.
 //
+
+int MidiFile::getEventCount(int aTrack) {
+   return events[aTrack]->size();
+}
+
 
 int MidiFile::getNumEvents(int aTrack) {
    return events[aTrack]->size();
