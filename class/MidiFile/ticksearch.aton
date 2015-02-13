@@ -8,7 +8,7 @@
 @LINES:		2365-2382
 @SEEALSO:	
 @SHORTDESC:	Compare function for finding a tick entry in the time map.
-@LONGDESC	Compare function for finding a tick entry in the time map.
+@LONGDESC:	Compare function for finding a tick entry in the time map.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:

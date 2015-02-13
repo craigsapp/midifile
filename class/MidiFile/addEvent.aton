@@ -7,11 +7,11 @@
 @FILE:		MidiFile.cpp
 @LINES:		705-721
 @SEEALSO:	
-@SHORTDESC:	Create an MFEvent and store at the end of the specified
+@SHORTDESC:	Add a new MFEvent to the end of the specified track.
+@LONGDESC:	Create an MFEvent and store at the end of the specified
 		track's event list.  The return value is the index position
 		of the event in the track list.  This index value may become
 		invalid if the track is sorted.
-@LONGDESC:	
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:

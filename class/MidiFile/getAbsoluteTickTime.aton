@@ -8,7 +8,7 @@
 @LINES:		1862-1898
 @SEEALSO:	
 @SHORTDESC:	Convert a time in seconds into an absolute tick time.
-@LONDESC:	Convert a time in seconds into an absolute tick time.
+@LONGDESC:	Convert a time in seconds into an absolute tick time.
 		If there is no tick entry at the given time in seconds,
 		then interpolate between two values.
 

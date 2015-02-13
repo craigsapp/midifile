@@ -8,10 +8,8 @@
 @FILE:		MidiFile.cpp
 @LINES:		1819-1860
 @SEEALSO:	
-@SHORTDESC:	Return the time in seconds for the specified message or absolute
-		tick time.
-@LONGDESC:	Return the time in seconds for the specified message or absolute
-		tick time.
+@SHORTDESC:	Return the time in seconds for the specified message.
+@LONGDESC:	Return the time in seconds for the specified message.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:

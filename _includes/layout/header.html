@@ -5,8 +5,15 @@
 		{% else %}
 			<a style="color:#000000;" href="/">Midifile</a>
 		{% endif %}
+		{% if page.url != "/" %}
+			<a href="https://github.com/craigsapp/midifile" id="view-on-github-footer" class="button-github"><span>View on GitHub</span></a>
+		{% endif %}
 	</h1>
-	<h2>
+	{% if page.url == "/" %}
+		<h2>
+	{% else %}
+		<h2 style="padding-top:0; margin-top:-50px;">
+	{% endif %}
 		{% if page.title %}
 			{{ page.title }}
 		{% else %}
@@ -16,10 +23,17 @@
 </header>
 
 <section id="downloads" class="clearfix">
+	{% if page.url == "/" %}
 	<a href="https://github.com/craigsapp/midifile/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
 	<a href="https://github.com/craigsapp/midifile/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
 	<a href="https://github.com/craigsapp/midifile" id="view-on-github" class="button"><span>View on GitHub</span></a>
+	{% else %}
+	{% endif %}
 </section>
 
-<hr>
+{% if page.url == "/" %}
+	<hr>
+{% else %}
+	<hr style="padding-top:0; margin-top:-20px;">
+{% endif %}
 

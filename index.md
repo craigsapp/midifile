@@ -19,7 +19,8 @@ make
 
 <ul>
 <li> <a href="tutorial">Tutorial</a> </li>
-</ul>
+
+<!-- TUTORIAL LIST ------------------------------------------------- -->
 
 <script>
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -35,16 +36,64 @@ document.addEventListener("DOMContentLoaded", function(event) {
    }
 });
 </script>
+
 <style>
 ul.tutorial-list {
-	-webkit-column-count: 4;
-	-moz-column-count: 4;
-	column-count: 4;
+	-webkit-column-count: 6;
+	-moz-column-count: 6;
+	column-count: 6;
+	margin-left: 30px;
 }
 </style>
+
 <ul class="tutorial-list">
 <li> fixsize </li>
 <li> noteattacks </li>
 <li> offswitch </li>
+</ul>
+
+
+
+<!-- CLASS LIST ---------------------------------------------------- -->
+
 <ul>
+<li>   <a href="class">Class documentation</a>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(event) {
+   var classes = document.querySelectorAll("ul.class-list > li");
+   var i;
+   for (i=0; i<classes.length; i++) {
+      var target = classes[i].textContent.replace(/\s/g, '');
+      var newcontent = "";
+      newcontent += '<a href="class/' + target + '">';
+      newcontent += target;
+      newcontent += '</a>';
+      classes[i].innerHTML = newcontent;
+   }
+});
+</script>
+<style>
+
+ul.class-list {
+	-webkit-column-count: 6;
+	-moz-column-count: 6;
+	column-count: 6;
+	margin-left: 10px;
+}
+</style>
+
+<ul class="class-list">
+<li> MidiFile </li>
+<li> MFEvent </li>
+<li> Options </li>
+</ul>
+
+</li>
+
+</ul>
+
+
+
+
 

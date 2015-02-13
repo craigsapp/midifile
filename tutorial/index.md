@@ -31,6 +31,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 </script>
 
+The code in the following tutorials can be placed into the
+`midifile/src-programs` directory.  If the program file is named
+"myprogram.cpp", then type `make myprogram` in the `midifile`
+directory to compile it.  The compiled program will be placed in
+the `midifile/bin` directory.
+
 {% include docslot/docslot.html %}
 
 {% include tutorial/contents.html %}
