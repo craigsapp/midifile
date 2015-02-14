@@ -1,21 +1,42 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        isTimbre
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	isTimbre
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		514-534
+@SEEALSO:	
+@SHORTDESC:	Returns true if MIDI message is a patch change.
+@LONGDESC:	Returns true if MIDI message is a patch change.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::isTimbre --
+//
 
+int MidiFile::isTimbre(int track, int index) {
+   return MidiFile::getEvent(track, index).isTimbre();
+}
+
+int MFEvent::isTimbre(void) {
+   if ((data[0] &amp; 0xf0) != 0xc0) {
+      return 0;
+   }
+   if (data.size() != 2) {
+      return 0;
+   }
+
+   return 1;
+}
+
+@@END:	FunctionDocumentation
 

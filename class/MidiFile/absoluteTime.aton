@@ -39,14 +39,14 @@ void MidiFile::absoluteTime(void) {
    int i, j;
    int length = getNumTracks();
    int* timedata = new int[length];
-   for (i=0; i<length; i++) {
+   for (i=0; i&lt;length; i++) {
       timedata[i] = 0;
-      if (events[i]->size() > 0) {
+      if (events[i]-&gt;size() &gt; 0) {
          timedata[i] = (*events[i])[0].time;
       } else {
          continue;
       }
-      for (j=1; j<(int)events[i]->size(); j++) {
+      for (j=1; j&lt;(int)events[i]-&gt;size(); j++) {
          timedata[i] += (*events[i])[j].time;
          (*events[i])[j].time = timedata[i];
       }

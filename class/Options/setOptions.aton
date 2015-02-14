@@ -1,0 +1,44 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	setOptions
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int argc, char** argv
+@FILE:		Options.cpp
+@LINES:		741-763
+@SEEALSO:	
+@SHORTDESC:	Store input list of options/arguments.
+@LONGDESC:	Store input list of options/arguments.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::setOptions --  Store the input list of options.
+//
+
+void Options::setOptions(int argc, char** argv) {
+   processedQ = 0;
+
+   extraArgv.resize(argc);
+   extraArgv_strings.resize(argc);
+   int oldsize = 0;
+
+   int i;
+   for (i=0; i&lt;argc; i++) {
+      extraArgv_strings[i+oldsize] = argv[i];
+      extraArgv[i] = extraArgv_strings[i];
+   }
+
+   oargc  = extraArgv.size();
+   oargv  = extraArgv;
+}
+
+@@END:	FunctionDocumentation
+

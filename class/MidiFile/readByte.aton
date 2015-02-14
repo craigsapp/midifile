@@ -25,11 +25,11 @@
 //     was an error.
 //
 
-uchar MidiFile::readByte(istream& input) {
+uchar MidiFile::readByte(istream&amp; input) {
    uchar buffer[1] = {0};
    input.read((char*)buffer, 1);
    if (input.eof()) {
-      cerr << "Error: unexpected end of file." << endl;
+      cerr &lt;&lt; "Error: unexpected end of file." &lt;&lt; endl;
       exit(1);
    }
    return buffer[0];

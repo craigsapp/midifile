@@ -1,0 +1,36 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getCommand
+@ACCESS:	public
+@RETURN:	string
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		519-533
+@SEEALSO:	
+@SHORTDESC:	Return the command name.
+@LONGDESC:	Return the command name.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getCommand -- returns argv[0] (the first string
+//     in the original argv list.
+//
+
+string Options::getCommand(void) {
+   if (argument.size() == 0) {
+      return "";
+   } else {
+      return argument[0];
+   }
+}
+
+@@END:	FunctionDocumentation
+

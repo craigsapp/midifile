@@ -24,9 +24,9 @@
 //
 
 void MidiFile::allocateEvents(int track, int aSize) {
-   int oldsize = events[track]->size();
-   if (oldsize < aSize) {
-      events[track]->reserve(aSize);
+   int oldsize = events[track]-&gt;size();
+   if (oldsize &lt; aSize) {
+      events[track]-&gt;reserve(aSize);
    }
 }
 

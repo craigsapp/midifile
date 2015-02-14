@@ -33,21 +33,21 @@
 //
 
 void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
-   vector <MFEvent>* mergedTrack;
-   mergedTrack = new vector<MFEvent>;
-   mergedTrack->clear();
+   vector &lt;MFEvent&gt;* mergedTrack;
+   mergedTrack = new vector&lt;MFEvent&gt;;
+   mergedTrack-&gt;clear();
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_DELTA) {
       absoluteTime();
    }
    int i, j;
    int length = getNumTracks();
-   for (i=0; i<(int)events[aTrack1]->size(); i++) {
-      mergedTrack->push_back((*events[aTrack1])[i]);
+   for (i=0; i&lt;(int)events[aTrack1]-&gt;size(); i++) {
+      mergedTrack-&gt;push_back((*events[aTrack1])[i]);
    }
-   for (j=0; j<(int)events[aTrack2]->size(); i++) {
+   for (j=0; j&lt;(int)events[aTrack2]-&gt;size(); i++) {
       (*events[aTrack2])[i].track = aTrack1;
-      mergedTrack->push_back((*events[aTrack2])[i]);
+      mergedTrack-&gt;push_back((*events[aTrack2])[i]);
    }
 
    sortTrack(*mergedTrack);
@@ -56,7 +56,7 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 
    events[aTrack1] = mergedTrack;
 
-   for (i=aTrack2; i<length-1; i++) {
+   for (i=aTrack2; i&lt;length-1; i++) {
       events[i] = events[i+1];
    }
 

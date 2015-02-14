@@ -42,6 +42,9 @@ sub processFile {
    my $linerange;
    my $code;
    ($linerange, $code) = getSourceLines($file, $function, @src);
+   $code =~ s/\&/\&amp;/gs;
+   $code =~ s/>/\&gt;/gm;
+   $code =~ s/</\&lt;/gm;
    print "$function: $linerange\n";
    my $i;
    my $line;

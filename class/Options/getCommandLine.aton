@@ -1,0 +1,47 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getCommandLine
+@ACCESS:	public
+@RETURN:	string&
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		535-557
+@SEEALSO:	
+@SHORTDESC:	Returns a concatenation of all original options and arguments.
+@LONGDESC:	Returns a string which contains the command-line call to
+		the program.  This function currently does not deal with
+		spaces in option/argument values which would need to be 
+		quoted.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getCommandLine -- returns a string which contains the
+//     command-line call to the program.  Deal with spaces in arguments...
+//
+
+const string&amp; Options::getCommandLine(void) {
+   if (commandString.size()) {
+      return commandString;
+   }
+
+   commandString = oargv[0];
+
+   int i;
+   for (i=1; i&lt;oargc; i++) {
+      commandString += " ";
+      commandString += oargv[i];
+   }
+
+   return commandString;
+}
+   
+@@END:	FunctionDocumentation
+

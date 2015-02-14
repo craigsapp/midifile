@@ -1,0 +1,132 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	define
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const string& definition
+@PARAMETERS:	const string& definition, const string& description
+@FILE:		Options.cpp
+@LINES:		330-428
+@SEEALSO:	
+@SHORTDESC:	Define an option.
+@LONGDESC:	Define an option that will be used to parse the 
+		argument list.  Option definitions have this structure:
+		<ol>
+		<li> option-name: name of the option (one or more characters,
+		note includeing spaces or equal signs. </li>
+		<li> alias-name: equivalent name(s) of the option. </li>
+		<li> option-type: single character indicating the option 
+		data type. </li>
+		<li> option-default: default value for option if none given
+		on the command-line. </li>
+		<p> An optional description of the option can be
+		given as a second parameter.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::define -- store an option definition in the registry.  Option
+//     definitions have this sructure:
+//        option-name|alias-name1|alias-name2=option-type:option-default
+// option-name :: name of the option (one or more character, not including
+//      spaces or equal signs.
+// alias-name  :: equivalent name(s) of the option.
+// option-type :: single charater indicating the option data type.
+// option-default :: default value for option if no given on the command-line.
+//
+
+int Options::define(const string&amp; aDefinition) {
+   Option_register* definitionEntry = NULL;
+
+   // Error if definition string doesn't contain an equals sign
+   auto location = aDefinition.find("=");
+   if (location == string::npos) {
+      cerr &lt;&lt; "Error: no \"=\" in option definition: " &lt;&lt; aDefinition &lt;&lt; endl;
+      exit(1);
+   }
+
+   string aliases = aDefinition.substr(0, location);
+   string rest    = aDefinition.substr(location+1);
+   string otype   = rest;
+   string ovalue  = "";
+
+   location = rest.find(":");
+   if (location != string::npos) {
+      otype  = rest.substr(0, location);
+      ovalue = rest.substr(location+1);
+   }
+
+   // Remove anyspaces in the option type field
+   otype.erase(remove_if(otype.begin(), otype.end(), ::isspace), otype.end());
+   
+   // Option types are only a single charater (b, i, d, c or s)
+   if (otype.size() != 1) {
+      cerr &lt;&lt; "Error: option type is invalid: " &lt;&lt; otype 
+           &lt;&lt; " in option definition: " &lt;&lt; aDefinition &lt;&lt; endl;
+      exit(1);
+   }
+
+   // Check to make sure that the type is known
+   if (otype[0] != OPTION_STRING_TYPE  &amp;&amp;
+       otype[0] != OPTION_INT_TYPE     &amp;&amp;
+       otype[0] != OPTION_FLOAT_TYPE   &amp;&amp;
+       otype[0] != OPTION_DOUBLE_TYPE  &amp;&amp;
+       otype[0] != OPTION_BOOLEAN_TYPE &amp;&amp;
+       otype[0] != OPTION_CHAR_TYPE ) {
+      cerr &lt;&lt; "Error: unknown option type \'" &lt;&lt; otype[0]
+           &lt;&lt; "\' in defintion: " &lt;&lt; aDefinition &lt;&lt; endl;
+      exit(1);
+   }
+
+   // Set up space for a option entry in the registry
+   definitionEntry = new Option_register(aDefinition, otype[0], ovalue);
+
+   auto definitionIndex = optionRegister.size();
+
+   // Store option aliases
+   string optionName;
+   unsigned int i;
+   aliases += '|';
+   for (i=0; i&lt;aliases.size(); i++) {
+      if (::isspace(aliases[i])) {
+         continue;
+      } else if (aliases[i] == '|') {
+         if (isDefined(optionName)) {
+            cerr &lt;&lt; "Option \"" &lt;&lt; optionName &lt;&lt; "\" from definition:" &lt;&lt; endl;
+            cerr &lt;&lt; "\t" &lt;&lt; aDefinition &lt;&lt; endl;
+            cerr &lt;&lt; "is already defined in: " &lt;&lt; endl;
+            cerr &lt;&lt; "\t" &lt;&lt; getDefinition(optionName) &lt;&lt; endl;
+            exit(1);
+         }
+         if (optionName.size() &gt; 0) {
+            optionList[optionName] = definitionIndex;
+         }
+         optionName.clear();
+      } else {
+         optionName += aliases[i];
+      }
+   }
+
+   // Store definition in registry and return its indexed location.
+   // This location will be used to link option aliases to the main
+   // command name.
+   optionRegister.push_back(definitionEntry);
+   return definitionIndex;
+}
+
+
+int Options::define(const string&amp; aDefinition, const string&amp; aDescription) {
+   int index = define(aDefinition);
+   optionRegister[index]-&gt;setDescription(aDescription);
+   return index;
+}
+
+@@END:	FunctionDocumentation
+

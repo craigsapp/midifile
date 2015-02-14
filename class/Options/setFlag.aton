@@ -1,0 +1,34 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	setFlag
+@ACCESS:	public
+@RETURN:	
+@PARAMETERS:	
+@FILE:		Options.cpp
+@LINES:		710-722
+@SEEALSO:	
+@SHORTDESC:	
+@LONGDESC:	
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::setFlag -- Set the character used to indicate an 
+//	option.  For unix this is usually '-', in MS-DOS,
+//	this is usually '/';  But the syntax of the Options
+//	class is for Unix-style options.
+//
+
+void Options::setFlag(char aFlag) {
+   optionFlag = aFlag;
+}
+
+@@END:	FunctionDocumentation
+

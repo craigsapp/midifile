@@ -1,21 +1,39 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        getTempoTPS
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	getTempoTPS
+@ACCESS:	public
+@RETURN:	double
+@PARAMETERS:	int tpq
+@FILE:		MidiFile.cpp
+@LINES:		476-493
+@SEEALSO:	
+@SHORTDESC:	Return the tempo in terms of ticks per second.
+@LONGDESC:	Return the tempo in terms of ticks per second.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::getTempoTPS -- return the tempo in terms of ticks per seconds.
+//
 
+double MidiFile::getTempoTPS(int track, int index) {
+   return MidiFile::getEvent(track, index).getTempoTPS(getTicksPerQuarterNote());
+}
+
+double MFEvent::getTempoTPS(int tpq) {
+   int micro = getTempoMicroseconds();
+   if (micro &lt; 0) {
+      return -1.0;
+   }
+   return 1000000.0 / (double)micro * tpq;
+}
+
+@@END:	FunctionDocumentation
 

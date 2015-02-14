@@ -38,25 +38,25 @@ void MidiFile::splitTracks(void) {
 
    int maxTrack = 0;
    int i;
-   int length = events[0]->size();
-   for (i=0; i<length; i++) {
-      if ((*events[0])[i].track > maxTrack) {
+   int length = events[0]-&gt;size();
+   for (i=0; i&lt;length; i++) {
+      if ((*events[0])[i].track &gt; maxTrack) {
           maxTrack = (*events[0])[i].track;
       }
    }
 
-   vector<MFEvent>* olddata = events[0];
+   vector&lt;MFEvent&gt;* olddata = events[0];
    events[0] = NULL;
    events.resize(maxTrack);
-   for (i=0; i<maxTrack; i++) {
-      events[i] = new vector<MFEvent>;
-      events[i]->clear();
+   for (i=0; i&lt;maxTrack; i++) {
+      events[i] = new vector&lt;MFEvent&gt;;
+      events[i]-&gt;clear();
    }
 
    int trackValue = 0;
    for (i=0; length; i++) {
       trackValue = (*olddata)[i].track;
-      events[trackValue]->push_back((*olddata)[i]);
+      events[trackValue]-&gt;push_back((*olddata)[i]);
    }
 
    delete olddata;

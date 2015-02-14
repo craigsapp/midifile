@@ -24,7 +24,7 @@
 //    specified track.
 //
 
-MFEvent& MidiFile::getEvent(int aTrack, int anIndex) {
+MFEvent&amp; MidiFile::getEvent(int aTrack, int anIndex) {
    return (*events[aTrack])[anIndex];
 }
 

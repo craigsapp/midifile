@@ -25,7 +25,7 @@
 //    formatted 25 to a line, and two digits each.
 //
 
-ostream& MidiFile::printHex(ostream& out) {
+ostream&amp; MidiFile::printHex(ostream&amp; out) {
    stringstream tempstream;
    MidiFile::write(tempstream);
    int value = 0;
@@ -33,19 +33,19 @@ ostream& MidiFile::printHex(ostream& out) {
    int len = tempstream.str().length();
    int wordcount = 1;
    int linewidth = 25;
-   for (i=0; i<len; i++) {
+   for (i=0; i&lt;len; i++) {
       value = (unsigned char)tempstream.str()[i];
       printf("%02x", value);
-      if (i < len - 1) {
+      if (i &lt; len - 1) {
          if (wordcount % linewidth) {
-            out << ' ';
+            out &lt;&lt; ' ';
          } else {
-            out << '\n';
+            out &lt;&lt; '\n';
          }
       }
       wordcount++;
    }
-   out << '\n';
+   out &lt;&lt; '\n';
    return out;
 }
 

@@ -1,0 +1,32 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getFloat
+@ACCESS:	public
+@RETURN:	float
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		603-613
+@SEEALSO:	getDouble
+@SHORTDESC:	Return the option value as a float.
+@LONGDESC:	Return the option value as a float.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getFloat -- Return the floating point number
+//	associated with the given option.
+//
+
+float Options::getFloat(const string&amp; optionName) {
+   return (float)getDouble(optionName);
+}
+
+@@END:	FunctionDocumentation
+

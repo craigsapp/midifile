@@ -1,0 +1,32 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	optionsArg
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		648-658
+@SEEALSO:	
+@SHORTDESC:	Return true if --options is present.
+@LONGDESC:	Return true if --options is present.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::optionsArg -- Return true if --options is present
+//    on the command line, otherwise returns false.
+//
+
+int Options::optionsArg(void) {
+   return optionsArgument;
+}
+
+@@END:	FunctionDocumentation
+

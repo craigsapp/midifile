@@ -28,27 +28,27 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
 
    unsigned long value = (unsigned long)number;
 
-   if (value >= (1 << 28)) {
-      cout << "Error: number too large to handle" << endl;
+   if (value &gt;= (1 &lt;&lt; 28)) {
+      cout &lt;&lt; "Error: number too large to handle" &lt;&lt; endl;
       exit(1);
    }
 
-   buffer[0] = (value >> 21) & 0x7f;
-   buffer[1] = (value >> 14) & 0x7f;
-   buffer[2] = (value >>  7) & 0x7f;
-   buffer[3] = (value >>  0) & 0x7f;
+   buffer[0] = (value &gt;&gt; 21) &amp; 0x7f;
+   buffer[1] = (value &gt;&gt; 14) &amp; 0x7f;
+   buffer[2] = (value &gt;&gt;  7) &amp; 0x7f;
+   buffer[3] = (value &gt;&gt;  0) &amp; 0x7f;
 
    int i;
    int flag = 0;
    int length = -1;
-   for (i=0; i<3; i++) {
+   for (i=0; i&lt;3; i++) {
       if (buffer[i] != 0) {
          flag = 1;
       }
       if (flag) {
          buffer[i] |= 0x80;
       }
-      if (length == -1 && buffer[i] >= 0x80) {
+      if (length == -1 &amp;&amp; buffer[i] &gt;= 0x80) {
          length = 4-i;
       }
    }
@@ -57,8 +57,8 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
       length = 1;
    }
 
-   if (length < 4) {
-      for (i=0; i<length; i++) {
+   if (length &lt; 4) {
+      for (i=0; i&lt;length; i++) {
          buffer[i] = buffer[4-length+i];
       }
    }

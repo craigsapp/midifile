@@ -1,0 +1,38 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getArgList
+@ACCESS:	public
+@RETURN:	vector<string>&
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		485-501
+@SEEALSO:	getArg
+@SHORTDESC:	Return a list of the arguments.
+@LONGDESC:	Return a list of the arguments.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getArgList -- return a string vector of the arguments
+//     after the options have been parsed out of it.  
+//
+
+const vector&lt;string&gt;&amp; Options::getArgList(void) {
+   return argument;
+}
+
+// Alias:
+
+const vector&lt;string&gt;&amp; Options::getArgumentList(void) { 
+   return getArgList();
+}
+
+@@END:	FunctionDocumentation
+

@@ -1,0 +1,34 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	printRegister
+@ACCESS:	public
+@RETURN:	ostream&
+@PARAMETERS:	ostream& output
+@FILE:		Options.cpp
+@LINES:		1215-1227
+@SEEALSO:	
+@SHORTDESC:	Print option register.
+@LONGDESC:	Print option register.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::printRegister --
+//
+
+ostream&amp; Options::printRegister(ostream&amp; out) {
+   for (auto it = optionRegister.begin(); it != optionRegister.end(); it++) {
+      (*it)-&gt;print(out);
+   }
+   return out;
+}
+
+@@END:	FunctionDocumentation
+

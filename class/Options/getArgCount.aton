@@ -1,0 +1,39 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getArgCount
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		467-483
+@SEEALSO:	
+@SHORTDESC:	Return the number of arguments.
+@LONGDESC:	Return the number of arguments.  This count excludes the
+		command name, and filtered options.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getArgCount --  number of arguments on command line.
+//	does not count the options or the command name.
+//
+
+int Options::getArgCount(void) {
+   return argument.size() - 1;
+}
+
+// Alias:
+
+int Options::getArgumentCount(void) {
+   return getArgCount();
+}
+
+@@END:	FunctionDocumentation
+

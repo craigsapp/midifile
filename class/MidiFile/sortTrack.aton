@@ -25,7 +25,7 @@
 // MidiFile::sortTrack --
 //
 
-void MidiFile::sortTrack(vector<MFEvent>& trackData) {
+void MidiFile::sortTrack(vector&lt;MFEvent&gt;&amp; trackData) {
    qsort(trackData.data(), trackData.size(),
       sizeof(MFEvent), eventcompare);
 }

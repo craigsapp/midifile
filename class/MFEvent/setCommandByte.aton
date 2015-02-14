@@ -1,21 +1,38 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        setCommandByte
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	setCommandByte
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int byte
+@FILE:		MidiFile.cpp
+@LINES:		232-248
+@SEEALSO:	
+@SHORTDESC:	Set the command byte (command nibble + channel nibble) of a MIDI message.
+@LONGDESC:	Set the command byte (command nibble + channel nibble) of a MIDI message.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::setCommandByte --
+//
 
+void MidiFile::setCommandByte(int track, int index, int value) {
+   MidiFile::getEvent(track, index).setCommandByte(value);
+}
+
+void MFEvent::setCommandByte(int value) {
+   if (data.size() &lt; 1) {
+      data.resize(1);
+   }
+   data[0] = (uchar)(value &amp; 0xff);
+}
+
+@@END:	FunctionDocumentation
 

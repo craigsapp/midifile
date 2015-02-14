@@ -1,0 +1,50 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	optionQ
+@ACCESS:	private
+@RETURN:	int
+@PARAMETERS:	const string& option, int& argp
+@FILE:		Options.cpp
+@LINES:		1056-1083
+@SEEALSO:	
+@SHORTDESC:	Returns true if the string is an option.
+@LONGDESC:	Returns true if the string is an option.
+		"--" is not an option, also '-' is not an option.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::optionQ --  returns true if the string is an option
+//	"--" is not an option, also '-' is not an option.
+//	aString is assumed to not be NULL.
+//
+
+int Options::optionQ(const string&amp; aString, int&amp; argp) {
+   if (aString[0] == getFlag()) {
+      if (aString[1] == '\0') {
+         argp++; 
+         return 0;
+      } else if (aString[1] == getFlag()) {
+         if (aString[2] == '\0') {
+            argp++;
+            return 0;
+         } else {
+            return 1;
+         }
+      } else {
+         return 1;
+      }
+   } else {
+      return 0;
+   }
+}
+
+@@END:	FunctionDocumentation
+

@@ -1,21 +1,49 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        getTempoMicro
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	getTempoMicro
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		406-433
+@SEEALSO:	
+@SHORTDESC:	Return the number of microseconds per quarter note.
+@LONGDESC:	Return the number of microseconds per quarter note.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::getTempoMicro -- returns the number of microseconds per
+//      quarter note.  Returns -1 if the MIDI message is not a
+//      tempo meta message.
+//
 
+int MidiFile::getTempoMicroseconds(int track, int index) {
+   return MidiFile::getEvent(track, index).getTempoMicroseconds();
+}
+
+int MFEvent::getTempoMicroseconds(void) {
+   return getTempoMicro();
+}
+
+int MidiFile::getTempoMicro(int track, int index) {
+   return MidiFile::getEvent(track, index).getTempoMicro();
+}
+
+int MFEvent::getTempoMicro(void) {
+   if (!isTempo()) {
+      return -1;
+   }
+
+   return (data[3] &lt;&lt; 16) + (data[4] &lt;&lt; 8) + data[5];
+}
+
+@@END:	FunctionDocumentation
 

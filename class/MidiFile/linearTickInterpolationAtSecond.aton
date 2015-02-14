@@ -35,10 +35,10 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
    int i;
    double lasttime = timemap[timemap.size()-1].seconds;
    // give an error value of -1 if time is out of range of data.
-   if (seconds < 0.0) {
+   if (seconds &lt; 0.0) {
       return -1;
    }
-   if (seconds > timemap[timemap.size()-1].seconds) {
+   if (seconds &gt; timemap[timemap.size()-1].seconds) {
       return -1;
    }
 
@@ -46,9 +46,9 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
    // Could do a more efficient algorithm since time values are sorted,
    // but good enough for now...
    int startindex = -1;
-   if (seconds < lasttime / 2) {
-      for (i=0; i<(int)timemap.size(); i++) {
-         if (timemap[i].seconds > seconds) {
+   if (seconds &lt; lasttime / 2) {
+      for (i=0; i&lt;(int)timemap.size(); i++) {
+         if (timemap[i].seconds &gt; seconds) {
             startindex = i-1;
             break;
          } else if (timemap[i].seconds == seconds) {
@@ -57,8 +57,8 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
          }
       }
    } else {
-      for (i=(int)timemap.size()-1; i>0; i--) {
-         if (timemap[i].seconds < seconds) {
+      for (i=(int)timemap.size()-1; i&gt;0; i--) {
+         if (timemap[i].seconds &lt; seconds) {
             startindex = i+1;
             break;
          } else if (timemap[i].seconds == seconds) {
@@ -68,10 +68,10 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
       }
    }
 
-   if (startindex < 0) {
+   if (startindex &lt; 0) {
       return -1;
    }
-   if (startindex >= (int)timemap.size()-1) {
+   if (startindex &gt;= (int)timemap.size()-1) {
       return -1;
    }
 

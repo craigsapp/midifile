@@ -43,7 +43,7 @@ double MidiFile::getTimeInSeconds(int tickvalue) {
    key.tick    = tickvalue;
    key.seconds = -1;
 
-   void* ptr = bsearch(&key, timemap.data(), timemap.size(),
+   void* ptr = bsearch(&amp;key, timemap.data(), timemap.size(),
          sizeof(_TickTime), ticksearch);
 
    if (ptr == NULL) {
@@ -53,10 +53,10 @@ double MidiFile::getTimeInSeconds(int tickvalue) {
       // the time in seconds values to figure out the final
       // time in seconds.
       // Since the code is not yet written, kill the program at this point:
-      cerr << "ERROR: tick value " << tickvalue << " was not found " << endl;
+      cerr &lt;&lt; "ERROR: tick value " &lt;&lt; tickvalue &lt;&lt; " was not found " &lt;&lt; endl;
       exit(1);
    } else {
-      return ((_TickTime*)ptr)->seconds;
+      return ((_TickTime*)ptr)-&gt;seconds;
    }
 }
 

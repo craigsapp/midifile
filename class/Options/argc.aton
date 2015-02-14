@@ -1,0 +1,31 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	argc
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		308-317
+@SEEALSO:	argv
+@SHORTDESC:	Returns the input parameter argument count.
+@LONGDESC:	Returns the input parameter argument count.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::argc -- returns the argument count as input from main().
+//
+
+int Options::argc(void) const {
+   return oargc;
+}
+
+@@END:	FunctionDocumentation
+

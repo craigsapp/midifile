@@ -1,0 +1,34 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	printOptionList
+@ACCESS:	public
+@RETURN:	ostream&
+@PARAMETERS:	ostream& output
+@FILE:		Options.cpp
+@LINES:		1186-1198
+@SEEALSO:	
+@SHORTDESC:	Print a list of the defined options.
+@LONGDESC:	Print a list of the defined options.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::printOptionList --
+//
+
+ostream&amp; Options::printOptionList(ostream&amp; out) {
+   for (auto it = optionList.begin(); it != optionList.end(); it++) {
+      out &lt;&lt; it-&gt;first &lt;&lt; "\t" &lt;&lt; it-&gt;second &lt;&lt; endl;
+   }
+   return out;
+}
+
+@@END:	FunctionDocumentation
+

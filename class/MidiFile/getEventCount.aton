@@ -26,12 +26,12 @@
 //
 
 int MidiFile::getEventCount(int aTrack) {
-   return events[aTrack]->size();
+   return events[aTrack]-&gt;size();
 }
 
 
 int MidiFile::getNumEvents(int aTrack) {
-   return events[aTrack]->size();
+   return events[aTrack]-&gt;size();
 }
 
 @@END:	FunctionDocumentation

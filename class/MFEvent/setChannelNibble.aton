@@ -1,21 +1,46 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        setChannelNibble
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	setChannelNibble
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int channel
+@FILE:		MidiFile.cpp
+@LINES:		301-325
+@SEEALSO:	
+@SHORTDESC:	Set the channel nibble in a MIDI message command byte.
+@LONGDESC:	Set the channel nibble in a MIDI message command byte.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::setChannelNibble --
+//
 
+void MidiFile::setChannelNibble(int track, int index, int value) {
+   MidiFile::getEvent(track, index).setChannelNibble(value);
+}
+
+void MidiFile::setChannel(int track, int index, int value) {
+   MidiFile::getEvent(track, index).setChannelNibble(value);
+}
+
+void MFEvent::setChannelNibble(int value) {
+   if (data.size() &lt; 1) {
+      data.resize(1);
+   }
+   data[0] = (data[0] &amp; 0xf0) | ((uchar)(value &amp; 0x0f));
+}
+
+void MFEvent::setChannel(int value) {
+   setChannelNibble(value);
+}
+
+@@END:	FunctionDocumentation
 

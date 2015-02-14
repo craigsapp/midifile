@@ -1,0 +1,38 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	operator=
+@ACCESS:	public
+@RETURN:	MFEvent&
+@PARAMETERS:	MFEvent& event
+@FILE:		MidiFile.cpp
+@LINES:		135-151
+@SEEALSO:	
+@SHORTDESC:	Copy the contents of another MFEvent.
+@LONGDESC:	Copy the contents of another MFEvent.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MFEvent::operator= -- Copy the contents of another MFEvent.
+//
+
+MFEvent&amp; MFEvent::operator=(MFEvent&amp; mfevent) {
+   if (this == &amp;mfevent) {
+      return *this;
+   }
+   time  = mfevent.time;
+   track = mfevent.track;
+   data.resize(mfevent.data.size());
+   memcpy(data.data(), mfevent.data.data(), sizeof(uchar) * data.size());
+   return *this;
+}
+
+@@END:	FunctionDocumentation
+

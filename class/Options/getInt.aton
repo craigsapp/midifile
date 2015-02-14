@@ -1,0 +1,40 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getInt
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		615-630
+@SEEALSO:	getBoolean
+@SEEALSO:	getDouble
+@SEEALSO:	getString
+@SEEALSO:	getChar
+@SHORTDESC:	Return the option value as an integer.
+@LONGDESC:	Return the option value as an integer.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getInt -- Return the integer argument.  Can handle
+//	hexadecimal, decimal, and octal written in standard 
+//	C syntax.
+//
+
+int Options::getInt(const string&amp; optionName) {
+   return (int)strtol(getString(optionName).c_str(), (char**)NULL, 0);
+}
+
+int Options::getInteger(const string&amp; optionName) {
+   return getInt(optionName);
+}
+
+@@END:	FunctionDocumentation
+

@@ -1,0 +1,53 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getRegIndex
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		1023-1054
+@SEEALSO:	
+@SHORTDESC:	Return index number of specified option in registry.
+@LONGDESC:	Return index number of specified option in registry.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getRegIndex -- returns the index of the option associated
+//	with this name.
+//
+
+int Options::getRegIndex(const string&amp; optionName) {
+   if (suppressQ &amp;&amp; (optionName == "options")) {
+         return -1;
+   } 
+
+   if (optionName == "options") {
+      print(cout);
+      exit(0);
+   } 
+
+
+   auto it = optionList.find(optionName);
+   if (it == optionList.end()) {
+      if (options_error_check) {
+         cerr &lt;&lt; "Error: unknown option \"" &lt;&lt; optionName &lt;&lt; "\"." &lt;&lt; endl;
+         print(cout);
+         exit(1);
+      } else {
+         return -1;
+      }
+   } else {
+      return it-&gt;second;
+   }
+}
+   
+@@END:	FunctionDocumentation
+

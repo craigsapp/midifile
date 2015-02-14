@@ -1,21 +1,41 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        getCommandNibble
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	getCommandNibble
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		213-230
+@SEEALSO:	
+@SHORTDESC:	Return the command nibble of the MIDI message.
+@LONGDESC:	Return the top four bits of the command byte of
+		the MIDI message.  The bottom 4 bits for the channel
+		are cleared. The return value is 0x80 to 0xf0.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::getCommandNibble -- return the top 4 bits of the data[0]
+//    entry, or -1 if there is not data[0].
+//
 
+int MidiFile::getCommandNibble(int track, int index) {
+   return MidiFile::getEvent(track, index).getCommandNibble();
+}
+
+int MFEvent::getCommandNibble(void) {
+   if (data.size() &lt; 1) {
+      return -1;
+   }
+   return data[0] &amp; 0xf0;
+}
+
+@@END:	FunctionDocumentation
 

@@ -1,0 +1,31 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	argv
+@ACCESS:	public
+@RETURN:	const vector<string>&
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		319-328
+@SEEALSO:	argc
+@SHORTDESC:	Return the original list of input arguments.
+@LONGDESC:	Return the original list of input arguments.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::argv -- returns the arguments strings as input from main().
+//
+
+const vector&lt;string&gt;&amp; Options::argv(void) const {
+   return oargv;
+}
+
+@@END:	FunctionDocumentation
+

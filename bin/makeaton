@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+while ($line = <>) {
+   chomp $line;
+   open(FILE, ">$line.aton") or die;
+   print FILE <<"EOT";
+\@\@BEGIN:	FunctionDocumentation
+\@CLASSNAME:	Options
+\@METHOD:	$line
+\@ACCESS:	public
+\@RETURN:	
+\@PARAMETERS:	
+\@FILE:		Options.cpp
+\@LINES:		
+\@SEEALSO:	
+\@SHORTDESC:	
+\@LONGDESC:	
+
+\@\@BEGIN: EXAMPLE
+\@DESCRIPTION:
+\@CODE:
+\@OUTPUT:
+\@\@END:	EXAMPLE
+
+\@SRCCODE:
+
+\@\@END:	FunctionDocumentation
+
+EOT
+
+}
+

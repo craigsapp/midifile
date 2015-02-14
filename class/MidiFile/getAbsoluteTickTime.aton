@@ -41,7 +41,7 @@ int MidiFile::getAbsoluteTickTime(double starttime) {
    key.tick    = -1;
    key.seconds = starttime;
 
-   void* ptr = bsearch(&key, timemap.data(), timemap.size(),
+   void* ptr = bsearch(&amp;key, timemap.data(), timemap.size(),
          sizeof(_TickTime), secondsearch);
 
    if (ptr == NULL) {
@@ -51,7 +51,7 @@ int MidiFile::getAbsoluteTickTime(double starttime) {
       // the time in tick values to figure out the final time in ticks.
       return linearTickInterpolationAtSecond(starttime);
    } else {
-      return ((_TickTime*)ptr)->tick;
+      return ((_TickTime*)ptr)-&gt;tick;
    }
 
 }

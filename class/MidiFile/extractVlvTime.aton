@@ -23,12 +23,12 @@
 // MidiFile::extractVlvTime --
 //
 
-ulong MidiFile::extractVlvTime(istream& input) {
+ulong MidiFile::extractVlvTime(istream&amp; input) {
    uchar b[5] = {0};
 
-   for (int i=0; i<5; i++) {
+   for (int i=0; i&lt;5; i++) {
       b[i] = MidiFile::readByte(input);
-      if (b[i] < 0x80) {
+      if (b[i] &lt; 0x80) {
          break;
       }
    }

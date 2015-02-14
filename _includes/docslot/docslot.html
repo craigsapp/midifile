@@ -305,7 +305,7 @@ Handlebars.registerHelper('codeLink', function (method, file, linerange,
 	}
 	var output = '';
 
-	output += '<details>\n';
+	output += '<details class="srccode">\n';
 	output += '<summary>\n';
 	output += 'Source code for ' + method 
 	output += ' <a target="new" href="' + url;
@@ -590,7 +590,9 @@ function openAllDocumentation() {
 	for (i=0; i<methodslots.length; i++) {
 		var details = methodslots[i].querySelector('details');
 		if (details) {
-			details.setAttribute('open', true);
+			if (!details.className.match(/srccode/)) {
+				details.setAttribute('open', true);
+			}
 		}
 	}
 }
@@ -676,7 +678,9 @@ function showSlotDocumentation(id) {
 	closeAllDocumentation();
 	var details = target.querySelectorAll('details');
 	for (var i=0; i<details.length; i++) {
-		details[i].setAttribute('open', true);
+		if (!details[i].className.match(/srccode/)) {
+			details[i].setAttribute('open', true);
+		}
 	}
 	//target.scrollIntoView();
 	target.scrollIntoViewIfNeeded();

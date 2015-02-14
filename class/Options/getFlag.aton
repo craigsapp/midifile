@@ -1,0 +1,32 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getFlag
+@ACCESS:	public
+@RETURN:	char
+@PARAMETERS:	void
+@FILE:		Options.cpp
+@LINES:		699-708
+@SEEALSO:	
+@SHORTDESC:	Returns the option character marker.
+@LONGDESC:	Returns the option character marker, which is a dash
+		by default.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getFlag -- Set the character which is usually set to a dash.
+//
+
+char Options::getFlag(void) {
+   return optionFlag;
+}
+
+@@END:	FunctionDocumentation
+

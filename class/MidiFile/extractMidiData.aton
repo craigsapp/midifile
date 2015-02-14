@@ -26,8 +26,8 @@
 // MidiFile::extractMidiData --
 //
 
-void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
-   uchar& runningCommand) {
+void MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; array,
+   uchar&amp; runningCommand) {
 
    int character;
    uchar byte;
@@ -36,16 +36,16 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 
    character = input.get();
    if (character == EOF) {
-      cerr << "Error: unexpected end of file." << endl;
+      cerr &lt;&lt; "Error: unexpected end of file." &lt;&lt; endl;
       exit(1);
    } else {
       byte = (uchar)character;
    }
 
-   if (byte < 0x80) {
+   if (byte &lt; 0x80) {
       runningQ = 1;
       if (runningCommand == 0) {
-         cout << "Error: running command with no previous command" << endl;
+         cout &lt;&lt; "Error: running command with no previous command" &lt;&lt; endl;
          exit(1);
       }
    } else {
@@ -59,7 +59,7 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
    }
 
    uchar metai;
-   switch (runningCommand & 0xf0) {
+   switch (runningCommand &amp; 0xf0) {
       case 0x80:        // note off (2 more bytes)
       case 0x90:        // note on (2 more bytes)
       case 0xA0:        // aftertouch (2 more bytes)
@@ -89,7 +89,7 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                }
                metai = MidiFile::readByte(input); // meta type
                array.push_back(metai);
-               for (uchar j=0; j<metai; j++) {
+               for (uchar j=0; j&lt;metai; j++) {
                   byte = MidiFile::readByte(input); // meta type
                   array.push_back(byte);
                }
@@ -98,15 +98,15 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
             case 0xf0:                // sysex
                // read until you find a 0xf7 character
                byte = 0;
-               while (byte != 0xf7 && !input.eof()) {
+               while (byte != 0xf7 &amp;&amp; !input.eof()) {
                   byte = MidiFile::readByte(input); // meta data
                }
                break;
          }
          break;
       default:
-         cout << "Error reading midifile" << endl;
-         cout << "Command byte was " << (int)runningCommand << endl;
+         cout &lt;&lt; "Error reading midifile" &lt;&lt; endl;
+         cout &lt;&lt; "Command byte was " &lt;&lt; (int)runningCommand &lt;&lt; endl;
          exit(1);
    }
 }

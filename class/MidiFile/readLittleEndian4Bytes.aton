@@ -26,14 +26,14 @@
 //      the order of the bytes to create the return value.
 //
 
-ulong MidiFile::readLittleEndian4Bytes(istream& input) {
+ulong MidiFile::readLittleEndian4Bytes(istream&amp; input) {
    uchar buffer[4] = {0};
    input.read((char*)buffer, 4);
    if (input.eof()) {
-      cerr << "Error: unexpected end of file." << endl;
+      cerr &lt;&lt; "Error: unexpected end of file." &lt;&lt; endl;
       exit(1);
    }
-   return buffer[3] | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
+   return buffer[3] | (buffer[2] &lt;&lt; 8) | (buffer[1] &lt;&lt; 16) | (buffer[0] &lt;&lt; 24);
 }
 
 @@END:	FunctionDocumentation

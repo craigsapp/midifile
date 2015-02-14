@@ -1,21 +1,39 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        setMetaTempo
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	setMetaTempo
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	double tempo
+@FILE:		MidiFile.cpp
+@LINES:		164-180
+@SEEALSO:	
+@SHORTDESC:	Create a tempo meta message from a tempo.
+@LONGDESC:	Create a tempo meta message from a tempo in terms of
+		quarter notes per minute.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::setMetaTempo -- Input tempo is in quarter notes per minute.
+//
 
+void MFEvent::setMetaTempo(double tempo) {
+   int microseconds = (int)(60.0 / tempo * 1000000.0 + 0.5);
+   data.resize(6);
+   data[0] = 0xff;
+   data[1] = 0x51;
+   data[2] = 3;
+   data[3] = (microseconds &gt;&gt; 16) &amp; 0xff;
+   data[4] = (microseconds &gt;&gt;  8) &amp; 0xff;
+   data[5] = (microseconds &gt;&gt;  0) &amp; 0xff;
+}
+
+@@END:	FunctionDocumentation
 

@@ -40,7 +40,7 @@ void MidiFile::setFilename(const char* aname) {
 }
 
 
-void MidiFile::setFilename(const string& aname) {
+void MidiFile::setFilename(const string&amp; aname) {
    MidiFile::setFilename(aname.data());
 }
 

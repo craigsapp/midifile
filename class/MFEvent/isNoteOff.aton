@@ -1,21 +1,47 @@
-@@BEGIN:       FunctionDocumentation
-@OBJECT:        MFEvent
-@METHOD:        isNoteOff
-@RETURN:        
-@PARAMETERS:    
-@FILE:          MFEvent.cpp
-@LINES:         
-@SEEALSO:       
-@SHORTDESC:     
-@LONGDESC:      
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MFEvent
+@METHOD:	isNoteOff
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		187-211
+@SEEALSO:	
+@SHORTDESC:	Return true if MIDI message is a note off message.
+@LONGDESC:	Return true if command nibble is 0x80, or command nibble
+		is 0x90 and key velocity is 0.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
 @CODE:
 @OUTPUT:
-@@END:  EXAMPLE
+@@END:	EXAMPLE
 
-@@END:  FunctionDocumentation
+@SRCCODE:
 
+//////////////////////////////
+//
+// MFEvent::isNoteOff -- returns true if the command byte is in the 0x80
+//     range or if the command byte is in the 0x90 range with a 0 velocity.
+//
 
+int MidiFile::isNoteOff(int track, int index) {
+   return MidiFile::getEvent(track, index).isNoteOff();
+}
+
+int MFEvent::isNoteOff(void) {
+   if (data.size() != 3) {
+      return 0;
+   }
+   if ((data[0] &amp; 0xf0) == 0x80) {
+      return 1;
+   }
+   if (((data[0] &amp; 0xf0) == 0x90) &amp;&amp; (data[2] == 0)) {
+      return 1;
+   }
+
+   return 0;
+}
+
+@@END:	FunctionDocumentation
 

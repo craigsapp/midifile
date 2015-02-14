@@ -27,21 +27,21 @@
 //
 
 int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
-      vector<uchar>& metaData) {
+      vector&lt;uchar&gt;&amp; metaData) {
    timemapvalid = 0;
    int i;
    int length = metaData.size();
-   vector<uchar> fulldata;
+   vector&lt;uchar&gt; fulldata;
    uchar size[23] = {0};
    int lengthsize =  makeVLV(size, length);
 
    fulldata.resize(2+lengthsize+length);
    fulldata[0] = 0xff;
-   fulldata[1] = aType & 0x7F;
-   for (i=0; i<lengthsize; i++) {
+   fulldata[1] = aType &amp; 0x7F;
+   for (i=0; i&lt;lengthsize; i++) {
       fulldata[2+i] = size[i];
    }
-   for (i=0; i<length; i++) {
+   for (i=0; i&lt;length; i++) {
       fulldata[2+lengthsize+i] = metaData[i];
    }
 
@@ -53,10 +53,10 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       const char* metaData) {
 
    int length = strlen(metaData);
-   vector<uchar> buffer;
+   vector&lt;uchar&gt; buffer;
    buffer.resize(length);
    int i;
-   for (i=0; i<length; i++) {
+   for (i=0; i&lt;length; i++) {
       buffer[i] = (uchar)metaData[i];
    }
    return addMetaEvent(aTrack, aTime, aType, buffer);

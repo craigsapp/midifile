@@ -1,0 +1,69 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	appendOptions
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int argc, char** argv
+@FILE:		Options.cpp
+@LINES:		765-812
+@SEEALSO:	
+@SHORTDESC:	Add additional input parameters to the current argument list.
+@LONGDESC:	Add additional input parameters to the current argument list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::appendOptions -- Add argc and argv data to the current
+//      list residing inside the Options class variable.
+//
+
+void Options::appendOptions(int argc, char** argv) {
+
+   processedQ = 0;
+
+   // data used to be stored directly here:
+   //gargc = argc;
+   //gargv = argv;
+   // but now gets interfaced to: extraArgv and extraArgv_strings:
+
+   int oldsize = extraArgv.size();
+   extraArgv.resize(oldsize + argc);
+   extraArgv_strings.resize(oldsize + argc);
+
+   int i;
+   for (i=0; i&lt;argc; i++) {
+      extraArgv_strings[i+oldsize] = argv[i];
+      extraArgv[i+oldsize] = extraArgv_strings[i+oldsize];
+   }
+
+   oargc = extraArgv.size();
+   oargv = extraArgv;
+}
+
+
+void Options::appendOptions(const vector&lt;string&gt;&amp; argv) {
+   processedQ = 0;
+
+   int oldsize = extraArgv.size();
+   extraArgv.resize(oldsize + argv.size());
+   extraArgv_strings.resize(oldsize + argv.size());
+
+   unsigned int i;
+   for (i=0; i&lt;argv.size(); i++) {
+      extraArgv_strings[i+oldsize] = argv[i];
+      extraArgv[i+oldsize] = extraArgv_strings[i+oldsize];
+   }
+
+   oargc = extraArgv.size();
+   oargv = extraArgv;
+}
+
+@@END:	FunctionDocumentation
+

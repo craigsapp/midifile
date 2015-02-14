@@ -74,9 +74,9 @@ void MidiFile::buildTimeMap(void) {
    double lastsec = 0.0;
    double cursec;
 
-   for (i=0; i<getNumEvents(0); i++) {
+   for (i=0; i&lt;getNumEvents(0); i++) {
       curtick = getEvent(0, i).time;
-      if ((curtick > lasttick) || !tickinit) {
+      if ((curtick &gt; lasttick) || !tickinit) {
          tickinit = 1;
 
          // calculate the current time in seconds:

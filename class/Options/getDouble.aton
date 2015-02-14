@@ -1,0 +1,38 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getDouble
+@ACCESS:	public
+@RETURN:	double
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		578-589
+@SEEALSO:	getBoolean
+@SEEALSO:	getInteger
+@SEEALSO:	getString
+@SEEALSO:	getChar
+@SHORTDESC:	Return option value as a double float.
+@LONGDESC:	Returns the double float associated with the given
+		option.  Returns 0 if there is no number associated
+		with the option.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getDouble -- returns the double float associated
+//	with the given option.  Returns 0 if there is no
+//	number associated with the option.
+//
+
+double Options::getDouble(const string&amp; optionName) {
+   return strtod(getString(optionName).c_str(), (char**)NULL);
+}
+
+@@END:	FunctionDocumentation
+

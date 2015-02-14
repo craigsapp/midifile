@@ -1,0 +1,121 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	storeOption
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int gargp, int& position, int& running
+@FILE:		Options.cpp
+@LINES:		1085-1184
+@SEEALSO:	
+@SHORTDESC:	Store value for particular option.
+@LONGDESC:	Store value for particular option.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::storeOption -- 
+//
+
+#define OPTION_FORM_SHORT     0
+#define OPTION_FORM_LONG      1
+#define OPTION_FORM_CONTINUE  2
+
+int Options::storeOption(int gargp, int&amp; position, int&amp; running) {
+   int optionForm;
+   char tempname[1024];
+   char optionType = '\0';
+
+   if (running) {
+      optionForm = OPTION_FORM_CONTINUE;
+   } else if (oargv[gargp][1] == getFlag()) {
+      optionForm = OPTION_FORM_LONG;
+   } else {
+      optionForm = OPTION_FORM_SHORT;
+   }
+
+   switch (optionForm) {
+      case OPTION_FORM_CONTINUE:
+         position++;
+         tempname[0] = oargv[gargp][position];
+         tempname[1] = '\0';
+         optionType = getType(tempname);
+         if (optionType != OPTION_BOOLEAN_TYPE) {
+            running = 0;
+            position++;
+         }
+         break;
+      case OPTION_FORM_SHORT:   
+         position = 1;
+         tempname[0] = oargv[gargp][position];
+         tempname[1] = '\0';
+         optionType = getType(tempname);
+         if (optionType != OPTION_BOOLEAN_TYPE) {
+            position++;
+         }
+         break;
+      case OPTION_FORM_LONG:   
+         position = 2;
+         while (oargv[gargp][position] != '=' &amp;&amp; 
+               oargv[gargp][position] != '\0') {
+            tempname[position-2] = oargv[gargp][position];
+            position++;    
+         }
+         tempname[position-2] = '\0';
+         optionType = getType(tempname);
+         if (optionType == -1) {         // suppressed --options option
+            optionsArgument = 1;
+            break;   
+         }
+         if (oargv[gargp][position] == '=') {
+            if (optionType == OPTION_BOOLEAN_TYPE) {
+               cerr &lt;&lt; "Error: boolean variable cannot have any options: " 
+                    &lt;&lt; tempname &lt;&lt; endl;
+               exit(1);
+            }
+            position++;
+         }
+         break;
+   }
+
+   if (optionType == -1) {              // suppressed --options option
+      optionsArgument = 1;
+      gargp++;
+      position = 0;
+      return gargp;
+   }
+
+   if (oargv[gargp][position] == '\0' &amp;&amp; 
+         optionType != OPTION_BOOLEAN_TYPE) {
+      gargp++;
+      position = 0;
+   } 
+
+   if (optionForm != OPTION_FORM_LONG &amp;&amp; optionType == OPTION_BOOLEAN_TYPE &amp;&amp;
+         oargv[gargp][position+1] != '\0') {
+      running = 1;
+   } else if (optionType == OPTION_BOOLEAN_TYPE &amp;&amp;
+         oargv[gargp][position+1] == '\0') {
+      running = 0;
+   }
+
+   if (gargp &gt;= oargc) {
+      cerr &lt;&lt; "Error: last option requires a parameter" &lt;&lt; endl;
+      exit(1);
+   }
+   setModified(tempname, &amp;oargv[gargp][position]);
+
+   if (!running) {
+      gargp++;
+   }
+   return gargp;
+} 
+
+@@END:	FunctionDocumentation
+

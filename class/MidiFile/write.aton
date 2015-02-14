@@ -40,7 +40,7 @@ int MidiFile::write(const char* filename) {
    #endif
 
    if (!outputfile.is_open()) {
-      cout << "Error: could not write: " << filename << endl;
+      cout &lt;&lt; "Error: could not write: " &lt;&lt; filename &lt;&lt; endl;
       exit(1);
    }
    int status = write(outputfile);
@@ -49,7 +49,7 @@ int MidiFile::write(const char* filename) {
 }
 
 
-int MidiFile::write(const string& filename) {
+int MidiFile::write(const string&amp; filename) {
    return MidiFile::write(filename.data());
 }
 

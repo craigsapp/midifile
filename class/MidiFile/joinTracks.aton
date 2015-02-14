@@ -39,19 +39,19 @@ void MidiFile::joinTracks(void) {
       return;
    }
 
-   vector <MFEvent>* joinedTrack;
-   joinedTrack = new vector<MFEvent>;
-   joinedTrack->reserve(200000);
-   joinedTrack->clear();
+   vector &lt;MFEvent&gt;* joinedTrack;
+   joinedTrack = new vector&lt;MFEvent&gt;;
+   joinedTrack-&gt;reserve(200000);
+   joinedTrack-&gt;clear();
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_DELTA) {
       absoluteTime();
    }
    int i, j;
    int length = getNumTracks();
-   for (i=0; i<length; i++) {
-      for (j=0; j<(int)events[i]->size(); j++) {
-         joinedTrack->push_back((*events[i])[j]);
+   for (i=0; i&lt;length; i++) {
+      for (j=0; j&lt;(int)events[i]-&gt;size(); j++) {
+         joinedTrack-&gt;push_back((*events[i])[j]);
       }
    }
 

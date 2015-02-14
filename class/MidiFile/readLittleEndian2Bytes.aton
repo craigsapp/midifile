@@ -29,14 +29,14 @@
 //       the order of the bytes to create the return value.
 //
 
-ushort MidiFile::readLittleEndian2Bytes(istream& input) {
+ushort MidiFile::readLittleEndian2Bytes(istream&amp; input) {
    uchar buffer[2] = {0};
    input.read((char*)buffer, 2);
    if (input.eof()) {
-      cerr << "Error: unexpected end of file." << endl;
+      cerr &lt;&lt; "Error: unexpected end of file." &lt;&lt; endl;
       exit(1);
    }
-   return buffer[1] | (buffer[0] << 8);
+   return buffer[1] | (buffer[0] &lt;&lt; 8);
 }
 
 @@END:	FunctionDocumentation

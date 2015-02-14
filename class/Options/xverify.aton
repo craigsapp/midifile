@@ -1,0 +1,91 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	xverify
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int error_check, int suppress
+@PARAMETERS:	int argc, char** argv, int error_check, int suppress
+@FILE:		Options.cpp
+@LINES:		946-1014
+@SEEALSO:	
+@SHORTDESC:	Verify options.
+@LONGDESC:	Verify options.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::xverify --
+//	default value: error_check = 1, suppress = 0;
+//
+
+void Options::xverify(int error_check, int suppress) {
+   options_error_check = error_check;
+   int gargp = 1;
+   int optionend = 0;
+
+   if (suppress) {
+      suppressQ = 1;
+   } else {
+      suppressQ = 0;
+   }
+
+   // if calling xverify again, must remove previous argument list.
+   if (argument.size() != 0) {
+      argument.clear();
+   }
+
+   char* tempargument;
+   tempargument = new char[oargv[0].size()+1];
+   strcpy(tempargument, oargv[0].c_str());
+   argument.push_back(tempargument);
+
+   int oldgargp;
+   int position = 0;
+   int running = 0;
+   while (gargp &lt; oargc &amp;&amp; optionend == 0) {
+      if (optionQ(oargv[gargp], gargp)) {
+         oldgargp = gargp;
+         gargp = storeOption(gargp, position, running);
+         if (gargp != oldgargp) {
+            running = 0;
+            position = 0;
+         }
+      } else {
+         if (oargv[gargp].size() == 2 &amp;&amp; oargv[gargp][0] == getFlag() &amp;&amp;
+            oargv[gargp][2] == getFlag() ) {
+               optionend = 1;
+            gargp++;
+            break;
+         } else {                          // this is an argument
+            tempargument = new char[oargv[gargp].size()+1];
+            strcpy(tempargument, oargv[gargp].c_str());
+            argument.push_back(tempargument);
+            gargp++;
+         }
+      }
+   }
+
+   while (gargp &lt; oargc) {
+      tempargument = new char[oargv[gargp].size()+1];
+      strcpy(tempargument, oargv[gargp].c_str());
+      argument.push_back(tempargument);
+      gargp++;
+   }
+
+}
+
+
+void Options::xverify(int argc, char** argv, int error_check, int suppress) {
+   setOptions(argc, argv);
+   xverify(error_check, suppress);
+}
+
+@@END:	FunctionDocumentation
+

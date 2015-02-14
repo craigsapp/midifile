@@ -1,0 +1,39 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getBoolean
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		503-517
+@SEEALSO:	getInteger
+@SEEALSO:	getDouble
+@SEEALSO:	getString
+@SEEALSO:	getChar
+@SHORTDESC:	Returns true if the option was set on the command-line.
+@LONGDESC:	Returns true if the option was set on the command-line.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getBoolean --  returns true if the option was
+//	used on the command line.
+//
+
+int Options::getBoolean(const string&amp; optionName) {
+   int index = getRegIndex(optionName);
+   if (index &lt; 0) {
+      return 0;
+   }
+   return optionRegister[index]-&gt;isModified();
+}
+
+@@END:	FunctionDocumentation
+

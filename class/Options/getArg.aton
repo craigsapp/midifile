@@ -1,0 +1,43 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getArg
+@ACCESS:	public
+@RETURN:	const string&
+@PARAMETERS:	int index
+@FILE:		Options.cpp
+@LINES:		445-465
+@SEEALSO:	getArgCount
+@SHORTDESC:	Return an argument string after options have been filtered out.
+@LONGDESC:	Returns the specified argument.  The first argument is accessed
+		by .getArg(1).
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getArg -- returns the specified argument.
+//	argurment 0 is the command name.
+//
+
+const string&amp; Options::getArg(int index) {
+   if (index &lt; 0 || index &gt;= (int)argument.size()) {
+      cerr &lt;&lt; "Error: argument " &lt;&lt; index &lt;&lt; " does not exist." &lt;&lt; endl;
+      exit(1);
+   }
+   return argument[index];
+}
+
+// Alias:
+
+const string&amp; Options::getArgument(int index) {
+   return getArg(index);
+}
+
+@@END:	FunctionDocumentation
+

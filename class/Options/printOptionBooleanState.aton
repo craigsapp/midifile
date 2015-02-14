@@ -1,0 +1,35 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	printOptionBooleanState
+@ACCESS:	public
+@RETURN:	ostream&
+@PARAMETERS:	ostream& output
+@FILE:		Options.cpp
+@LINES:		1200-1213
+@SEEALSO:	
+@SHORTDESC:	Print list of options an whether or not they are set.
+@LONGDESC:	Print list of options an whether or not they are set.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::printOptionBooleanState --
+//
+
+ostream&amp; Options::printOptionListBooleanState(ostream&amp; out) {
+   for (auto it = optionList.begin(); it != optionList.end(); it++) {
+      out &lt;&lt; it-&gt;first &lt;&lt; "\t" 
+          &lt;&lt; optionRegister[it-&gt;second]-&gt;isModified() &lt;&lt; endl;
+   }
+   return out;
+}
+
+@@END:	FunctionDocumentation
+

@@ -1,0 +1,39 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	process
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int argc, char** argv, int error_check, int suppress
+@PARAMETERS:	int error_check, int suppress
+@FILE:		Options.cpp
+@LINES:		928-944
+@SEEALSO:	
+@SHORTDESC:	Parse the command-line string to identify options and arguments.
+@LONGDESC:	Parse the command-line string to identify options and arguments.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::process -- Same as xverify.
+//   	default values: error_check = 1, suppress = 0;
+//
+
+void Options::process(int argc, char** argv, int error_check, int suppress) {
+   setOptions(argc, argv);
+   xverify(error_check, suppress);
+}
+
+
+void Options::process(int error_check, int suppress) {
+   xverify(error_check, suppress);
+}
+
+@@END:	FunctionDocumentation
+

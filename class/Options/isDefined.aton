@@ -1,0 +1,35 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	isDefined
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		430-443
+@SEEALSO:	
+@SHORTDESC:	Return true if option is defined.
+@LONGDESC:	Return true if option is defined.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::isDefined -- Return true if option is present in registry.
+//
+
+int Options::isDefined(const string&amp; name) {
+   if (optionList.find(name) == optionList.end()) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+@@END:	FunctionDocumentation
+

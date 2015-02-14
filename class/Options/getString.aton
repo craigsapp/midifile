@@ -1,0 +1,39 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getString
+@ACCESS:	public
+@RETURN:	string
+@PARAMETERS:	const string& option
+@FILE:		Options.cpp
+@LINES:		632-646
+@SEEALSO:	getBoolean
+@SEEALSO:	getInteger
+@SEEALSO:	getDouble
+@SEEALSO:	getChar
+@SHORTDESC:	Return the option value as a string.
+@LONGDESC:	Return the option value as a string.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getString -- Return the option argument string.
+//
+
+string Options::getString(const string&amp; optionName) {
+   int index = getRegIndex(optionName);
+   if (index &lt; 0) {
+      return "UNKNOWN OPTION";
+   } else {
+      return optionRegister[index]-&gt;getOption();
+   }
+}
+
+@@END:	FunctionDocumentation
+

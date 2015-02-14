@@ -27,14 +27,14 @@
 
 void MidiFile::deleteTrack(int aTrack) {
    int length = getNumTracks();
-   if (aTrack < 0 || aTrack >= length) {
+   if (aTrack &lt; 0 || aTrack &gt;= length) {
       return;
    }
    if (length == 1) {
       return;
    }
    delete events[aTrack];
-   for (int i=aTrack; i<length-1; i++) {
+   for (int i=aTrack; i&lt;length-1; i++) {
       events[i] = events[i+1];
    }
 

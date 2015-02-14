@@ -1,0 +1,36 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Options
+@METHOD:	getChar
+@ACCESS:	public
+@RETURN:	char
+@PARAMETERS:	const string& name
+@FILE:		Options.cpp
+@LINES:		591-601
+@SEEALSO:	getBoolean
+@SEEALSO:	getInteger
+@SEEALSO:	getDouble
+@SEEALSO:	getString
+@SHORTDESC:	Return the first character of an option value, or null character.
+@LONGDESC:	Return the first character in the option value.  If the length
+		of the string is zero, then return '\0'.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// Options::getChar -- Return the first character in the option string;
+//      If the length is zero, then return '\0'.
+//
+
+char Options::getChar(const string&amp; optionName) {
+   return getString(optionName).c_str()[0];
+}
+
+@@END:	FunctionDocumentation
+
