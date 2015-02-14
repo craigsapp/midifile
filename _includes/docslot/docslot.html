@@ -230,9 +230,9 @@ summary {
 				{{#if PARAMETERS }}
 					{{{printDeclarations this}}}
 				{{/if}}
-				{{{codeLink METHOD FILE LINES SRCCODE}}}
 				{{{LONGDESC}}}
 				{{{showExamples EXAMPLE}}}
+				{{{codeLink METHOD FILE LINES SRCCODE}}}
 			</div>
 		</details>
 	{{else}}
@@ -307,8 +307,9 @@ Handlebars.registerHelper('codeLink', function (method, file, linerange,
 
 	output += '<details>\n';
 	output += '<summary>\n';
-	output += '<a target="new" href="' + url;
-	output += '">Source code for ' + method + '() on GitHub';
+	output += 'Source code for ' + method 
+	output += ' <a target="new" href="' + url;
+	output += '">on GitHub';
    output += '</a>\n';
 	output += '</summary>\n';
 	if (!srccode.match(/^\s*$/)) {

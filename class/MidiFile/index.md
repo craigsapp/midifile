@@ -12,10 +12,23 @@ group: [
 
 Documentation for the MidiFile class.
 
-Sorted function list
-----------------------
+Public functions
+----------------
 
 {% include docslot/MidiFile.html %}
+
+
+<br/>
+Static functions
+----------------
+
+{% include docslot/MidiFile_static.html %}
+
+<br/>
+Private functions
+-----------------
+
+{% include docslot/MidiFile_private.html %}
 
 
 {% include docslot/keyboardCommands.html %}
