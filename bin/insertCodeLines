@@ -39,19 +39,34 @@ sub processFile {
    close FILE;
    my $function = getFunctionName($file, @contents);
    my @src = getSourceContents($file, @contents);
-   my $linerange = getSourceLines($file, $function, @src);
+   my $linerange;
+   my $code;
+   ($linerange, $code) = getSourceLines($file, $function, @src);
    print "$function: $linerange\n";
    my $i;
    my $line;
    open (XFILE, ">$file") or die "Cannot write to $file\n";
+   my $codeprint = 0;
    for ($i=0; $i<@contents; $i++) {
       $line = $contents[$i];
       chomp $line;
       if ($line =~ /^\@LINES\s*:/) {
          print XFILE "\@LINES:\t\t$linerange\n";
-      } else {
-         print XFILE "$line\n";
+         next;
+      } 
+      if ($line =~ /^\@SRCCODE\s*:/) {
+         print XFILE "\@SRCCODE:\n";
+         print XFILE "$code";
+         $codeprint = 1;
+         next;
       }
+      if ($codeprint && ($line =~ /^\@/)) {
+         $codeprint = 0;
+      }
+      if ($codeprint == 1) { 
+         next;
+      }
+      print XFILE "$line\n";
    }
    close XFILE;
 }
@@ -120,11 +135,17 @@ sub getSourceLines {
       $endline++ 
    }
 
+   my $code = "";
+   for ($i=$startline; $i<=$endline; $i++) {
+      $code .= "$src[$i]\n";
+   }
+
    # offset by 1 rather than 0
    $startline++;
    $endline++;
 
-   return "$startline-$endline";
+
+   return ("$startline-$endline", $code);
 }
 
 

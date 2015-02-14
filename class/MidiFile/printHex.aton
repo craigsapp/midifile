@@ -17,6 +17,38 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::printHex -- print as a list of ASCII Hex bytes,
+//    formatted 25 to a line, and two digits each.
+//
+
+ostream& MidiFile::printHex(ostream& out) {
+   stringstream tempstream;
+   MidiFile::write(tempstream);
+   int value = 0;
+   int i;
+   int len = tempstream.str().length();
+   int wordcount = 1;
+   int linewidth = 25;
+   for (i=0; i<len; i++) {
+      value = (unsigned char)tempstream.str()[i];
+      printf("%02x", value);
+      if (i < len - 1) {
+         if (wordcount % linewidth) {
+            out << ' ';
+         } else {
+            out << '\n';
+         }
+      }
+      wordcount++;
+   }
+   out << '\n';
+   return out;
+}
+
 @@END:	FunctionDocumentation
 
 

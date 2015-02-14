@@ -16,6 +16,26 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::extractVlvTime --
+//
+
+ulong MidiFile::extractVlvTime(istream& input) {
+   uchar b[5] = {0};
+
+   for (int i=0; i<5; i++) {
+      b[i] = MidiFile::readByte(input);
+      if (b[i] < 0x80) {
+         break;
+      }
+   }
+
+   return unpackVLV(b[0], b[1], b[2], b[3], b[4]);
+}
+
 @@END:	FunctionDocumentation
 
 

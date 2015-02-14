@@ -18,6 +18,18 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::timeState -- returns what type of time method is
+//   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
+//
+
+int MidiFile::getTimeState(void) {
+   return theTimeState;
+}
+
 @@END:	FunctionDocumentation
 
 

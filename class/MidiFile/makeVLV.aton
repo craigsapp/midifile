@@ -17,6 +17,55 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::makeVLV --
+//
+
+int MidiFile::makeVLV(uchar *buffer, int number) {
+
+   unsigned long value = (unsigned long)number;
+
+   if (value >= (1 << 28)) {
+      cout << "Error: number too large to handle" << endl;
+      exit(1);
+   }
+
+   buffer[0] = (value >> 21) & 0x7f;
+   buffer[1] = (value >> 14) & 0x7f;
+   buffer[2] = (value >>  7) & 0x7f;
+   buffer[3] = (value >>  0) & 0x7f;
+
+   int i;
+   int flag = 0;
+   int length = -1;
+   for (i=0; i<3; i++) {
+      if (buffer[i] != 0) {
+         flag = 1;
+      }
+      if (flag) {
+         buffer[i] |= 0x80;
+      }
+      if (length == -1 && buffer[i] >= 0x80) {
+         length = 4-i;
+      }
+   }
+
+   if (length == -1) {
+      length = 1;
+   }
+
+   if (length < 4) {
+      for (i=0; i<length; i++) {
+         buffer[i] = buffer[4-length+i];
+      }
+   }
+
+   return length;
+}
+
 @@END:	FunctionDocumentation
 
 

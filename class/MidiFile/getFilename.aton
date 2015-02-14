@@ -17,6 +17,18 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getFilename -- returns the name of the file read into the
+//    structure (if the data was read from a file).
+//
+
+const char* MidiFile::getFilename(void) {
+   return readFileName.data();
+}
+
 @@END:	FunctionDocumentation
 
 

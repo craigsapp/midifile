@@ -17,6 +17,42 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::write -- write a standard MIDI file from data.
+//
+
+int MidiFile::write(const char* filename) {
+   #ifndef OLDCPP
+      #ifdef VISUAL
+         fstream outputfile(filename, ios::out | ios::binary);
+      #else
+         fstream outputfile(filename, ios::out);
+      #endif
+   #else
+      #ifdef VISUAL
+         fstream outputfile(filename, ios::out | ios::noreplace | ios::binary);
+      #else
+         fstream outputfile(filename, ios::out | ios::noreplace);
+      #endif
+   #endif
+
+   if (!outputfile.is_open()) {
+      cout << "Error: could not write: " << filename << endl;
+      exit(1);
+   }
+   int status = write(outputfile);
+   outputfile.close();
+   return status;
+}
+
+
+int MidiFile::write(const string& filename) {
+   return MidiFile::write(filename.data());
+}
+
 @@END:	FunctionDocumentation
 
 

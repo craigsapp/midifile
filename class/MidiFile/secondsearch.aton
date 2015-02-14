@@ -16,6 +16,25 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::secondsearch -- for finding a second entry in the time map.
+//
+
+int MidiFile::secondsearch(const void* A, const void* B) {
+   _TickTime& a = *((_TickTime*)A);
+   _TickTime& b = *((_TickTime*)B);
+
+   if (a.seconds < b.seconds) {
+      return -1;
+   } else if (a.seconds > b.seconds) {
+      return 1;
+   }
+   return 0;
+}
+
 @@END:	FunctionDocumentation
 
 

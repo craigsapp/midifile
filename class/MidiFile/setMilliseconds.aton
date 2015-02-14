@@ -26,6 +26,25 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::setMilliseconds -- set the ticks per quarter note
+//   value to milliseconds.  The format for this specification is
+//   highest 8-bits: SMPTE Frame rate (as a negative 2's compliment value).
+//   lowest 8-bits: divisions per frame (as a positive number).
+//   for millisecond resolution, the SMPTE value is -25, and the
+//   frame rate is 40 frame per division.  In hexadecimal, these
+//   values are: -25 = 1110,0111 = 0xE7 and 40 = 0010,1000 = 0x28
+//   So setting the ticks per quarter note value to 0xE728 will cause
+//   delta times in the MIDI file to represent milliseconds.
+//
+
+void MidiFile::setMillisecondDelta(void) {
+   ticksPerQuarterNote = 0xE728;
+}
+
 @@END:	FunctionDocumentation
 
 

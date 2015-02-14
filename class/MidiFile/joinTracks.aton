@@ -20,6 +20,51 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::joinTracks -- merge the data from all tracks,
+//   but keeping the identity of the tracks unique so that
+//   the function splitTracks can be called to split the
+//   tracks into separate units again.  The style of the
+//   MidiFile when read from a file is with tracks split.
+//
+
+void MidiFile::joinTracks(void) {
+   if (getTrackState() == TRACK_STATE_JOINED) {
+      return;
+   }
+   if (getNumTracks() == 1) {
+      return;
+   }
+
+   vector <MFEvent>* joinedTrack;
+   joinedTrack = new vector<MFEvent>;
+   joinedTrack->reserve(200000);
+   joinedTrack->clear();
+   int oldTimeState = getTimeState();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      absoluteTime();
+   }
+   int i, j;
+   int length = getNumTracks();
+   for (i=0; i<length; i++) {
+      for (j=0; j<(int)events[i]->size(); j++) {
+         joinedTrack->push_back((*events[i])[j]);
+      }
+   }
+
+   erase();
+
+   delete events[0];
+   events[0] = joinedTrack;
+   sortTracks();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      deltaTime();
+   }
+}
+
 @@END:	FunctionDocumentation
 
 

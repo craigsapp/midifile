@@ -24,6 +24,48 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::addPitchBend -- convert  number in the range from -1 to +1
+//     into two 7-bit numbers (smallest piece first)
+//
+//   -1.0 maps to 0 (0x0000)
+//    0.0 maps to 8192 (0x2000 --> 0x40 0x00)
+//   +1.0 maps to 16383 (0x3FFF --> 0x7F 0x7F)
+//
+
+int MidiFile::addPitchBend(int aTrack, int aTime, int aChannel, double amount) {
+   timemapvalid = 0;
+   amount += 1.0;
+   int value = int(amount * 8192 + 0.5);
+
+   // prevent any wrap-around in case of round-off errors
+   if (value > 0x3fff) {
+      value = 0x3fff;
+   }
+   if (value < 0) {
+      value = 0;
+   }
+
+   int lsbint = 0x7f & value;
+   int msbint = 0x7f & (value  >> 7);
+
+   vector<uchar> mididata;
+   mididata.resize(3);
+   if (aChannel < 0) {
+      aChannel = 0;
+   } else if (aChannel > 15) {
+      aChannel = 15;
+   }
+   mididata[0] = uchar(0xe0 | aChannel);
+   mididata[1] = uchar(lsbint);
+   mididata[2] = uchar(msbint);
+
+   return addEvent(aTrack, aTime, mididata);
+}
+
 @@END:	FunctionDocumentation
 
 

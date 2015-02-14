@@ -17,6 +17,23 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getTrackCount -- return the number of tracks in
+//   the Midi File.
+//
+
+int MidiFile::getTrackCount(void) {
+   return events.size();
+}
+
+
+int MidiFile::getNumTracks(void) {
+   return events.size();
+}
+
 @@END:	FunctionDocumentation
 
 

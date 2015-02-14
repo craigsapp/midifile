@@ -17,6 +17,24 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::readByte -- Read one byte from input stream.  Exit if there
+//     was an error.
+//
+
+uchar MidiFile::readByte(istream& input) {
+   uchar buffer[1] = {0};
+   input.read((char*)buffer, 1);
+   if (input.eof()) {
+      cerr << "Error: unexpected end of file." << endl;
+      exit(1);
+   }
+   return buffer[0];
+}
+
 @@END:	FunctionDocumentation
 
 

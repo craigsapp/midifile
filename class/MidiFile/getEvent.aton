@@ -16,6 +16,18 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getEvent -- return the event at the given index in the
+//    specified track.
+//
+
+MFEvent& MidiFile::getEvent(int aTrack, int anIndex) {
+   return (*events[aTrack])[anIndex];
+}
+
 @@END:	FunctionDocumentation
 
 

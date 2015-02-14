@@ -17,6 +17,33 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::setFilename -- sets the filename of the MIDI file.
+//      Currently removed any directory path.
+//
+
+void MidiFile::setFilename(const char* aname) {
+   const char* ptr = strrchr(aname, '/');
+   int len;
+   if (ptr != NULL) {
+     len = strlen(ptr+1);
+     readFileName.resize(len+1);
+     strncpy(readFileName.data(), ptr+1, len);
+   } else {
+      len = strlen(aname);
+      readFileName.resize(len+1);
+      strncpy(readFileName.data(), aname, len);
+   }
+}
+
+
+void MidiFile::setFilename(const string& aname) {
+   MidiFile::setFilename(aname.data());
+}
+
 @@END:	FunctionDocumentation
 
 

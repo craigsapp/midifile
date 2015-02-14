@@ -20,6 +20,315 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::read -- Parse a Standard MIDI File and store its contents
+//      in the object.
+//
+
+int MidiFile::read(const char* filename) {
+   timemapvalid = 0;
+   if (filename != NULL) {
+      setFilename(filename);
+   }
+
+   fstream input;
+   input.open(filename, ios::binary | ios::in);
+
+   if (!input.is_open()) {
+      return 0;
+   }
+
+   return MidiFile::read(input);
+}
+
+
+//
+// string version of read().
+//
+
+
+int MidiFile::read(const string& filename) {
+   timemapvalid = 0;
+   setFilename(filename);
+
+   fstream input;
+   input.open(filename.data(), ios::binary | ios::in);
+
+   if (!input.is_open()) {
+      return 0;
+   }
+
+   return MidiFile::read(input);
+}
+
+
+//
+// istream version of read().
+//
+
+int MidiFile::read(istream& input) {
+   const char* filename = getFilename();
+
+   int    character;
+   // uchar  buffer[123456] = {0};
+   ulong  longdata;
+   ushort shortdata;
+
+
+   // Read the MIDI header (4 bytes of ID, 4 byte data size,
+   // anticipated 6 bytes of data.
+
+   character = input.get();
+   if (character == EOF) {
+      cout << "In file " << filename << ": unexpected end of file." << endl;
+      cout << "Expecting 'M' at first byte, but found nothing." << endl;
+      exit(1);
+   } else if (character != 'M') {
+      cout << "File " << filename << " is not a MIDI file" << endl;
+      cout << "Expecting 'M' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   character = input.get();
+   if (character == EOF) {
+      cout << "In file " << filename << ": unexpected end of file." << endl;
+      cout << "Expecting 'T' at first byte, but found nothing." << endl;
+      exit(1);
+   } else if (character != 'T') {
+      cout << "File " << filename << " is not a MIDI file" << endl;
+      cout << "Expecting 'T' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   character = input.get();
+   if (character == EOF) {
+      cout << "In file " << filename << ": unexpected end of file." << endl;
+      cout << "Expecting 'h' at first byte, but found nothing." << endl;
+      exit(1);
+   } else if (character != 'h') {
+      cout << "File " << filename << " is not a MIDI file" << endl;
+      cout << "Expecting 'h' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   character = input.get();
+   if (character == EOF) {
+      cout << "In file " << filename << ": unexpected end of file." << endl;
+      cout << "Expecting 'd' at first byte, but found nothing." << endl;
+      exit(1);
+   } else if (character != 'd') {
+      cout << "File " << filename << " is not a MIDI file" << endl;
+      cout << "Expecting 'd' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   // read header size (allow larger header size?)
+   longdata = MidiFile::readLittleEndian4Bytes(input);
+   if (longdata != 6) {
+      cout << "File " << filename
+           << " is not a MIDI 1.0 Standard MIDI file." << endl;
+      cout << "The header size is " << longdata << " bytes." << endl;
+      return 0;
+   }
+
+   // Header parameter #1: format type
+   int type;
+   shortdata = MidiFile::readLittleEndian2Bytes(input);
+   switch (shortdata) {
+      case 0:
+         type = 0;
+         break;
+      case 1:
+         type = 1;
+         break;
+      case 2:    // Type-2 MIDI files should probably be allowed as well.
+      default:
+         cout << "Error: cannot handle a type-" << shortdata
+              << " MIDI file" << endl;
+         return 0;
+   }
+
+   // Header parameter #2: track count
+   int tracks;
+   shortdata = MidiFile::readLittleEndian2Bytes(input);
+   if (type == 0 && shortdata != 1) {
+      cout << "Error: Type 0 MIDI file can only contain one track" << endl;
+      cout << "Instead track count is: " << shortdata << endl;
+      return 0;
+   } else {
+      tracks = shortdata;
+   }
+   MidiFile::erase();
+   if (events[0] != NULL) {
+      delete events[0];
+   }
+   events.resize(tracks);
+   for (int z=0; z<tracks; z++) {
+      events[z] = new vector<MFEvent>;
+      events[z]->reserve(10000);   // Initialize with 10,000 event storage.
+      events[z]->clear();
+   }
+
+   // Header parameter #3: Ticks per quarter note
+   shortdata = MidiFile::readLittleEndian2Bytes(input);
+   if (shortdata >= 0x8000) {
+      int framespersecond = ((!(shortdata >> 8))+1) & 0x00ff;
+      int resolution      = shortdata & 0x00ff;
+      switch (framespersecond) {
+         case 232:  framespersecond = 24; break;
+         case 231:  framespersecond = 25; break;
+         case 227:  framespersecond = 29; break;
+         case 226:  framespersecond = 30; break;
+         default:
+               cerr << "Warning: unknown FPS: " << framespersecond << endl;
+               framespersecond = 255 - framespersecond + 1;
+               cerr << "Setting FPS to " << framespersecond << endl;
+      }
+      // actually ticks per second (except for frame=29 (drop frame)):
+      ticksPerQuarterNote = shortdata;
+
+      cout << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
+      cout << "SMPTE frames per second: " << framespersecond << endl;
+      cout << "SMPTE frame resolution per frame: " << resolution << endl;
+   }  else {
+      ticksPerQuarterNote = shortdata;
+   }
+
+
+   //////////////////////////////////////////////////
+   //
+   // now read individual tracks:
+   //
+
+   uchar runningCommand;
+   MFEvent event;
+   int absticks;
+   // int barline;
+
+   for (int i=0; i<tracks; i++) {
+      runningCommand = 0;
+
+      // cout << "\nReading Track: " << i + 1 << flush;
+
+      // read track header...
+
+      character = input.get();
+      if (character == EOF) {
+         cout << "In file " << filename << ": unexpected end of file." << endl;
+         cout << "Expecting 'M' at first byte in track, but found nothing."
+              << endl;
+         exit(1);
+      } else if (character != 'M') {
+         cout << "File " << filename << " is not a MIDI file" << endl;
+         cout << "Expecting 'M' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      character = input.get();
+      if (character == EOF) {
+         cout << "In file " << filename << ": unexpected end of file." << endl;
+         cout << "Expecting 'T' at first byte in track, but found nothing."
+              << endl;
+         exit(1);
+      } else if (character != 'T') {
+         cout << "File " << filename << " is not a MIDI file" << endl;
+         cout << "Expecting 'T' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      character = input.get();
+      if (character == EOF) {
+         cout << "In file " << filename << ": unexpected end of file." << endl;
+         cout << "Expecting 'r' at first byte in track, but found nothing."
+              << endl;
+         exit(1);
+      } else if (character != 'r') {
+         cout << "File " << filename << " is not a MIDI file" << endl;
+         cout << "Expecting 'r' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      character = input.get();
+      if (character == EOF) {
+         cout << "In file " << filename << ": unexpected end of file." << endl;
+         cout << "Expecting 'k' at first byte in track, but found nothing."
+              << endl;
+         exit(1);
+      } else if (character != 'k') {
+         cout << "File " << filename << " is not a MIDI file" << endl;
+         cout << "Expecting 'k' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      // Now read track chunk size and throw it away because it is
+      // not really necessary since the track MUST end with an
+      // end of track meta event, and 50% of Midi files or so
+      // do not correctly give the track size.
+      longdata = MidiFile::readLittleEndian4Bytes(input);
+
+      // set the size of the track allocation so that it might
+      // approximately fit the data.
+      events[i]->reserve(longdata/2);
+      events[i]->clear();
+
+      // process the track
+      absticks = 0;
+      // barline = 1;
+      while (!input.eof()) {
+         longdata = extractVlvTime(input);
+         //cout << "ticks = " << longdata << endl;
+         absticks += longdata;
+         extractMidiData(input, event.data, runningCommand);
+         //cout << "command = " << hex << (int)event.data[0] << dec << endl;
+         if (event.data[0] == 0xff && (event.data[1] == 1 ||
+             event.data[1] == 2 || event.data[1] == 3 || event.data[1] == 4)) {
+           // mididata.push_back('\0');
+           // cout << '\t';
+           // for (int m=0; m<event.data[2]; m++) {
+           //    cout << event.data[m+3];
+           // }
+           // cout.flush();
+         } else if (event.data[0] == 0xff && event.data[1] == 0x2f) {
+            // end of track message
+            // uncomment out the following three lines if you don't want
+            // to see the end of track message (which is always required,
+            // and added automatically when a MIDI is written.
+            event.time = absticks;
+            event.track = i;
+            events[i]->push_back(event);
+
+            break;
+         }
+
+         if (event.data[0] != 0xff && event.data[0] != 0xf0) {
+            event.time = absticks;
+            event.track = i;
+            events[i]->push_back(event);
+         } else {
+            event.time = absticks;
+            event.track = i;
+            events[i]->push_back(event);
+         }
+
+      }
+
+   }
+
+   theTimeState = TIME_STATE_ABSOLUTE;
+   return 1;
+}
+
 @@END:	FunctionDocumentation
 
 

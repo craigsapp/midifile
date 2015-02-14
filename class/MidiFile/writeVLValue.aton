@@ -16,6 +16,165 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::writeVLValue -- write a number to the midifile
+//    as a variable length value which segments a file into 7-bit
+//    values.  Maximum size of aValue is 0x7fffffff
+//
+
+void MidiFile::writeVLValue(long aValue, vector<uchar>& outdata) {
+   uchar bytes[5] = {0};
+   bytes[0] = (uchar)(((ulong)aValue >> 28) & 0x7f);  // most significant 5 bits
+   bytes[1] = (uchar)(((ulong)aValue >> 21) & 0x7f);  // next largest 7 bits
+   bytes[2] = (uchar)(((ulong)aValue >> 14) & 0x7f);
+   bytes[3] = (uchar)(((ulong)aValue >> 7)  & 0x7f);
+   bytes[4] = (uchar)(((ulong)aValue)       & 0x7f);  // least significant 7 bits
+
+   int start = 0;
+   while (start<5 && bytes[start] == 0)  start++;
+
+   for (int i=start; i<4; i++) {
+      bytes[i] = bytes[i] | 0x80;
+      outdata.push_back(bytes[i]);
+   }
+   outdata.push_back(bytes[4]);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// external functions
+//
+
+
+//////////////////////////////
+//
+// eventcompare -- for sorting the tracks
+//
+
+int eventcompare(const void* a, const void* b) {
+   MFEvent& aevent = *((MFEvent*)a);
+   MFEvent& bevent = *((MFEvent*)b);
+
+   if (aevent.time > bevent.time) {
+      return 1;
+   } else if (aevent.time < bevent.time) {
+      return -1;
+   } else if (aevent.data[0] == 0xff && bevent.data[0] != 0xff) {
+      return 1;
+   } else if (bevent.data[0] == 0xff && aevent.data[0] != 0xff) {
+      return -1;
+   } else if (bevent.data[0] == 0xff && bevent.data[1] == 0x2f) {
+      return -1;
+   } else if (aevent.data[0] == 0xff && aevent.data[1] == 0x2f) {
+      return 1;
+   } else if (((aevent.data[0] & 0xf0) == 0xe0) &&
+              ((bevent.data[0] & 0xf0) == 0x90)) {
+      // pitch bend placed before note on messages
+      return -1;
+   } else if (((aevent.data[0] & 0xf0) == 0x90) &&
+              ((bevent.data[0] & 0xf0) == 0xe0)) {
+      // pitch bend placed before note on messages
+      return +1;
+   } else if (((aevent.data[0] & 0xf0) == 0x90) &&
+              ((bevent.data[0] & 0xf0) == 0x80)) {
+      return 1;
+   } else if (((aevent.data[0] & 0xf0) == 0x80) &&
+              ((bevent.data[0] & 0xf0) == 0x90)) {
+      return -1;
+   } else {
+      return 0;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// operator<< -- for printing an ASCII version of the MIDI file
+//
+
+ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
+   int i, j, k;
+   out << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+   out << "Number of Tracks: " << aMidiFile.getTrackCount() << "\n";
+   out << "Time method: " << aMidiFile.getTimeState();
+   if (aMidiFile.getTimeState() == TIME_STATE_DELTA) {
+      out << " (Delta timing)";
+   } else if (aMidiFile.getTimeState() == TIME_STATE_ABSOLUTE) {
+      out << " (Absolute timing)";
+   } else {
+      out << " (unknown method)";
+   }
+   out << "\n";
+
+   out << "Divisions per Quarter Note: " << dec
+       << aMidiFile.getTicksPerQuarterNote() << "\n";
+   for (i=0; i<aMidiFile.getNumTracks(); i++) {
+      out << "\nTrack " << i
+          << "   +++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
+      for (j=0; j<aMidiFile.getNumEvents(i); j++) {
+         out << dec << aMidiFile.getEvent(i, j).time << "\t"
+             << "0x" << hex << (int)aMidiFile.getEvent(i, j).data[0] << " ";
+         if (aMidiFile.getEvent(i, j).data[0] == 0xff) {
+
+            if (aMidiFile.getEvent(i, j).data[1] == 0x01) {
+               out << "TEXT [";
+               for (k=3; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+                  out << (char)aMidiFile.getEvent(i, j).data[k];
+               }
+               out << "]";
+
+            } else if (aMidiFile.getEvent(i, j).data[1] == 0x02) {
+               out << "COPY [";
+               for (k=3; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+                  out << (char)aMidiFile.getEvent(i, j).data[k];
+               }
+               out << "]";
+
+            } else if (aMidiFile.getEvent(i, j).data[1] == 0x03) {
+               out << "TRACK [";
+               for (k=3; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+                  out << (char)aMidiFile.getEvent(i, j).data[k];
+               }
+               out << "]";
+
+            } else if (aMidiFile.getEvent(i, j).data[1] == 0x04) {
+               out << "INSTR [";
+               for (k=3; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+                  out << (char)aMidiFile.getEvent(i, j).data[k];
+               }
+               out << "]";
+
+            } else if (aMidiFile.getEvent(i, j).data[1] == 0x05) {
+               out << "LYRIC [";
+               for (k=3; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+                  out << (char)aMidiFile.getEvent(i, j).data[k];
+               }
+               out << "]";
+
+            } else {
+               for (k=1; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+                  out << dec << (int)aMidiFile.getEvent(i, j).data[k] << " ";
+               }
+            }
+
+         } else {
+            for (k=1; k<(int)aMidiFile.getEvent(i, j).data.size(); k++) {
+               out << dec << (int)aMidiFile.getEvent(i, j).data[k] << " ";
+            }
+         }
+         out << "\n";
+      }
+   }
+   out << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
+   return out;
+}
+
 @@END:	FunctionDocumentation
 
 

@@ -16,6 +16,26 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getTicksPerQuarterNote -- returns the number of
+//   time units that are supposed to occur during a quarternote.
+//
+
+int MidiFile::getTicksPerQuarterNote(void) {
+   if (ticksPerQuarterNote == 0xE728) {
+      // this is a special case which is the SMPTE time code
+      // setting for 25 frames a second with 40 subframes
+      // which means one tick per millisecond.  When SMPTE is
+      // being used, there is no real concept of the quarter note,
+      // so presume 60 bpm as a simiplification here.
+      // return 1000;
+   }
+   return ticksPerQuarterNote;
+}
+
 @@END:	FunctionDocumentation
 
 

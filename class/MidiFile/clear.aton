@@ -18,6 +18,31 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::clear -- make the MIDI file empty with one
+//     track with no data in it.
+//
+
+void MidiFile::clear(void) {
+   MidiFile::erase();
+}
+
+void MidiFile::erase(void) {
+   int length = getNumTracks();
+   for (int i=0; i<length; i++) {
+      delete events[i];
+      events[i] = NULL;
+   }
+   events.resize(1);
+   events[0] = new vector<MFEvent>;
+   events[0]->clear();
+   timemapvalid=0;
+   timemap.clear();
+}
+
 @@END:	FunctionDocumentation
 
 

@@ -18,6 +18,44 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getAbsoluteTickTime -- return the tick value represented
+//    by the input time in seconds.  If there is not tick entry at
+//    the given time in seconds, then interpolate between two values.
+//
+
+int MidiFile::getAbsoluteTickTime(double starttime) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         if (timemapvalid == 0) {
+            return -1.0;    // something went wrong
+         }
+      }
+   }
+
+   _TickTime key;
+   key.tick    = -1;
+   key.seconds = starttime;
+
+   void* ptr = bsearch(&key, timemap.data(), timemap.size(),
+         sizeof(_TickTime), secondsearch);
+
+   if (ptr == NULL) {
+      // The specific seconds value was not found, so do a linear
+      // search for the two time values which occur before and
+      // after the given time value, and do a linear interpolation of
+      // the time in tick values to figure out the final time in ticks.
+      return linearTickInterpolationAtSecond(starttime);
+   } else {
+      return ((_TickTime*)ptr)->tick;
+   }
+
+}
+
 @@END:	FunctionDocumentation
 
 

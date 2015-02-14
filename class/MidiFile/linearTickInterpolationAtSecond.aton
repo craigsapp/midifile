@@ -16,6 +16,74 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::linearTickInterpolationAtSecond -- return the tick value at the
+//    given input time.
+//
+
+int MidiFile::linearTickInterpolationAtSecond(double seconds) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         return -1.0;    // something went wrong
+      }
+   }
+
+   int i;
+   double lasttime = timemap[timemap.size()-1].seconds;
+   // give an error value of -1 if time is out of range of data.
+   if (seconds < 0.0) {
+      return -1;
+   }
+   if (seconds > timemap[timemap.size()-1].seconds) {
+      return -1;
+   }
+
+   // Guess which side of the list is closest to target:
+   // Could do a more efficient algorithm since time values are sorted,
+   // but good enough for now...
+   int startindex = -1;
+   if (seconds < lasttime / 2) {
+      for (i=0; i<(int)timemap.size(); i++) {
+         if (timemap[i].seconds > seconds) {
+            startindex = i-1;
+            break;
+         } else if (timemap[i].seconds == seconds) {
+            startindex = i;
+            break;
+         }
+      }
+   } else {
+      for (i=(int)timemap.size()-1; i>0; i--) {
+         if (timemap[i].seconds < seconds) {
+            startindex = i+1;
+            break;
+         } else if (timemap[i].seconds == seconds) {
+            startindex = i;
+            break;
+         }
+      }
+   }
+
+   if (startindex < 0) {
+      return -1;
+   }
+   if (startindex >= (int)timemap.size()-1) {
+      return -1;
+   }
+
+   double x1 = timemap[startindex].seconds;
+   double x2 = timemap[startindex+1].seconds;
+   double y1 = timemap[startindex].tick;
+   double y2 = timemap[startindex+1].tick;
+   double xi = seconds;
+
+   return (xi-x1) * ((y2-y1)/(x2-x1)) + y1;
+}
+
 @@END:	FunctionDocumentation
 
 

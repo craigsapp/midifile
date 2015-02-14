@@ -19,6 +19,17 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getTrack --
+//
+
+int MidiFile::getTrack(int track, int index) {
+   return MidiFile::getEvent(track, index).track;
+}
+
 @@END:	FunctionDocumentation
 
 

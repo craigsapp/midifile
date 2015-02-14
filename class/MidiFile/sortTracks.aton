@@ -16,6 +16,19 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::sortTracks -- sort all tracks in the MidiFile.
+//
+
+void MidiFile::sortTracks(void) {
+   for (int i=0; i<getTrackCount(); i++) {
+      sortTrack(*events[i]);
+   }
+}
+
 @@END:	FunctionDocumentation
 
 

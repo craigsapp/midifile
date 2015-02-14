@@ -17,6 +17,49 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getTimeInSeconds -- return the time in seconds for
+//     the current message.
+//
+
+double MidiFile::getTimeInSeconds(int aTrack, int anIndex) {
+   return getTimeInSeconds(getEvent(aTrack, anIndex).time);
+}
+
+
+
+double MidiFile::getTimeInSeconds(int tickvalue) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         return -1.0;    // something went wrong
+      }
+   }
+
+   _TickTime key;
+   key.tick    = tickvalue;
+   key.seconds = -1;
+
+   void* ptr = bsearch(&key, timemap.data(), timemap.size(),
+         sizeof(_TickTime), ticksearch);
+
+   if (ptr == NULL) {
+      // The specific tick value was not found, so do a linear
+      // search for the two tick values which occur before and
+      // after the tick value, and do a linear interpolation of
+      // the time in seconds values to figure out the final
+      // time in seconds.
+      // Since the code is not yet written, kill the program at this point:
+      cerr << "ERROR: tick value " << tickvalue << " was not found " << endl;
+      exit(1);
+   } else {
+      return ((_TickTime*)ptr)->seconds;
+   }
+}
+
 @@END:	FunctionDocumentation
 
 

@@ -28,6 +28,86 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::buildTimeMap -- build an index of the absolute tick values
+//      found in a MIDI file, and their corresponding time values in
+//      seconds, taking into consideration tempo change messages.  If no
+//      tempo messages are given (or until they are given, then the
+//      tempo is set to 120 beats per minute).  If SMPTE time code is
+//      used, then ticks are actually time values.  So don't build
+//      a time map for SMPTE ticks, and just calculate the time in
+//      seconds from the tick value (1000 ticks per second SMPTE
+//      is the only mode tested (25 frames per second and 40 subframes
+//      per frame).
+//
+
+void MidiFile::buildTimeMap(void) {
+
+   // convert the MIDI file to absolute time representation
+   // in single track mode (and undo if the MIDI file was not
+   // in that state when this function was called.
+   //
+   int trackstate = getTrackState();
+   int timestate  = getTimeState();
+
+   absoluteTime();
+   joinTracks();
+
+   int allocsize = getNumEvents(0);
+   timemap.reserve(allocsize+10);
+   timemap.clear();
+
+   _TickTime value;
+
+   int lasttick = 0;
+   int curtick;
+   int tickinit = 0;
+
+   int i;
+   int tpq = getTicksPerQuarterNote();
+   double defaultTempo = 120.0;
+   double secondsPerTick = 60.0 / (defaultTempo * tpq);
+
+   double lastsec = 0.0;
+   double cursec;
+
+   for (i=0; i<getNumEvents(0); i++) {
+      curtick = getEvent(0, i).time;
+      if ((curtick > lasttick) || !tickinit) {
+         tickinit = 1;
+
+         // calculate the current time in seconds:
+         cursec = lastsec + (curtick - lasttick) * secondsPerTick;
+
+         // store the new tick to second mapping
+         value.tick = curtick;
+         value.seconds = cursec;
+         timemap.push_back(value);
+         lasttick   = curtick;
+         lastsec    = cursec;
+      }
+
+      // update the tempo if needed:
+      if (getEvent(0,i).isTempo()) {
+         secondsPerTick = getEvent(0,i).getTempoSPT(getTicksPerQuarterNote());
+      }
+   }
+
+   // reset the states of the tracks or time values if necessary here:
+   if (timestate == TIME_STATE_DELTA) {
+      deltaTime();
+   }
+   if (trackstate == TRACK_STATE_SPLIT) {
+      splitTracks();
+   }
+
+   timemapvalid = 1;
+
+}
+
 @@END:	FunctionDocumentation
 
 

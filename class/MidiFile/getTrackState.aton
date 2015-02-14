@@ -18,6 +18,18 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getTrackState -- returns what type of track method
+//     is being used: either TRACK_STATE_JOINED or TRACK_STATE_SPLIT.
+//
+
+int MidiFile::getTrackState(void) {
+   return theTrackState;
+}
+
 @@END:	FunctionDocumentation
 
 

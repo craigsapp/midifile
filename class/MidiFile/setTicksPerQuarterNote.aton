@@ -16,6 +16,17 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::setTicksPerQuarterNote --
+//
+
+void MidiFile::setTicksPerQuarterNote(int ticks) {
+   ticksPerQuarterNote = ticks;
+}
+
 @@END:	FunctionDocumentation
 
 

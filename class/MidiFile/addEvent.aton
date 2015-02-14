@@ -19,6 +19,24 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::addEvent --
+//
+
+int MidiFile::addEvent(int aTrack, int aTime, vector<uchar>& midiData) {
+   timemapvalid = 0;
+   MFEvent anEvent;
+   anEvent.time = aTime;
+   anEvent.track = aTrack;
+   anEvent.data = midiData;
+
+   events[aTrack]->push_back(anEvent);
+   return events[aTrack]->size() - 1;
+}
+
 @@END:	FunctionDocumentation
 
 

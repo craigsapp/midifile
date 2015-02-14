@@ -20,6 +20,54 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::mergeTracks -- combine the data from two
+//   tracks into one.  Placing the data in the first
+//   track location listed, and Moving the other tracks
+//   in the file around to fill in the spot where Track2
+//   used to be.  The results of this function call cannot
+//   be reversed.
+//
+
+void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
+   vector <MFEvent>* mergedTrack;
+   mergedTrack = new vector<MFEvent>;
+   mergedTrack->clear();
+   int oldTimeState = getTimeState();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      absoluteTime();
+   }
+   int i, j;
+   int length = getNumTracks();
+   for (i=0; i<(int)events[aTrack1]->size(); i++) {
+      mergedTrack->push_back((*events[aTrack1])[i]);
+   }
+   for (j=0; j<(int)events[aTrack2]->size(); i++) {
+      (*events[aTrack2])[i].track = aTrack1;
+      mergedTrack->push_back((*events[aTrack2])[i]);
+   }
+
+   sortTrack(*mergedTrack);
+
+   delete events[aTrack1];
+
+   events[aTrack1] = mergedTrack;
+
+   for (i=aTrack2; i<length-1; i++) {
+      events[i] = events[i+1];
+   }
+
+   events[length] = NULL;
+   events.resize(length-1);
+
+   if (oldTimeState == TIME_STATE_DELTA) {
+      deltaTime();
+   }
+}
+
 @@END:	FunctionDocumentation
 
 

@@ -16,6 +16,20 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::allocateEvents --
+//
+
+void MidiFile::allocateEvents(int track, int aSize) {
+   int oldsize = events[track]->size();
+   if (oldsize < aSize) {
+      events[track]->reserve(aSize);
+   }
+}
+
 @@END:	FunctionDocumentation
 
 

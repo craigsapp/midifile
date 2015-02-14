@@ -50,26 +50,28 @@ document.addEventListener("DOMContentLoaded", function () {
 	var template = Handlebars.compile(source);
 	var matches = window.location.href.match(/#([^\/]+)$/);
    var matches2;
-   var details;
-   var target = "";
+   var target = -1;
 	if (matches) {
 		// have a download preference for the specific function documetation
 		// that should be viewed.
+
 		for (var i=0; i<docslots.length; i++) {
 			matches2 = docslots[i].id.match(/\s*(.*)::(.*)\s*/);
-			if (matches2 && (matches[1] === matches2[2])) {
-				insertDocumentation(docslots[i], template);
-				target = docslots[i].id;
-				details = docslots[i].querySelector('details');
-			} else if (docslots[i].id === matches[1]) {
-				insertDocumentation(docslots[i], template);
-				target = docslots[i].id;
-				details = docslots[i].querySelector('details');
-			}
+			if (matches2) {
+				if ((matches[1] === matches2[2])) {
+					insertDocumentation(docslots[i], template);
+					target = i;
+				} else if (docslots[i].id === matches[1]) {
+					insertDocumentation(docslots[i], template);
+					target = i;
+				}
+			} 
 		}
 	}
+
+   // Insert matches
 	for (var i=0; i<docslots.length; i++) {
-		if (matches && (target === docslots[i].id)) {
+		if (matches && (target === i)) {
 			continue;
 		}
 		insertDocumentation(docslots[i], template);
@@ -219,9 +221,7 @@ summary {
 		<a name="{{METHOD}}"> </a>
 		<details ontoggle='showOrHideShortDescriptionReverse(this);'>
 			<summary>
-			<span class="docslot-short-title">
-				{{METHOD}}
-			</span>
+				{{#if longname}}{{CLASSNAME}}::{{/if}}<span class="docslot-short-title">{{METHOD}}</span>
 			<span class='short-desc'> &mdash;
 			{{{SHORTDESC}}}
 			</span>
@@ -230,7 +230,7 @@ summary {
 				{{#if PARAMETERS }}
 					{{{printDeclarations this}}}
 				{{/if}}
-				{{{codeLink METHOD FILE LINES}}}
+				{{{codeLink METHOD FILE LINES SRCCODE}}}
 				{{{LONGDESC}}}
 				{{{showExamples EXAMPLE}}}
 			</div>
@@ -293,7 +293,8 @@ summary {
 // Handlebars helper functions
 //
 
-Handlebars.registerHelper('codeLink', function (method, file, linerange) {
+Handlebars.registerHelper('codeLink', function (method, file, linerange, 
+		srccode) {
 	if (typeof method === 'undefined') { return '' }
 	if (typeof file   === 'undefined') { return '' }
 
@@ -306,9 +307,15 @@ Handlebars.registerHelper('codeLink', function (method, file, linerange) {
 
 	output += '<details>\n';
 	output += '<summary>\n';
-	output += '<a target="new" href="' + url + '">Source code for ' + method + '() on GitHub';
+	output += '<a target="new" href="' + url;
+	output += '">Source code for ' + method + '() on GitHub';
    output += '</a>\n';
 	output += '</summary>\n';
+	if (!srccode.match(/^\s*$/)) {
+		output += '<pre style="background:#888888;">';
+		output += srccode;
+		output += '</pre>';
+	}
 	output += '</details>\n';
 
 	return output;
@@ -483,12 +490,16 @@ function showOrHideShortDescriptionReverse(target) {
 //
 // insertDocumentation -- Download the documentation for a function
 //    and convert it to HTML code on the page.
+// Alternate form:
+//				details = docslots[i].querySelector('details');
 //
 
 function insertDocumentation(target, template) {
 	var fullname     = target.id;
+	var fullQ = 0;
 	if (!fullname) {
       fullname = target.textContent.replace(/\s/g, '');
+	   fullQ = 1;	
 	}
 	var matches      = fullname.match(/(.*)::(.*)/);
 	var classname    = matches[1];
@@ -497,7 +508,7 @@ function insertDocumentation(target, template) {
    
 	var local = sessionStorage[classname + '/' + functionname + '.aton'];
 	if (local && !local.match(/^\s*$/)) {
-		processAtonData(local, fullname, target, template);
+		processAtonData(local, fullname, functionname, target, template, fullQ);
    } else {
 		var file    = '/class/' + classname + '/' + functionname + '.aton';
 		var request = new XMLHttpRequest();
@@ -506,7 +517,8 @@ function insertDocumentation(target, template) {
 		request.addEventListener('load', function () {
 			sessionStorage[classname + '/' + functionname + '.aton'] = 
 					this.responseText;
-			processAtonData(this.responseText, fullname, target, template);
+			processAtonData(this.responseText, fullname, functionname, 
+					target, template, fullQ);
 		});
 		request.addEventListener('error', function () {
 			console.error(this.statusText);
@@ -522,10 +534,14 @@ function insertDocumentation(target, template) {
 // processAtonData --
 //
 
-function processAtonData(atondata, fullname, target, template) {
+function processAtonData(atondata, fullname, functionname, target, template, 
+		fullQ) {
 	var aton = new ATON;
 	aton.setOnlyChildRoot();
 	var docobj = aton.parse(atondata);
+	if (fullQ) {
+   	docobj.longname = true;
+	}
 	var dochtml = template(docobj);
 	target.innerHTML = dochtml;
 	var matches = window.location.href.match(/#([^\/]+)$/);

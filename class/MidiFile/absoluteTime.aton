@@ -20,6 +20,41 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::absoluteTime -- convert the time data to
+//    absolute time, which means that the time field
+//    in the MFEvent struct represents the exact tick
+//    time to play the event rather than the time since
+//    the last event to wait untill playing the current
+//    event.
+//
+
+void MidiFile::absoluteTime(void) {
+   if (getTimeState() == TIME_STATE_ABSOLUTE) {
+      return;
+   }
+   int i, j;
+   int length = getNumTracks();
+   int* timedata = new int[length];
+   for (i=0; i<length; i++) {
+      timedata[i] = 0;
+      if (events[i]->size() > 0) {
+         timedata[i] = (*events[i])[0].time;
+      } else {
+         continue;
+      }
+      for (j=1; j<(int)events[i]->size(); j++) {
+         timedata[i] += (*events[i])[j].time;
+         (*events[i])[j].time = timedata[i];
+      }
+   }
+   theTimeState = TIME_STATE_ABSOLUTE;
+   delete [] timedata;
+}
+
 @@END:	FunctionDocumentation
 
 

@@ -18,6 +18,36 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::addTrack -- adds a blank track at end of the
+//    track list.  Returns the track number of the added
+//    track.
+//
+
+int MidiFile::addTrack(void) {
+   int length = getNumTracks();
+   events.resize(length+1);
+   events[length] = new vector<MFEvent>;
+   events[length]->reserve(10000);
+   events[length]->clear();
+   return length;
+}
+
+int MidiFile::addTrack(int count) {
+   int length = getNumTracks();
+   events.resize(length+count);
+   int i;
+   for (i=0; i<count; i++) {
+      events[length + i] = new vector<MFEvent>;
+      events[length + i]->reserve(10000);
+      events[length + i]->clear();
+   }
+   return length + count - 1;
+}
+
 @@END:	FunctionDocumentation
 
 

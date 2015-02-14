@@ -16,6 +16,36 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::unpackVLV -- converts a VLV value to pure unsigned long value.
+// default values: a = b = c = d = e = 0;
+//
+
+ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
+   if (e > 0x7f) {
+      cout << "Error: VLV value was too long" << endl;
+      exit(1);
+   }
+
+   uchar bytes[5] = {a, b, c, d, e};
+   int count = 0;
+   while (bytes[count] > 0x7f && count < 5) {
+      count++;
+   }
+   count++;
+
+   ulong output = 0;
+   for (int i=0; i<count; i++) {
+      output = output << 7;
+      output = output | (bytes[i] & 0x7f);
+   }
+
+   return output;
+}
+
 @@END:	FunctionDocumentation
 
 

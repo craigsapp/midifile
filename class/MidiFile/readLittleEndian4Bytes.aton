@@ -17,6 +17,25 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::readLittleEndian4Bytes -- Read four bytes which are in
+//      little-endian order (smallest byte is first).  Then flip
+//      the order of the bytes to create the return value.
+//
+
+ulong MidiFile::readLittleEndian4Bytes(istream& input) {
+   uchar buffer[4] = {0};
+   input.read((char*)buffer, 4);
+   if (input.eof()) {
+      cerr << "Error: unexpected end of file." << endl;
+      exit(1);
+   }
+   return buffer[3] | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
+}
+
 @@END:	FunctionDocumentation
 
 

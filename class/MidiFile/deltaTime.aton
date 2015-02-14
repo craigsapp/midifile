@@ -24,6 +24,42 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::deltaTime -- convert the time data to
+//     delta time, which means that the time field
+//     in the MFEvent struct represents the time
+//     since the last event was played. When a MIDI file
+//     is read from a file, this is the default setting.
+//
+
+void MidiFile::deltaTime(void) {
+   if (getTimeState() == TIME_STATE_DELTA) {
+      return;
+   }
+   int i, j;
+   int temp;
+   int length = getNumTracks();
+   int *timedata = new int[length];
+   for (i=0; i<length; i++) {
+      timedata[i] = 0;
+      if (events[i]->size() > 0) {
+         timedata[i] = (*events[i])[0].time;
+      } else {
+         continue;
+      }
+      for (j=1; j<(int)events[i]->size(); j++) {
+         temp = (*events[i])[j].time;
+         (*events[i])[j].time = temp - timedata[i];
+         timedata[i] = temp;
+      }
+   }
+   theTimeState = TIME_STATE_DELTA;
+   delete [] timedata;
+}
+
 @@END:	FunctionDocumentation
 
 

@@ -6,16 +6,15 @@
 	Fix track byte counts
 </summary>
 
-MIDI track chunks byte counts are often incorrect in Standard
+MIDI track chunk byte counts are often incorrect in standard
 MIDI files.  This example program shows how to correct the byte
-counts by reading the MIDI file and then writing it out again.
+counts by reading the MIDI file and then writing it out again,
+without doing anything else.
 
-
-The MidiFile class ignores the byte-count values when reading
-a MIDI file, so incorret byte counts do not affect it.  When
-writing a file out again, the byte counts is calculated and
-automatically corrected.
-
+The MidiFile class ignores the byte-count value for a track chunk
+when reading a MIDI file, so incorret byte counts do not affect
+parsing of the file.  When writing a file out again, the byte count
+for each track is calculated and automatically corrected.
 
 The MidiFile class automatically expands running-status messages,
 so the size of the MIDI file may increase if running-status was

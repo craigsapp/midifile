@@ -16,6 +16,17 @@
 @OUTPUT:
 @@END:	EXAMPLE
 
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::doTimeInSecondsAnalysis --
+//
+
+void MidiFile::doTimeInSecondsAnalysis(void) {
+    buildTimeMap();
+}
+
 @@END:	FunctionDocumentation
 
 
