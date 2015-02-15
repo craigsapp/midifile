@@ -71,18 +71,18 @@ void convertMidiFileToText(MidiFile& midifile) {
    int command = 0;
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
-      command = midifile.getEvent(0, i).data[0] & 0xf0;
-      if (command == 0x90 && midifile.getEvent(0, i).data[2] != 0) {
+      command = midifile[0][i][0] & 0xf0;
+      if (command == 0x90 && midifile[0][i][2] != 0) {
          // store note-on velocity and time
-         key = midifile.getEvent(0, i).data[1];
-         vel = midifile.getEvent(0, i).data[2];
-         ontimes[key] = midifile.getEvent(0, i).time * 60.0 / tempo /
+         key = midifile[0][i][1];
+         vel = midifile[0][i][2];
+         ontimes[key] = midifile[0][i].time * 60.0 / tempo /
                midifile.getTicksPerQuarterNote();
          onvelocities[key] = vel;
       } else if (command == 0x90 || command == 0x80) {
          // note off command write to output
-         key = midifile.getEvent(0, i).data[1];
-         offtime = midifile.getEvent(0, i).time * 60.0 /
+         key = midifile[0][i][1];
+         offtime = midifile[0][i].time * 60.0 /
                midifile.getTicksPerQuarterNote() / tempo;
          cout << "note\t" << ontimes[key]
               << "\t" << offtime - ontimes[key]
@@ -92,8 +92,8 @@ void convertMidiFileToText(MidiFile& midifile) {
       }
 
       // check for tempo indication
-      if (midifile.getEvent(0, i).data[0] == 0xff &&
-                 midifile.getEvent(0, i).data[1] == 0x51) {
+      if (midifile[0][i][0] == 0xff &&
+                 midifile[0][i][1] == 0x51) {
          setTempo(midifile, i, tempo);
       }
    }
@@ -111,12 +111,12 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    static int count = 0;
    count++;
 
-   MFEvent& mididata = midifile.getEvent(0, index);
+   MidiEvent& mididata = midifile[0][index];
 
    int microseconds = 0;
-   microseconds = microseconds | (mididata.data[3] << 16);
-   microseconds = microseconds | (mididata.data[4] << 8);
-   microseconds = microseconds | (mididata.data[5] << 0);
+   microseconds = microseconds | (mididata[3] << 16);
+   microseconds = microseconds | (mididata[4] << 8);
+   microseconds = microseconds | (mididata[5] << 0);
 
    newtempo = 60.0 / microseconds * 1000000.0;
    if (count <= 1) {

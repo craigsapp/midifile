@@ -99,7 +99,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
    midifile.setTicksPerQuarterNote(tpq);
 
 
-   MFEvent tempo;
+   MidiEvent tempo;
    tempo.setMetaTempo(60.0);
    tempo.track = 0;
    tempo.time = 0;
@@ -114,8 +114,8 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
    }
 
    vector<int> notelist;
-   MFEvent noteon(0x90, 0, 64);
-   MFEvent noteoff(0x80, 0, 64);
+   MidiEvent noteon(0x90, 0, 64);
+   MidiEvent noteoff(0x80, 0, 64);
    noteon.track  = 1;
    noteoff.track = 1;
 
@@ -127,8 +127,8 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
          }
       }
       for (j=0; j<(int)notelist.size(); j++) {
-         noteon.data[1]  = 0x7f & notelist[j];
-         noteoff.data[1] = 0x7f & notelist[j];
+         noteon[1]  = 0x7f & notelist[j];
+         noteoff[1] = 0x7f & notelist[j];
          noteon.time  = (int)(beat * tpq + 0.5);
          noteoff.time = (int)(beat * tpq + 1 * tpq + 0.5);
          midifile.addEvent(noteon);

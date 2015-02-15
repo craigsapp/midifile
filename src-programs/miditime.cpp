@@ -60,9 +60,9 @@ void processMidiFile(MidiFile& midifile) {
    int track;
    int timeinticks;
    double timeinsecs;
-   MFEvent *ptr;
+   MidiEvent *ptr;
    for (i=0; i<eventcount; i++) {
-      ptr = &midifile.getEvent(0,i);
+      ptr = &(midifile[0][i]);
       track       = ptr->track;
       timeinticks = ptr->time;
       timeinsecs  = midifile.getTimeInSeconds(0, i);
@@ -70,11 +70,11 @@ void processMidiFile(MidiFile& midifile) {
       cout << timeinsecs << "\t";
       cout << track << "\t";
       cout << i << "\t";
-      for (j=0; j<(int)ptr->data.size(); j++) {
+      for (j=0; j<(int)ptr->size(); j++) {
          if (j == 0) {
-            cout << "0x" << hex << (int)ptr->data[j] << dec << " ";
+            cout << "0x" << hex << (int)(*ptr)[j] << dec << " ";
          } else {
-            cout << (int)ptr->data[j] << " ";
+            cout << (int)(*ptr)[j] << " ";
          }
       }
       cout << endl;

@@ -1,5 +1,4 @@
 //
-// Copyright 1999-2000 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Nov 26 14:12:01 PST 1999
 // Last Modified: Fri Dec  2 13:26:44 PST 1999
@@ -11,30 +10,30 @@
 // Last Modified: Tue Apr  7 09:23:48 PDT 2009 Added addMetaEvent
 // Last Modified: Fri Jun 12 22:58:34 PDT 2009 Renamed SigCollection class
 // Last Modified: Thu Jul 22 23:28:54 PDT 2010 Added tick to time mapping
-// Last Modified: Thu Jul 22 23:28:54 PDT 2010 Changed _MFEvent to MFEvent
+// Last Modified: Thu Jul 22 23:28:54 PDT 2010 Changed _MidiEvent to MidiEvent
 // Last Modified: Tue Feb 22 13:26:40 PST 2011 Added write(ostream)
 // Last Modified: Mon Nov 18 13:10:37 PST 2013 Added .printHex function.
 // Last Modified: Mon Feb  9 14:01:31 PST 2015 Removed FileIO dependency.
-// Filename:      midifile/MidiFile.h
+// Last Modified: Sat Feb 14 22:35:25 PST 2015 Split out subclasses.
+// Filename:      midifile/include/MidiFile.h
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
+// vim:           ts=3 expandtab
 //
 // Description:   A class which can read/write Standard MIDI files.
 //                MIDI data is stored by track in an array.
 //
 
-#ifndef _MIDIfILE_H_INCLUDED
-#define _MIDIfILE_H_INCLUDED
+#ifndef _MIDIFILE_H_INCLUDED
+#define _MIDIFILE_H_INCLUDED
+
+#include "MidiEventList.h"
 
 #include <vector>
 #include <istream>
 #include <fstream>
 
 using namespace std;
-
-typedef unsigned char  uchar;
-typedef unsigned short ushort;
-typedef unsigned long  ulong;
 
 #define TIME_STATE_DELTA       0
 #define TIME_STATE_ABSOLUTE    1
@@ -49,57 +48,6 @@ class _TickTime {
 };
 
 
-class MFEvent {
-   public:
-                MFEvent    (void);
-
-                // constructors which create store values in .data
-                // with .time field left uninitialized:
-                MFEvent    (int command);
-                MFEvent    (int command, int param1);
-                MFEvent    (int command, int param1, int param2);
-                MFEvent    (int track, int command, int param1, int param2);
-
-                MFEvent    (int aTime, int aTrack, int command, int param1, 
-                            int param2);
-                MFEvent    (int aTime, int aTrack, vector<uchar>& someData);
-                MFEvent    (const MFEvent& mfevent);
-     MFEvent&   operator=  (MFEvent& mfevent);
-     uchar&     operator[] (int index);
-
-               ~MFEvent    ();
-
-      int       time;
-      int       track;
-      vector<uchar> data;
-
-      // Convenience functions for parsing MFEvent contents.
-
-      int       isMeta                    (void);
-      int       isTempo                   (void);
-      int       getTempoMicro             (void);
-      int       getTempoMicroseconds      (void);
-      double    getTempoSeconds           (void);
-      double    getTempoBPM               (void);
-      double    getTempoTPS               (int tpq);
-      double    getTempoSPT               (int tpq);
-      int       isNoteOff                 (void);
-      int       isNoteOn                  (void);
-      int       isTimbre                  (void);
-      int       getCommandNibble          (void);
-      int       getChannelNibble          (void);
-      int       getChannel                (void);
-
-      void      setCommandByte            (int value);
-      void      setCommandNibble          (int value);
-      void      setChannelNibble          (int value);
-      void      setChannel                (int value);
-
-      void      setMetaTempo              (double tempo);
-};
-
-
-
 class MidiFile {
    public:
                 MidiFile                  (void);
@@ -110,7 +58,7 @@ class MidiFile {
       void      absoluteTime              (void);
       int       addEvent                  (int aTrack, int aTime, 
                                              vector<uchar>& midiData);
-      int       addEvent                  (MFEvent& mfevent);
+      int       addEvent                  (MidiEvent& mfevent);
       int       addMetaEvent              (int aTrack, int aTime, int aType,
                                              vector<uchar>& metaData);
       int       addMetaEvent              (int aTrack, int aTime, int aType,
@@ -124,13 +72,14 @@ class MidiFile {
       void      deleteTrack               (int aTrack);
       void      erase                     (void);
       void      clear                     (void);
-      MFEvent&  getEvent                  (int aTrack, int anIndex);
-      vector<MFEvent>& operator[]         (int aTrack);
+      MidiEvent&  getEvent                (int aTrack, int anIndex);
+      MidiEventList& operator[]           (int aTrack);
       int       getTimeState              (void);
       int       getTrackState             (void);
       int       getTicksPerQuarterNote    (void);
       int       getTrackCountAsType1      (void);
       int       getTrackCount             (void);
+      int       getTrack                  (int track, int index);
       int       getNumTracks              (void);
       int       getEventCount             (int aTrack);
       int       getNumEvents              (int aTrack);
@@ -148,7 +97,7 @@ class MidiFile {
       double    getTimeInSeconds          (int tickvalue);
       int       getAbsoluteTickTime       (double starttime);
 
-      void      sortTrack                 (vector<MFEvent>& trackData);
+      void      sortTrack                 (MidiEventList& trackData);
       void      sortTracks                (void);
       void      splitTracks               (void);
       int       write                     (const char* aFile);
@@ -159,39 +108,18 @@ class MidiFile {
       void      setFilename               (const string& aname);
       const char* getFilename             (void);
 
-      // access to convenience functions in MFEvent:
-      int       isMeta                    (int track, int index);
-      int       isTempo                   (int track, int index);
-      int       getTempoMicro             (int track, int index);
-      int       getTempoMicroseconds      (int track, int index);
-      double    getTempoSeconds           (int track, int index);
-      double    getTempoBPM               (int track, int index);
-      double    getTempoTPS               (int track, int index);
-      double    getTempoSPT               (int track, int index);
-      int       isNoteOff                 (int track, int index);
-      int       isNoteOn                  (int track, int index);
-      int       isTimbre                  (int track, int index);
-      int       getCommandNibble          (int track, int index);
-      int       getChannelNibble          (int track, int index);
-      int       getChannel                (int track, int index);
-      int       getTrack                  (int track, int index);
-      void      setCommandNibble          (int track, int index, int value);
-      void      setCommandByte            (int track, int index, int value);
-      void      setChannelNibble          (int track, int index, int value);
-      void      setChannel                (int track, int index, int value);
-
       // static functions:
       static uchar  readByte              (istream& input);
       static ushort readLittleEndian2Bytes(istream& input);
       static ulong  readLittleEndian4Bytes(istream& input);
 
    protected:
-      vector<vector<MFEvent>*> events;  // midi file events
-      int              ticksPerQuarterNote;           // time base of file
-      int              trackCount;                    // # of tracks in file
-      int              theTrackState;                 // joined or split
-      int              theTimeState;                  // absolute or delta
-      vector<char>     readFileName;                  // read file name
+      vector<MidiEventList*> events;             // MIDI file events
+      int              ticksPerQuarterNote;      // time base of file
+      int              trackCount;               // # of tracks in file
+      int              theTrackState;            // joined or split
+      int              theTimeState;             // absolute or delta
+      vector<char>     readFileName;             // read file name
 
       int               timemapvalid;    
       vector<_TickTime> timemap;
@@ -213,8 +141,7 @@ class MidiFile {
 int eventcompare(const void* a, const void* b);
 ostream& operator<<(ostream& out, MidiFile& aMidiFile);
 
-#endif /* _MIDIfILE_H_INCLUDED */
+#endif /* _MIDIFILE_H_INCLUDED */
 
 
 
-// md5sum: ff46e64698e2d9e88ebeef3efa9927d0 MidiFile.h [20030102]

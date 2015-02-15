@@ -28,7 +28,7 @@ void    printTrack              (MidiFile& midifile, int track);
 int     getVlvSize              (int value);
 int     getTrackByteCount       (MidiFile& midifile, int track);
 void    printDecByte            (int value);
-void    printMidiEvent          (MFEvent& event);
+void    printMidiEvent          (MidiEvent& event);
 void    printHexByte            (int value);
 void    usage                   (const char* command);
 void    example                 (void);
@@ -90,7 +90,7 @@ void printTrack(MidiFile& midifile, int track) {
    cout << endl;
 
    // print the list of events in the track
-   MFEvent event;
+   MidiEvent event;
    int eventcount = midifile.getEventCount(track);
    for (int i=0; i<eventcount; i++) {
       event = midifile.getEvent(track, i);
@@ -105,27 +105,27 @@ void printTrack(MidiFile& midifile, int track) {
 // printMidiEvent -- print a time/MIDI message pair.
 //
 
-void printMidiEvent(MFEvent& event) {
+void printMidiEvent(MidiEvent& event) {
    // print the time:
    cout << "v" << event.time << "\t";
 
    // print the command byte in hex format (two digits):
-   int commandbyte = event.data[0];
+   int commandbyte = event[0];
    printHexByte(commandbyte);
    int i;
 
    switch (commandbyte & 0xf0) {
    case 0x90:
    case 0x80:
-      for (i=1; i<(int)event.data.size(); i++) {
+      for (i=1; i<(int)event.size(); i++) {
          cout << " ";
-         printDecByte(event.data[i]);
+         printDecByte(event[i]);
       }
       break;
    default:
-      for (i=1; i<(int)event.data.size(); i++) {
+      for (i=1; i<(int)event.size(); i++) {
          cout << " ";
-         printHexByte(event.data[i]);
+         printHexByte(event[i]);
       }
    }
 
@@ -172,12 +172,12 @@ int getTrackByteCount(MidiFile& midifile, int track) {
    int sum = 0;
    int i;
    int eventcount = midifile.getEventCount(track);
-   MFEvent event;
+   MidiEvent event;
 
    for (i=0; i<eventcount; i++) {
       event = midifile.getEvent(track, i);
       sum += getVlvSize(event.time);
-      sum += event.data.size();
+      sum += event.size();
    }
    return sum;
 }

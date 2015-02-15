@@ -138,26 +138,26 @@ void convertToMelody(MidiFile& midifile, vector<Melody>& melody) {
    int velocity;
 
    for (i=0; i<numEvents; i++) {
-      command = midifile.getEvent(track,i).data[0] & 0xf0;
+      command = midifile[track][i][0] & 0xf0;
       if (command == 0x90) {
-         pitch = midifile.getEvent(track, i).data[1];
-         velocity = midifile.getEvent(track, i).data[2];
+         pitch = midifile[track][i][1];
+         velocity = midifile[track][i][2];
          if (velocity == 0) {
             // note off
             goto noteoff;
          } else {
             // note on
-            state[pitch] = midifile.getEvent(track, i).time;
+            state[pitch] = midifile[track][i].time;
          }
       } else if (command == 0x80) {
          // note off
-         pitch = midifile.getEvent(track, i).data[1];
+         pitch = midifile[track][i][1];
 noteoff:
          if (state[pitch] == -1) {
             continue;
          }
          mtemp.time = state[pitch];
-         mtemp.duration = midifile.getEvent(track, i).time - state[pitch];
+         mtemp.duration = midifile[track][i].time - state[pitch];
          mtemp.pitch = pitch;
          melody.push_back(mtemp);
          state[pitch] = -1;

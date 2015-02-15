@@ -51,10 +51,10 @@ void convertFile(const string& inputfilename, const string& outputfilename) {
    MidiFile midifile(inputfilename);
    for (int i=0; i<midifile.getTrackCount(); i++) {
       for (int j=0; j<midifile.getEventCount(i); j++) {
-         if (!midifile.isNoteOff(i, j)) {
+         if (!midifile[i][j].isNoteOff()) {
             continue;
          }
-         midifile.setCommandNibble(i, j, 0x80);
+         midifile[i][j].setCommandNibble(0x80);
       }
    }
    midifile.write(outputfilename);

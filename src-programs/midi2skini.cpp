@@ -28,7 +28,7 @@ int     maxcount = 100000;     // maxiumum number of notes expected
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
 void      printMidiAsSkini      (MidiFile& midifile);
-void      processEvent          (MFEvent& event, double& tempo,
+void      processEvent          (MidiEvent& event, double& tempo,
                                  double& curtime);
 void      usage                 (const char* command);
 
@@ -59,7 +59,7 @@ void printMidiAsSkini(MidiFile& midifile) {
    int      oldticks = 0;          // absolute ticks of last event
    int      ticks    = 0;          // absolute ticks of current event
    double   tempo    = 120.0;      // time units will be in seconds
-   MFEvent  event;                 // temporary event for printing
+   MidiEvent  event;                 // temporary event for printing
    double  curtime  = 0.0;         // current time in seconds
    int      i;
 
@@ -81,62 +81,62 @@ void printMidiAsSkini(MidiFile& midifile) {
 // processEvent -- check for tempo markings, and print MIDI event.
 //
 
-void processEvent(MFEvent& event, double& tempo, double& curtime) {
+void processEvent(MidiEvent& event, double& tempo, double& curtime) {
    int i;
 
-   if (((event.data[0] & 0xf0) == 0x80) || (((event.data[0] & 0xf0) == 0x90) &&
-         (event.data[2] == 0)) ) {
+   if (((event[0] & 0xf0) == 0x80) || (((event[0] & 0xf0) == 0x90) &&
+         (event[2] == 0)) ) {
       // note-off MIDI message
       if (track >= 0 && track != event.track) { return; }
       cout << "NoteOff\t\t=";
       cout.width(9);
       cout.setf(ios::left);
       cout << curtime << "\t" << event.track << "\t"
-           << (int)event.data[1] << "\t" << (int)event.data[2] << endl;
-   } else if ((event.data[0] & 0xf0) == 0x90) {
+           << (int)event[1] << "\t" << (int)event[2] << endl;
+   } else if ((event[0] & 0xf0) == 0x90) {
       // note-on MIDI message
       if (track >= 0 && track != event.track) { return; }
       cout << "NoteOn\t\t=";
       cout.width(9);
       cout.setf(ios::left);
       cout << curtime << "\t" << event.track << "\t"
-           << (int)event.data[1] << "\t" << (int)event.data[2] << endl;
-   } else if ((event.data[0] & 0xf0) == 0xb0) {
+           << (int)event[1] << "\t" << (int)event[2] << endl;
+   } else if ((event[0] & 0xf0) == 0xb0) {
       // continuous controller MIDI message
       if (track >= 0 && track != event.track) { return; }
-      if (event.data[1] == 7) {
+      if (event[1] == 7) {
          cout << "Volume\t\t=";
          cout.width(9);
          cout.setf(ios::left);
          cout << curtime << "\t" << event.track << "\t"
-              << "\t" << (int)event.data[2] << endl;
+              << "\t" << (int)event[2] << endl;
       } else {
          cout << "ControlChange\t=";
          cout.width(9);
          cout.setf(ios::left);
          cout << curtime << "\t" << event.track << "\t"
-              << (int)event.data[1] << "\t" << (int)event.data[2] << endl;
+              << (int)event[1] << "\t" << (int)event[2] << endl;
       }
-   } else if ((event.data.size() > 3) && (event.data[0] == 0xff) &&
-         (event.data[1] == 0x51)) {
+   } else if ((event.size() > 3) && (event[0] == 0xff) &&
+         (event[1] == 0x51)) {
       // Tempo meta event
-      int microseconds = (unsigned int)event.data[3];
+      int microseconds = (unsigned int)event[3];
       microseconds = microseconds << 8;
-      microseconds |= (unsigned int)event.data[4];
+      microseconds |= (unsigned int)event[4];
       microseconds = microseconds << 8;
-      microseconds |= (unsigned int)event.data[5];
+      microseconds |= (unsigned int)event[5];
       tempo = 1000000.0 / microseconds * 60.0;
       cout << "// time:=" << curtime << " tempo: " << tempo << endl;
-   } else if ((event.data.size() > 3) && (event.data[0] == 0xff) &&
-         (event.data[1] == 0x03)) {
+   } else if ((event.size() > 3) && (event[0] == 0xff) &&
+         (event[1] == 0x03)) {
       // Track name MIDI meta event
       if (track >= 0 && track != event.track) { return; }
       cout << "//";
       cout << " time:=" << curtime;
       cout << " track:" << event.track;
       cout << " text: ";
-      for (i=3; i<(int)event.data.size(); i++) {
-         cout << (char)event.data[i];
+      for (i=3; i<(int)event.size(); i++) {
+         cout << (char)event[i];
       }
       cout << endl;
    } else {
@@ -146,8 +146,8 @@ void processEvent(MFEvent& event, double& tempo, double& curtime) {
            << " time:=" << curtime
            << " track:" << event.track
            << " midi-data: ";
-      for (i=0; i<(int)event.data.size(); i++) {
-           cout << (int)event.data[i] << " ";
+      for (i=0; i<(int)event.size(); i++) {
+           cout << (int)event[i] << " ";
       }
       cout << endl;
    }

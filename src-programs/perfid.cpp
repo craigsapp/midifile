@@ -199,21 +199,21 @@ void addNoteOnEvents(vector<int>& noteondeltas, MidiFile& midifile,
       int track) {
    int i;
    int lasttime = -1;
-   MFEvent event;
+   MidiEvent* event;
    int delta = 0;
 
    for (i=0; i<midifile.getNumEvents(track); i++) {
-      event = midifile.getEvent(track, i);
-      if ((event.data[0] & 0xf0) == 0x90) {
-         if (event.data[2] > 0) {
+      event = &midifile[track][i];
+      if (((*event)[0] & 0xf0) == 0x90) {
+         if ((*event)[2] > 0) {
             if (lasttime < 0) {
-               lasttime = event.time;
+               lasttime = event->time;
             } else {
-               delta = event.time - lasttime;
+               delta = event->time - lasttime;
                if (delta < cutoff) {
                   noteondeltas.push_back(delta);
                }
-               lasttime = event.time;
+               lasttime = event->time;
             }
          }
       }

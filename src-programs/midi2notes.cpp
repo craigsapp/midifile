@@ -161,39 +161,39 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
       if (verboseQ) {
-         cout << ">>> " << (int)midifile.getEvent(0,i).data[0] << "\n";
+         cout << ">>> " << (int)midifile[0][i][0] << "\n";
       }
       event.assign(event.size(), unused);
-      command = midifile.getEvent(0, i).data[0] & 0xf0;
-      channel = midifile.getEvent(0, i).data[0] & 0x0f;
+      command = midifile[0][i][0] & 0xf0;
+      channel = midifile[0][i][0] & 0x0f;
 
       // check for tempo indication
-      if (midifile.getEvent(0, i).data[0] == 0xff &&
-                 midifile.getEvent(0, i).data[1] == 0x51) {
+      if (midifile[0][i][0] == 0xff &&
+                 midifile[0][i][1] == 0x51) {
          setTempo(midifile, i, tempo);
          if (verboseQ) {
             cout << "# New Tempo: " << tempo << "\n";
          }
       }
 
-      if ((midifile.getEvent(0,i).data[0] & 0x0f) == 0x09) {
+      if ((midifile[0][i][0] & 0x0f) == 0x09) {
           continue;
       }
       if (command == 0xf0) {
-         command = midifile.getEvent(0, i).data[0];
+         command = midifile[0][i][0];
       }
-      if (command == 0x90 && midifile.getEvent(0, i).data[2] != 0) {
+      if (command == 0x90 && midifile[0][i][2] != 0) {
          // store note-on velocity and time
-         key = midifile.getEvent(0, i).data[1];
-         vel = midifile.getEvent(0, i).data[2];
-         ontimes[key] = getTime(midifile.getEvent(0, i).time, tempo,
+         key = midifile[0][i][1];
+         vel = midifile[0][i][2];
+         ontimes[key] = getTime(midifile[0][i].time, tempo,
             midifile.getTicksPerQuarterNote());
 
          onvelocities[key] = vel;
       } else if (command == 0x90 || command == 0x80) {
          // note off command write to output
-         key = midifile.getEvent(0, i).data[1];
-         offtime = getTime(midifile.getEvent(0, i).time, tempo,
+         key = midifile[0][i][1];
+         offtime = getTime(midifile[0][i].time, tempo,
             midifile.getTicksPerQuarterNote());
          legend_opcode[OP_NOTE/1000] = 1;
 
@@ -204,8 +204,8 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
               << "\tdur=" << offtime - ontimes[key]
               << "\tpch=" << key
               << "\tvel=" << onvelocities[key]
-              << "\tch="  << (midifile.getEvent(0, i).data[0] & 0x0f)
-              << "\ttrack=" << midifile.getEvent(0, i).track
+              << "\tch="  << (midifile[0][i][0] & 0x0f)
+              << "\ttrack=" << midifile[0][i].track
               << endl;
          } else {
             event[0] = ontimes[key];
@@ -213,60 +213,60 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
             event[2] = offtime - ontimes[key];
             event[3] = key;
             event[4] = onvelocities[key];
-            event[5] = (midifile.getEvent(0, i).data[0] & 0x0f);
-            event[6] = midifile.getEvent(0, i).track;
+            event[5] = (midifile[0][i][0] & 0x0f);
+            event[6] = midifile[0][i].track;
             event[7] = channel;
          }
       } else if (command == 0xb0) {
-         legend_controller[midifile.getEvent(0,i).data[1]] = 1;
+         legend_controller[midifile[0][i][1]] = 1;
          legend_opcode[OP_CONTROL/1000] = 1;
 
          if (verboseQ) {
-            cout << getTime(midifile.getEvent(0,i).time, tempo,
+            cout << getTime(midifile[0][i].time, tempo,
                        midifile.getTicksPerQuarterNote())
                  << "\tcontrol"
-                 << "\ttype="  << (int)midifile.getEvent(0, i).data[1]
-                 << "\tval="   << (int)midifile.getEvent(0, i).data[2]
-                 << "\tch="    << (midifile.getEvent(0, i).data[0] & 0x0f)
-                 << "\ttrack=" << midifile.getEvent(0, i).track
+                 << "\ttype="  << (int)midifile[0][i][1]
+                 << "\tval="   << (int)midifile[0][i][2]
+                 << "\tch="    << (midifile[0][i][0] & 0x0f)
+                 << "\ttrack=" << midifile[0][i].track
                  << "\n";
          } else {
-            event[0] = getTime(midifile.getEvent(0,i).time, tempo,
+            event[0] = getTime(midifile[0][i].time, tempo,
                           midifile.getTicksPerQuarterNote());
             event[1] = OP_CONTROL;
-            event[2] = (int)midifile.getEvent(0,i).data[1];
-            event[3] = (int)midifile.getEvent(0,i).data[2];
-            event[5] = (midifile.getEvent(0, i).data[0] & 0x0f);
-            event[6] = midifile.getEvent(0, i).track;
+            event[2] = (int)midifile[0][i][1];
+            event[3] = (int)midifile[0][i][2];
+            event[5] = (midifile[0][i][0] & 0x0f);
+            event[6] = midifile[0][i].track;
          }
       } else if (command == 0xc0) {
-         legend_instr[midifile.getEvent(0,i).data[1]] = 1;
+         legend_instr[midifile[0][i][1]] = 1;
          legend_opcode[OP_INSTR/1000] = 1;
 
          if (verboseQ) {
-         cout << getTime(midifile.getEvent(0,i).time, tempo,
+         cout << getTime(midifile[0][i].time, tempo,
                     midifile.getTicksPerQuarterNote())
               << "\tinstr"
-              << "\tname="  << GMinstrument[midifile.getEvent(0,i).data[1]]
-              << "\tnum="   << (int)midifile.getEvent(0, i).data[1]
-              << "\tch="    << (midifile.getEvent(0, i).data[0] & 0x0f)
-              << "\ttrack=" << midifile.getEvent(0, i).track
+              << "\tname="  << GMinstrument[midifile[0][i][1]]
+              << "\tnum="   << (int)midifile[0][i][1]
+              << "\tch="    << (midifile[0][i][0] & 0x0f)
+              << "\ttrack=" << midifile[0][i].track
               << "\n";
          } else {
-            event[0] = getTime(midifile.getEvent(0,i).time, tempo,
+            event[0] = getTime(midifile[0][i].time, tempo,
                     midifile.getTicksPerQuarterNote());
             event[1] = OP_INSTR;
-            event[2] = (int)midifile.getEvent(0, i).data[1];
-            event[5] = (midifile.getEvent(0, i).data[0] & 0x0f);
-            event[6] = midifile.getEvent(0, i).track;
+            event[2] = (int)midifile[0][i][1];
+            event[5] = (midifile[0][i][0] & 0x0f);
+            event[6] = midifile[0][i].track;
          }
       } else if (command == 0xff) {
          if (verboseQ) {
-            cout << getTime(midifile.getEvent(0,i).time, tempo,
+            cout << getTime(midifile[0][i].time, tempo,
                        midifile.getTicksPerQuarterNote())
                  << "\t";
          } else {
-            event[0] = getTime(midifile.getEvent(0,i).time, tempo,
+            event[0] = getTime(midifile[0][i].time, tempo,
                        midifile.getTicksPerQuarterNote());
          }
          processMetaEvent(midifile, i, event);
@@ -290,7 +290,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
 //
 
 void processMetaEvent(MidiFile& midifile, int i, vector<double>& event) {
-   vector<uchar>& data = midifile.getEvent(0,i).data;
+   MidiEvent& data = midifile[0][i];
 
    switch (data[1]) {
       case 0x58:  // time signature
@@ -387,25 +387,25 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    vector<double> event;
    event.assign(7, unused);
 
-   MFEvent& mididata = midifile.getEvent(0, index);
+   MidiEvent& mididata = midifile[0][index];
 
    int microseconds = 0;
-   microseconds = microseconds | (mididata.data[3] << 16);
-   microseconds = microseconds | (mididata.data[4] << 8);
-   microseconds = microseconds | (mididata.data[5] << 0);
+   microseconds = microseconds | (mididata[3] << 16);
+   microseconds = microseconds | (mididata[4] << 8);
+   microseconds = microseconds | (mididata[5] << 0);
 
    newtempo = 60.0 / microseconds * 1000000.0;
    if (count <= 1) {
       tempo = newtempo;
    } else if (tempo != newtempo) {
       if (verboseQ) {
-         cout << getTime(midifile.getEvent(0,index).time, tempo,
+         cout << getTime(midifile[0][index].time, tempo,
                  midifile.getTicksPerQuarterNote())
               << "\t"
               << "tempo\t" << newtempo << endl;
       } else {
          legend_opcode[OP_TEMPO/1000] = 1;
-         event[0] = getTime(midifile.getEvent(0,index).time, tempo,
+         event[0] = getTime(midifile[0][index].time, tempo,
                  midifile.getTicksPerQuarterNote());
          event[1] = OP_TEMPO;
          event[2] = newtempo;
@@ -917,8 +917,8 @@ void printEvent(vector<double>& event) {
 //            event[2] = offtime - ontimes[key];
 //            event[3] = key;
 //            event[4] = onvelocities[key];
-//            event[5] = (midifile.getEvent(0, i).data[0] & 0x0f);
-//            event[6] = midifile.getEvent(0, i).track;
+//            event[5] = (midifile[0][i][0] & 0x0f);
+//            event[6] = midifile[0][i].track;
 
 void printNotesEvent(vector<double>& event) {
    if (int(event[1]+0.5) != OP_NOTE) {
