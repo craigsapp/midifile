@@ -18,3 +18,4 @@ Public functions
 {% include docslot/Options.html %}
 
 
+{% include docslot/keyboardCommands.html %}

@@ -18,3 +18,6 @@ Public functions
 {% include docslot/MFEvent.html %}
 
 
+
+{% include docslot/keyboardCommands.html %}
+
