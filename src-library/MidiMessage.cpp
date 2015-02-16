@@ -406,7 +406,7 @@ int MidiMessage::getCommandNibble(void) {
 
 //////////////////////////////
 //
-// MidiMessage:getCommandByte -- Return the command byte or -1 if not
+// MidiMessage::getCommandByte -- Return the command byte or -1 if not
 //    allocated.
 //
 
