@@ -1,8 +1,8 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jan 22 19:09:03 PST 2015
-// Last Modified: Thu Jan 22 19:09:06 PST 2015
-// Filename:      /javascripts/external-links.js
+// Last Modified: Sun Feb 15 23:45:11 PST 2015
+// Filename:      midifile/javascripts/external-links.js
 // Syntax:        JavaScript 1.8.5/ECMAScript 5.1
 // vim:           ts=3
 //
@@ -22,7 +22,7 @@ function externalLinks(tabname) {
 	var links = document.querySelectorAll('a');
 	var i;
 	for (var i=0; i<links.length; i++) {
-		if (links[i].href.match(/^https?:\/\//)) {
+		if (links[i].getAttribute('href').match(/^https?:\/\//)) {
 			links[i].target = tabname;
 		}
 	}
