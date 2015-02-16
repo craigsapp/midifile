@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiMessage
+@METHOD:	isAftertouch
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiMessage.cpp
+@LINES:		
+@SEEALSO:	getCommandNibble
+@SHORTDESC:	Returns true if MIDI message is an aftertouch message.
+@LONGDESC:	Returns true if command nibble is 0xA0 for an aftertouch
+		message.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

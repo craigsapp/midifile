@@ -5,8 +5,8 @@
 @RETURN:	void
 @PARAMETERS:	int nibble
 @FILE:		MidiMessage.cpp
-@LINES:		250-270
-@SEEALSO:	
+@LINES:		487-503
+@SEEALSO:	setChannelNibble
 @SHORTDESC:	Set the command nibble of a command byte.
 @LONGDESC:	Set the command nibble of a command byte.  The value can 
 		either be in the range from 0x8 to 0xf, or 0x80 to 0xf0.
@@ -24,18 +24,14 @@
 // MidiMessage::setCommandNibble --
 //
 
-void MidiFile::setCommandNibble(int track, int index, int nibble) {
-   MidiFile::getEvent(track, index).setCommandNibble(nibble);
-}
-
 void MidiMessage::setCommandNibble(int value) {
-   if (data.size() &lt; 1) {
-      data.resize(1);
-   }
+   if (this-&gt;size() &lt; 1) {
+      this-&gt;resize(1);
+   } 
    if (value &lt;= 0x0f) {
-      data[0] = (data[0] &amp; 0x0f) | ((uchar)((value &lt;&lt; 4) &amp; 0xf0));
+      (*this)[0] = ((*this)[0] &amp; 0x0f) | ((uchar)((value &lt;&lt; 4) &amp; 0xf0));
    } else {
-      data[0] = (data[0] &amp; 0x0f) | ((uchar)(value &amp; 0xf0));
+      (*this)[0] = ((*this)[0] &amp; 0x0f) | ((uchar)(value &amp; 0xf0));
    } 
 }
 

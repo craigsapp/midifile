@@ -5,10 +5,10 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		406-420
 @SEEALSO:	getCommandNibble
-@SHORTDESC:	
-@LONGDESC:	
+@SHORTDESC:	Return the command byte of the MIDI message.
+@LONGDESC:	Return the command byte of the MIDI message.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -17,6 +17,20 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::getCommandByte -- Return the command byte or -1 if not
+//    allocated.
+//
+
+int MidiMessage::getCommandByte(void) {
+   if (size() &lt; 1) {
+      return -1;
+   } else {
+      return (*this)[0];
+   }
+}
 
 @@END:	FunctionDocumentation
 

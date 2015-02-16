@@ -1,6 +1,7 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiMessage
 @METHOD:	getChannelNibble
+@ALIAS:		getChannel
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void

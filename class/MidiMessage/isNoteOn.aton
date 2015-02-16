@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		327-350
+@LINES:		331-349
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a note-on message.
 @LONGDESC:	Returns true if MIDI message is a note-on message.
@@ -20,25 +20,20 @@
 
 //////////////////////////////
 //
-// MidiMessage::isNoteOn -- returns true if the command byte is in the 0x90
+// MidiMessage::isNoteOn -- Returns true if the command byte is in the 0x90
 //    range and the velocity is non-zero
 //
 
-int MidiFile::isNoteOn(int track, int index) {
-   return MidiFile::getEvent(track, index).isNoteOn();
-}
-
 int MidiMessage::isNoteOn(void) {
-   if (data.size() != 3) {
+   if (size() != 3) {
       return 0;
-   }
-   if ((data[0] &amp; 0xf0) != 0x90) {
+   } else if (((*this)[0] &amp; 0xf0) != 0x90) {
       return 0;
-   }
-   if (data[2] == 0) {
+   } else if ((*this)[2] == 0) {
       return 0;
+   } else {
+      return 1;
    }
-   return 1;
 }
 
 @@END:	FunctionDocumentation

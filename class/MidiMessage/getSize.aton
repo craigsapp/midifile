@@ -5,10 +5,11 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		
-@SEEALSO:	
-@SHORTDESC:	
-@LONGDESC:	
+@LINES:		136-145
+@SEEALSO:	vector<uchar>::size
+@SHORTDESC:	Returns the number of bytes in the MIDI message.
+@LONGDESC:	Returns the number of bytes in the MIDI message.  The same
+		as the inherited function .size().
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -17,6 +18,15 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::getSize -- Return the size of the MIDI message bytes.
+//
+
+int MidiMessage::getSize(void) {
+   return this-&gt;size();
+}
 
 @@END:	FunctionDocumentation
 

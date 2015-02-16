@@ -1,11 +1,12 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiMessage
 @METHOD:	isTimbre
+@ALIAS:		isPatchChange
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		514-534
+@LINES:		372-388
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a patch change.
 @LONGDESC:	Returns true if MIDI message is a patch change.
@@ -20,22 +21,18 @@
 
 //////////////////////////////
 //
-// MidiMessage::isTimbre --
+// MidiMessage::isTimbre -- Returns true of a patch change message
+//    (command nibble 0xc0).
 //
 
-int MidiFile::isTimbre(int track, int index) {
-   return MidiFile::getEvent(track, index).isTimbre();
-}
-
 int MidiMessage::isTimbre(void) {
-   if ((data[0] &amp; 0xf0) != 0xc0) {
+   if (((*this)[0] &amp; 0xf0) != 0xc0) {
       return 0;
-   }
-   if (data.size() != 2) {
+   } else if (size() != 2) {
       return 0;
+   } else {
+      return 1;
    }
-
-   return 1;
 }
 
 @@END:	FunctionDocumentation

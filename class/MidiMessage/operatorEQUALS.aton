@@ -3,9 +3,12 @@
 @METHOD:	operator=
 @ACCESS:	public
 @RETURN:	MidiMessage&
-@PARAMETERS:	MidiMessage& event
+@PARAMETERS:	MidiMessage& message
+@PARAMETERS:	vector<uchar>& bytes
+@PARAMETERS:	vector<char>& bytes
+@PARAMETERS:	vector<int>& bytes
 @FILE:		MidiMessage.cpp
-@LINES:		135-151
+@LINES:		89-123
 @SEEALSO:	
 @SHORTDESC:	Copy the contents of another MidiMessage.
 @LONGDESC:	Copy the contents of another MidiMessage.
@@ -20,17 +23,35 @@
 
 //////////////////////////////
 //
-// MidiMessage::operator= -- Copy the contents of another MidiMessage.
+// MidiMessage::operator= --
 //
 
-MidiMessage&amp; MidiMessage::operator=(MidiMessage&amp; mfevent) {
-   if (this == &amp;mfevent) {
+MidiMessage&amp; MidiMessage::operator=(MidiMessage&amp; message) {
+   if (this == &amp;message) {
       return *this;
    }
-   time  = mfevent.time;
-   track = mfevent.track;
-   data.resize(mfevent.data.size());
-   memcpy(data.data(), mfevent.data.data(), sizeof(uchar) * data.size());
+   (*this) = message;
+   return *this;
+}
+
+
+MidiMessage&amp; MidiMessage::operator=(vector&lt;uchar&gt;&amp; bytes) {
+   if (this == &amp;bytes) {
+      return *this;
+   }
+   (*this) = bytes;
+   return *this;
+}
+
+
+MidiMessage&amp; MidiMessage::operator=(vector&lt;char&gt;&amp; bytes) {
+   setMessage(bytes);
+   return *this;
+}
+
+
+MidiMessage&amp; MidiMessage::operator=(vector&lt;int&gt;&amp; bytes) {
+   setMessage(bytes);
    return *this;
 }
 

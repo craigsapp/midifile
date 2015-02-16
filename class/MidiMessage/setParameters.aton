@@ -6,10 +6,12 @@
 @PARAMETERS:	int p1
 @PARAMETERS:	int p1, int p2
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		525-552
 @SEEALSO:	setMessage
-@SHORTDESC:	
-@LONGDESC:	
+@SHORTDESC:	Set the message bytes after the command byte.
+@LONGDESC:	Set the second and optionally the third MIDI bytes of a 
+		MIDI message.  The command byte will not be altered, and
+		will be set to 0 if it currently does not exist.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -18,6 +20,33 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::setParameters -- Set the second and optionally the
+//     third MIDI byte of a MIDI message.  The command byte will not
+//     be altered, and will be set to 0 if it currently does not exist.
+//
+
+void MidiMessage::setParameters(int p1) {
+   int oldsize = size();
+   resize(2);
+   (*this)[1] = (uchar)p1;
+   if (oldsize &lt; 1) {
+      (*this)[0] = 0;
+   }
+}
+
+
+void MidiMessage::setParameters(int p1, int p2) {
+   int oldsize = size();
+   resize(3);
+   (*this)[1] = (uchar)p1;
+   (*this)[2] = (uchar)p2;
+   if (oldsize &lt; 1) {
+      (*this)[0] = 0;
+   }
+}
 
 @@END:	FunctionDocumentation
 

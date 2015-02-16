@@ -7,10 +7,12 @@
 @PARAMETERS:	int value, int p1
 @PARAMETERS:	int value, int p1, int p2
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		464-485
 @SEEALSO:	
-@SHORTDESC:	
-@LONGDESC:	
+@SHORTDESC:	Set the command byte and any parameters for a message.
+@LONGDESC:	Set the command byte and any parameters for a message.
+		The size of the message will be adjusted to the number
+		of input parameters.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -19,6 +21,27 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::setCommand -- Set the command byte and parameter bytes
+//   for a MidiMessage.  The size of the message will be adjusted to
+//   the number of input parameters.
+//
+
+void MidiMessage::setCommand(int value, int p1) { 
+   this-&gt;resize(2);
+   (*this)[0] = (uchar)value;
+   (*this)[1] = (uchar)p1;
+}
+
+
+void MidiMessage::setCommand(int value, int p1, int p2) {
+   this-&gt;resize(3);
+   (*this)[0] = (uchar)value;
+   (*this)[1] = (uchar)p1;
+   (*this)[2] = (uchar)p2;
+}
 
 @@END:	FunctionDocumentation
 

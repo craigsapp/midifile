@@ -5,10 +5,12 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		147-191
 @SEEALSO:	resizeToCommand
-@SHORTDESC:	
-@LONGDESC:	
+@SHORTDESC:	Set the number of parameters given the stored command byte.
+@LONGDESC:	Set the number of parameters given the stored command byte
+		if the command byte is set in the range from 0x80 to 0xef.
+		Any newly added parameter bytes will be set to 0.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -17,6 +19,50 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::setSizeToCommand -- Set the number of parameters if the
+//   command byte is set in the range from 0x80 to 0xef.  Any newly 
+//   added parameter bytes will be set to 0.
+//
+
+int MidiMessage::setSizeToCommand(void) {
+   int osize = this-&gt;size();
+   if (osize &lt; 1) {
+      return 0;
+   }
+   int command = getCommandNibble();
+   if (command &lt; 0) {
+      return 0;
+   }
+   int bytecount = 1;
+   switch (command) {
+      case 0x80: bytecount = 2; break;  // Note Off
+      case 0x90: bytecount = 2; break;  // Note On
+      case 0xA0: bytecount = 2; break;  // Aftertouch
+      case 0xB0: bytecount = 2; break;  // Continuous Controller
+      case 0xC0: bytecount = 1; break;  // Patch Change
+      case 0xD0: bytecount = 1; break;  // Channel Pressure
+      case 0xE0: bytecount = 2; break;  // Pitch Bend
+      case 0xF0: 
+      default:
+         return 0;
+   }
+   if (bytecount + 1 &lt; osize) {
+      resize(bytecount+1);
+      for (int i=osize; i&lt;bytecount+1; i++) {
+         (*this)[i] = 0;
+      }
+   }
+
+   return size();
+}
+
+
+int MidiMessage::resizeToCommand(void) {
+   return setSizeToCommand();
+}
 
 @@END:	FunctionDocumentation
 

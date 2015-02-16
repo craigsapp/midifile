@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	int channel
 @FILE:		MidiMessage.cpp
-@LINES:		301-325
+@LINES:		506-523
 @SEEALSO:	setChannel
 @SHORTDESC:	Set the channel nibble in a MIDI message command byte.
 @LONGDESC:	Set the channel nibble in a MIDI message command byte.
@@ -23,20 +23,13 @@
 // MidiMessage::setChannelNibble --
 //
 
-void MidiFile::setChannelNibble(int track, int index, int value) {
-   MidiFile::getEvent(track, index).setChannelNibble(value);
-}
-
-void MidiFile::setChannel(int track, int index, int value) {
-   MidiFile::getEvent(track, index).setChannelNibble(value);
-}
-
 void MidiMessage::setChannelNibble(int value) {
-   if (data.size() &lt; 1) {
-      data.resize(1);
+   if (this-&gt;size() &lt; 1) {
+      this-&gt;resize(1);
    }
-   data[0] = (data[0] &amp; 0xf0) | ((uchar)(value &amp; 0x0f));
+   (*this)[0] = ((*this)[0] &amp; 0xf0) | ((uchar)(value &amp; 0x0f));
 }
+
 
 void MidiMessage::setChannel(int value) {
    setChannelNibble(value);

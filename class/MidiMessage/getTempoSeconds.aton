@@ -5,8 +5,11 @@
 @RETURN:	double
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		435-455
-@SEEALSO:	
+@LINES:		215-231
+@SEEALSO:	getTempoBPM
+@SEEALSO:	getTempoTPS
+@SEEALSO:	getTempoSPT
+@SEEALSO:	getTempoMicro
 @SHORTDESC:	Return the number of seconds per quarter note.
 @LONGDESC:	Return the number of seconds per quarter note.
 
@@ -20,22 +23,18 @@
 
 //////////////////////////////
 //
-// MidiMessage::getTempoSeconds -- returns the number of seconds per
+// MidiMessage::getTempoSeconds -- Returns the number of seconds per
 //      quarter note.  Returns -1.0 if the MIDI message is not a
 //      tempo meta message.
 //
 
-double MidiFile::getTempoSeconds(int track, int index) {
-   return MidiFile::getEvent(track, index).getTempoSeconds();
-}
-
 double MidiMessage::getTempoSeconds(void) {
-   int micro = getTempoMicroseconds();
-   if (micro &lt; 0) {
+   int microseconds = getTempoMicroseconds();
+   if (microseconds &lt; 0) {
       return -1.0;
+   } else {
+      return (double)microseconds / 1000000.0;
    }
-
-   return (double)micro / 1000000.0;
 }
 
 @@END:	FunctionDocumentation

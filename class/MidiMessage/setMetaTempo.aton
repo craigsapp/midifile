@@ -1,11 +1,12 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiMessage
 @METHOD:	setMetaTempo
+@ALIAS:		setTempo
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	double tempo
 @FILE:		MidiMessage.cpp
-@LINES:		164-180
+@LINES:		580-601
 @SEEALSO:	
 @SHORTDESC:	Create a tempo meta message from a tempo.
 @LONGDESC:	Create a tempo meta message from a tempo in terms of
@@ -26,13 +27,18 @@
 
 void MidiMessage::setMetaTempo(double tempo) {
    int microseconds = (int)(60.0 / tempo * 1000000.0 + 0.5);
-   data.resize(6);
-   data[0] = 0xff;
-   data[1] = 0x51;
-   data[2] = 3;
-   data[3] = (microseconds &gt;&gt; 16) &amp; 0xff;
-   data[4] = (microseconds &gt;&gt;  8) &amp; 0xff;
-   data[5] = (microseconds &gt;&gt;  0) &amp; 0xff;
+   resize(6);
+   (*this)[0] = 0xff;
+   (*this)[1] = 0x51;
+   (*this)[2] = 3;
+   (*this)[3] = (microseconds &gt;&gt; 16) &amp; 0xff;
+   (*this)[4] = (microseconds &gt;&gt;  8) &amp; 0xff;
+   (*this)[5] = (microseconds &gt;&gt;  0) &amp; 0xff;
+}
+
+
+void MidiMessage::setTempo(double tempo) {
+   setMetaTempo(tempo);
 }
 
 @@END:	FunctionDocumentation

@@ -5,10 +5,10 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		379-404
+@LINES:		351-370
 @SEEALSO:	
-@SHORTDESC:	Returns true if MIDI message is a tempo meta messsage.
-@LONGDESC:	Returns true if MIDI message is a tempo meta messsage.
+@SHORTDESC:	Returns true if MIDI message is a tempo meta message.
+@LONGDESC:	Returns true if MIDI message is a tempo meta message.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -20,27 +20,21 @@
 
 //////////////////////////////
 //
-// MidiMessage::isTempo -- returns true if emssage is a Meta message
-//      describing tempo (meta message 0x51).
+// MidiMessage::isTempo -- Returns true if message is a meta message
+//      describing tempo (meta message type 0x51).
 //
 
-int MidiFile::isTempo(int track, int index) {
-   return MidiFile::getEvent(track, index).isTempo();
-}
-
 int MidiMessage::isTempo(void) {
-   if (!isMeta()) {
+   if (!isMetaMessage()) {
       return 0;
-   }
-   if (data[1] != 0x51) {
+   } else if ((*this)[1] != 0x51) {
       return 0;
-   }
-   if (data.size() != 6) {
-      // Meta Tempo message can only be 6 bytes long.
+   } else if (size() != 6) {
+      // Meta tempo message can only be 6 bytes long.
       return 0;
+   } else {
+      return 1;
    }
-
-   return 1;
 }
 
 @@END:	FunctionDocumentation

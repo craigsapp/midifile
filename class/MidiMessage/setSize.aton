@@ -5,10 +5,11 @@
 @RETURN:	void
 @PARAMETERS:	int size
 @FILE:		MidiMessage.cpp
-@LINES:		
-@SEEALSO:	
-@SHORTDESC:	
-@LONGDESC:	
+@LINES:		125-134
+@SEEALSO:	vector<uchar>::resize
+@SHORTDESC:	Change the size of the message byte list.
+@LONGDESC:	Change the size of the message byte list.  The same as
+		the inherited function .resize().
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -17,6 +18,15 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::setSize -- Change the size of the message byte list.
+//
+
+void MidiMessage::setSize(int asize) {
+   this-&gt;resize(asize);
+}
 
 @@END:	FunctionDocumentation
 

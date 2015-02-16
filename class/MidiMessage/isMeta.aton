@@ -5,10 +5,10 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		352-377
+@LINES:		281-309
 @SEEALSO:	isMetaMessage
-@SHORTDESC:	Retrns true if MIDI message is a meta message.
-@LONGDESC:	Retrns true if MIDI message is a meta message.
+@SHORTDESC:	Returns true if MIDI message is a meta message.
+@LONGDESC:	Returns true if MIDI message is a meta message.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -20,27 +20,30 @@
 
 //////////////////////////////
 //
-// MidiMessage::isMeta -- returns true if message is a Meta message
-//      or false if not.
+// MidiMessage::isMeta -- Returns true if message is a Meta message
+//      (when the command byte is 0xff).
 //
 
-int MidiMessage::isMeta(int track, int index) {
-   return MidiMessage::getEvent(track, index).isMeta();
+int MidiMessage::isMeta(void) {
+   if (size() == 0) {
+      return 0;
+   } else if ((*this)[0] != 0xff) {
+      return 0;
+   } else if (size() &lt; 3) {
+      // meta message is ill-formed.
+      // meta messages must have at least three bytes:
+      //    0: 0xff == meta message marker
+      //    1: meta message type
+      //    2: meta message data bytes to follow
+      return 0;
+   } else {
+      return 1;
+   }
 }
 
-int MidiMessage::isMeta(void) {
-   if (data[0] != 0xff) {
-      return 0;
-   }
-   if (data.size() &lt; 3) {
-      // meta messages must have at least three bytes:
-      // 0: 0xff == meta message marker
-      // 1: meta message type
-      // 2: meta message data bytes to follow
-      return 0;
-   }
 
-   return 1;
+int MidiMessage::isMetaMessage(void) {
+   return isMeta();
 }
 
 @@END:	FunctionDocumentation

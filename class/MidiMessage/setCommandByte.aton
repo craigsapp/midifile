@@ -5,9 +5,9 @@
 @RETURN:	void
 @PARAMETERS:	int byte
 @FILE:		MidiMessage.cpp
-@LINES:		232-248
+@LINES:		445-462
 @SEEALSO:	
-@SHORTDESC:	Set the command byte (command nibble + channel nibble) of a MIDI message.
+@SHORTDESC:	Set the command byte of a MIDI message.
 @LONGDESC:	Set the command byte (command nibble + channel nibble) of a MIDI message.
 
 @@BEGIN: EXAMPLE
@@ -23,15 +23,16 @@
 // MidiMessage::setCommandByte --
 //
 
-void MidiFile::setCommandByte(int track, int index, int value) {
-   MidiFile::getEvent(track, index).setCommandByte(value);
+void MidiMessage::setCommandByte(int value) {
+   if (size() &lt; 1) {
+      resize(1);
+   } else {
+      (*this)[0] = (uchar)(value &amp; 0xff);
+   }
 }
 
-void MidiMessage::setCommandByte(int value) {
-   if (data.size() &lt; 1) {
-      data.resize(1);
-   }
-   data[0] = (uchar)(value &amp; 0xff);
+void MidiMessage::setCommand(int value) {
+   setCommandByte(value);
 }
 
 @@END:	FunctionDocumentation
