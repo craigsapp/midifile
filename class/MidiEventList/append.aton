@@ -1,0 +1,46 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	append
+@ALIAS:		push_back
+@ALIAS:		push
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	MidiEvent& event
+@FILE:		MidiEventList.cpp
+@LINES:		110-132
+@SEEALSO:	
+@SHORTDESC:	Add a event to the end of the list.
+@LONGDESC:	Add a event to the end of the list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::append -- add a MidiEvent at the end of the list.  Returns
+//     the index of the appended event.
+//
+
+int MidiEventList::append(MidiEvent&amp; event) { 
+   MidiEvent* ptr = new MidiEvent(event);
+   list.push_back(ptr);
+   return list.size()-1;
+}
+
+
+int MidiEventList::push(MidiEvent&amp; event) { 
+   return append(event);
+}
+
+
+int MidiEventList::push_back(MidiEvent&amp; event) { 
+   return append(event);
+}
+
+@@END:	FunctionDocumentation
+

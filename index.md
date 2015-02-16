@@ -112,26 +112,47 @@ ul.function-listing {
 <li> <a href="class/MidiFile#writeVLValue">writeVLValue</a> </li>
 </ul>
 
-<h4> <a href="class/MFEvent">MFEvent</a>:: MIDI file event class </h4>
-
+<h4> <a href="class/MidiEventList">MidiEventList</a>:: MIDI file track data </h4>
 <ul class="function-listing">
-<li> <a href="class/MFEvent#getChannelNibble">getChannelNibble</a> </li>
-<li> <a href="class/MFEvent#getCommandNibble">getCommandNibble</a> </li>
-<li> <a href="class/MFEvent#getTempoBPM">getTempoBPM</a> </li>
-<li> <a href="class/MFEvent#getTempoMicro">getTempoMicro</a> </li>
-<li> <a href="class/MFEvent#getTempoSPT">getTempoSPT</a> </li>
-<li> <a href="class/MFEvent#getTempoSeconds">getTempoSeconds</a> </li>
-<li> <a href="class/MFEvent#getTempoTPS">getTempoTPS</a> </li>
-<li> <a href="class/MFEvent#isMeta">isMeta</a> </li>
-<li> <a href="class/MFEvent#isNoteOff">isNoteOff</a> </li>
-<li> <a href="class/MFEvent#isNoteOn">isNoteOn</a> </li>
-<li> <a href="class/MFEvent#isTempo">isTempo</a> </li>
-<li> <a href="class/MFEvent#isTimbre">isTimbre</a> </li>
-<li> <a href="class/MFEvent#operator=">operator=</a> </li>
-<li> <a href="class/MFEvent#setChannelNibble">setChannelNibble</a> </li>
-<li> <a href="class/MFEvent#setCommandByte">setCommandByte</a> </li>
-<li> <a href="class/MFEvent#setCommandNibble">setCommandNibble</a> </li>
-<li> <a href="class/MFEvent#setMetaTempo">setMetaTempo</a> </li>
+<li> <a href="class/MidiEventList#append">append</a> </li>
+<li> <a href="class/MidiEventList#clear">clear</a> </li>
+<li> <a href="class/MidiEventList#getSize">getSize</a> </li>
+<li> <a href="class/MidiEventList#reserve">reserve</a> </li>
+</ul>
+
+<h4> <a href="class/MidiEvent">MidiEvent</a>:: MIDI message + timestamp </h4>
+<ul class="function-listing">
+</ul>
+
+<h4> <a href="class/MidiMessage">MidiMessage</a>:: MIDI message bytes </h4>
+<ul class="function-listing">
+<li> <a href="class/MidiMessage#getChannelNibble">getChannelNibble</a> </li>
+<li> <a href="class/MidiMessage#getCommandByte">getCommandByte</a> </li>
+<li> <a href="class/MidiMessage#getCommandNibble">getCommandNibble</a> </li>
+<li> <a href="class/MidiMessage#getSize">getSize</a> </li>
+<li> <a href="class/MidiMessage#getTempoBPM">getTempoBPM</a> </li>
+<li> <a href="class/MidiMessage#getTempoMicro">getTempoMicro</a> </li>
+<li> <a href="class/MidiMessage#getTempoSPT">getTempoSPT</a> </li>
+<li> <a href="class/MidiMessage#getTempoSeconds">getTempoSeconds</a> </li>
+<li> <a href="class/MidiMessage#getTempoTPS">getTempoTPS</a> </li>
+<li> <a href="class/MidiMessage#isAftertouch">isAftertouch</a> </li>
+<li> <a href="class/MidiMessage#isController">isController</a> </li>
+<li> <a href="class/MidiMessage#isMeta">isMeta</a> </li>
+<li> <a href="class/MidiMessage#isNoteOff">isNoteOff</a> </li>
+<li> <a href="class/MidiMessage#isNoteOn">isNoteOn</a> </li>
+<li> <a href="class/MidiMessage#isPitchbend">isPitchbend</a> </li>
+<li> <a href="class/MidiMessage#isPressure">isPressure</a> </li>
+<li> <a href="class/MidiMessage#isTempo">isTempo</a> </li>
+<li> <a href="class/MidiMessage#isTimbre">isTimbre</a> </li>
+<li> <a href="class/MidiMessage#operatorEQUALS">operator=</a> </li>
+<li> <a href="class/MidiMessage#setChannelNibble">setChannelNibble</a> </li>
+<li> <a href="class/MidiMessage#setCommand">setCommand</a> </li>
+<li> <a href="class/MidiMessage#setCommandByte">setCommandByte</a> </li>
+<li> <a href="class/MidiMessage#setCommandNibble">setCommandNibble</a> </li>
+<li> <a href="class/MidiMessage#setMetaTempo">setMetaTempo</a> </li>
+<li> <a href="class/MidiMessage#setParameters">setParameters</a> </li>
+<li> <a href="class/MidiMessage#setSize">setSize</a> </li>
+<li> <a href="class/MidiMessage#setSizeToCommand">setSizeToCommand</a> </li>
 </ul>
 
 <h4> <a href="class/Options">Options</a>:: Command-line option parser</h4>

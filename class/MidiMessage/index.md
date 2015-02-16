@@ -39,7 +39,18 @@ of parameter bytes after it, which are in the range from 0x00 to 0x7f hexadecima
 (0 to 127 decimal).  Here is a table summarizing the seven main MIDI commands
 and their required parameter count.
 
-<table style="margin:0; padding:0;" cellpadding="0" cellspacing="0">
+<style>
+
+table.messagelist, 
+table.messagelist tr,
+table.messagelist td {
+   padding: 0;
+   border: 0;
+}
+
+</style>
+
+<table class="messagelist" cellpadding="0" cellspacing="0">
 
 <tr>
 	<td style="font-weight:bold;">Command nibble</td>

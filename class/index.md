@@ -1,8 +1,73 @@
 ---
 layout: default
 breadcrumbs: [['/doc', 'documentation']]
-title: classes
+title: Class documentation
 ---
+
+The Midifile library contains five classes:
+
+
+<style>
+
+table.classlist, 
+table.classlist tr,
+table.classlist td {
+   padding: 0;
+   border: 0;
+}
+
+table.classlist tr td:nth-child(1) {
+   text-align: right;
+   font-weight: 400;
+}
+
+table.classlist tr td:nth-child(1)::after {
+   content: ":";
+}
+
+table.classlist tr td:nth-child(2) {
+   text-align: left;
+   padding-left: 10px;
+}
+
+</style>
+
+<table class="classlist" cellpadding="0" cellspacing="0">
+
+<tr valign=top>
+   <td> <a href="MidiFile">MidiFile</a> </td> <td> 
+	The primary class, responsible for reading and writing MIDI files.
+   </td>
+</tr>
+
+<tr valign=top>
+   <td> <a href="MidiEventList">MidiEventList</a> </td> <td> 
+	Responsible for managing MidiEvent lists for tracks within the MidiFile class.
+   </td>
+</tr>
+
+<tr valign=top>
+   <td> <a href="MidiEvent">MidiEvent</a> </td> <td> 
+	A MidiMessage plus a timestamp and other bookkeeping 
+	variables for a MidiMessage.
+   </td>
+</tr>
+
+<tr valign=top>
+   <td> <a href="MidiMessage">MidiMessage</a> </td> <td> 
+	A raw MIDI protocol message.  Inherited by the MidiEvent class.
+   </td>
+</tr>
+
+<tr valign=top>
+   <td> <a href="Options">Options</a> </td> <td> 
+	An independent helper class for processing command-line options.
+   </td>
+</tr>
+
+</table>
+
+&nbsp;
 
 <style>
 ul.function-listing {
@@ -61,26 +126,51 @@ ul.function-listing {
 <li> <a href=MidiFile#writeVLValue>writeVLValue</a> </li>
 </ul>
 
-<h2> <a href="MFEvent">MFEvent</a>:: </h2>
+<h2> <a href="MidiEventList">MidiEventList</a>:: </h2>
+<ul class="function-listing">
+<li> <a href="MidiEventList#append">append</a> </li>
+<li> <a href="MidiEventList#clear">clear</a> </li>
+<li> <a href="MidiEventList#getSize">getSize</a> </li>
+<li> <a href="MidiEventList#reserve">reserve</a> </li>
+</ul>
+
+<h2> <a href="MidiEvent">MidiEvent</a>:: (also inherits from <a href="MidiMessage">MidiMessage</a>) </h2>
 
 <ul class="function-listing">
-<li> <a href=MFEvent#getChannelNibble>getChannelNibble</a> </li>
-<li> <a href=MFEvent#getCommandNibble>getCommandNibble</a> </li>
-<li> <a href=MFEvent#getTempoBPM>getTempoBPM</a> </li>
-<li> <a href=MFEvent#getTempoMicro>getTempoMicro</a> </li>
-<li> <a href=MFEvent#getTempoSPT>getTempoSPT</a> </li>
-<li> <a href=MFEvent#getTempoSeconds>getTempoSeconds</a> </li>
-<li> <a href=MFEvent#getTempoTPS>getTempoTPS</a> </li>
-<li> <a href=MFEvent#isMeta>isMeta</a> </li>
-<li> <a href=MFEvent#isNoteOff>isNoteOff</a> </li>
-<li> <a href=MFEvent#isNoteOn>isNoteOn</a> </li>
-<li> <a href=MFEvent#isTempo>isTempo</a> </li>
-<li> <a href=MFEvent#isTimbre>isTimbre</a> </li>
-<li> <a href=MFEvent#operator=>operator=</a> </li>
-<li> <a href=MFEvent#setChannelNibble>setChannelNibble</a> </li>
-<li> <a href=MFEvent#setCommandByte>setCommandByte</a> </li>
-<li> <a href=MFEvent#setCommandNibble>setCommandNibble</a> </li>
-<li> <a href=MFEvent#setMetaTempo>setMetaTempo</a> </li>
+<li> <a href="MidiEvent#operatorEQUALS">operator=</a> </li>
+</ul>
+
+<h2> <a href="MidiMessage">MidiMessage</a>:: (also inherits from 
+<a href="http://www.cplusplus.com/reference/vector/vector">vector&lt;uchar&gt;</a>) </h2>
+
+<ul class="function-listing">
+<li> <a href="MidiMessage#getChannelNibble">getChannelNibble</a> </li>
+<li> <a href="MidiMessage#getCommandByte">getCommandByte</a> </li>
+<li> <a href="MidiMessage#getCommandNibble">getCommandNibble</a> </li>
+<li> <a href="MidiMessage#getSize">getSize</a> </li>
+<li> <a href="MidiMessage#getTempoBPM">getTempoBPM</a> </li>
+<li> <a href="MidiMessage#getTempoMicro">getTempoMicro</a> </li>
+<li> <a href="MidiMessage#getTempoSPT">getTempoSPT</a> </li>
+<li> <a href="MidiMessage#getTempoSeconds">getTempoSeconds</a> </li>
+<li> <a href="MidiMessage#getTempoTPS">getTempoTPS</a> </li>
+<li> <a href="MidiMessage#isAftertouch">isAftertouch</a> </li>
+<li> <a href="MidiMessage#isController">isController</a> </li>
+<li> <a href="MidiMessage#isMeta">isMeta</a> </li>
+<li> <a href="MidiMessage#isNoteOff">isNoteOff</a> </li>
+<li> <a href="MidiMessage#isNoteOn">isNoteOn</a> </li>
+<li> <a href="MidiMessage#isPitchbend">isPitchbend</a> </li>
+<li> <a href="MidiMessage#isPressure">isPressure</a> </li>
+<li> <a href="MidiMessage#isTempo">isTempo</a> </li>
+<li> <a href="MidiMessage#isTimbre">isTimbre</a> </li>
+<li> <a href="MidiMessage#operatorEQUALS">operator=</a> </li>
+<li> <a href="MidiMessage#setChannelNibble">setChannelNibble</a> </li>
+<li> <a href="MidiMessage#setCommand">setCommand</a> </li>
+<li> <a href="MidiMessage#setCommandByte">setCommandByte</a> </li>
+<li> <a href="MidiMessage#setCommandNibble">setCommandNibble</a> </li>
+<li> <a href="MidiMessage#setMetaTempo">setMetaTempo</a> </li>
+<li> <a href="MidiMessage#setParameters">setParameters</a> </li>
+<li> <a href="MidiMessage#setSize">setSize</a> </li>
+<li> <a href="MidiMessage#setSizeToCommand">setSizeToCommand</a> </li>
 </ul>
 
 <h2> <a href="Options">Options</a>:: </h2>

@@ -6,7 +6,7 @@
 @PARAMETERS:	int p1
 @PARAMETERS:	int p1, int p2
 @FILE:		MidiMessage.cpp
-@LINES:		525-552
+@LINES:		604-631
 @SEEALSO:	setMessage
 @SHORTDESC:	Set the message bytes after the command byte.
 @LONGDESC:	Set the second and optionally the third MIDI bytes of a 

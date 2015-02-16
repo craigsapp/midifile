@@ -1,0 +1,35 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	reserve
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int size
+@FILE:		MidiEventList.cpp
+@LINES:		81-93
+@SEEALSO:	
+@SHORTDESC:	Pre-allocate space for events in the list.
+@LONGDESC:	Pre-allocate space for events in the list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::reserve --  Pre-allocate space in the list for storing
+//     elements.
+//
+
+void MidiEventList::reserve(int rsize) {
+   if (rsize &gt; list.size()) {
+      list.reserve(rsize);
+   }
+}
+
+@@END:	FunctionDocumentation
+

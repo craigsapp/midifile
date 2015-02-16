@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		351-367
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an aftertouch message.
 @LONGDESC:	Returns true if command nibble is 0xA0 for an aftertouch
@@ -18,6 +18,22 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::isAftertouch -- Returns true if the command byte is in the 0xA0
+//    range.
+//
+
+int MidiMessage::isAftertouch(void) {
+   if (size() != 3) {
+      return 0;
+   } else if (((*this)[0] &amp; 0xf0) != 0xA0) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
 
 @@END:	FunctionDocumentation
 

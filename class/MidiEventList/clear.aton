@@ -1,0 +1,40 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	clear
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiEventList.cpp
+@LINES:		52-68
+@SEEALSO:	
+@SHORTDESC:	Clear all events from the list.
+@LONGDESC:	De-allocates all MidiEvents stored in the list, and sets
+		the size of the list to 0.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::clear -- De-allocate any MidiEvents present in the list
+//    and set the size of the list to 0.
+//
+
+void MidiEventList::clear(void) {
+   for (int i=0; i&lt;list.size(); i++) {
+      if (list[i] != NULL) {
+         delete list[i];
+         list[i] = NULL;
+      }
+   }
+   list.resize(0);
+}
+
+@@END:	FunctionDocumentation
+

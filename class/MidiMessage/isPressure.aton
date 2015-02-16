@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		410-426
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an channel pressure message.
 @LONGDESC:	Returns true if command nibble is 0xD0 for an channel pressure
@@ -18,6 +18,22 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::isPressure -- Returns true of a channel pressure message
+//    (command nibble 0xd0).
+//
+
+int MidiMessage::isPressure(void) {
+   if (((*this)[0] &amp; 0xf0) != 0xd0) {
+      return 0;
+   } else if (size() != 2) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
 
 @@END:	FunctionDocumentation
 

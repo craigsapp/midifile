@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		
+@LINES:		428-444
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an pitch-bend message.
 @LONGDESC:	Returns true if command nibble is 0xE0 for an pitch-bend
@@ -18,6 +18,22 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::isPitchbend -- Returns true of a pitch-bend message
+//    (command nibble 0xe0).
+//
+
+int MidiMessage::isPitchbend(void) {
+   if (((*this)[0] &amp; 0xf0) != 0xe0) {
+      return 0;
+   } else if (size() != 3) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
 
 @@END:	FunctionDocumentation
 

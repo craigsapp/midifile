@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		372-388
+@LINES:		387-408
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a patch change.
 @LONGDESC:	Returns true if MIDI message is a patch change.
@@ -33,6 +33,11 @@ int MidiMessage::isTimbre(void) {
    } else {
       return 1;
    }
+}
+
+
+int MidiMessage::isPatchChange(void) {
+   return isTimbre();
 }
 
 @@END:	FunctionDocumentation

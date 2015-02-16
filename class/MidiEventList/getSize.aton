@@ -1,0 +1,37 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	getSize
+@ALIAS:		size
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiEventList.cpp
+@LINES:		94-108
+@SEEALSO:	
+@SHORTDESC:	Return the number of events in the list.
+@LONGDESC:	Return the number of events in the list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::getSize --
+//
+
+int MidiEventList::getSize(void) {
+   return list.size();
+}
+
+
+int MidiEventList::size(void) {
+   return getSize();
+}
+
+@@END:	FunctionDocumentation
+

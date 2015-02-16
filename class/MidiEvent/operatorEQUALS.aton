@@ -1,0 +1,87 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	operator=
+@ACCESS:	public
+@RETURN:	MidiEvent&
+@PARAMETERS:	MidiEvent& message
+@PARAMETERS:	MidiMessage& message
+@PARAMETERS:	vector<uchar>& bytes
+@PARAMETERS:	vector<char>& bytes
+@PARAMETERS:	vector<int>& bytes
+@FILE:		MidiEvent.cpp
+@LINES:		79-138
+@SEEALSO:	
+@SHORTDESC:	Copy the contents of another MidiEvent or MidiMessage.
+@LONGDESC:	Copy the contents of another MidiEvent or MidiMessage.  If
+		copying a MidiMessage, then the time and track variables
+		are set to 0.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::operator= -- Copy the contents of another MidiEvent.
+//
+
+MidiEvent&amp; MidiEvent::operator=(MidiEvent&amp; mfevent) {
+   if (this == &amp;mfevent) {
+      return *this;
+   }
+   time  = mfevent.time;
+   track = mfevent.track;
+   this-&gt;resize(mfevent.size());
+   for (int i=0; i&lt;this-&gt;size(); i++) {
+      (*this)[i] = mfevent[i];
+   }
+   return *this;
+}
+
+
+MidiEvent&amp; MidiEvent::operator=(MidiMessage&amp; message) {
+   if (this == &amp;message) {
+      return *this;
+   }
+   time  = 0;
+   track = 0;
+   this-&gt;resize(message.size());
+   for (int i=0; i&lt;this-&gt;size(); i++) {
+      (*this)[i] = message[i];
+   }
+   return *this;
+}
+
+
+MidiEvent&amp; MidiEvent::operator=(vector&lt;uchar&gt;&amp; bytes) {
+   time  = 0;
+   track = 0;
+   this-&gt;resize(bytes.size());
+   for (int i=0; i&lt;this-&gt;size(); i++) {
+      (*this)[i] = bytes[i];
+   }
+   return *this;
+}
+
+
+MidiEvent&amp; MidiEvent::operator=(vector&lt;char&gt;&amp; bytes) {
+   time  = 0;
+   track = 0;
+   setMessage(bytes);
+   return *this;
+}
+
+
+MidiEvent&amp; MidiEvent::operator=(vector&lt;int&gt;&amp; bytes) {
+   time  = 0;
+   track = 0;
+   setMessage(bytes);
+   return *this;
+}
+
+@@END:	FunctionDocumentation
+

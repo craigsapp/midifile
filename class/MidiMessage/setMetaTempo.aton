@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	double tempo
 @FILE:		MidiMessage.cpp
-@LINES:		580-601
+@LINES:		659-680
 @SEEALSO:	
 @SHORTDESC:	Create a tempo meta message from a tempo.
 @LONGDESC:	Create a tempo meta message from a tempo in terms of
