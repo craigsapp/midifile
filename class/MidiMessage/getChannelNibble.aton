@@ -1,0 +1,44 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiMessage
+@METHOD:	getChannelNibble
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiMessage.cpp
+@LINES:		422-443
+@SEEALSO:	
+@SHORTDESC:	Return channel number of the MIDI command byte (offset from 0).
+@LONGDESC:	Return the bottom 4 bits of the command byte for the 
+		MIDI message.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::getChannelNibble -- Returns the bottom 4 bites of the 
+//      (*this)[0] entry, or -1 if there is not (*this)[0].  Should be refined
+//      to return -1 if the top nibble is 0xf0, since those commands are
+//      not channel specific.
+//
+
+int MidiMessage::getChannelNibble(void) {
+   if (size() &lt; 1) {
+      return -1;
+   } else {
+      return (*this)[0] &amp; 0x0f;
+   }
+}
+
+
+int MidiMessage::getChannel(void) {
+   return getChannelNibble();
+}
+
+@@END:	FunctionDocumentation
+

@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	isTimbre
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		514-534
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a patch change.
@@ -20,14 +20,14 @@
 
 //////////////////////////////
 //
-// MFEvent::isTimbre --
+// MidiMessage::isTimbre --
 //
 
 int MidiFile::isTimbre(int track, int index) {
    return MidiFile::getEvent(track, index).isTimbre();
 }
 
-int MFEvent::isTimbre(void) {
+int MidiMessage::isTimbre(void) {
    if ((data[0] &amp; 0xf0) != 0xc0) {
       return 0;
    }

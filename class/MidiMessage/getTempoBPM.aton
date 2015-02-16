@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	getTempoBPM
 @ACCESS:	public
 @RETURN:	double
 @PARAMETERS:	void
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		457-474
 @SEEALSO:	
 @SHORTDESC:	Return the tempo in terms of quarter notes per minute.
@@ -20,14 +20,14 @@
 
 //////////////////////////////
 //
-// MFEvent::getTempoBPM -- return the tempo in terms of beats per minute.
+// MidiMessage::getTempoBPM -- return the tempo in terms of beats per minute.
 //
 
 double MidiFile::getTempoBPM(int track, int index) {
    return MidiFile::getEvent(track, index).getTempoBPM();
 }
 
-double MFEvent::getTempoBPM(void) {
+double MidiMessage::getTempoBPM(void) {
    int micro = getTempoMicroseconds();
    if (micro &lt; 0) {
       return -1.0;

@@ -6,7 +6,7 @@
 @PARAMETERS:	void
 @PARAMETERS:	int count
 @FILE:		MidiFile.cpp
-@LINES:		876-904
+@LINES:		367-395
 @SEEALSO:	
 @SHORTDESC:	Added one or more empty tracks to the MidiFile.
 @LONGDESC:	Adds a blank track at the end of the track list.
@@ -30,7 +30,7 @@
 int MidiFile::addTrack(void) {
    int length = getNumTracks();
    events.resize(length+1);
-   events[length] = new vector&lt;MFEvent&gt;;
+   events[length] = new MidiEventList;
    events[length]-&gt;reserve(10000);
    events[length]-&gt;clear();
    return length;
@@ -41,7 +41,7 @@ int MidiFile::addTrack(int count) {
    events.resize(length+count);
    int i;
    for (i=0; i&lt;count; i++) {
-      events[length + i] = new vector&lt;MFEvent&gt;;
+      events[length + i] = new MidiEventList;
       events[length + i]-&gt;reserve(10000);
       events[length + i]-&gt;clear();
    }

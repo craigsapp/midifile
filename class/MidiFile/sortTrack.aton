@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	vector<MFEvent>& track
 @FILE:		MidiFile.cpp
-@LINES:		1515-1525
+@LINES:		1007-1017
 @SEEALSO:	
 @SHORTDESC:	Sort a track in terms of timestamps of the events.
 @LONGDESC:	Sort a track in terms of timestamps of the events.
@@ -25,9 +25,9 @@
 // MidiFile::sortTrack --
 //
 
-void MidiFile::sortTrack(vector&lt;MFEvent&gt;&amp; trackData) {
+void MidiFile::sortTrack(MidiEventList&amp; trackData) {
    qsort(trackData.data(), trackData.size(),
-      sizeof(MFEvent), eventcompare);
+      sizeof(MidiEvent*), eventcompare);
 }
 
 @@END:	FunctionDocumentation

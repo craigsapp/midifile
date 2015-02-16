@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	setCommandNibble
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	int nibble
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		250-270
 @SEEALSO:	
 @SHORTDESC:	Set the command nibble of a command byte.
@@ -21,14 +21,14 @@
 
 //////////////////////////////
 //
-// MFEvent::setCommandNibble --
+// MidiMessage::setCommandNibble --
 //
 
 void MidiFile::setCommandNibble(int track, int index, int nibble) {
    MidiFile::getEvent(track, index).setCommandNibble(nibble);
 }
 
-void MFEvent::setCommandNibble(int value) {
+void MidiMessage::setCommandNibble(int value) {
    if (data.size() &lt; 1) {
       data.resize(1);
    }

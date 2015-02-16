@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	int track, int time, vector<uchar>& data
 @FILE:		MidiFile.cpp
-@LINES:		705-721
+@LINES:		196-212
 @SEEALSO:	
 @SHORTDESC:	Add a new MFEvent to the end of the specified track.
 @LONGDESC:	Create an MFEvent and store at the end of the specified
@@ -28,10 +28,10 @@
 
 int MidiFile::addEvent(int aTrack, int aTime, vector&lt;uchar&gt;&amp; midiData) {
    timemapvalid = 0;
-   MFEvent anEvent;
+   MidiEvent anEvent;
    anEvent.time = aTime;
    anEvent.track = aTrack;
-   anEvent.data = midiData;
+   anEvent.setMessage(midiData);
 
    events[aTrack]-&gt;push_back(anEvent);
    return events[aTrack]-&gt;size() - 1;

@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1625-1635
+@LINES:		1117-1127
 @SEEALSO:	
 @SHORTDESC:	Return if tracks are joined or split.
 @LONGDESC:	Return whether all tracks are joined into a single track

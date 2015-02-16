@@ -1,14 +1,14 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	operator=
 @ACCESS:	public
-@RETURN:	MFEvent&
-@PARAMETERS:	MFEvent& event
-@FILE:		MidiFile.cpp
+@RETURN:	MidiMessage&
+@PARAMETERS:	MidiMessage& event
+@FILE:		MidiMessage.cpp
 @LINES:		135-151
 @SEEALSO:	
-@SHORTDESC:	Copy the contents of another MFEvent.
-@LONGDESC:	Copy the contents of another MFEvent.
+@SHORTDESC:	Copy the contents of another MidiMessage.
+@LONGDESC:	Copy the contents of another MidiMessage.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -20,10 +20,10 @@
 
 //////////////////////////////
 //
-// MFEvent::operator= -- Copy the contents of another MFEvent.
+// MidiMessage::operator= -- Copy the contents of another MidiMessage.
 //
 
-MFEvent&amp; MFEvent::operator=(MFEvent&amp; mfevent) {
+MidiMessage&amp; MidiMessage::operator=(MidiMessage&amp; mfevent) {
    if (this == &amp;mfevent) {
       return *this;
    }

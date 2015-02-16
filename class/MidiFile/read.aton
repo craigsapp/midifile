@@ -7,7 +7,7 @@
 @PARAMETERS:	const string& filename
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		1176-1483
+@LINES:		666-975
 @SEEALSO:	
 @SHORTDESC:	Read in a Standard MIDI File.
 @LONGDESC:	Parse a Standard MIDI File from either a file or from
@@ -165,13 +165,13 @@ int MidiFile::read(istream&amp; input) {
    } else {
       tracks = shortdata;
    }
-   MidiFile::erase();
+   clear();
    if (events[0] != NULL) {
       delete events[0];
    }
    events.resize(tracks);
    for (int z=0; z&lt;tracks; z++) {
-      events[z] = new vector&lt;MFEvent&gt;;
+      events[z] = new MidiEventList;
       events[z]-&gt;reserve(10000);   // Initialize with 10,000 event storage.
       events[z]-&gt;clear();
    }
@@ -208,7 +208,8 @@ int MidiFile::read(istream&amp; input) {
    //
 
    uchar runningCommand;
-   MFEvent event;
+   MidiEvent event;
+   vector&lt;uchar&gt; bytes;
    int absticks;
    // int barline;
 
@@ -289,17 +290,18 @@ int MidiFile::read(istream&amp; input) {
          longdata = extractVlvTime(input);
          //cout &lt;&lt; "ticks = " &lt;&lt; longdata &lt;&lt; endl;
          absticks += longdata;
-         extractMidiData(input, event.data, runningCommand);
+         extractMidiData(input, bytes, runningCommand);
+         event.setMessage(bytes);
          //cout &lt;&lt; "command = " &lt;&lt; hex &lt;&lt; (int)event.data[0] &lt;&lt; dec &lt;&lt; endl;
-         if (event.data[0] == 0xff &amp;&amp; (event.data[1] == 1 ||
-             event.data[1] == 2 || event.data[1] == 3 || event.data[1] == 4)) {
+         if (bytes[0] == 0xff &amp;&amp; (bytes[1] == 1 ||
+             bytes[1] == 2 || bytes[1] == 3 || bytes[1] == 4)) {
            // mididata.push_back('\0');
            // cout &lt;&lt; '\t';
            // for (int m=0; m&lt;event.data[2]; m++) {
            //    cout &lt;&lt; event.data[m+3];
            // }
            // cout.flush();
-         } else if (event.data[0] == 0xff &amp;&amp; event.data[1] == 0x2f) {
+         } else if (bytes[0] == 0xff &amp;&amp; bytes[1] == 0x2f) {
             // end of track message
             // uncomment out the following three lines if you don't want
             // to see the end of track message (which is always required,
@@ -311,7 +313,7 @@ int MidiFile::read(istream&amp; input) {
             break;
          }
 
-         if (event.data[0] != 0xff &amp;&amp; event.data[0] != 0xf0) {
+         if (bytes[0] != 0xff &amp;&amp; bytes[0] != 0xf0) {
             event.time = absticks;
             event.track = i;
             events[i]-&gt;push_back(event);

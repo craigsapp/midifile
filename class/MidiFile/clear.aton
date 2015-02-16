@@ -6,7 +6,7 @@
 @PARAMETERS:	
 @FILE:		MidiFile.cpp
 @ALIAS:		erase
-@LINES:		981-1004
+@LINES:		472-495
 @SEEALSO:	
 @SHORTDESC:	Clear all tracks, leaving one track with no data in it.
 @LONGDESC:	Clear all tracks in the MidiFile, leaving one track with no
@@ -27,20 +27,20 @@
 //
 
 void MidiFile::clear(void) {
-   MidiFile::erase();
-}
-
-void MidiFile::erase(void) {
    int length = getNumTracks();
    for (int i=0; i&lt;length; i++) {
       delete events[i];
       events[i] = NULL;
    }
    events.resize(1);
-   events[0] = new vector&lt;MFEvent&gt;;
-   events[0]-&gt;clear();
+   events[0] = new MidiEventList;
    timemapvalid=0;
    timemap.clear();
+}
+
+
+void MidiFile::erase(void) {
+   clear();
 }
 
 @@END:	FunctionDocumentation

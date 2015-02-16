@@ -5,7 +5,7 @@
 @RETURN:	MFEvent&
 @PARAMETERS:	int track, int index
 @FILE:		MidiFile.cpp
-@LINES:		1006-1016
+@LINES:		497-507
 @SEEALSO:	
 @SHORTDESC:	Return the event at the given index in the specified track.
 @LONGDESC:	Return the event at the given index in the specified track.
@@ -24,7 +24,7 @@
 //    specified track.
 //
 
-MFEvent&amp; MidiFile::getEvent(int aTrack, int anIndex) {
+MidiEvent&amp; MidiFile::getEvent(int aTrack, int anIndex) {
    return (*events[aTrack])[anIndex];
 }
 

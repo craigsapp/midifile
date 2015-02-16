@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	isTempo
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		379-404
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a tempo meta messsage.
@@ -20,7 +20,7 @@
 
 //////////////////////////////
 //
-// MFEvent::isTempo -- returns true if emssage is a Meta message
+// MidiMessage::isTempo -- returns true if emssage is a Meta message
 //      describing tempo (meta message 0x51).
 //
 
@@ -28,7 +28,7 @@ int MidiFile::isTempo(int track, int index) {
    return MidiFile::getEvent(track, index).isTempo();
 }
 
-int MFEvent::isTempo(void) {
+int MidiMessage::isTempo(void) {
    if (!isMeta()) {
       return 0;
    }

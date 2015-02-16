@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	int track, int index
 @FILE:		MidiFile.cpp
-@LINES:		659-668
+@LINES:		150-159
 @SEEALSO:	
 @SHORTDESC:	Get the track number of an MFEvent in the MidiFile.
 @LONGDESC:	Get the track number of an MFEvent in the MidiFile.  The
@@ -27,7 +27,7 @@
 //
 
 int MidiFile::getTrack(int track, int index) {
-   return MidiFile::getEvent(track, index).track;
+   return getEvent(track, index).track;
 }
 
 @@END:	FunctionDocumentation

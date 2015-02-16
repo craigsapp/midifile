@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	getTempoSPT
 @ACCESS:	public
 @RETURN:	double
 @PARAMETERS:	int tpq
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		495-512
 @SEEALSO:	
 @SHORTDESC:	Return the tempo in terms of seconds per tick.
@@ -20,14 +20,14 @@
 
 //////////////////////////////
 //
-// MFEvent::getTempoSPT -- return the tempo in terms of seconds per tick.
+// MidiMessage::getTempoSPT -- return the tempo in terms of seconds per tick.
 //
 
 double MidiFile::getTempoSPT(int track, int index) {
    return MidiFile::getEvent(track, index).getTempoSPT(getTicksPerQuarterNote());
 }
 
-double MFEvent::getTempoSPT(int tpq) {
+double MidiMessage::getTempoSPT(int tpq) {
    int micro = getTempoMicroseconds();
    if (micro &lt; 0) {
       return -1.0;

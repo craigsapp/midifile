@@ -98,6 +98,7 @@ sub getSourceLines {
       }
       if ($line =~ /^\/\/\s*[^:]+::([^\s]+)\s*--/) {
          $fname = $1;
+         # print "Checking $fname\n";
          if ($fname eq $function) {
             $startline = $i;
             last;
@@ -105,6 +106,7 @@ sub getSourceLines {
       }
    }
    if ($startline <= 0) {
+      print join("\n", @src), "\n";
       die "Could not find function '$function' in $file. startline = $startline\n";
    }
 

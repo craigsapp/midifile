@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiMessage
+@METHOD:	setParameters
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int p1
+@PARAMETERS:	int p1, int p2
+@FILE:		MidiMessage.cpp
+@LINES:		
+@SEEALSO:	setMessage
+@SHORTDESC:	
+@LONGDESC:	
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

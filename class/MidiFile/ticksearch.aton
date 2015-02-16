@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	const void* A, const void* B
 @FILE:		MidiFile.cpp
-@LINES:		2365-2382
+@LINES:		1857-1874
 @SEEALSO:	
 @SHORTDESC:	Compare function for finding a tick entry in the time map.
 @LONGDESC:	Compare function for finding a tick entry in the time map.

@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	int track, int size
 @FILE:		MidiFile.cpp
-@LINES:		906-918
+@LINES:		397-409
 @SEEALSO:	
 @SHORTDESC:	Allocate extra space for a track event list.
 @LONGDESC:	Allocate extra space for a track event list.

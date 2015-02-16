@@ -1,12 +1,12 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	isMeta
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		352-377
-@SEEALSO:	
+@SEEALSO:	isMetaMessage
 @SHORTDESC:	Retrns true if MIDI message is a meta message.
 @LONGDESC:	Retrns true if MIDI message is a meta message.
 
@@ -20,15 +20,15 @@
 
 //////////////////////////////
 //
-// MFEvent::isMeta -- returns true if message is a Meta message
+// MidiMessage::isMeta -- returns true if message is a Meta message
 //      or false if not.
 //
 
-int MidiFile::isMeta(int track, int index) {
-   return MidiFile::getEvent(track, index).isMeta();
+int MidiMessage::isMeta(int track, int index) {
+   return MidiMessage::getEvent(track, index).isMeta();
 }
 
-int MFEvent::isMeta(void) {
+int MidiMessage::isMeta(void) {
    if (data[0] != 0xff) {
       return 0;
    }

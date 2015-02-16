@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1540-1586
+@LINES:		1032-1078
 @SEEALSO:	
 @SHORTDESC:	Take joined tracks and split them back into their separate
 		track identities.
@@ -45,11 +45,11 @@ void MidiFile::splitTracks(void) {
       }
    }
 
-   vector&lt;MFEvent&gt;* olddata = events[0];
+   MidiEventList* olddata = events[0];
    events[0] = NULL;
    events.resize(maxTrack);
    for (i=0; i&lt;maxTrack; i++) {
-      events[i] = new vector&lt;MFEvent&gt;;
+      events[i] = new MidiEventList;
       events[i]-&gt;clear();
    }
 

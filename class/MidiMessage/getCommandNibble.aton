@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	getCommandNibble
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		213-230
 @SEEALSO:	
 @SHORTDESC:	Return the command nibble of the MIDI message.
@@ -22,7 +22,7 @@
 
 //////////////////////////////
 //
-// MFEvent::getCommandNibble -- return the top 4 bits of the data[0]
+// MidiMessage::getCommandNibble -- return the top 4 bits of the data[0]
 //    entry, or -1 if there is not data[0].
 //
 
@@ -30,7 +30,7 @@ int MidiFile::getCommandNibble(int track, int index) {
    return MidiFile::getEvent(track, index).getCommandNibble();
 }
 
-int MFEvent::getCommandNibble(void) {
+int MidiMessage::getCommandNibble(void) {
    if (data.size() &lt; 1) {
       return -1;
    }

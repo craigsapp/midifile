@@ -1,10 +1,10 @@
 @@BEGIN:	FunctionDocumentation
-@CLASSNAME:	MFEvent
+@CLASSNAME:	MidiMessage
 @METHOD:	isNoteOn
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
-@FILE:		MidiFile.cpp
+@FILE:		MidiMessage.cpp
 @LINES:		327-350
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a note-on message.
@@ -20,7 +20,7 @@
 
 //////////////////////////////
 //
-// MFEvent::isNoteOn -- returns true if the command byte is in the 0x90
+// MidiMessage::isNoteOn -- returns true if the command byte is in the 0x90
 //    range and the velocity is non-zero
 //
 
@@ -28,7 +28,7 @@ int MidiFile::isNoteOn(int track, int index) {
    return MidiFile::getEvent(track, index).isNoteOn();
 }
 
-int MFEvent::isNoteOn(void) {
+int MidiMessage::isNoteOn(void) {
    if (data.size() != 3) {
       return 0;
    }
