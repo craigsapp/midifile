@@ -481,4 +481,4 @@ char* convertMidiToGuido(char* buffer, Array<char> notelist, int index) {
 }
 
 
-// md5sum: c6c9d19b52e4da5a9ad6c8a29c78c8f6 henonfile.cpp [20080518]
+

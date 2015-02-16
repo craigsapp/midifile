@@ -918,4 +918,6 @@ Here are the options available with the mid2hum program:
                    the program.
 
 */
-// md5sum: f5aa9214aff6f6a74fed6381302d05ad mid2hum.cpp [20131108]
+
+
+

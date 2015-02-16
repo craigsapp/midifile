@@ -356,4 +356,4 @@ void usage(const char* command) {
 }
 
 
-// md5sum: 26d28e64740976fb9a7693d430337783 midiexcerpt.cpp [20100726]
+

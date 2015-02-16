@@ -140,8 +140,8 @@ $(TARGDIR)/peep2midi:
 $(TARGDIR)/midiexcerpt:
 	@echo Skipping $@ until PerlRegularExpressions class is added.
 
-$(TARGDIR)/binasc:
-	@echo Skipping $@ until it is updated to C++11 + STL.
+#$(TARGDIR)/binasc:
+#	@echo Skipping $@ until it is updated to C++11 + STL.
 
 
 

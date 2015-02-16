@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Apr 28 15:09:31 GMT-0800 1997
 // Last Modified: Fri Sep 15 01:03:43 PDT 2006 Upgraded to ANSI C99 C++.
-// Last Modified: Fri Sep 15 01:03:43 PDT 2006 Upgraded to C++11.
+// Last Modified: Mon Feb 16 00:34:19 PST 2015 Upgraded to C++11.
 // Filename:      midifile/src-programs/binasc.cpp
 // Syntax:        C++11
 //
@@ -21,24 +21,36 @@ typedef unsigned short ushort;
 typedef unsigned long ulong;
 
 // global variables:
-Options  options;            // command-line options
-ofstream outputCompiled;     // output for compilation
-
+Options  options;              // command-line options
+ofstream outputCompiled;       // output for compilation
 
 // function declarations:
-void checkOptions(Options& opts);
-void compileFile(const char* filename);
-void example(void);
-void manual(void);
-void outputStyleAscii(const char* filename);
-void outputStyleBinary(const char* filename);
-void outputStyleBoth(const char* filename);
-void processAsciiWord(const char* word, int lineNumber, ostream& out);
-void processBinaryWord(const char* word, int lineNumber, ostream& out);
-void processDecimalWord(const char* word, int lineNumber, ostream& out);
-void processHexadecimalWord(const char* word, int lineNumber, ostream& out);
-void processLine(char* word, int lineNumber, ostream& out);
-void usage(const char* command);
+void     checkOptions            (Options& opts);
+void     compileFile             (const char* filename);
+void     example                 (void);
+void     manual                  (void);
+void     outputStyleAscii        (const char* filename);
+void     outputStyleBinary       (const char* filename);
+void     outputStyleBoth         (const char* filename);
+void     processAsciiWord        (const char* word, int lineNumber, ostream& out);
+void     processBinaryWord       (const char* word, int lineNumber, ostream& out);
+void     processDecimalWord      (const char* word, int lineNumber, ostream& out);
+void     processHexadecimalWord  (const char* word, int lineNumber, ostream& out);
+void     processLine             (char* word, int lineNumber, ostream& out);
+void     usage                   (const char* command);
+
+ostream& writeLittleEndianUShort (ostream& out, ushort value);
+ostream& writeBigEndianUShort    (ostream& out, ushort value);
+ostream& writeLittleEndianShort  (ostream& out, short  value);
+ostream& writeBigEndianShort     (ostream& out, short  value);
+ostream& writeLittleEndianULong  (ostream& out, ulong  value);
+ostream& writeBigEndianULong     (ostream& out, ulong  value);
+ostream& writeLittleEndianLong   (ostream& out, long   value);
+ostream& writeBigEndianLong      (ostream& out, long   value);
+ostream& writeLittleEndianFloat  (ostream& out, float  value);
+ostream& writeBigEndianFloat     (ostream& out, float  value);
+ostream& writeLittleEndianDouble (ostream& out, double value);
+ostream& writeBigEndianDouble    (ostream& out, double value);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -49,13 +61,13 @@ int main(int argc, char* argv[]) {
 
    for (int i=0; i<options.getArgCount(); i++) {
       if (options.getBoolean("compile")) {
-         compileFile(options.getArg(i+1));
+         compileFile(options.getArg(i+1).data());
       } else if (options.getBoolean("binary")) {
-         outputStyleBinary(options.getArg(i+1));
+         outputStyleBinary(options.getArg(i+1).data());
       } else if (options.getBoolean("ascii")) {
-         outputStyleAscii(options.getArg(i+1));
+         outputStyleAscii(options.getArg(i+1).data());
       } else {
-         outputStyleBoth(options.getArg(i+1));
+         outputStyleBoth(options.getArg(i+1).data());
       }
    }
 
@@ -89,7 +101,7 @@ void checkOptions(Options& opts) {
          opts.getBoolean("c") > 1) {
       cerr << "Error: only one of the opts -a, -b, or -c can be used"
               "at one time." << endl;
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
@@ -104,7 +116,7 @@ void checkOptions(Options& opts) {
       exit(0);
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(0);
    }
    if (opts.getBoolean("example")) {
@@ -117,7 +129,7 @@ void checkOptions(Options& opts) {
    }
 
 
-   if (opts.getBoolean("compile") && strlen(opts.getString("compile")) == 0) {
+   if (opts.getBoolean("compile") && strlen(opts.getString("compile").data()) == 0) {
       cerr << "Error: you must specify an output file when using the -c option"
            << endl;
       exit(1);
@@ -126,12 +138,12 @@ void checkOptions(Options& opts) {
    if (opts.getArgCount() < 1) {
       cerr << "Error: you must specify at least one file on the command-line"
            << endl;
-      usage(opts.getCommand());
+      usage(opts.getCommand().data());
       exit(1);
    }
 
-   if (strlen(opts.getString("compile")) > 0) {
-      outputCompiled.open(opts.getString("compile"), ios::out);
+   if (strlen(opts.getString("compile").data()) > 0) {
+      outputCompiled.open(opts.getString("compile").data(), ios::out);
       if (!outputCompiled.is_open()) {
          cerr << "Error opening output file: " << opts.getString("compile")
               << endl;
@@ -556,17 +568,17 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
       switch (byteCount) {
          case 4:
            if (endianIndex == -1) {
-              out.writeBigEndian(floatOutput);
+              writeBigEndianFloat(out, floatOutput);
            } else {
-              out.writeLittleEndian(floatOutput);
+              writeLittleEndianFloat(out, floatOutput);
            }
            return;
            break;
          case 8:
            if (endianIndex == -1) {
-              out.writeBigEndian(doubleOutput);
+              writeBigEndianDouble(out, doubleOutput);
            } else {
-              out.writeLittleEndian(doubleOutput);
+              writeLittleEndianDouble(out, doubleOutput);
            }
            return;
            break;
@@ -598,7 +610,7 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
       } else {
          ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
          uchar ucharOutput = (uchar)tempLong;
-         if (tempLong > 255 || tempLong < 0) {
+         if (tempLong > 255) { // || (tempLong < 0)) {
             cerr << "Error on line " << lineNumber << " at token: " << word
                  << endl;
             cerr << "Decimal number out of range from 0 to 255" << endl;
@@ -629,18 +641,18 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
             long tempLong = atoi(&word[quoteIndex + 1]);
             short shortOutput = (short)tempLong;
             if (endianIndex == -1) {
-               out.writeBigEndian(shortOutput);
+               writeBigEndianShort(out, shortOutput);
             } else {
-               out.writeLittleEndian(shortOutput);
+               writeLittleEndianShort(out, shortOutput);
             }
             return;
          } else {
             ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
             ushort ushortOutput = (ushort)tempLong;
             if (endianIndex == -1) {
-               out.writeBigEndian(ushortOutput);
+               writeBigEndianUShort(out, ushortOutput);
             } else {
-               out.writeLittleEndian(ushortOutput);
+               writeLittleEndianUShort(out, ushortOutput);
             }
             return;
          }
@@ -674,17 +686,17 @@ void processDecimalWord(const char* word, int lineNumber, ostream& out) {
          if (signIndex != -1) {
             long tempLong = atoi(&word[quoteIndex + 1]);
             if (endianIndex == -1) {
-               out.writeBigEndian(tempLong);
+               writeBigEndianLong(out, tempLong);
             } else {
-               out.writeLittleEndian(tempLong);
+               writeLittleEndianLong(out, tempLong);
             }
             return;
          } else {
             ulong tempuLong = (ulong)atoi(&word[quoteIndex + 1]);
             if (endianIndex == -1) {
-               out.writeBigEndian(tempuLong);
+               writeBigEndianULong(out, tempuLong);
             } else {
-               out.writeLittleEndian(tempuLong);
+               writeLittleEndianULong(out, tempuLong);
             }
             return;
          }
@@ -886,6 +898,211 @@ void usage(const char* command) {
    "   no options = combination of -a and -b options.                    \n"
    "   --options  = list of all options, aliases and defaults            \n"
    << endl;
+}
+
+
+
+//////////////////////////////
+//
+// writeLittleEndianUShort --
+//
+
+ostream& writeLittleEndianUShort(ostream& out, ushort value) {
+   union { char bytes[2]; ushort us; } data;
+   data.us = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeBigEndianUShort --
+//
+
+ostream& writeBigEndianUShort(ostream& out, ushort value) {
+   union { char bytes[2]; ushort us; } data;
+   data.us = value;
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeLittleEndianShort --
+//
+
+ostream& writeLittleEndianShort(ostream& out, short value) {
+   union { char bytes[2]; short s; } data;
+   data.s = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeBigEndianShort --
+//
+
+ostream& writeBigEndianShort(ostream& out, short value) {
+   union { char bytes[2]; short s; } data;
+   data.s = value;
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeLittleEndianULong --
+//
+
+ostream& writeLittleEndianULong(ostream& out, ulong value) {
+   union { char bytes[4]; ulong ul; } data;
+   data.ul = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeBigEndianULong --
+//
+
+ostream& writeBigEndianULong(ostream& out, ulong value) {
+   union { char bytes[4]; long ul; } data;
+   data.ul = value;
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeLittleEndianLong --
+//
+
+ostream& writeLittleEndianLong(ostream& out, long value) {
+   union { char bytes[4]; long l; } data;
+   data.l = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeBigEndianLong --
+//
+
+ostream& writeBigEndianLong(ostream& out, long value) {
+   union { char bytes[4]; long l; } data;
+   data.l = value;
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+
+}
+
+
+
+//////////////////////////////
+//
+// writeBigEndianFloat --
+//
+
+ostream& writeBigEndianFloat(ostream& out, float value) {
+   union { char bytes[4]; float f; } data;
+   data.f = value;
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeLittleEndianFloat --
+//
+
+ostream& writeLittleEndianFloat(ostream& out, float value) {
+   union { char bytes[4]; float f; } data;
+   data.f = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeBigEndianDouble --
+//
+
+ostream& writeBigEndianDouble(ostream& out, double value) {
+   union { char bytes[8]; double d; } data;
+   data.d = value;
+   out << data.bytes[7];
+   out << data.bytes[6];
+   out << data.bytes[5];
+   out << data.bytes[4];
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// writeLittleEndianDouble --
+//
+
+ostream& writeLittleEndianDouble(ostream& out, double value) {
+   union { char bytes[8]; double d; } data;
+   data.d = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   out << data.bytes[4];
+   out << data.bytes[5];
+   out << data.bytes[6];
+   out << data.bytes[7];
+   return out;
 }
 
 
@@ -1221,4 +1438,5 @@ cout <<
 << endl;
 }
 
-// md5sum: 4324db14f9ca74c3b516e42721745b1e binasc.cpp [20061014]
+
+
