@@ -351,17 +351,32 @@ int MidiMessage::isNoteOn(void) {
 
 //////////////////////////////
 //
-// MidiMessage::isTempo -- Returns true if message is a meta message
-//      describing tempo (meta message type 0x51).
+// MidiMessage::isAftertouch -- Returns true if the command byte is in the 0xA0
+//    range.
 //
 
-int MidiMessage::isTempo(void) {
-   if (!isMetaMessage()) {
+int MidiMessage::isAftertouch(void) {
+   if (size() != 3) {
       return 0;
-   } else if ((*this)[1] != 0x51) {
+   } else if (((*this)[0] & 0xf0) != 0xA0) {
       return 0;
-   } else if (size() != 6) {
-      // Meta tempo message can only be 6 bytes long.
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isController -- Returns true if the command byte is in the 0xB0
+//    range.
+//
+
+int MidiMessage::isController(void) {
+   if (size() != 3) {
+      return 0;
+   } else if (((*this)[0] & 0xf0) != 0xB0) {
       return 0;
    } else {
       return 1;
@@ -385,6 +400,70 @@ int MidiMessage::isTimbre(void) {
       return 1;
    }
 }
+
+
+int MidiMessage::isPatchChange(void) {
+   return isTimbre();
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isPressure -- Returns true of a channel pressure message
+//    (command nibble 0xd0).
+//
+
+int MidiMessage::isPressure(void) {
+   if (((*this)[0] & 0xf0) != 0xd0) {
+      return 0;
+   } else if (size() != 2) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isPitchbend -- Returns true of a pitch-bend message
+//    (command nibble 0xe0).
+//
+
+int MidiMessage::isPitchbend(void) {
+   if (((*this)[0] & 0xf0) != 0xe0) {
+      return 0;
+   } else if (size() != 3) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isTempo -- Returns true if message is a meta message
+//      describing tempo (meta message type 0x51).
+//
+
+int MidiMessage::isTempo(void) {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x51) {
+      return 0;
+   } else if (size() != 6) {
+      // Meta tempo message can only be 6 bytes long.
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
 
 
 

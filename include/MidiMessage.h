@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Feb 14 20:36:32 PST 2015
-// Last Modified: Sat Feb 14 20:36:35 PST 2015
+// Last Modified: Sun Feb 15 20:32:19 PST 2015
 // Filename:      midifile/include/MidiMessage.h
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -51,12 +51,18 @@ class MidiMessage : public vector<uchar> {
       double         getTempoTPS          (int tpq);
       double         getTempoSPT          (int tpq);
 
-      int            isMeta               (void);
       int            isMetaMessage        (void);
       int            isNoteOff            (void);
       int            isNoteOn             (void);
-      int            isTempo              (void);
+      int            isAftertouch         (void);
+      int            isController         (void);
       int            isTimbre             (void);
+      int            isPatchChange        (void);
+      int            isPressure           (void);
+      int            isPitchbend          (void);
+
+      int            isMeta               (void);
+      int            isTempo              (void);
 
       int            getCommandNibble     (void);
       int            getCommandByte       (void);
