@@ -11,12 +11,27 @@ source code are:
 
 The library consists of 6 classes:
 
-* *MidiFile* &mdash; The main interface for dealing with MIDI files.  The MidiFile class appears as a two dimensional array: the first dimension is a list of tracks, and the second dimension is a list of MidiEvents.
-* *MidiEvent* &mdash; The primary storage unit for MidiMessages in a MidiFile.  The class consists of a (delta)tick timestamp and a MIDI (or meta) message.
-* *MidiEventList* &mdash; A data structure that manages the list of MidiEvents in a track.
-* *MidiMessage* &mdash; The base class for MidiEvents.  This is a vector&lt;uchar&gt; of bytes in a MIDI (or meta) message.
-* *Binasc* &mdash; A helper class for MidiFile which allows reading/writing of MIDI files in an ASCII format describing the bytes of the binary Standard MIDI Files.
-* *Options* &mdash; A convenience class used for parsing command-line options in the example programs.
+* **MidiFile** &mdash; The main interface for dealing with MIDI files.  The MidiFile class appears as a two dimensional array: the first dimension is a list of tracks, and the second dimension is a list of MidiEvents.
+* **MidiEvent** &mdash; The primary storage unit for MidiMessages in a MidiFile.  The class consists of a (delta)tick timestamp and a MIDI (or meta) message.
+* **MidiEventList** &mdash; A data structure that manages the list of MidiEvents in a track.
+* **MidiMessage** &mdash; The base class for MidiEvents.  This is a vector&lt;uchar&gt; of bytes in a MIDI (or meta) message.
+* **Binasc** &mdash; A helper class for MidiFile which allows reading/writing of MIDI files in an ASCII format describing the bytes of the binary Standard MIDI Files.
+* **Options** &mdash; A convenience class used for parsing command-line options in the example programs.
+
+
+
+Downloading
+-----------
+
+You can download as a ZIP file from the GitHub page for the midifile library, 
+or if you use git, then download with this command:
+
+``` bash
+git clone https://github.com/craigsapp/midifile
+```
+
+This will create the `midifile` directory with the source code for the library.
+
 
 
 Compiling
@@ -33,16 +48,24 @@ the command:
 ``` bash
 make programs
 ```
-This will compile all example programs in the src-programs directory. To 
-compile only a single program, such as `createmidifile`, type:
-``` bash
-make createmidifile
-```
-Compiled example programs will be stored in the `bin` directory.  To
-compile both the library and the example programs all in one step, type:
+This will compile all example programs in the src-programs directory.  Compiled
+example programs will be stored in the `bin` directory.  To compile both the 
+library and the example programs all in one step, type:
 ``` bash
 make
 ```
+
+To compile only a single program, such as `createmidifile`, type:
+``` bash
+make createmidifile
+```
+You can also place your own programs in `src-programs`, such as `myprogram.cpp`
+and to compile type:
+``` bash
+make myprogram
+```
+The compiled program will be `bin/myprogram`.
+
 
 
 Documentation
@@ -50,6 +73,9 @@ Documentation
 
 Documentation is under construction at 
 [http://midifile.sapp.org](http://midifile.sapp.org).
+Essential examples for reading and writing MIDI files
+are given below.
+
 
 
 MIDI file reading examples
@@ -126,15 +152,15 @@ Standard MIDI File by the MidiFile class.
 ```
 
 Below is the output from the example program given the above input data.  The
-TPQ value is the ticks-per-quarter note value from the MIDI header.  In
-this example Each quarter note has a duration of 120 MIDI file ticks.  The
+TPQ value is the ticks-per-quarter-note value from the MIDI header.  In
+this example, each quarter note has a duration of 120 MIDI file ticks.  The
 above MIDI file contains three tracks, with the first track (the expression
 track, having no content other than the end-of-track meta message, "ff 2f 0"
 in hex bytes.  The second track starts with a MIDI note-on message "90 48 40"
 (in hex) which will start playing MIDI note 72 (C pitch one octave above
 middle C) with a medium loudness (40 hex = 64 in decimal notation).
 
-```
+<pre>
 TPQ: 120
 TRACKS: 3
 
@@ -204,7 +230,7 @@ Track 2
 1680	90 30 40 
 1920	80 30 40 
 1920	ff 2f 0 
-```
+</pre>
 
 The default behavior of the MidiFile class is to store the absolute tick
 times of MIDI events.  Within Standard MIDI files, the tick values are
@@ -276,7 +302,7 @@ tick timestamp of the message; the second column is the delta tick value;
 the third column is the original track value; and the last column
 contains the MIDI message (in hex bytes).
 
-```
+<pre>
 TPQ: 120
 TRACKS: 3
 TICK    DELTA   TRACK   MIDI MESSAGE
@@ -342,18 +368,17 @@ ____________________________________
 1920	0	2	80 30 40 
 1920	0	1	ff 2f 0 
 1920	0	2	ff 2f 0 
-```
+</pre>
+
 
 
 MIDI file writing examples
 --------------------------
 
 Here are some examples of MIDI file writing.  MidiFiles can be created 
-in either delta or absolute tick timestamp modes.
-
-
-
-
+in either delta or absolute tick timestamp modes.  For now, see the
+[createmidifile](https://github.com/craigsapp/midifile/blob/master/src-programs/createmidifile.cpp) 
+example program source code.
 
 
 
