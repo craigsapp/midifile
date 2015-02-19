@@ -872,6 +872,7 @@ int MidiFile::read(istream& input) {
    MidiEvent event;
    vector<uchar> bytes;
    int absticks;
+   int status;
    // int barline;
 
    for (int i=0; i<tracks; i++) {
@@ -951,7 +952,10 @@ int MidiFile::read(istream& input) {
          longdata = extractVlvTime(input);
          //cout << "ticks = " << longdata << endl;
          absticks += longdata;
-         extractMidiData(input, bytes, runningCommand);
+         status = extractMidiData(input, bytes, runningCommand);
+         if (status == 0) {
+            return 0;
+         }
          event.setMessage(bytes);
          //cout << "command = " << hex << (int)event.data[0] << dec << endl;
          if (bytes[0] == 0xff && (bytes[1] == 1 ||
@@ -1573,10 +1577,11 @@ void MidiFile::buildTimeMap(void) {
 
 //////////////////////////////
 //
-// MidiFile::extractMidiData --
+// MidiFile::extractMidiData -- Extract MIDI data from input
+//    stream.  Return value is 0 if failure; otherwise, returns 1.
 //
 
-void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
+int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
    uchar& runningCommand) {
 
    int character;
@@ -1587,7 +1592,7 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
    character = input.get();
    if (character == EOF) {
       cerr << "Error: unexpected end of file." << endl;
-      exit(1);
+      return 0;
    } else {
       byte = (uchar)character;
    }
@@ -1596,7 +1601,7 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       runningQ = 1;
       if (runningCommand == 0) {
          cout << "Error: running command with no previous command" << endl;
-         exit(1);
+         return 0;
       }
    } else {
       runningCommand = byte;
@@ -1657,8 +1662,9 @@ void MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       default:
          cout << "Error reading midifile" << endl;
          cout << "Command byte was " << (int)runningCommand << endl;
-         exit(1);
+         return 0;
    }
+   return 1;
 }
 
 

@@ -42,16 +42,16 @@ class Binasc {
       void     setMidiOff     (void);
 
       // functions for converting into a binary file:
-      void     writeToBinary  (const string& outfile, const string& infile);
-      void     writeToBinary  (const string& outfile, istream& input);
-      ostream& writeToBinary  (ostream& out, const string& infile);
-      ostream& writeToBinary  (ostream& out, istream& input);
+      int      writeToBinary  (const string& outfile, const string& infile);
+      int      writeToBinary  (const string& outfile, istream& input);
+      int      writeToBinary  (ostream& out, const string& infile);
+      int      writeToBinary  (ostream& out, istream& input);
 
       // functions for converting into an ASCII file with hex bytes:
-      void     readFromBinary (const string& outfile, const string& infile);
-      void     readFromBinary (const string& outfile, istream& input);
-      ostream& readFromBinary (ostream& out, const string& infile);
-      ostream& readFromBinary (ostream& out, istream& input);
+      int      readFromBinary (const string& outfile, const string& infile);
+      int      readFromBinary (const string& outfile, istream& input);
+      int      readFromBinary (ostream& out, const string& infile);
+      int      readFromBinary (ostream& out, istream& input);
 
       int      readMidiEvent  (ostream& out, istream& infile, int& trackbytes, 
                                int& command);
@@ -73,20 +73,20 @@ class Binasc {
 
    protected:
       // helper functions for reading ASCII content to conver to binary:
-      ostream& processLine        (ostream& out, char* word, int lineNum);
-      ostream& processAsciiWord   (ostream& out, const char* word, int lineNum);
-      ostream& processBinaryWord  (ostream& out, const char* word, int lineNum);
-      ostream& processDecimalWord (ostream& out, const char* word, int lineNum);
-      ostream& processHexWord     (ostream& out, const char* word, int lineNum);
-      ostream& processVlvWord     (ostream& out, const char* word, int lineNum);
-      ostream& processMidiPitchBendWord(ostream& out, const char* word, 
+      int      processLine        (ostream& out, char* word, int lineNum);
+      int      processAsciiWord   (ostream& out, const char* word, int lineNum);
+      int      processBinaryWord  (ostream& out, const char* word, int lineNum);
+      int      processDecimalWord (ostream& out, const char* word, int lineNum);
+      int      processHexWord     (ostream& out, const char* word, int lineNum);
+      int      processVlvWord     (ostream& out, const char* word, int lineNum);
+      int      processMidiPitchBendWord(ostream& out, const char* word, 
                                    int lineNum);
 
       // helper functions for reading binary content to convert to ASCII:
-      ostream& outputStyleAscii   (ostream& out, istream& input);
-      ostream& outputStyleBinary  (ostream& out, istream& input);
-      ostream& outputStyleBoth    (ostream& out, istream& input);
-      ostream& outputStyleMidi    (ostream& out, istream& input);
+      int      outputStyleAscii   (ostream& out, istream& input);
+      int      outputStyleBinary  (ostream& out, istream& input);
+      int      outputStyleBoth    (ostream& out, istream& input);
+      int      outputStyleMidi    (ostream& out, istream& input);
 
    private:
       int bytesQ;        // option for printing hex bytes in ASCII output.

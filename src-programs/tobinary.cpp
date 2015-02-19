@@ -32,16 +32,33 @@ int main(int argc, char** argv) {
    options.setOptions(argc, argv);
    checkOptions(options);
 
+   int status;
    MidiFile midifile;
 
    if (options.getArgCount() == 2) {
       // input from first filename
-      midifile.read(options.getArg(1));
-      midifile.write(options.getArg(2));
+      status = midifile.read(options.getArg(1));
+      if (status == 0) {
+         cerr << "Error: could not read MIDI file " << options.getArg(1) << endl;
+         exit(1);
+      }
+      status = midifile.write(options.getArg(2));
+      if (status == 0) {
+         cerr << "Error: could not write MIDI file " << options.getArg(2) << endl;
+         exit(1);
+      }
    } else if (options.getArgCount() == 1) {
       // input from standard input
-      midifile.read(cin);
-      midifile.write(options.getArg(1));
+      status = midifile.read(cin);
+      if (status == 0) {
+         cerr << "Error: could not read MIDI file from standard input" << endl;
+         exit(1);
+      }
+      status = midifile.write(options.getArg(1));
+      if (status == 0) {
+         cerr << "Error: could not write MIDI file " << options.getArg(1) << endl;
+         exit(1);
+      }
    }
 
    return 0;

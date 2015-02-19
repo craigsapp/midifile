@@ -140,7 +140,7 @@ class MidiFile {
       vector<_TickTime> timemap;
 
    private:
-      void       extractMidiData  (istream& inputfile, vector<uchar>& array, 
+      int        extractMidiData  (istream& inputfile, vector<uchar>& array, 
                                        uchar& runningCommand);
       ulong      extractVlvTime   (istream& inputfile);
       ulong      unpackVLV        (uchar a, uchar b, uchar c, uchar d, uchar e);

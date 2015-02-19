@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 20:42:18 PST 2015
-// Last Modified: Wed Feb 18 20:46:52 PST 2015
+// Last Modified: Wed Feb 18 22:25:17 PST 2015
 // Filename:      midifile/src-programs/toascii.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -31,13 +31,22 @@ int main(int argc, char** argv) {
    options.setOptions(argc, argv);
    checkOptions(options);
 
+   int status;
    MidiFile midifile;
    if (options.getArgCount()) {
-      midifile.read(options.getArg(1));
+      status = midifile.read(options.getArg(1));
    } else {
-      midifile.read(cin);
+      status = midifile.read(cin);
    }
-   midifile.writeBinasc(cout);
+   if (status == 0) {
+      cerr << "Error: could not read MIDI file" << endl;
+      exit(1);
+   }
+   status = midifile.writeBinasc(cout);
+   if (status == 0) {
+      cerr << "Error: could not write MIDI file" << endl;
+      exit(1);
+   }
 
    return 0;
 }

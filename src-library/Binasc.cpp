@@ -165,57 +165,61 @@ void Binasc::setMidiOff(void) {
 //////////////////////////////
 //
 // Binasc::writeToBinary -- Convert an ASCII representation of bytes into
-//     the binary file that it describes.
+//     the binary file that it describes.  Returns 0 if there was a problem
+//     otherwise returns 1.
 //
 
-void Binasc::writeToBinary(const string& outfile, const string& infile) {
+int Binasc::writeToBinary(const string& outfile, const string& infile) {
    ifstream input;
    input.open(infile.data());
    if (!input.is_open()) {
       cerr << "Cannot open " << infile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
    
    ofstream output;
    output.open(outfile.data());
    if (!output.is_open()) {
       cerr << "Cannot open " << outfile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
   
-   writeToBinary(output, input);
+   int status = writeToBinary(output, input);
    input.close();
    output.close();
+   return status;
 }
 
 
-void Binasc::writeToBinary(const string& outfile, istream& input) {
+int Binasc::writeToBinary(const string& outfile, istream& input) {
    ofstream output;
    output.open(outfile.data());
    if (!output.is_open()) {
       cerr << "Cannot open " << outfile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
   
-   writeToBinary(output, input);
+   int status = writeToBinary(output, input);
    output.close();
+   return status;
 }
 
 
-ostream& Binasc::writeToBinary(ostream& out, const string& infile) {
+int Binasc::writeToBinary(ostream& out, const string& infile) {
    ifstream input;
    input.open(infile.data());
    if (!input.is_open()) {
       cerr << "Cannot open " << infile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
    
-   return writeToBinary(out, input);
+   int status = writeToBinary(out, input);
    input.close();
+   return status;
 }
 
 
-ostream& Binasc::writeToBinary(ostream& out, istream& input) {
+int Binasc::writeToBinary(ostream& out, istream& input) {
    char inputLine[1024] = {0};    // current line being processed
    int  lineNum = 0;              // current line number
 
@@ -226,7 +230,7 @@ ostream& Binasc::writeToBinary(ostream& out, istream& input) {
       input.getline(inputLine, 1024, '\n');
       lineNum++;
    }
-   return out;
+   return 1;
 }
 
 
@@ -237,65 +241,68 @@ ostream& Binasc::writeToBinary(ostream& out, istream& input) {
 //     the binary file that it describes.
 //
 
-void Binasc::readFromBinary(const string& outfile, const string& infile) { 
+int Binasc::readFromBinary(const string& outfile, const string& infile) { 
    ifstream input;
    input.open(infile.data());
    if (!input.is_open()) {
       cerr << "Cannot open " << infile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
 
    ofstream output;
    output.open(outfile.data());
    if (!output.is_open()) {
       cerr << "Cannot open " << outfile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
 
-   readFromBinary(output, input);
+   int status = readFromBinary(output, input);
    input.close();
    output.close();
+   return status;
 }
 
 
-void Binasc::readFromBinary(const string& outfile, istream& input) { 
+int Binasc::readFromBinary(const string& outfile, istream& input) { 
    ofstream output;
    output.open(outfile.data());
    if (!output.is_open()) {
       cerr << "Cannot open " << outfile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
 
-   readFromBinary(output, input);
+   int status = readFromBinary(output, input);
    output.close();
+   return status;
 }
 
 
-ostream& Binasc::readFromBinary(ostream& out, const string& infile) { 
+int Binasc::readFromBinary(ostream& out, const string& infile) { 
    ifstream input;
    input.open(infile.data());
    if (!input.is_open()) {
       cerr << "Cannot open " << infile << " for reading in binasc." << endl;
-      exit(1);
+      return 0;
    }
 
-   readFromBinary(out, input);
+   int status = readFromBinary(out, input);
    input.close();
-   return out;
+   return status;
 }
 
 
-ostream& Binasc::readFromBinary(ostream& out, istream& input) { 
+int Binasc::readFromBinary(ostream& out, istream& input) { 
+   int status;
    if (midiQ) {
-      outputStyleMidi(out, input);
+      status = outputStyleMidi(out, input);
    } else if (!bytesQ) {
-      outputStyleAscii(out, input);
+      status = outputStyleAscii(out, input);
    } else if (bytesQ && commentsQ) {
-      outputStyleBoth(out, input);
+      status = outputStyleBoth(out, input);
    } else {
-      outputStyleBinary(out, input);
+      status = outputStyleBinary(out, input);
    }
-   return out;
+   return status;
 }
 
 
@@ -312,7 +319,7 @@ ostream& Binasc::readFromBinary(ostream& out, istream& input) {
 //    broken unless they are longer than 75 characters.
 //
 
-ostream& Binasc::outputStyleAscii (ostream& out, istream& input) {
+int Binasc::outputStyleAscii(ostream& out, istream& input) {
    uchar outputWord[256] = {0};   // storage for current word
    int index     = 0;             // current length of word
    int lineCount = 0;             // current length of line
@@ -353,7 +360,7 @@ ostream& Binasc::outputStyleAscii (ostream& out, istream& input) {
       out << endl;
    }
 
-   return out;
+   return 1;
 }
 
 
@@ -364,14 +371,14 @@ ostream& Binasc::outputStyleAscii (ostream& out, istream& input) {
 //     in ascii form, hexadecimal numbers only.
 //
 
-ostream& Binasc::outputStyleBinary(ostream& out, istream& input) {
+int Binasc::outputStyleBinary(ostream& out, istream& input) {
    int currentByte = 0;    // current byte output in line
    uchar ch;               // current input byte
 
    ch = input.get();
    if (input.eof()) {
       cerr << "End of the file right away!" << endl;
-      return out;
+      return 0;
    }
 
    while (!input.eof()) {
@@ -391,7 +398,7 @@ ostream& Binasc::outputStyleBinary(ostream& out, istream& input) {
       out << endl;
    }
 
-   return out;
+   return 1;
 }
 
 
@@ -402,7 +409,7 @@ ostream& Binasc::outputStyleBinary(ostream& out, istream& input) {
 //     form with both hexadecimal numbers and ascii representation
 //
 
-ostream& Binasc::outputStyleBoth(ostream& out, istream& input) {
+int Binasc::outputStyleBoth(ostream& out, istream& input) {
    uchar asciiLine[256] = {0};    // storage for output line
    int currentByte = 0;           // current byte output in line
    int index = 0;                 // current character in asciiLine
@@ -444,7 +451,7 @@ ostream& Binasc::outputStyleBoth(ostream& out, istream& input) {
       out << asciiLine << '\n' << endl;
    }
 
-   return out;
+   return 1;
 }
 
 
@@ -454,29 +461,34 @@ ostream& Binasc::outputStyleBoth(ostream& out, istream& input) {
 // processLine -- read a line of input and output any specified bytes
 //
 
-ostream& Binasc::processLine(ostream& out, char* inputLine, int lineCount) {
+int Binasc::processLine(ostream& out, char* inputLine, int lineCount) {
    const char* WORD_SEPARATORS = " \n\t";
    char* word = strtok(inputLine, WORD_SEPARATORS);
+   int status = 1;
    while (word != NULL) {
       if ((word[0] == ';') || (word[0] == '#')) {
-         return out;
+         // comment to end of line.
+         return 1;
       }
       if (word[0] == '+') {
-         processAsciiWord(out, word, lineCount);
+         status = processAsciiWord(out, word, lineCount);
       } else if (word[0] == 'v') {
-         processVlvWord(out, word, lineCount);
+         status = processVlvWord(out, word, lineCount);
       } else if (word[0] == 'p') {
-         processMidiPitchBendWord(out, word, lineCount);
+         status = processMidiPitchBendWord(out, word, lineCount);
       } else if (strchr(word, '\'')) {
-         processDecimalWord(out, word, lineCount);
+         status = processDecimalWord(out, word, lineCount);
       } else if (strchr(word, ',') || strlen(word) > 2) {
-         processBinaryWord(out, word, lineCount);
+         status = processBinaryWord(out, word, lineCount);
       } else {
-         processHexWord(out, word, lineCount);
+         status = processHexWord(out, word, lineCount);
+      }
+      if (status == 0) {
+         return 0;
       }
       word = strtok(NULL, WORD_SEPARATORS);
    }
-   return out;
+   return 1;
 }
 
 
@@ -644,7 +656,7 @@ exit(1);
 //     as a MIDI file (exit with error if not a MIDI file.
 //
 
-ostream& Binasc::outputStyleMidi(ostream& out, istream& input) {
+int Binasc::outputStyleMidi(ostream& out, istream& input) {
    uchar ch;                      // current input byte
    stringstream tempout;
    input.read((char*)&ch, 1);
@@ -656,13 +668,13 @@ ostream& Binasc::outputStyleMidi(ostream& out, istream& input) {
    // Read the MIDI file header
 
    // The first four bytes must be the characters "MThd"
-   if (ch != 'M') { cerr << "Not a MIDI file M" << endl; exit(1); }
+   if (ch != 'M') { cerr << "Not a MIDI file M" << endl; return 0; }
    input.read((char*)&ch, 1);
-   if (ch != 'T') { cerr << "Not a MIDI file T" << endl; exit(1); }
+   if (ch != 'T') { cerr << "Not a MIDI file T" << endl; return 0; }
    input.read((char*)&ch, 1);
-   if (ch != 'h') { cerr << "Not a MIDI file h" << endl; exit(1); }
+   if (ch != 'h') { cerr << "Not a MIDI file h" << endl; return 0; }
    input.read((char*)&ch, 1);
-   if (ch != 'd') { cerr << "Not a MIDI file d" << endl; exit(1); }
+   if (ch != 'd') { cerr << "Not a MIDI file d" << endl; return 0; }
    tempout << "+M +T +h +d";
    if (commentsQ) {
       tempout << "\t\t; MIDI header chunk marker";
@@ -766,13 +778,13 @@ ostream& Binasc::outputStyleMidi(ostream& out, istream& input) {
 
       input.read((char*)&ch, 1);
       // The first four bytes of a track must be the characters "MTrk"
-      if (ch != 'M') { cerr << "Not a MIDI file M2" << endl; exit(1); }
+      if (ch != 'M') { cerr << "Not a MIDI file M2" << endl; return 0; }
       input.read((char*)&ch, 1);
-      if (ch != 'T') { cerr << "Not a MIDI file T2" << endl; exit(1); }
+      if (ch != 'T') { cerr << "Not a MIDI file T2" << endl; return 0; }
       input.read((char*)&ch, 1);
-      if (ch != 'r') { cerr << "Not a MIDI file r" << endl; exit(1); }
+      if (ch != 'r') { cerr << "Not a MIDI file r" << endl; return 0; }
       input.read((char*)&ch, 1);
-      if (ch != 'k') { cerr << "Not a MIDI file k" << endl; exit(1); }
+      if (ch != 'k') { cerr << "Not a MIDI file k" << endl; return 0; }
       tempout << "+M +T +r +k";
       if (commentsQ) {
          tempout << "\t\t; MIDI track chunk marker";
@@ -811,7 +823,7 @@ ostream& Binasc::outputStyleMidi(ostream& out, istream& input) {
    // print main content of MIDI file parsing:
    tempout << ends;
    out << tempout.str() << endl;
-   return out;
+   return 1;
 }
 
 
@@ -822,7 +834,7 @@ ostream& Binasc::outputStyleMidi(ostream& out, istream& input) {
 //     constituent bytes
 //
 
-ostream& Binasc::processDecimalWord(ostream& out, const char* word, 
+int Binasc::processDecimalWord(ostream& out, const char* word, 
       int lineNum) {
    int length = strlen(word);       // length of ascii binary number
    int byteCount = -1;              // number of bytes to output
@@ -840,7 +852,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                cerr << "Error on line " << lineNum << " at token: " << word
                     << endl;
                cerr << "extra quote in decimal number" << endl;
-               exit(1);
+               return 0;
             } else {
                quoteIndex = i;
             }
@@ -851,7 +863,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                     << endl;
                cerr << "cannot have more than two minus signs in number"
                     << endl;
-               exit(1);
+               return 0;
             } else {
                signIndex = i;
             }
@@ -859,7 +871,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                cerr << "Error on line " << lineNum << " at token: " << word
                     << endl;
                cerr << "minus sign must immediately follow quote mark" << endl;
-               exit(1);
+               return 0;
             }
             break;
          case '.':
@@ -867,13 +879,13 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                cerr << "Error on line " << lineNum << " at token: " << word
                     << endl;
                cerr << "cannot have decimal marker before quote" << endl;
-               exit(1);
+               return 0;
             }
             if (periodIndex != -1) {
                cerr << "Error on line " << lineNum << " at token: " << word
                     << endl;
                cerr << "extra period in decimal number" << endl;
-               exit(1);
+               return 0;
             } else {
                periodIndex = i;
             }
@@ -884,13 +896,13 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                cerr << "Error on line " << lineNum << " at token: " << word
                     << endl;
                cerr << "cannot have endian specified after quote" << endl;
-               exit(1);
+               return 0;
             }
             if (endianIndex != -1) {
                cerr << "Error on line " << lineNum << " at token: " << word
                     << endl;
                cerr << "extra \"u\" in decimal number" << endl;
-               exit(1);
+               return 0;
             } else {
                endianIndex = i;
             }
@@ -902,7 +914,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                     << endl;
                cerr << "invalid byte specificaton before quote in "
                     << "decimal number" << endl;
-               exit(1);
+               return 0;
             } else if (quoteIndex == -1) {
                byteCount = word[i] - '0';
             }
@@ -913,7 +925,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                     << endl;
                cerr << "cannot have numbers before quote in decimal number"
                     << endl;
-               exit(1);
+               return 0;
             }
             break;
          default:
@@ -921,7 +933,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                  << endl;
             cerr << "Invalid character in decimal number"
                     " (character number " << i <<")" << endl;
-            exit(1);
+            return 0;
       }
    }
 
@@ -931,12 +943,12 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "there must be a quote to signify a decimal number" << endl;
-      exit(1);
+      return 0;
    } else if (quoteIndex == length - 1) {
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "there must be a decimal number after the quote" << endl;
-      exit(1);
+      return 0;
    }
 
    // 8 byte decimal output can only occur if reading a double number
@@ -944,7 +956,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "only floating-point numbers can use 8 bytes" << endl;
-      exit(1);
+      return 0;
    }
 
    // default size for floating point numbers is 4 bytes
@@ -965,7 +977,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
            } else {
               writeLittleEndianFloat(out, floatOutput);
            }
-           return out;
+           return 1;
            break;
          case 8:
            if (endianIndex == -1) {
@@ -973,13 +985,13 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
            } else {
               writeLittleEndianDouble(out, doubleOutput);
            }
-           return out;
+           return 1;
            break;
          default:
             cerr << "Error on line " << lineNum << " at token: " << word
                  << endl;
             cerr << "floating-point numbers can be only 4 or 8 bytes" << endl;
-            exit(1);
+            return 0;
       }
    }
 
@@ -995,11 +1007,11 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             cerr << "Error on line " << lineNum << " at token: " << word
                  << endl;
             cerr << "Decimal number out of range from -128 to 127" << endl;
-            exit(1);
+            return 0;
          }
          char charOutput = (char)tempLong;
          out << charOutput;
-         return out;
+         return 1;
       } else {
          ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
          uchar ucharOutput = (uchar)tempLong;
@@ -1007,10 +1019,10 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             cerr << "Error on line " << lineNum << " at token: " << word
                  << endl;
             cerr << "Decimal number out of range from 0 to 255" << endl;
-            exit(1);
+            return 0;
          }
          out << ucharOutput;
-         return out;
+         return 1;
       }
    }
 
@@ -1021,12 +1033,12 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             long tempLong = atoi(&word[quoteIndex + 1]);
             char charOutput = (char)tempLong;
             out << charOutput;
-            return out;
+            return 1;
          } else {
             ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
             uchar ucharOutput = (uchar)tempLong;
             out << ucharOutput;
-            return out;
+            return 1;
          }
          break;
       case 2:
@@ -1038,7 +1050,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             } else {
                writeLittleEndianShort(out, shortOutput);
             }
-            return out;
+            return 1;
          } else {
             ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
             ushort ushortOutput = (ushort)tempLong;
@@ -1047,7 +1059,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             } else {
                writeLittleEndianUShort(out, ushortOutput);
             }
-            return out;
+            return 1;
          }
          break;
       case 3:
@@ -1057,7 +1069,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
                  << endl;
             cerr << "negative decimal numbers cannot be stored in 3 bytes"
                  << endl;
-            exit(1);
+            return 0;
          }
          ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
          uchar byte1 = (tempLong & 0x00ff0000) >> 16;
@@ -1072,7 +1084,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             out << byte2;
             out << byte1;
          }
-         return out;
+         return 1;
          }
          break;
       case 4:
@@ -1083,7 +1095,7 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             } else {
                writeLittleEndianLong(out, tempLong);
             }
-            return out;
+            return 1;
          } else {
             ulong tempuLong = (ulong)atoi(&word[quoteIndex + 1]);
             if (endianIndex == -1) {
@@ -1091,17 +1103,17 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
             } else {
                writeLittleEndianULong(out, tempuLong);
             }
-            return out;
+            return 1;
          }
          break;
       default:
          cerr << "Error on line " << lineNum << " at token: " << word
               << endl;
          cerr << "invalid byte count specification for decimal number" << endl;
-         exit(1);
+         return 0;
    }
 
-   return out;
+   return 1;
 }
 
 
@@ -1112,25 +1124,25 @@ ostream& Binasc::processDecimalWord(ostream& out, const char* word,
 //     its binary byte form.
 //
 
-ostream& Binasc::processHexWord(ostream& out, const char* word, int lineNum) {
+int Binasc::processHexWord(ostream& out, const char* word, int lineNum) {
    int length = strlen(word);
    uchar outputByte;
 
    if (length > 2) {
       cerr << "Error on line " << lineNum << " at token: " << word << endl;
       cerr << "Size of hexadecimal number is too large.  Max is ff." << endl;
-      exit(1);
+      return 0;
    }
 
    if (!isxdigit(word[0]) || (length == 2 && !isxdigit(word[1]))) {
       cerr << "Error on line " << lineNum << " at token: " << word << endl;
       cerr << "Invalid character in hexadecimal number." << endl;
-      exit(1);
+      return 0;
    }
 
    outputByte = (uchar)strtol(word, (char**)NULL, 16);
    out << outputByte;
-   return out;
+   return 1;
 }
 
 
@@ -1141,21 +1153,21 @@ ostream& Binasc::processHexWord(ostream& out, const char* word, int lineNum) {
 //     its constituent byte
 //
 
-ostream& Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
+int Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
    int length = strlen(word);
    uchar outputByte;
 
    if (word[0] != '+') {
       cerr << "Error on line " << lineNum << " at token: " << word << endl;
       cerr << "character byte must start with \'+\' sign: " << endl;
-      exit(1);
+      return 0;
    }
 
    if (length > 2) {
       cerr << "Error on line " << lineNum << " at token: " << word << endl;
       cerr << "character byte word is too long -- specify only one character"
            << endl;
-      exit(1);
+      return 0;
    }
 
    if (length == 2) {
@@ -1164,7 +1176,7 @@ ostream& Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
       outputByte = ' ';
    }
    out << outputByte;
-   return out;
+   return 1;
 }
 
 
@@ -1175,7 +1187,7 @@ ostream& Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
 //     its constituent byte
 //
 
-ostream& Binasc::processBinaryWord(ostream& out, const char* word, 
+int Binasc::processBinaryWord(ostream& out, const char* word, 
       int lineNum) {
    int length = strlen(word);       // length of ascii binary number
    int commaIndex = -1;             // index location of comma in number
@@ -1190,7 +1202,7 @@ ostream& Binasc::processBinaryWord(ostream& out, const char* word,
             cerr << "Error on line " << lineNum << " at token: " << word
                  << endl;
             cerr << "extra comma in binary number" << endl;
-            exit(1);
+            return 0;
          } else {
             commaIndex = i;
          }
@@ -1199,7 +1211,7 @@ ostream& Binasc::processBinaryWord(ostream& out, const char* word,
               << endl;
          cerr << "Invalid character in binary number"
                  " (character is " << word[i] <<")" << endl;
-         exit(1);
+         return 0;
       }
    }
 
@@ -1208,12 +1220,12 @@ ostream& Binasc::processBinaryWord(ostream& out, const char* word,
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "cannot start binary number with a comma" << endl;
-      exit(1);
+      return 0;
    } else if (commaIndex == length - 1 ) {
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "cannot end binary number with a comma" << endl;
-      exit(1);
+      return 0;
    }
 
    // figure out how many digits there are in binary number
@@ -1225,20 +1237,20 @@ ostream& Binasc::processBinaryWord(ostream& out, const char* word,
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "too many digits in binary number" << endl;
-      exit(1);
+      return 0;
    }
    // if there is a comma, then there cannot be more than 4 digits on a side
    if (leftDigits > 4) {
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "too many digits to left of comma" << endl;
-      exit(1);
+      return 0;
    }
    if (rightDigits > 4) {
       cerr << "Error on line " << lineNum << " at token: " << word
            << endl;
       cerr << "too many digits to right of comma" << endl;
-      exit(1);
+      return 0;
    }
 
    // OK, we have a valid binary number, so calculate the byte
@@ -1267,7 +1279,7 @@ ostream& Binasc::processBinaryWord(ostream& out, const char* word,
 
    // send the byte to the output
    out << output;
-   return out;
+   return 1;
 }
 
 
@@ -1283,18 +1295,18 @@ ostream& Binasc::processBinaryWord(ostream& out, const char* word,
 //   without space by an integer.
 //
 
-ostream& Binasc::processVlvWord(ostream& out, const char* word, int lineNum) {
+int Binasc::processVlvWord(ostream& out, const char* word, int lineNum) {
    if (strlen(word) < 2) {
       cerr << "Error on line: " << lineNum
            << ": 'v' needs to be followed immediately by a decimal digit"
            << endl;
-      exit(1);
+      return 0;
    }
    if (!isdigit(word[1])) {
       cerr << "Error on line: " << lineNum
            << ": 'v' needs to be followed immediately by a decimal digit"
            << endl;
-      exit(1);
+      return 0;
    }
    ulong value = atoi(&word[1]);
 
@@ -1322,7 +1334,7 @@ ostream& Binasc::processVlvWord(ostream& out, const char* word, int lineNum) {
       }
    }
 
-   return out;
+   return 1;
 }
 
 
@@ -1336,20 +1348,20 @@ ostream& Binasc::processVlvWord(ostream& out, const char* word, int lineNum) {
 //   7-bits of the 14-bit value, then the MSB coming second and containing
 //   the top 7-bits of the 14-bit value.
 
-ostream& Binasc::processMidiPitchBendWord(ostream& out, const char* word, 
+int Binasc::processMidiPitchBendWord(ostream& out, const char* word, 
       int lineNum) {
    if (strlen(word) < 2) {
       cerr << "Error on line: " << lineNum
            << ": 'p' needs to be followed immediately by "
            << "a floating-point number" << endl;
-      exit(1);
+      return 0;
    }
    if (!(isdigit(word[1]) || word[1] == '.' || word[1] == '-'
          || word[1] == '+')) {
       cerr << "Error on line: " << lineNum
            << ": 'p' needs to be followed immediately by "
            << "a floating-point number" << endl;
-      exit(1);
+      return 0;
    }
    double value = strtod(&word[1], NULL);
 
@@ -1364,7 +1376,7 @@ ostream& Binasc::processMidiPitchBendWord(ostream& out, const char* word,
    uchar LSB = intval & 0x7f;
    uchar MSB = (intval >>  7) & 0x7f;
    out << LSB << MSB;
-   return out;
+   return 1;
 }
 
 
