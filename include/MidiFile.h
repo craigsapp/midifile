@@ -109,9 +109,21 @@ class MidiFile {
       const char* getFilename             (void);
 
       // static functions:
-      static uchar  readByte              (istream& input);
-      static ushort readLittleEndian2Bytes(istream& input);
-      static ulong  readLittleEndian4Bytes(istream& input);
+      static uchar    readByte                (istream& input);
+      static ushort   readLittleEndian2Bytes  (istream& input);
+      static ulong    readLittleEndian4Bytes  (istream& input);
+      static ostream& writeLittleEndianUShort (ostream& out, ushort value);
+      static ostream& writeBigEndianUShort    (ostream& out, ushort value);
+      static ostream& writeLittleEndianShort  (ostream& out, short  value);
+      static ostream& writeBigEndianShort     (ostream& out, short  value);
+      static ostream& writeLittleEndianULong  (ostream& out, ulong  value);
+      static ostream& writeBigEndianULong     (ostream& out, ulong  value);
+      static ostream& writeLittleEndianLong   (ostream& out, long   value);
+      static ostream& writeBigEndianLong      (ostream& out, long   value);
+      static ostream& writeLittleEndianFloat  (ostream& out, float  value);
+      static ostream& writeBigEndianFloat     (ostream& out, float  value);
+      static ostream& writeLittleEndianDouble (ostream& out, double value);
+      static ostream& writeBigEndianDouble    (ostream& out, double value);
 
    protected:
       vector<MidiEventList*> events;             // MIDI file events

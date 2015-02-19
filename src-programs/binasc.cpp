@@ -1,56 +1,27 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
-// Creation Date: Mon Apr 28 15:09:31 GMT-0800 1997
-// Last Modified: Fri Sep 15 01:03:43 PDT 2006 Upgraded to ANSI C99 C++.
-// Last Modified: Mon Feb 16 00:34:19 PST 2015 Upgraded to C++11.
+// Creation Date: Wed Feb 18 14:45:32 PST 2015 Class-ified binasc functionality
+// Last Modified: Wed Feb 18 14:45:44 PST 2015
 // Filename:      midifile/src-programs/binasc.cpp
 // Syntax:        C++11
+// vim:           ts=3 expandtab
+//
+// todo:          Add standard input source.
 //
 
-#include <ctype.h>
-#include <string.h>
+#include "Binasc.h"
 #include "Options.h"
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 
 using namespace std;
 
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned long ulong;
-
 // global variables:
-Options  options;              // command-line options
-ofstream outputCompiled;       // output for compilation
+Options  options;          // command-line options
 
 // function declarations:
-void     checkOptions            (Options& opts);
-void     compileFile             (const char* filename);
-void     example                 (void);
-void     manual                  (void);
-void     outputStyleAscii        (const char* filename);
-void     outputStyleBinary       (const char* filename);
-void     outputStyleBoth         (const char* filename);
-void     processAsciiWord        (const char* word, int lineNumber, ostream& out);
-void     processBinaryWord       (const char* word, int lineNumber, ostream& out);
-void     processDecimalWord      (const char* word, int lineNumber, ostream& out);
-void     processHexadecimalWord  (const char* word, int lineNumber, ostream& out);
-void     processLine             (char* word, int lineNumber, ostream& out);
-void     usage                   (const char* command);
-
-ostream& writeLittleEndianUShort (ostream& out, ushort value);
-ostream& writeBigEndianUShort    (ostream& out, ushort value);
-ostream& writeLittleEndianShort  (ostream& out, short  value);
-ostream& writeBigEndianShort     (ostream& out, short  value);
-ostream& writeLittleEndianULong  (ostream& out, ulong  value);
-ostream& writeBigEndianULong     (ostream& out, ulong  value);
-ostream& writeLittleEndianLong   (ostream& out, long   value);
-ostream& writeBigEndianLong      (ostream& out, long   value);
-ostream& writeLittleEndianFloat  (ostream& out, float  value);
-ostream& writeBigEndianFloat     (ostream& out, float  value);
-ostream& writeLittleEndianDouble (ostream& out, double value);
-ostream& writeBigEndianDouble    (ostream& out, double value);
+void     checkOptions      (Options& opts);
+void     usage             (const string& command);
+void     example           (void);
+void     manual            (void);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -59,15 +30,17 @@ int main(int argc, char* argv[]) {
    options.setOptions(argc, argv);
    checkOptions(options);
 
+   Binasc binasc;
+   binasc.setBytes(options.getBoolean("bytes"));
+   binasc.setLineLength(options.getInteger("wrap"));
+   binasc.setLineBytes(options.getInteger("mod"));
+
    for (int i=0; i<options.getArgCount(); i++) {
       if (options.getBoolean("compile")) {
-         compileFile(options.getArg(i+1).data());
-      } else if (options.getBoolean("binary")) {
-         outputStyleBinary(options.getArg(i+1).data());
-      } else if (options.getBoolean("ascii")) {
-         outputStyleAscii(options.getArg(i+1).data());
-      } else {
-         outputStyleBoth(options.getArg(i+1).data());
+         binasc.writeToBinary(options.getString("compile").data(), 
+               options.getArg(i+1).data());
+      } else  {
+         binasc.readFromBinary(cout, options.getArg(i+1).data());
       }
    }
 
@@ -77,7 +50,6 @@ int main(int argc, char* argv[]) {
 ///////////////////////////////////////////////////////////////////////////
 
 
-
 //////////////////////////////
 //
 // checkOptions -- check and process the command line options for
@@ -85,15 +57,15 @@ int main(int argc, char* argv[]) {
 //
 
 void checkOptions(Options& opts) {
-   opts.define("a|ascii=b");
-   opts.define("b|binary=b");
-   opts.define("c|compile=s:");
-   opts.define("m|man|manual=b");
-   opts.define("mod=i:25");
-   opts.define("wrap=i:75");              // for -a option
-   opts.define("author=b");
-   opts.define("version=b");
-   opts.define("example=b");
+   opts.define("a|ascii=b",       "Display only printable ASCII characters."  );
+   opts.define("b|binary|bytes=b","Display only byte hex codes."              );
+   opts.define("c|compile=s:",    "Compile ASCII file into binary form."      );
+   opts.define("m|man|manual=b",  "Print the manual."                         );
+   opts.define("mod=i:25",        "Number of hex codes on a line."            );
+   opts.define("wrap=i:75",       "Number of characters on line for -a option");
+   opts.define("author=b",        "Author of the program."                    );
+   opts.define("version=b",       "Version of the program."                   );
+   opts.define("example=b",       "Example usage of the program."             );
    opts.define("help=b");
    opts.process();
 
@@ -111,7 +83,7 @@ void checkOptions(Options& opts) {
       exit(0);
    }
    if (opts.getBoolean("version")) {
-      cout << "last edited: Thu Oct 22 14:17:23 PDT 1998 " << endl;
+      cout << "last edited: Wed Feb 18 15:48:05 PST 2015" << endl;
       cout << "compiled:    " << __DATE__ << endl;
       exit(0);
    }
@@ -129,7 +101,8 @@ void checkOptions(Options& opts) {
    }
 
 
-   if (opts.getBoolean("compile") && strlen(opts.getString("compile").data()) == 0) {
+   if (opts.getBoolean("compile") && 
+      strlen(opts.getString("compile").data()) == 0) {
       cerr << "Error: you must specify an output file when using the -c option"
            << endl;
       exit(1);
@@ -141,50 +114,6 @@ void checkOptions(Options& opts) {
       usage(opts.getCommand().data());
       exit(1);
    }
-
-   if (strlen(opts.getString("compile").data()) > 0) {
-      outputCompiled.open(opts.getString("compile").data(), ios::out);
-      if (!outputCompiled.is_open()) {
-         cerr << "Error opening output file: " << opts.getString("compile")
-              << endl;
-         exit(1);
-      }
-   }
-
-}
-
-
-
-//////////////////////////////
-//
-// compileFile -- convert an ascii file with bytes
-//     specified as numbers into output stream.
-//
-
-void compileFile(const char* filename) {
-   char     inputLine[1024] = {0};    // current line being processed
-   int      lineCount = 0;            // count current line being processed
-   ifstream infile;                   // file to be read from
-
-   infile.open(filename);
-   if (!infile.is_open()) {
-      cerr << "Error opening file: " << filename << endl;
-      exit(1);
-   }
-
-   if (!outputCompiled.is_open()) {
-      cerr << "Error: output file was not opened" << endl;
-      exit(1);
-   }
-
-   infile.getline(inputLine, 1024, '\n');
-   lineCount++;
-   while (!infile.eof()) {
-      processLine(inputLine, lineCount, outputCompiled);
-      infile.getline(inputLine, 1024, '\n');
-      lineCount++;
-   }
-   infile.close();
 }
 
 
@@ -211,678 +140,12 @@ void example(void) {
 
 //////////////////////////////
 //
-// outputStyleAscii -- read an input file and output bytes in ascii
-//    form, not displaying any blank lines.  Output words are not
-//    broken unless they are longer than 75 characters.
-//
-
-void outputStyleAscii (const char* filename) {
-   uchar outputWord[256] = {0};   // storage for current word
-   int index = 0;                 // current length of word
-   int lineCount = 0;             // current length of line
-   int maxLineLength = options.getInteger("wrap"); // max line length for output
-   if (maxLineLength < 1) {
-      cerr << "Error invalid colmn wrap specified" << endl;
-      exit(1);
-   }
-   uchar ch;                      // current input byte
-   int type = 0;                  // 0=space, 1=printable
-   int lastType = 0;              // 0=space, 1=printable
-   ifstream infile;               // file to be read from
-
-
-   infile.open(filename);
-   if (!infile.is_open()) {
-      cerr << "Error opening file: " << filename << endl;
-      exit(1);
-   }
-
-   ch = infile.get();
-
-   while (!infile.eof()) {
-
-      lastType = type;
-      if (isprint(ch) && !isspace(ch)) {
-         type = 1;
-      } else {
-         type = 0;
-      }
-
-      if (type == 1 && lastType == 0) {
-         // start of a new word.  check where to put old word
-         if (index + lineCount >= maxLineLength) {  // put on next line
-            outputWord[index] = '\0';
-            cout << '\n' << outputWord;
-            lineCount = index;
-            index = 0;
-         } else {                                   // put on current line
-            outputWord[index] = '\0';
-            if (lineCount != 0) {
-               cout << ' ';
-               lineCount++;
-            }
-            cout << outputWord;
-            lineCount += index;
-            index = 0;
-         }
-      }
-
-      if (type == 1) {
-         outputWord[index++] = ch;
-      }
-
-      ch = infile.get();
-   }
-
-   if (index != 0) {
-      cout << endl;
-   }
-
-   infile.close();
-}
-
-
-
-//////////////////////////////
-//
-// outputStyleBinary -- read an input file and output bytes in ascii form,
-//     hexadecimal numbers only.
-//
-
-void outputStyleBinary(const char* filename) {
-   int maxByteInLine = options.getInt("mod"); // max line length for output
-   if (maxByteInLine < 1) {
-      cerr << "Error invalid byte count specified" << endl;
-      exit(1);
-   }
-   int currentByte = 0;           // current byte output in line
-   uchar ch;                      // current input byte
-   ifstream infile;               // file to be read from
-
-   infile.open(filename);
-   if (!infile.is_open()) {
-      cerr << "Error opening file: " << filename << endl;
-      exit(1);
-   }
-
-   ch = infile.get();
-
-   if (infile.eof()) {
-      cout << "End of the file right away!" << endl;
-   }
-
-   while (!infile.eof()) {
-      if (ch < 0x10) {
-         cout << '0';
-      }
-      cout << hex << (int)ch << ' ';
-      currentByte++;
-      if (currentByte >= maxByteInLine) {
-         cout << '\n';
-         currentByte = 0;
-      }
-      ch = infile.get();
-   }
-
-   if (currentByte != 0) {
-      cout << endl;
-   }
-   infile.close();
-}
-
-
-
-//////////////////////////////
-//
-// outputStyleBoth -- read an input file and output bytes in ascii form
-//     with both hexadecimal numbers and ascii representation
-//
-
-void outputStyleBoth(const char* filename) {
-   uchar asciiLine[256] = {0};    // storage for output line
-   int maxByteInLine = options.getInt("mod"); // max line length for output
-   if (maxByteInLine < 1) {
-      cerr << "Error invalid byte count specified" << endl;
-      exit(1);
-   }
-   int currentByte = 0;           // current byte output in line
-   int index = 0;                 // current character in asciiLine
-   uchar ch;                      // current input byte
-   ifstream infile;               // file to be read from
-
-   infile.open(filename);
-   if (!infile.is_open()) {
-      cerr << "Error opening file: " << filename << endl;
-      exit(1);
-   }
-
-   ch = infile.get();
-   while (!infile.eof()) {
-      if (index == 0) {
-         asciiLine[index++] = ';';
-         cout << ' ';
-      }
-      if (ch < 0x10) {
-         cout << '0';
-      }
-      cout << hex << (int)ch << ' ';
-      currentByte++;
-
-      asciiLine[index++] = ' ';
-      if (isprint(ch)) {
-         asciiLine[index++] = ch;
-      } else {
-         asciiLine[index++] = ' ';
-      }
-      asciiLine[index++] = ' ';
-
-      if (currentByte >= maxByteInLine) {
-         cout << '\n';
-         asciiLine[index] = '\0';
-         cout << asciiLine << "\n\n";
-         currentByte = 0;
-         index = 0;
-      }
-      ch = infile.get();
-   }
-
-   if (currentByte != 0) {
-      cout << '\n';
-      asciiLine[index] = '\0';
-      cout << asciiLine << '\n' << endl;
-   }
-
-   infile.close();
-}
-
-
-
-///////////////////////////////
-//
-// processLine -- read a line of input and output any specified bytes
-//
-
-#define WORD_SEPARATORS " \n\t"
-
-void processLine(char* inputLine, int lineCount, ostream& out) {
-   char* word = strtok(inputLine, WORD_SEPARATORS);
-   while (word != NULL) {
-      if (word[0] == ';') {
-         return;
-      }
-      if (word[0] == '+') {
-         processAsciiWord(word, lineCount, out);
-      } else if (strchr(word, '\'')) {
-         processDecimalWord(word, lineCount, out);
-      } else if (strchr(word, ',') || strlen(word) > 2) {
-         processBinaryWord(word, lineCount, out);
-      } else {
-         processHexadecimalWord(word, lineCount, out);
-      }
-      word = strtok(NULL, WORD_SEPARATORS);
-   }
-}
-
-
-//////////////////////////////
-//
-// processDecimalWord -- interprets a decimal word into
-//     constituent bytes
-//
-
-void processDecimalWord(const char* word, int lineNumber, ostream& out) {
-   int length = strlen(word);       // length of ascii binary number
-   int byteCount = -1;              // number of bytes to output
-   int quoteIndex = -1;             // index of decimal specifier
-   int signIndex = -1;              // index of any sign for number
-   int periodIndex = -1;            // index of period for floating point
-   int endianIndex = -1;            // index of little endian specifier
-   int i = 0;
-
-   // make sure that all characters are valid
-   for (i=0; i<length; i++) {
-      switch (word[i]) {
-         case '\'':
-            if (quoteIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "extra quote in decimal number" << endl;
-               exit(1);
-            } else {
-               quoteIndex = i;
-            }
-            break;
-         case '-':
-            if (signIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "cannot have more than two minus signs in number"
-                    << endl;
-               exit(1);
-            } else {
-               signIndex = i;
-            }
-            if (i == 0 || word[i-1] != '\'') {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "minus sign must immediately follow quote mark" << endl;
-               exit(1);
-            }
-            break;
-         case '.':
-            if (quoteIndex == -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "cannot have decimal marker before quote" << endl;
-               exit(1);
-            }
-            if (periodIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "extra period in decimal number" << endl;
-               exit(1);
-            } else {
-               periodIndex = i;
-            }
-            break;
-         case 'u':
-         case 'U':
-            if (quoteIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "cannot have endian specified after quote" << endl;
-               exit(1);
-            }
-            if (endianIndex != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "extra \"u\" in decimal number" << endl;
-               exit(1);
-            } else {
-               endianIndex = i;
-            }
-            break;
-         case '8':
-         case '1': case '2': case '3': case '4':
-            if (quoteIndex == -1 && byteCount != -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "invalid byte specificaton before quote in "
-                    << "decimal number" << endl;
-               exit(1);
-            } else if (quoteIndex == -1) {
-               byteCount = word[i] - '0';
-            }
-            break;
-         case '0': case '5': case '6': case '7': case '9':
-            if (quoteIndex == -1) {
-               cerr << "Error on line " << lineNumber << " at token: " << word
-                    << endl;
-               cerr << "cannot have numbers before quote in decimal number"
-                    << endl;
-               exit(1);
-            }
-            break;
-         default:
-            cerr << "Error on line " << lineNumber << " at token: " << word
-                 << endl;
-            cerr << "Invalid character in decimal number"
-                    " (character number " << i <<")" << endl;
-            exit(1);
-      }
-   }
-
-   // there must be a quote character to indicate a decimal number
-   // and there must be a decimal number after the quote
-   if (quoteIndex == -1) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "there must be a quote to signify a decimal number" << endl;
-      exit(1);
-   } else if (quoteIndex == length - 1) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "there must be a decimal number after the quote" << endl;
-      exit(1);
-   }
-
-   // 8 byte decimal output can only occur if reading a double number
-   if (periodIndex == -1 && byteCount == 8) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "only floating-point numbers can use 8 bytes" << endl;
-      exit(1);
-   }
-
-   // default size for floating point numbers is 4 bytes
-   if (periodIndex != -1) {
-      if (byteCount == -1) {
-         byteCount = 4;
-      }
-   }
-
-   // process any floating point numbers possibilities
-   if (periodIndex != -1) {
-      double doubleOutput = atof(&word[quoteIndex+1]);
-      float  floatOutput  = (float)doubleOutput;
-      switch (byteCount) {
-         case 4:
-           if (endianIndex == -1) {
-              writeBigEndianFloat(out, floatOutput);
-           } else {
-              writeLittleEndianFloat(out, floatOutput);
-           }
-           return;
-           break;
-         case 8:
-           if (endianIndex == -1) {
-              writeBigEndianDouble(out, doubleOutput);
-           } else {
-              writeLittleEndianDouble(out, doubleOutput);
-           }
-           return;
-           break;
-         default:
-            cerr << "Error on line " << lineNumber << " at token: " << word
-                 << endl;
-            cerr << "floating-point numbers can be only 4 or 8 bytes" << endl;
-            exit(1);
-      }
-   }
-
-   // process any integer decimal number possibilities
-
-   // default integer size is one byte, if size is not specified, then
-   // the number must be in the one byte range and cannot overflow
-   // the byte if the size of the decimal number is not specified
-   if (byteCount == -1) {
-      if (signIndex != -1) {
-         long tempLong = atoi(&word[quoteIndex + 1]);
-         if (tempLong > 127 || tempLong < -128) {
-            cerr << "Error on line " << lineNumber << " at token: " << word
-                 << endl;
-            cerr << "Decimal number out of range from -128 to 127" << endl;
-            exit(1);
-         }
-         char charOutput = (char)tempLong;
-         out << charOutput;
-         return;
-      } else {
-         ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
-         uchar ucharOutput = (uchar)tempLong;
-         if (tempLong > 255) { // || (tempLong < 0)) {
-            cerr << "Error on line " << lineNumber << " at token: " << word
-                 << endl;
-            cerr << "Decimal number out of range from 0 to 255" << endl;
-            exit(1);
-         }
-         out << ucharOutput;
-         return;
-      }
-   }
-
-   // left with an integer number with a specified number of bytes
-   switch (byteCount) {
-      case 1:
-         if (signIndex != -1) {
-            long tempLong = atoi(&word[quoteIndex + 1]);
-            char charOutput = (char)tempLong;
-            out << charOutput;
-            return;
-         } else {
-            ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
-            uchar ucharOutput = (uchar)tempLong;
-            out << ucharOutput;
-            return;
-         }
-         break;
-      case 2:
-         if (signIndex != -1) {
-            long tempLong = atoi(&word[quoteIndex + 1]);
-            short shortOutput = (short)tempLong;
-            if (endianIndex == -1) {
-               writeBigEndianShort(out, shortOutput);
-            } else {
-               writeLittleEndianShort(out, shortOutput);
-            }
-            return;
-         } else {
-            ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
-            ushort ushortOutput = (ushort)tempLong;
-            if (endianIndex == -1) {
-               writeBigEndianUShort(out, ushortOutput);
-            } else {
-               writeLittleEndianUShort(out, ushortOutput);
-            }
-            return;
-         }
-         break;
-      case 3:
-         {
-         if (signIndex != -1) {
-            cerr << "Error on line " << lineNumber << " at token: " << word
-                 << endl;
-            cerr << "negative decimal numbers cannot be stored in 3 bytes"
-                 << endl;
-            exit(1);
-         }
-         ulong tempLong = (ulong)atoi(&word[quoteIndex + 1]);
-         uchar byte1 = (tempLong & 0x00ff0000) >> 16;
-         uchar byte2 = (tempLong & 0x0000ff00) >>  8;
-         uchar byte3 = (tempLong & 0x000000ff);
-         if (endianIndex == -1) {
-            out << byte1;
-            out << byte2;
-            out << byte3;
-         } else {
-            out << byte3;
-            out << byte2;
-            out << byte1;
-         }
-         return;
-         }
-         break;
-      case 4:
-         if (signIndex != -1) {
-            long tempLong = atoi(&word[quoteIndex + 1]);
-            if (endianIndex == -1) {
-               writeBigEndianLong(out, tempLong);
-            } else {
-               writeLittleEndianLong(out, tempLong);
-            }
-            return;
-         } else {
-            ulong tempuLong = (ulong)atoi(&word[quoteIndex + 1]);
-            if (endianIndex == -1) {
-               writeBigEndianULong(out, tempuLong);
-            } else {
-               writeLittleEndianULong(out, tempuLong);
-            }
-            return;
-         }
-         break;
-      default:
-         cerr << "Error on line " << lineNumber << " at token: " << word
-              << endl;
-         cerr << "invalid byte count specification for decimal number" << endl;
-         exit(1);
-   }
-
-}
-
-
-
-//////////////////////////////
-//
-// processHexadecimalWord -- interprets a hexadecimal word into
-//     its constituent byte
-//
-
-void processHexadecimalWord(const char* word, int lineNumber, ostream& out) {
-   int length = strlen(word);
-   uchar outputByte;
-
-   if (length > 2) {
-      cerr << "Error on line " << lineNumber << " at token: " << word << endl;
-      cerr << "Size of hexadecimal number is too large.  Max is ff." << endl;
-      exit(1);
-   }
-
-   if (!isxdigit(word[0]) || (length == 2 && !isxdigit(word[1]))) {
-      cerr << "Error on line " << lineNumber << " at token: " << word << endl;
-      cerr << "Invalid character in hexadecimal number." << endl;
-      exit(1);
-   }
-
-   outputByte = (uchar)strtol(word, (char**)NULL, 16);
-   out << outputByte;
-}
-
-
-
-//////////////////////////////
-//
-// processAsciiWord -- interprets a binary word into
-//     its constituent byte
-//
-
-void processAsciiWord(const char* word, int lineNumber, ostream& out) {
-   int length = strlen(word);
-   uchar outputByte;
-
-   if (word[0] != '+') {
-      cerr << "Error on line " << lineNumber << " at token: " << word << endl;
-      cerr << "character byte must start with \'+\' sign: " << endl;
-      exit(1);
-   }
-
-   if (length > 2) {
-      cerr << "Error on line " << lineNumber << " at token: " << word << endl;
-      cerr << "character byte word is too long -- specify only one character"
-           << endl;
-      exit(1);
-   }
-
-   if (length == 2) {
-      outputByte = (uchar)word[1];
-   } else {
-      outputByte = ' ';
-   }
-   out << outputByte;
-}
-
-
-
-
-//////////////////////////////
-//
-// processBinaryWord -- interprets a binary word into
-//     its constituent byte
-//
-
-void processBinaryWord(const char* word, int lineNumber, ostream& out) {
-   int length = strlen(word);       // length of ascii binary number
-   int commaIndex = -1;             // index location of comma in number
-   int leftDigits = -1;             // number of digits to left of comma
-   int rightDigits = -1;            // number of digits to right of comma
-   int i = 0;
-
-   // make sure that all characters are valid
-   for (i=0; i<length; i++) {
-      if (word [i] == ',') {
-         if (commaIndex != -1) {
-            cerr << "Error on line " << lineNumber << " at token: " << word
-                 << endl;
-            cerr << "extra comma in binary number" << endl;
-            exit(1);
-         } else {
-            commaIndex = i;
-         }
-      } else if (!(word[i] == '1' || word[i] == '0')) {
-         cerr << "Error on line " << lineNumber << " at token: " << word
-              << endl;
-         cerr << "Invalid character in binary number"
-                 " (character is " << word[i] <<")" << endl;
-         exit(1);
-      }
-   }
-
-   // comma cannot start or end number
-   if (commaIndex == 0) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "cannot start binary number with a comma" << endl;
-      exit(1);
-   } else if (commaIndex == length - 1 ) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "cannot end binary number with a comma" << endl;
-      exit(1);
-   }
-
-   // figure out how many digits there are in binary number
-   // number must be able to fit into one byte.
-   if (commaIndex != -1) {
-      leftDigits = commaIndex;
-      rightDigits = length - commaIndex - 1;
-   } else if (length > 8) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "too many digits in binary number" << endl;
-      exit(1);
-   }
-   // if there is a comma, then there cannot be more than 4 digits on a side
-   if (leftDigits > 4) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "too many digits to left of comma" << endl;
-      exit(1);
-   }
-   if (rightDigits > 4) {
-      cerr << "Error on line " << lineNumber << " at token: " << word
-           << endl;
-      cerr << "too many digits to right of comma" << endl;
-      exit(1);
-   }
-
-   // OK, we have a valid binary number, so calculate the byte
-
-   uchar output = 0;
-
-   // if no comma in binary number
-   if (commaIndex == -1) {
-      for (i=0; i<length; i++) {
-         output = output << 1;
-         output |= word[i] - '0';
-      }
-   }
-   // if comma in binary number
-   else {
-      for (i=0; i<leftDigits; i++) {
-         output = output << 1;
-         output |= word[i] - '0';
-      }
-      output = output << (4-rightDigits);
-      for (i=0+commaIndex+1; i<rightDigits+commaIndex+1; i++) {
-         output = output << 1;
-         output |= word[i] - '0';
-      }
-   }
-
-   // send the byte to the output
-   out << output;
-}
-
-
-
-//////////////////////////////
-//
 // usage -- instructions on how to run the binasc program on the
 //     command line.
 //     its constituent byte
 //
 
-void usage(const char* command) {
+void usage(const string& command) {
    cout <<
    "                                                                     \n"
    "For converting/compiling a binary file to/from an ASCII listing of   \n"
@@ -898,211 +161,6 @@ void usage(const char* command) {
    "   no options = combination of -a and -b options.                    \n"
    "   --options  = list of all options, aliases and defaults            \n"
    << endl;
-}
-
-
-
-//////////////////////////////
-//
-// writeLittleEndianUShort --
-//
-
-ostream& writeLittleEndianUShort(ostream& out, ushort value) {
-   union { char bytes[2]; ushort us; } data;
-   data.us = value;
-   out << data.bytes[0];
-   out << data.bytes[1];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeBigEndianUShort --
-//
-
-ostream& writeBigEndianUShort(ostream& out, ushort value) {
-   union { char bytes[2]; ushort us; } data;
-   data.us = value;
-   out << data.bytes[1];
-   out << data.bytes[0];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeLittleEndianShort --
-//
-
-ostream& writeLittleEndianShort(ostream& out, short value) {
-   union { char bytes[2]; short s; } data;
-   data.s = value;
-   out << data.bytes[0];
-   out << data.bytes[1];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeBigEndianShort --
-//
-
-ostream& writeBigEndianShort(ostream& out, short value) {
-   union { char bytes[2]; short s; } data;
-   data.s = value;
-   out << data.bytes[1];
-   out << data.bytes[0];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeLittleEndianULong --
-//
-
-ostream& writeLittleEndianULong(ostream& out, ulong value) {
-   union { char bytes[4]; ulong ul; } data;
-   data.ul = value;
-   out << data.bytes[0];
-   out << data.bytes[1];
-   out << data.bytes[2];
-   out << data.bytes[3];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeBigEndianULong --
-//
-
-ostream& writeBigEndianULong(ostream& out, ulong value) {
-   union { char bytes[4]; long ul; } data;
-   data.ul = value;
-   out << data.bytes[3];
-   out << data.bytes[2];
-   out << data.bytes[1];
-   out << data.bytes[0];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeLittleEndianLong --
-//
-
-ostream& writeLittleEndianLong(ostream& out, long value) {
-   union { char bytes[4]; long l; } data;
-   data.l = value;
-   out << data.bytes[0];
-   out << data.bytes[1];
-   out << data.bytes[2];
-   out << data.bytes[3];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeBigEndianLong --
-//
-
-ostream& writeBigEndianLong(ostream& out, long value) {
-   union { char bytes[4]; long l; } data;
-   data.l = value;
-   out << data.bytes[3];
-   out << data.bytes[2];
-   out << data.bytes[1];
-   out << data.bytes[0];
-   return out;
-
-}
-
-
-
-//////////////////////////////
-//
-// writeBigEndianFloat --
-//
-
-ostream& writeBigEndianFloat(ostream& out, float value) {
-   union { char bytes[4]; float f; } data;
-   data.f = value;
-   out << data.bytes[3];
-   out << data.bytes[2];
-   out << data.bytes[1];
-   out << data.bytes[0];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeLittleEndianFloat --
-//
-
-ostream& writeLittleEndianFloat(ostream& out, float value) {
-   union { char bytes[4]; float f; } data;
-   data.f = value;
-   out << data.bytes[0];
-   out << data.bytes[1];
-   out << data.bytes[2];
-   out << data.bytes[3];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeBigEndianDouble --
-//
-
-ostream& writeBigEndianDouble(ostream& out, double value) {
-   union { char bytes[8]; double d; } data;
-   data.d = value;
-   out << data.bytes[7];
-   out << data.bytes[6];
-   out << data.bytes[5];
-   out << data.bytes[4];
-   out << data.bytes[3];
-   out << data.bytes[2];
-   out << data.bytes[1];
-   out << data.bytes[0];
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// writeLittleEndianDouble --
-//
-
-ostream& writeLittleEndianDouble(ostream& out, double value) {
-   union { char bytes[8]; double d; } data;
-   data.d = value;
-   out << data.bytes[0];
-   out << data.bytes[1];
-   out << data.bytes[2];
-   out << data.bytes[3];
-   out << data.bytes[4];
-   out << data.bytes[5];
-   out << data.bytes[6];
-   out << data.bytes[7];
-   return out;
 }
 
 

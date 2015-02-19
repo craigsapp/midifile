@@ -1133,19 +1133,7 @@ int MidiFile::getTrackState(void) {
 //
 
 int MidiFile::write(const char* filename) {
-   #ifndef OLDCPP
-      #ifdef VISUAL
-         fstream outputfile(filename, ios::out | ios::binary);
-      #else
-         fstream outputfile(filename, ios::out);
-      #endif
-   #else
-      #ifdef VISUAL
-         fstream outputfile(filename, ios::out | ios::noreplace | ios::binary);
-      #else
-         fstream outputfile(filename, ios::out | ios::noreplace);
-      #endif
-   #endif
+   fstream outputfile(filename, ios::out);
 
    if (!outputfile.is_open()) {
       cout << "Error: could not write: " << filename << endl;
@@ -1199,7 +1187,7 @@ ostream& MidiFile::printHex(ostream& out) {
 // MidiFile::write -- write a standard MIDI file to an output stream.
 //
 
-int MidiFile::write(ostream& outputfile) {
+int MidiFile::write(ostream& out) {
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
       deltaTime();
@@ -1208,28 +1196,17 @@ int MidiFile::write(ostream& outputfile) {
    // write the header of the Standard MIDI File
 
    char ch;
+
    // 1. The characters "MThd"
-   ch = 'M';
-   // outputfile.writeBigEndian(ch);
-   outputfile << ch;
-   ch = 'T';
-   // outputfile.writeBigEndian(ch);
-   outputfile << ch;
-   ch = 'h';
-   // outputfile.writeBigEndian(ch);
-   outputfile << ch;
-   ch = 'd';
-   // outputfile.writeBigEndian(ch);
-   outputfile << ch;
+   ch = 'M'; out << ch;
+   ch = 'T'; out << ch;
+   ch = 'h'; out << ch;
+   ch = 'd'; out << ch;
 
    // 2. write the size of the header (always a "6" stored in unsigned long
    //    (4 bytes).
    ulong longdata = 6;
-   // outputfile.writeBigEndian(longdata);
-   ch = (char)((longdata >> 24) & 0xff); outputfile << ch;
-   ch = (char)((longdata >> 16) & 0xff); outputfile << ch;
-   ch = (char)((longdata >>  8) & 0xff); outputfile << ch;
-   ch = (char)( longdata        & 0xff); outputfile << ch;
+   writeBigEndianULong(out, longdata);
 
    // 3. MIDI file format, type 0, 1, or 2
    ushort shortdata;
@@ -1238,21 +1215,15 @@ int MidiFile::write(ostream& outputfile) {
    } else {
       shortdata = 1;
    }
-   // outputfile.writeBigEndian(shortdata);
-   ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
-   ch = (char)( shortdata        & 0xff); outputfile << ch;
+   writeBigEndianUShort(out,shortdata);
 
    // 4. write out the number of tracks.
    shortdata = getNumTracks();
-   // outputfile.writeBigEndian(shortdata);
-   ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
-   ch = (char)( shortdata        & 0xff); outputfile << ch;
+   writeBigEndianUShort(out, shortdata);
 
    // 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
    shortdata = getTicksPerQuarterNote();
-   // outputfile.writeBigEndian(shortdata);
-   ch = (char)((shortdata >>  8) & 0xff); outputfile << ch;
-   ch = (char)( shortdata        & 0xff); outputfile << ch;
+   writeBigEndianUShort(out, shortdata);
 
    // now write each track.
    vector<uchar> trackdata;
@@ -1281,28 +1252,24 @@ int MidiFile::write(ostream& outputfile) {
       // now ready to write to MIDI file.
 
       // first write the track ID marker "MTrk":
-      ch = 'M'; outputfile << ch;
-      ch = 'T'; outputfile << ch;
-      ch = 'r'; outputfile << ch;
-      ch = 'k'; outputfile << ch;
+      ch = 'M'; out << ch;
+      ch = 'T'; out << ch;
+      ch = 'r'; out << ch;
+      ch = 'k'; out << ch;
 
       // A. write the size of the MIDI data to follow:
       longdata = trackdata.size();
-      // outputfile.writeBigEndian(longdata);
-      ch = (char)((longdata >> 24) & 0xff); outputfile << ch;
-      ch = (char)((longdata >> 16) & 0xff); outputfile << ch;
-      ch = (char)((longdata >>  8) & 0xff); outputfile << ch;
-      ch = (char)( longdata        & 0xff); outputfile << ch;
+      writeBigEndianULong(out, longdata);
 
       // B. write the actual data
-      outputfile.write((char*)trackdata.data(), trackdata.size());
+      out.write((char*)trackdata.data(), trackdata.size());
    }
 
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
       absoluteTime();
    }
 
-   // outputfile.close();
+   // out.close();
 
    return 1;
 }
@@ -1952,5 +1919,209 @@ uchar MidiFile::readByte(istream& input) {
    return buffer[0];
 }
 
+
+
+//////////////////////////////
+//
+// MidiFile::writeLittleEndianUShort --
+//
+
+ostream& MidiFile::writeLittleEndianUShort(ostream& out, ushort value) {
+   union { char bytes[2]; ushort us; } data;
+   data.us = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBigEndianUShort --
+//
+
+ostream& MidiFile::writeBigEndianUShort(ostream& out, ushort value) {
+   union { char bytes[2]; ushort us; } data;
+   data.us = value;
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeLittleEndianShort --
+//
+
+ostream& MidiFile::writeLittleEndianShort(ostream& out, short value) {
+   union { char bytes[2]; short s; } data;
+   data.s = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBigEndianShort --
+//
+
+ostream& MidiFile::writeBigEndianShort(ostream& out, short value) {
+   union { char bytes[2]; short s; } data;
+   data.s = value;
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeLittleEndianULong --
+//
+
+ostream& MidiFile::writeLittleEndianULong(ostream& out, ulong value) {
+   union { char bytes[4]; ulong ul; } data;
+   data.ul = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBigEndianULong --
+//
+
+ostream& MidiFile::writeBigEndianULong(ostream& out, ulong value) {
+   union { char bytes[4]; long ul; } data;
+   data.ul = value;
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeLittleEndianLong --
+//
+
+ostream& MidiFile::writeLittleEndianLong(ostream& out, long value) {
+   union { char bytes[4]; long l; } data;
+   data.l = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBigEndianLong --
+//
+
+ostream& MidiFile::writeBigEndianLong(ostream& out, long value) {
+   union { char bytes[4]; long l; } data;
+   data.l = value;
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBigEndianFloat --
+//
+
+ostream& MidiFile::writeBigEndianFloat(ostream& out, float value) {
+   union { char bytes[4]; float f; } data;
+   data.f = value;
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeLittleEndianFloat --
+//
+
+ostream& MidiFile::writeLittleEndianFloat(ostream& out, float value) {
+   union { char bytes[4]; float f; } data;
+   data.f = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBigEndianDouble --
+//
+
+ostream& MidiFile::writeBigEndianDouble(ostream& out, double value) {
+   union { char bytes[8]; double d; } data;
+   data.d = value;
+   out << data.bytes[7];
+   out << data.bytes[6];
+   out << data.bytes[5];
+   out << data.bytes[4];
+   out << data.bytes[3];
+   out << data.bytes[2];
+   out << data.bytes[1];
+   out << data.bytes[0];
+   return out;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeLittleEndianDouble --
+//
+
+ostream& MidiFile::writeLittleEndianDouble(ostream& out, double value) {
+   union { char bytes[8]; double d; } data;
+   data.d = value;
+   out << data.bytes[0];
+   out << data.bytes[1];
+   out << data.bytes[2];
+   out << data.bytes[3];
+   out << data.bytes[4];
+   out << data.bytes[5];
+   out << data.bytes[6];
+   out << data.bytes[7];
+   return out;
+}
 
 
