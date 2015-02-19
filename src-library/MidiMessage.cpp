@@ -55,23 +55,17 @@ MidiMessage::MidiMessage(MidiMessage& message) {
 
 
 MidiMessage::MidiMessage(vector<uchar>& message) {
-   (*this) = message;
+   setMessage(message);
 }
 
 
 MidiMessage::MidiMessage(vector<char>& message) {
-   resize(message.size());
-   for (int i=0; i<size(); i++)  {
-      (*this)[i] = (uchar)message[i];
-   }
+   setMessage(message);
 }
 
 
 MidiMessage::MidiMessage(vector<int>& message) {
-   resize(message.size());
-   for (int i=0; i<size(); i++)  {
-      (*this)[i] = (uchar)message[i];
-   }
+   setMessage(message);
 }
 
 
@@ -105,7 +99,7 @@ MidiMessage& MidiMessage::operator=(vector<uchar>& bytes) {
    if (this == &bytes) {
       return *this;
    }
-   (*this) = bytes;
+   setMessage(bytes);
    return *this;
 }
 
@@ -632,11 +626,15 @@ void MidiMessage::setParameters(int p1, int p2) {
 
 //////////////////////////////
 //
-// MidiMessage::setMessage --  Set the contents of
+// MidiMessage::setMessage --  Set the contents of MIDI bytes to the
+//   input list of bytes.
 //
 
 void MidiMessage::setMessage(vector<uchar>& message) { 
-   (*this) = message;
+   this->resize(message.size());
+   for (int i=0; i<this->size(); i++) {
+      (*this)[i] = message[i];
+   }
 }
 
 

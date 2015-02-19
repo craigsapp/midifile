@@ -18,8 +18,9 @@
 //
 
 Binasc::Binasc(void) {
-   bytesQ   = 1; // option for printing HEX bytes when converting to ASCII
+   bytesQ    = 1; // option for printing HEX bytes when converting to ASCII
    commentsQ = 0; // option for printing text comments when converting to ASCII
+   midiQ     = 0; // option for printing ASCII as parsed MIDI file.
    maxLineLength = 75;
    maxLineBytes  = 25;
 }
@@ -136,6 +137,27 @@ void Binasc::setBytesOn(void) {
 
 void Binasc::setBytesOff(void) {
    setBytes(false);
+}
+
+
+
+//////////////////////////////
+//
+// Binasc::setMidi -- Display or not display parsed MIDI data.
+//
+
+void Binasc::setMidi(int state) {
+   midiQ = state ? 1 : 0;
+}
+
+
+void Binasc::setMidiOn(void) {
+   setMidi(true);
+}
+
+
+void Binasc::setMidiOff(void) {
+   setMidi(false);
 }
 
 
@@ -264,7 +286,9 @@ ostream& Binasc::readFromBinary(ostream& out, const string& infile) {
 
 
 ostream& Binasc::readFromBinary(ostream& out, istream& input) { 
-   if (!bytesQ) {
+   if (midiQ) {
+      outputStyleMidi(out, input);
+   } else if (!bytesQ) {
       outputStyleAscii(out, input);
    } else if (bytesQ && commentsQ) {
       outputStyleBoth(out, input);
@@ -509,6 +533,9 @@ int Binasc::readMidiEvent(ostream& out, istream& infile, int& trackbytes,
    int count;
    int i;
    int metatype = 0;
+if (command == 0) {
+exit(1);
+}
    switch (command & 0xf0) {
       case 0x80:    // note-off: 2 bytes
          out << " '" << dec << (int)byte1;
@@ -613,15 +640,13 @@ int Binasc::readMidiEvent(ostream& out, istream& infile, int& trackbytes,
 
 //////////////////////////////
 //
-// Binasc::outputStyleMidiFile -- read an input file and output bytes parsed
+// Binasc::outputStyleMidi -- read an input file and output bytes parsed
 //     as a MIDI file (exit with error if not a MIDI file.
 //
 
-ostream& Binasc::outputStyleMidiFile(ostream& out, istream& input) {
+ostream& Binasc::outputStyleMidi(ostream& out, istream& input) {
    uchar ch;                      // current input byte
-
    stringstream tempout;
-
    input.read((char*)&ch, 1);
 
    if (input.eof()) {

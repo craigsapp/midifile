@@ -160,8 +160,19 @@ makedirs:
 #   end                                                                   #
 #                                                                         #
 
-MidiFile.o: MidiFile.cpp MidiFile.h
+Binasc.o: Binasc.cpp Binasc.h
+
+MidiEvent.o: MidiEvent.cpp MidiEvent.h MidiMessage.h
+
+MidiEventList.o: MidiEventList.cpp MidiEventList.h \
+  MidiEvent.h MidiMessage.h
+
+MidiFile.o: MidiFile.cpp MidiFile.h MidiEventList.h \
+  MidiEvent.h MidiMessage.h Binasc.h
+
+MidiMessage.o: MidiMessage.cpp MidiMessage.h
 
 Options.o: Options.cpp Options.h
+
 
 

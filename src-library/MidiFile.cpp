@@ -16,6 +16,7 @@
 // Last Modified: Mon Nov 18 13:10:37 PST 2013 Added .printHex function.
 // Last Modified: Mon Feb  9 12:22:18 PST 2015 Remove dep. on FileIO class.
 // Last Modified: Sat Feb 14 23:40:17 PST 2015 Split out subclasses.
+// Last Modified: Wed Feb 18 20:06:39 PST 2015 Added binasc MIDI read/write.
 // Filename:      midifile/src/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -26,6 +27,7 @@
 //
 
 #include "MidiFile.h"
+#include "Binasc.h"
 
 #include <string.h>
 #include <iostream>
@@ -712,6 +714,23 @@ int MidiFile::read(const string& filename) {
 //
 
 int MidiFile::read(istream& input) {
+   if (input.peek() != 'M') {
+      // If the first byte in the input stream is not 'M', then presume that
+      // the MIDI file is in the binasc format which is an ASCII representation
+      // of the MIDI file.  Convert the binasc content into binary content and
+      // then continue reading with this function.
+      stringstream binarydata;
+      Binasc binasc;
+      binasc.writeToBinary(binarydata, input);
+      binarydata.seekg(0, ios_base::beg);
+      if (binarydata.peek() != 'M') {
+         cerr << "Bad MIDI data input" << endl;
+	 return 0;
+      } else {
+         return read(binarydata);
+      }
+   }
+
    const char* filename = getFilename();
 
    int    character;
@@ -725,48 +744,48 @@ int MidiFile::read(istream& input) {
 
    character = input.get();
    if (character == EOF) {
-      cout << "In file " << filename << ": unexpected end of file." << endl;
-      cout << "Expecting 'M' at first byte, but found nothing." << endl;
-      exit(1);
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'M' at first byte, but found nothing." << endl;
+      return 0;
    } else if (character != 'M') {
-      cout << "File " << filename << " is not a MIDI file" << endl;
-      cout << "Expecting 'M' at first byte but got '"
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'M' at first byte but got '"
            << character << "'" << endl;
       return 0;
    }
 
    character = input.get();
    if (character == EOF) {
-      cout << "In file " << filename << ": unexpected end of file." << endl;
-      cout << "Expecting 'T' at first byte, but found nothing." << endl;
-      exit(1);
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'T' at first byte, but found nothing." << endl;
+      return 0;
    } else if (character != 'T') {
-      cout << "File " << filename << " is not a MIDI file" << endl;
-      cout << "Expecting 'T' at first byte but got '"
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'T' at first byte but got '"
            << character << "'" << endl;
       return 0;
    }
 
    character = input.get();
    if (character == EOF) {
-      cout << "In file " << filename << ": unexpected end of file." << endl;
-      cout << "Expecting 'h' at first byte, but found nothing." << endl;
-      exit(1);
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'h' at first byte, but found nothing." << endl;
+      return 0;
    } else if (character != 'h') {
-      cout << "File " << filename << " is not a MIDI file" << endl;
-      cout << "Expecting 'h' at first byte but got '"
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'h' at first byte but got '"
            << character << "'" << endl;
       return 0;
    }
 
    character = input.get();
    if (character == EOF) {
-      cout << "In file " << filename << ": unexpected end of file." << endl;
-      cout << "Expecting 'd' at first byte, but found nothing." << endl;
-      exit(1);
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'd' at first byte, but found nothing." << endl;
+      return 0;
    } else if (character != 'd') {
-      cout << "File " << filename << " is not a MIDI file" << endl;
-      cout << "Expecting 'd' at first byte but got '"
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'd' at first byte but got '"
            << character << "'" << endl;
       return 0;
    }
@@ -774,9 +793,9 @@ int MidiFile::read(istream& input) {
    // read header size (allow larger header size?)
    longdata = MidiFile::readLittleEndian4Bytes(input);
    if (longdata != 6) {
-      cout << "File " << filename
+      cerr << "File " << filename
            << " is not a MIDI 1.0 Standard MIDI file." << endl;
-      cout << "The header size is " << longdata << " bytes." << endl;
+      cerr << "The header size is " << longdata << " bytes." << endl;
       return 0;
    }
 
@@ -792,7 +811,7 @@ int MidiFile::read(istream& input) {
          break;
       case 2:    // Type-2 MIDI files should probably be allowed as well.
       default:
-         cout << "Error: cannot handle a type-" << shortdata
+         cerr << "Error: cannot handle a type-" << shortdata
               << " MIDI file" << endl;
          return 0;
    }
@@ -801,8 +820,8 @@ int MidiFile::read(istream& input) {
    int tracks;
    shortdata = MidiFile::readLittleEndian2Bytes(input);
    if (type == 0 && shortdata != 1) {
-      cout << "Error: Type 0 MIDI file can only contain one track" << endl;
-      cout << "Instead track count is: " << shortdata << endl;
+      cerr << "Error: Type 0 MIDI file can only contain one track" << endl;
+      cerr << "Instead track count is: " << shortdata << endl;
       return 0;
    } else {
       tracks = shortdata;
@@ -836,9 +855,9 @@ int MidiFile::read(istream& input) {
       // actually ticks per second (except for frame=29 (drop frame)):
       ticksPerQuarterNote = shortdata;
 
-      cout << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
-      cout << "SMPTE frames per second: " << framespersecond << endl;
-      cout << "SMPTE frame resolution per frame: " << resolution << endl;
+      cerr << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
+      cerr << "SMPTE frames per second: " << framespersecond << endl;
+      cerr << "SMPTE frame resolution per frame: " << resolution << endl;
    }  else {
       ticksPerQuarterNote = shortdata;
    }
@@ -864,52 +883,52 @@ int MidiFile::read(istream& input) {
 
       character = input.get();
       if (character == EOF) {
-         cout << "In file " << filename << ": unexpected end of file." << endl;
-         cout << "Expecting 'M' at first byte in track, but found nothing."
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'M' at first byte in track, but found nothing."
               << endl;
-         exit(1);
+         return 0;
       } else if (character != 'M') {
-         cout << "File " << filename << " is not a MIDI file" << endl;
-         cout << "Expecting 'M' at first byte in track but got '"
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'M' at first byte in track but got '"
               << character << "'" << endl;
          return 0;
       }
 
       character = input.get();
       if (character == EOF) {
-         cout << "In file " << filename << ": unexpected end of file." << endl;
-         cout << "Expecting 'T' at first byte in track, but found nothing."
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'T' at first byte in track, but found nothing."
               << endl;
-         exit(1);
+         return 0;
       } else if (character != 'T') {
-         cout << "File " << filename << " is not a MIDI file" << endl;
-         cout << "Expecting 'T' at first byte in track but got '"
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'T' at first byte in track but got '"
               << character << "'" << endl;
          return 0;
       }
 
       character = input.get();
       if (character == EOF) {
-         cout << "In file " << filename << ": unexpected end of file." << endl;
-         cout << "Expecting 'r' at first byte in track, but found nothing."
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'r' at first byte in track, but found nothing."
               << endl;
-         exit(1);
+         return 0;
       } else if (character != 'r') {
-         cout << "File " << filename << " is not a MIDI file" << endl;
-         cout << "Expecting 'r' at first byte in track but got '"
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'r' at first byte in track but got '"
               << character << "'" << endl;
          return 0;
       }
 
       character = input.get();
       if (character == EOF) {
-         cout << "In file " << filename << ": unexpected end of file." << endl;
-         cout << "Expecting 'k' at first byte in track, but found nothing."
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'k' at first byte in track, but found nothing."
               << endl;
-         exit(1);
+         return 0;
       } else if (character != 'k') {
-         cout << "File " << filename << " is not a MIDI file" << endl;
-         cout << "Expecting 'k' at first byte in track but got '"
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'k' at first byte in track but got '"
               << character << "'" << endl;
          return 0;
       }
@@ -1129,25 +1148,42 @@ int MidiFile::getTrackState(void) {
 
 //////////////////////////////
 //
-// MidiFile::write -- write a standard MIDI file from data.
+// MidiFile::writeBinasc -- write a standard MIDI file from data into
+//    the binasc format (ASCII version of the MIDI file).
 //
 
-int MidiFile::write(const char* filename) {
-   fstream outputfile(filename, ios::out);
+int MidiFile::writeBinasc(const char* filename) {
+   fstream output(filename, ios::out);
 
-   if (!outputfile.is_open()) {
-      cout << "Error: could not write: " << filename << endl;
-      exit(1);
+   if (!output.is_open()) {
+      cerr << "Error: could not write: " << filename << endl;
+      return 0;
    }
-   int status = write(outputfile);
-   outputfile.close();
+   int status = writeBinasc(output);
+   output.close();
    return status;
 }
 
 
-int MidiFile::write(const string& filename) {
-   return MidiFile::write(filename.data());
+int MidiFile::writeBinasc(const string& filename) {
+   return writeBinasc(filename.data());
 }
+
+
+int MidiFile::writeBinasc(ostream& output) {
+   stringstream binarydata;
+   int status = write(binarydata);
+   if (status == 0) {
+      return 0;
+   }
+
+   Binasc binasc;
+   binasc.setMidiOn();
+   binarydata.seekg(0, ios_base::beg);
+   binasc.readFromBinary(output, binarydata);
+   return 1;
+}
+
 
 
 //////////////////////////////
@@ -1184,8 +1220,27 @@ ostream& MidiFile::printHex(ostream& out) {
 
 //////////////////////////////
 //
-// MidiFile::write -- write a standard MIDI file to an output stream.
+// MidiFile::write -- write a standard MIDI file to a file or an output
+//    stream.
 //
+
+int MidiFile::write(const char* filename) {
+   fstream output(filename, ios::out);
+
+   if (!output.is_open()) {
+      cerr << "Error: could not write: " << filename << endl;
+      return 0;
+   }
+   int status = write(output);
+   output.close();
+   return status;
+}
+
+
+int MidiFile::write(const string& filename) {
+   return MidiFile::write(filename.data());
+}
+
 
 int MidiFile::write(ostream& out) {
    int oldTimeState = getTimeState();
@@ -1210,11 +1265,7 @@ int MidiFile::write(ostream& out) {
 
    // 3. MIDI file format, type 0, 1, or 2
    ushort shortdata;
-   if (getNumTracks() == 1) {
-      shortdata = 0;
-   } else {
-      shortdata = 1;
-   }
+   shortdata = (getNumTracks() == 1) ? 0 : 1;
    writeBigEndianUShort(out,shortdata);
 
    // 4. write out the number of tracks.
@@ -1231,8 +1282,8 @@ int MidiFile::write(ostream& out) {
    int i, j, k;
    int size;
    for (i=0; i<getNumTracks(); i++) {
-      trackdata.reserve(1000000);   // make the track data larger than
-                                    // expected data input
+      trackdata.reserve(123456);   // make the track data larger than
+                                   // expected data input
       trackdata.clear();
       for (j=0; j<(int)events[i]->size(); j++) {
          writeVLValue((*events[i])[j].time, trackdata);
@@ -1285,7 +1336,6 @@ int MidiFile::write(ostream& out) {
 double MidiFile::getTimeInSeconds(int aTrack, int anIndex) {
    return getTimeInSeconds(getEvent(aTrack, anIndex).time);
 }
-
 
 
 double MidiFile::getTimeInSeconds(int tickvalue) {

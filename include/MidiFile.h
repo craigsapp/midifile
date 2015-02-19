@@ -103,6 +103,9 @@ class MidiFile {
       int       write                     (const char* aFile);
       int       write                     (const string& aFile);
       int       write                     (ostream& out);
+      int       writeBinasc               (const char* aFile);
+      int       writeBinasc               (const string& aFile);
+      int       writeBinasc               (ostream& out);
       ostream&  printHex                  (ostream& out);
       void      setFilename               (const char* aname);
       void      setFilename               (const string& aname);

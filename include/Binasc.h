@@ -37,6 +37,9 @@ class Binasc {
       void     setBytes       (int state);
       void     setBytesOn     (void);
       void     setBytesOff    (void);
+      void     setMidi        (int state);
+      void     setMidiOn      (void);
+      void     setMidiOff     (void);
 
       // functions for converting into a binary file:
       void     writeToBinary  (const string& outfile, const string& infile);
@@ -50,7 +53,6 @@ class Binasc {
       ostream& readFromBinary (ostream& out, const string& infile);
       ostream& readFromBinary (ostream& out, istream& input);
 
-      ostream& outputStyleMidiFile(ostream& out, istream& input);
       int      readMidiEvent  (ostream& out, istream& infile, int& trackbytes, 
                                int& command);
       int      getVLV         (istream& infile, int& trackbytes);
@@ -84,10 +86,12 @@ class Binasc {
       ostream& outputStyleAscii   (ostream& out, istream& input);
       ostream& outputStyleBinary  (ostream& out, istream& input);
       ostream& outputStyleBoth    (ostream& out, istream& input);
+      ostream& outputStyleMidi    (ostream& out, istream& input);
 
    private:
       int bytesQ;        // option for printing hex bytes in ASCII output.
       int commentsQ;     // option for printing comments in ASCII output.
+      int midiQ;         // output ASCII data as parsed MIDI file.
       int maxLineLength; // number of character in ASCII output on a line.
       int maxLineBytes;  // number of hex bytes in ASCII output on a line.
 };
