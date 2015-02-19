@@ -66,7 +66,7 @@ void printMidiAsSkini(MidiFile& midifile) {
    for (i=0; i<midifile.getNumEvents(0); i++) {
       oldticks = ticks;
       event = midifile.getEvent(0, i);
-      ticks = event.time;
+      ticks = event.tick;
       if (i>0) {
          curtime += (ticks - oldticks) * 60.0 / tempo / tpq;
       }

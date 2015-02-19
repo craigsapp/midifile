@@ -22,39 +22,39 @@ using namespace std;
 //
 
 MidiEvent::MidiEvent(void) : MidiMessage() {
-   time  = 0;
+   tick  = 0;
    track = 0;
 }
 
 
 MidiEvent::MidiEvent(int command) : MidiMessage(command)  {
-   time  = 0;
+   tick  = 0;
    track = 0;
 }
 
 
 MidiEvent::MidiEvent(int command, int p1) : MidiMessage(command, p1) {
-   time  = 0;
+   tick  = 0;
    track = 0;
 }
 
 
 MidiEvent::MidiEvent(int command, int p1, int p2) 
       : MidiMessage(command, p1, p2) {
-   time  = 0;
+   tick  = 0;
    track = 0;
 }
 
 
 MidiEvent::MidiEvent(int aTime, int aTrack, vector<uchar>& message)
       : MidiMessage(message) {
-   time  = aTime;
+   tick  = aTime;
    track = aTrack;
 }
 
 
 MidiEvent::MidiEvent(const MidiEvent& mfevent) {
-   time  = mfevent.time;
+   tick  = mfevent.tick;
    track = mfevent.track;
    this->resize(mfevent.size());
    for (int i=0; i<this->size(); i++) {
@@ -70,7 +70,7 @@ MidiEvent::MidiEvent(const MidiEvent& mfevent) {
 //
 
 MidiEvent::~MidiEvent() {
-   time  = -1;
+   tick  = -1;
    track = -1;
    this->resize(0);
 }
@@ -86,7 +86,7 @@ MidiEvent& MidiEvent::operator=(MidiEvent& mfevent) {
    if (this == &mfevent) {
       return *this;
    }
-   time  = mfevent.time;
+   tick  = mfevent.tick;
    track = mfevent.track;
    this->resize(mfevent.size());
    for (int i=0; i<this->size(); i++) {
@@ -100,7 +100,7 @@ MidiEvent& MidiEvent::operator=(MidiMessage& message) {
    if (this == &message) {
       return *this;
    }
-   time  = 0;
+   tick  = 0;
    track = 0;
    this->resize(message.size());
    for (int i=0; i<this->size(); i++) {
@@ -111,7 +111,7 @@ MidiEvent& MidiEvent::operator=(MidiMessage& message) {
 
 
 MidiEvent& MidiEvent::operator=(vector<uchar>& bytes) {
-   time  = 0;
+   tick  = 0;
    track = 0;
    this->resize(bytes.size());
    for (int i=0; i<this->size(); i++) {
@@ -122,7 +122,7 @@ MidiEvent& MidiEvent::operator=(vector<uchar>& bytes) {
 
 
 MidiEvent& MidiEvent::operator=(vector<char>& bytes) {
-   time  = 0;
+   tick  = 0;
    track = 0;
    setMessage(bytes);
    return *this;
@@ -130,7 +130,7 @@ MidiEvent& MidiEvent::operator=(vector<char>& bytes) {
 
 
 MidiEvent& MidiEvent::operator=(vector<int>& bytes) {
-   time  = 0;
+   tick  = 0;
    track = 0;
    setMessage(bytes);
    return *this;

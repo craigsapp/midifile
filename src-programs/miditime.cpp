@@ -64,7 +64,7 @@ void processMidiFile(MidiFile& midifile) {
    for (i=0; i<eventcount; i++) {
       ptr = &(midifile[0][i]);
       track       = ptr->track;
-      timeinticks = ptr->time;
+      timeinticks = ptr->tick;
       timeinsecs  = midifile.getTimeInSeconds(0, i);
       cout << timeinticks << "\t";
       cout << timeinsecs << "\t";

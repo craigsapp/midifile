@@ -19,7 +19,7 @@ using namespace std;
 
 class Melody {
    public:
-      double time;
+      double tick;
       double duration;
       int    pitch;
 };
@@ -80,29 +80,29 @@ void printMelody(vector<Melody>& melody, int tpq) {
    }
 
    Melody temp;
-   temp.time = melody[melody.size()-1].time +
+   temp.tick = melody[melody.size()-1].tick +
                melody[melody.size()-1].duration;
    temp.pitch = 0;
    temp.duration = 0;
    melody.push_back(temp);
 
    for (i=0; i<(int)melody.size()-1; i++) {
-      delta = melody[i+1].time - melody[i].time;
+      delta = melody[i+1].tick - melody[i].tick;
       if (delta == 0) {
          continue;
       }
 
-      cout << (double)melody[i].time/tpq
+      cout << (double)melody[i].tick/tpq
            << "\t" << melody[i].pitch
            // << "\t" << (double)melody[i].duration/tpq
            << "\n";
       if (delta > melody[i].duration) {
-         cout << (melody[i+1].time - (delta - melody[i].duration))/(double)tpq
+         cout << (melody[i+1].tick - (delta - melody[i].duration))/(double)tpq
               << "\t" << 0
               << "\n";
       }
    }
-   cout << (double)melody[melody.size()-1].time/tpq
+   cout << (double)melody[melody.size()-1].tick/tpq
         << "\t" << 0
         << "\n";
 }
@@ -147,7 +147,7 @@ void convertToMelody(MidiFile& midifile, vector<Melody>& melody) {
             goto noteoff;
          } else {
             // note on
-            state[pitch] = midifile[track][i].time;
+            state[pitch] = midifile[track][i].tick;
          }
       } else if (command == 0x80) {
          // note off
@@ -156,8 +156,8 @@ noteoff:
          if (state[pitch] == -1) {
             continue;
          }
-         mtemp.time = state[pitch];
-         mtemp.duration = midifile[track][i].time - state[pitch];
+         mtemp.tick = state[pitch];
+         mtemp.duration = midifile[track][i].tick - state[pitch];
          mtemp.pitch = pitch;
          melody.push_back(mtemp);
          state[pitch] = -1;
@@ -239,9 +239,9 @@ int notecompare(const void* a, const void* b) {
    Melody& aa = *((Melody*)a);
    Melody& bb = *((Melody*)b);
 
-   if (aa.time < bb.time) {
+   if (aa.tick < bb.tick) {
       return -1;
-   } else if (aa.time > bb.time) {
+   } else if (aa.tick > bb.tick) {
       return 1;
    } else {
       // highest note comes first

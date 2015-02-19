@@ -41,7 +41,7 @@ class MidiEvent : public MidiMessage {
       MidiEvent& operator=    (vector<char>& bytes);
       MidiEvent& operator=    (vector<int>& bytes);
 
-      int       time;
+      int       tick;
       int       track;
 };
 

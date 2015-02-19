@@ -207,13 +207,13 @@ void addNoteOnEvents(vector<int>& noteondeltas, MidiFile& midifile,
       if (((*event)[0] & 0xf0) == 0x90) {
          if ((*event)[2] > 0) {
             if (lasttime < 0) {
-               lasttime = event->time;
+               lasttime = event->tick;
             } else {
-               delta = event->time - lasttime;
+               delta = event->tick - lasttime;
                if (delta < cutoff) {
                   noteondeltas.push_back(delta);
                }
-               lasttime = event->time;
+               lasttime = event->tick;
             }
          }
       }

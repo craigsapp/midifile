@@ -107,7 +107,7 @@ void printTrack(MidiFile& midifile, int track) {
 
 void printMidiEvent(MidiEvent& event) {
    // print the time:
-   cout << "v" << event.time << "\t";
+   cout << "v" << event.tick << "\t";
 
    // print the command byte in hex format (two digits):
    int commandbyte = event[0];
@@ -176,7 +176,7 @@ int getTrackByteCount(MidiFile& midifile, int track) {
 
    for (i=0; i<eventcount; i++) {
       event = midifile.getEvent(track, i);
-      sum += getVlvSize(event.time);
+      sum += getVlvSize(event.tick);
       sum += event.size();
    }
    return sum;

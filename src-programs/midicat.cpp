@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
    // insert an end-of track Meta Event
    int tpq = outfile.getTicksPerQuarterNote();
    MidiEvent mfevent;
-   mfevent.time = tpq;
+   mfevent.tick = tpq;
    mfevent.track = 0;
    mfevent.resize(3);
    mfevent[0] = 0xff;
@@ -114,7 +114,7 @@ void appendMidi(MidiFile& outfile, const char* filename,
       bpm120[2] = 0x20;
 
       outfile.addMetaEvent(0, 0, 0x51, bpm120);
-      infile.getEvent(0,0).time = int(seconds * 2 * tpq + 0.5);
+      infile.getEvent(0,0).tick = int(seconds * 2 * tpq + 0.5);
    }
 
    count = infile.getEventCount(0);

@@ -181,13 +181,13 @@ void MidiFile::absoluteTime(void) {
    for (i=0; i<length; i++) {
       timedata[i] = 0;
       if (events[i]->size() > 0) {
-         timedata[i] = (*events[i])[0].time;
+         timedata[i] = (*events[i])[0].tick;
       } else {
          continue;
       }
       for (j=1; j<(int)events[i]->size(); j++) {
-         timedata[i] += (*events[i])[j].time;
-         (*events[i])[j].time = timedata[i];
+         timedata[i] += (*events[i])[j].tick;
+         (*events[i])[j].tick = timedata[i];
       }
    }
    theTimeState = TIME_STATE_ABSOLUTE;
@@ -204,7 +204,7 @@ void MidiFile::absoluteTime(void) {
 int MidiFile::addEvent(int aTrack, int aTime, vector<uchar>& midiData) {
    timemapvalid = 0;
    MidiEvent anEvent;
-   anEvent.time = aTime;
+   anEvent.tick = aTime;
    anEvent.track = aTrack;
    anEvent.setMessage(midiData);
 
@@ -456,13 +456,13 @@ void MidiFile::deltaTime(void) {
    for (i=0; i<length; i++) {
       timedata[i] = 0;
       if (events[i]->size() > 0) {
-         timedata[i] = (*events[i])[0].time;
+         timedata[i] = (*events[i])[0].tick;
       } else {
          continue;
       }
       for (j=1; j<(int)events[i]->size(); j++) {
-         temp = (*events[i])[j].time;
-         (*events[i])[j].time = temp - timedata[i];
+         temp = (*events[i])[j].tick;
+         (*events[i])[j].tick = temp - timedata[i];
          timedata[i] = temp;
       }
    }
@@ -971,7 +971,7 @@ int MidiFile::read(istream& input) {
             // uncomment out the following three lines if you don't want
             // to see the end of track message (which is always required,
             // and added automatically when a MIDI is written.
-            event.time = absticks;
+            event.tick = absticks;
             event.track = i;
             events[i]->push_back(event);
 
@@ -979,11 +979,11 @@ int MidiFile::read(istream& input) {
          }
 
          if (bytes[0] != 0xff && bytes[0] != 0xf0) {
-            event.time = absticks;
+            event.tick = absticks;
             event.track = i;
             events[i]->push_back(event);
          } else {
-            event.time = absticks;
+            event.tick = absticks;
             event.track = i;
             events[i]->push_back(event);
          }
@@ -1290,7 +1290,7 @@ int MidiFile::write(ostream& out) {
                                    // expected data input
       trackdata.clear();
       for (j=0; j<(int)events[i]->size(); j++) {
-         writeVLValue((*events[i])[j].time, trackdata);
+         writeVLValue((*events[i])[j].tick, trackdata);
          for (k=0; k<(int)(*events[i])[j].size(); k++) {
             trackdata.push_back((*events[i])[j][k]);
          }
@@ -1338,7 +1338,7 @@ int MidiFile::write(ostream& out) {
 //
 
 double MidiFile::getTimeInSeconds(int aTrack, int anIndex) {
-   return getTimeInSeconds(getEvent(aTrack, anIndex).time);
+   return getTimeInSeconds(getEvent(aTrack, anIndex).tick);
 }
 
 
@@ -1540,7 +1540,7 @@ void MidiFile::buildTimeMap(void) {
    double cursec;
 
    for (i=0; i<getNumEvents(0); i++) {
-      curtick = getEvent(0, i).time;
+      curtick = getEvent(0, i).tick;
       if ((curtick > lasttick) || !tickinit) {
          tickinit = 1;
 
@@ -1761,9 +1761,9 @@ int eventcompare(const void* a, const void* b) {
    MidiEvent& aevent = **((MidiEvent**)a);
    MidiEvent& bevent = **((MidiEvent**)b);
 
-   if (aevent.time > bevent.time) {
+   if (aevent.tick > bevent.tick) {
       return 1;
-   } else if (aevent.time < bevent.time) {
+   } else if (aevent.tick < bevent.tick) {
       return -1;
    } else if (aevent[0] == 0xff && bevent[0] != 0xff) {
       return 1;
@@ -1819,7 +1819,7 @@ ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
       out << "\nTrack " << i
           << "   +++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
       for (j=0; j<aMidiFile.getNumEvents(i); j++) {
-         out << dec << aMidiFile.getEvent(i, j).time << "\t"
+         out << dec << aMidiFile.getEvent(i, j).tick << "\t"
              << "0x" << hex << (int)aMidiFile.getEvent(i, j)[0] << " ";
          if (aMidiFile.getEvent(i, j)[0] == 0xff) {
 

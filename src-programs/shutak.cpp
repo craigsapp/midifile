@@ -102,7 +102,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
    MidiEvent tempo;
    tempo.setMetaTempo(60.0);
    tempo.track = 0;
-   tempo.time = 0;
+   tempo.tick = 0;
    midifile.addEvent(tempo);
 
    int maxlen = 0;
@@ -129,8 +129,8 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
       for (j=0; j<(int)notelist.size(); j++) {
          noteon[1]  = 0x7f & notelist[j];
          noteoff[1] = 0x7f & notelist[j];
-         noteon.time  = (int)(beat * tpq + 0.5);
-         noteoff.time = (int)(beat * tpq + 1 * tpq + 0.5);
+         noteon.tick  = (int)(beat * tpq + 0.5);
+         noteoff.tick = (int)(beat * tpq + 1 * tpq + 0.5);
          midifile.addEvent(noteon);
          midifile.addEvent(noteoff);
       }

@@ -76,13 +76,13 @@ void convertMidiFileToText(MidiFile& midifile) {
          // store note-on velocity and time
          key = midifile[0][i][1];
          vel = midifile[0][i][2];
-         ontimes[key] = midifile[0][i].time * 60.0 / tempo /
+         ontimes[key] = midifile[0][i].tick * 60.0 / tempo /
                midifile.getTicksPerQuarterNote();
          onvelocities[key] = vel;
       } else if (command == 0x90 || command == 0x80) {
          // note off command write to output
          key = midifile[0][i][1];
-         offtime = midifile[0][i].time * 60.0 /
+         offtime = midifile[0][i].tick * 60.0 /
                midifile.getTicksPerQuarterNote() / tempo;
          cout << "note\t" << ontimes[key]
               << "\t" << offtime - ontimes[key]

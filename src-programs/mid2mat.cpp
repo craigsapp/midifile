@@ -221,13 +221,13 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
          // store note-on velocity and time
          key = midifile[0][i][1];
          vel = midifile[0][i][2];
-         ontimes[key] = getTime(midifile[0][i].time, midifile);
+         ontimes[key] = getTime(midifile[0][i].tick, midifile);
 
          onvelocities[key] = vel;
       } else if (command == 0x90 || command == 0x80) {
          // note off command write to output
          key = midifile[0][i][1];
-         offtime = getTime(midifile[0][i].time, midifile);
+         offtime = getTime(midifile[0][i].tick, midifile);
          legend_opcode[OP_NOTE/1000] = 1;
 
          if (verboseQ) {
@@ -254,7 +254,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
          legend_opcode[OP_CONTROL/1000] = 1;
 
          if (verboseQ) {
-            cout << getTime(midifile[0][i].time, midifile)
+            cout << getTime(midifile[0][i].tick, midifile)
                  << "\tcontrol"
                  << "\ttype="  << (int)midifile[0][i][1]
                  << "\tval="   << (int)midifile[0][i][2]
@@ -262,7 +262,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
                  << "\ttrack=" << midifile[0][i].track
                  << "\n";
          } else {
-            event[0] = getTime(midifile[0][i].time, midifile);
+            event[0] = getTime(midifile[0][i].tick, midifile);
             event[1] = OP_CONTROL;
             event[2] = (int)midifile[0][i][1];
             event[3] = (int)midifile[0][i][2];
@@ -274,7 +274,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
          legend_opcode[OP_INSTR/1000] = 1;
 
          if (verboseQ) {
-         cout << getTime(midifile[0][i].time, midifile)
+         cout << getTime(midifile[0][i].tick, midifile)
               << "\tinstr"
               << "\tname="  << GMinstrument[midifile[0][i][1]]
               << "\tnum="   << (int)midifile[0][i][1]
@@ -282,7 +282,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
               << "\ttrack=" << midifile[0][i].track
               << "\n";
          } else {
-            event[0] = getTime(midifile[0][i].time, midifile);
+            event[0] = getTime(midifile[0][i].tick, midifile);
             event[1] = OP_INSTR;
             event[2] = (int)midifile[0][i][1];
             event[5] = (midifile[0][i][0] & 0x0f);
@@ -290,10 +290,10 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
          }
       } else if (command == 0xff) {
          if (verboseQ) {
-            cout << getTime(midifile[0][i].time, midifile)
+            cout << getTime(midifile[0][i].tick, midifile)
                  << "\t";
          } else {
-            event[0] = getTime(midifile[0][i].time, midifile);
+            event[0] = getTime(midifile[0][i].tick, midifile);
          }
          processMetaEvent(midifile, i, event);
          if (verboseQ) {
@@ -443,12 +443,12 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
       tempo = newtempo;
    } else if (tempo != newtempo) {
       if (verboseQ) {
-         cout << getTime(midifile[0][index].time, midifile);
+         cout << getTime(midifile[0][index].tick, midifile);
               << "\t"
               << "tempo\t" << newtempo << endl;
       } else {
          legend_opcode[OP_TEMPO/1000] = 1;
-         event[0] = getTime(midifile[0][index].time, midifile);
+         event[0] = getTime(midifile[0][index].tick, midifile);
          event[1] = OP_TEMPO;
          event[2] = newtempo;
          matlabarray.push_back(event);

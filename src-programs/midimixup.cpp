@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
    int track, event;
    for (track=0; track<midifile.getNumTracks(); track++) {
       for (event=0; event<midifile.getNumEvents(track); event++) {
-         adjustTime(maxdev, midifile.getEvent(track, event).time);
+         adjustTime(maxdev, midifile.getEvent(track, event).tick);
       }
    }
 
