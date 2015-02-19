@@ -5,9 +5,9 @@ Midifile is a library of C++ classes for reading/writing
 Standard MIDI files. The three main components of the 
 source code are:
 
-# [src-library](https://github.com/craigsapp/midifile/tree/master/src-library) &mdash; Source code for the classes in the library.
-# [include](https://github.com/craigsapp/midifile/tree/master/include) &mdash; Include files for the classes in the library.
-# [src-programs](https://github.com/craigsapp/midifile/tree/master/src-programs) &mdash; Example programs which use the library.
+1. [src-library](https://github.com/craigsapp/midifile/tree/master/src-library) &mdash; Source code for the classes in the library.
+2. [include](https://github.com/craigsapp/midifile/tree/master/include) &mdash; Include files for the classes in the library.
+3. [src-programs](https://github.com/craigsapp/midifile/tree/master/src-programs) &mdash; Example programs which use the library.
 
 The library consists of 6 classes:
 
