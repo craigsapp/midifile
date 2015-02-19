@@ -53,10 +53,6 @@ class Binasc {
       int      readFromBinary (ostream& out, const string& infile);
       int      readFromBinary (ostream& out, istream& input);
 
-      int      readMidiEvent  (ostream& out, istream& infile, int& trackbytes, 
-                               int& command);
-      int      getVLV         (istream& infile, int& trackbytes);
-
       // static functions for writing ordered bytes:
       static ostream& writeLittleEndianUShort (ostream& out, ushort value);
       static ostream& writeBigEndianUShort    (ostream& out, ushort value);
@@ -87,6 +83,11 @@ class Binasc {
       int      outputStyleBinary  (ostream& out, istream& input);
       int      outputStyleBoth    (ostream& out, istream& input);
       int      outputStyleMidi    (ostream& out, istream& input);
+
+      // MIDI parsing helper functions:
+      int      readMidiEvent  (ostream& out, istream& infile, int& trackbytes, 
+                               int& command);
+      int      getVLV         (istream& infile, int& trackbytes);
 
    private:
       int bytesQ;        // option for printing hex bytes in ASCII output.
