@@ -133,8 +133,8 @@ or it will read from standard input if no arguments are found.  Both binary
 Standard MIDI Files and ASCII representations of MIDI Files can be input 
 into the program.  For example, save the following text in a file called
 twinkle.txt to use as input data.  This content represents the hex bytes 
-for a MIDI file, and this content will be automatically parsed into a 
-Standard MIDI File by the MidiFile class.
+for a MIDI file, which will automatically be parsed into a Standard MIDI 
+File by the MidiFile class.
 
 ```
 4d 54 68 64 00 00 00 06 00 01 00 03 00 78 4d 54 72 6b 00 00 00 04 00 ff 2f 
@@ -302,7 +302,7 @@ tick timestamp of the message; the second column is the delta tick value;
 the third column is the original track value; and the last column
 contains the MIDI message (in hex bytes).
 
-<pre>
+<pre style="font-family:Courier,Lucidatypewriter,monospace;">
 TPQ: 120
 TRACKS: 3
 TICK    DELTA   TRACK   MIDI MESSAGE
