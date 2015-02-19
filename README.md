@@ -11,7 +11,7 @@ source code are:
 
 The library consists of 6 classes:
 
-* **MidiFile** &mdash; The main interface for dealing with MIDI files.  The MidiFile class appears as a two dimensional array: the first dimension is a list of tracks, and the second dimension is a list of MidiEvents.
+* **MidiFile** &mdash; The main interface for dealing with MIDI files.  The MidiFile class appears as a two dimensional array of MidiEvents: the first dimension is a list of tracks, and the second dimension is a list of MidiEvents.
 * **MidiEvent** &mdash; The primary storage unit for MidiMessages in a MidiFile.  The class consists of a (delta)tick timestamp and a MIDI (or meta) message.
 * **MidiEventList** &mdash; A data structure that manages the list of MidiEvents in a track.
 * **MidiMessage** &mdash; The base class for MidiEvents.  This is a vector&lt;uchar&gt; of bytes in a MIDI (or meta) message.
