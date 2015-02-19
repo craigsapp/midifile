@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1476-1554
+@LINES:		1497-1575
 @SEEALSO:	
 @SHORTDESC:	Create a time map relating ticks to absolute time.
 @LONGDESC:	Builds an index of the absolute tick values found

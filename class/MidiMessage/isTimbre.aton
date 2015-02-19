@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		387-408
+@LINES:		381-402
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a patch change.
 @LONGDESC:	Returns true if MIDI message is a patch change.

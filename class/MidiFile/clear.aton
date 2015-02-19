@@ -6,7 +6,7 @@
 @PARAMETERS:	
 @FILE:		MidiFile.cpp
 @ALIAS:		erase
-@LINES:		472-495
+@LINES:		474-497
 @SEEALSO:	
 @SHORTDESC:	Clear all tracks, leaving one track with no data in it.
 @LONGDESC:	Clear all tracks in the MidiFile, leaving one track with no

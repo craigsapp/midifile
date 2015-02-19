@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		369-385
+@LINES:		363-379
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an controller message.
 @LONGDESC:	Returns true if command nibble is 0xB0 for an continuous

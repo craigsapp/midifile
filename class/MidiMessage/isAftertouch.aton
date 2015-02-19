@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		351-367
+@LINES:		345-361
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an aftertouch message.
 @LONGDESC:	Returns true if command nibble is 0xA0 for an aftertouch

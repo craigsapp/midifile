@@ -5,12 +5,12 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		161-194
+@LINES:		163-196
 @SEEALSO:	deltaTime
 @SHORTDESC:	Convert event timestamps into Absolute time.
-@LONGDESC:	Convert timestamps of all MFEvents into absolute time as
+@LONGDESC:	Convert timestamps of all MidiEvents into absolute time as
 		opposed to delta times.  In absolute time, the time parameter
-		of MFEvents represents the exact tick time to play the event
+		of MidiEvents represents the exact tick time to play the event
 		rather than the time since the last event to wait until playing
 		the current event.
 
@@ -28,7 +28,7 @@
 //    absolute time, which means that the time field
 //    in the MidiEvent struct represents the exact tick
 //    time to play the event rather than the time since
-//    the last event to wait untill playing the current
+//    the last event to wait until playing the current
 //    event.
 //
 

@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	int size
 @FILE:		MidiMessage.cpp
-@LINES:		125-134
+@LINES:		119-128
 @SEEALSO:	vector<uchar>::resize
 @SHORTDESC:	Change the size of the message byte list.
 @LONGDESC:	Change the size of the message byte list.  The same as

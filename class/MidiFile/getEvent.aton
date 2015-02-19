@@ -2,10 +2,10 @@
 @CLASSNAME:	MidiFile
 @METHOD:	getEvent
 @ACCESS:	public
-@RETURN:	MFEvent&
+@RETURN:	MidiEvent&
 @PARAMETERS:	int track, int index
 @FILE:		MidiFile.cpp
-@LINES:		497-507
+@LINES:		499-509
 @SEEALSO:	
 @SHORTDESC:	Return the event at the given index in the specified track.
 @LONGDESC:	Return the event at the given index in the specified track.

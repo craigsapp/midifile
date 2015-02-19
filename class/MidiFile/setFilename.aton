@@ -6,7 +6,7 @@
 @PARAMETERS:	const char* name
 @PARAMETERS:	const string& name
 @FILE:		MidiFile.cpp
-@LINES:		111-136
+@LINES:		113-138
 @SEEALSO:	
 @SHORTDESC:	Set the filename of the MidiFile.
 @LONGDESC:	Set the filename of the MidiFile.

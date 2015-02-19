@@ -6,11 +6,11 @@
 @PARAMETERS:	int track, int time, int type, vector<uchar>& data
 @PARAMETERS:	int track, int time, int type, const char* data
 @FILE:		MidiFile.cpp
-@LINES:		231-272
+@LINES:		233-274
 @SEEALSO:	
 @SHORTDESC:	Insert a meta message event.
 @LONGDESC:	Insert a meta message event into a the given track and 
-		return the index of the inserted MFEvent in the track list.
+		return the index of the inserted MidiEvents in the track list.
 		The const char* version accepts a null-terminated string.
 
 @@BEGIN: EXAMPLE

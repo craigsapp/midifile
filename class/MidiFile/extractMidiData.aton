@@ -2,16 +2,18 @@
 @CLASSNAME:	MidiFile
 @METHOD:	extractMidiData
 @ACCESS:	private
-@RETURN:	void
+@RETURN:	int
 @PARAMETERS:	istream& input, vector<uchar>& array, uchar& runningCommand
 @FILE:		MidiFile.cpp
-@LINES:		1556-1646
+@LINES:		1577-1669
 @SEEALSO:	
 @SHORTDESC:	Extract a MIDI message from the input stream.
 @LONGDESC:	Extract a MIDI message from the input stream.  If the
 		MIDI message is in running mode, use the previous
 		MIDI command; otherwise store the current command byte
-		in case the next message is in running mode.
+		in case the next message is in running mode.  Returns 0
+		if there was a problem extracting the MIDI data, otherwise
+		returns 1.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -23,10 +25,11 @@
 
 //////////////////////////////
 //
-// MidiFile::extractMidiData --
+// MidiFile::extractMidiData -- Extract MIDI data from input
+//    stream.  Return value is 0 if failure; otherwise, returns 1.
 //
 
-void MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; array,
+int MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; array,
    uchar&amp; runningCommand) {
 
    int character;
@@ -37,7 +40,7 @@ void MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; arra
    character = input.get();
    if (character == EOF) {
       cerr &lt;&lt; "Error: unexpected end of file." &lt;&lt; endl;
-      exit(1);
+      return 0;
    } else {
       byte = (uchar)character;
    }
@@ -46,7 +49,7 @@ void MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; arra
       runningQ = 1;
       if (runningCommand == 0) {
          cout &lt;&lt; "Error: running command with no previous command" &lt;&lt; endl;
-         exit(1);
+         return 0;
       }
    } else {
       runningCommand = byte;
@@ -107,8 +110,9 @@ void MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; arra
       default:
          cout &lt;&lt; "Error reading midifile" &lt;&lt; endl;
          cout &lt;&lt; "Command byte was " &lt;&lt; (int)runningCommand &lt;&lt; endl;
-         exit(1);
+         return 0;
    }
+   return 1;
 }
 
 @@END:	FunctionDocumentation

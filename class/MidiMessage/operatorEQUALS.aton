@@ -8,7 +8,7 @@
 @PARAMETERS:	vector<char>& bytes
 @PARAMETERS:	vector<int>& bytes
 @FILE:		MidiMessage.cpp
-@LINES:		89-123
+@LINES:		83-117
 @SEEALSO:	
 @SHORTDESC:	Copy the contents of another MidiMessage.
 @LONGDESC:	Copy the contents of another MidiMessage.
@@ -39,7 +39,7 @@ MidiMessage&amp; MidiMessage::operator=(vector&lt;uchar&gt;&amp; bytes) {
    if (this == &amp;bytes) {
       return *this;
    }
-   (*this) = bytes;
+   setMessage(bytes);
    return *this;
 }
 

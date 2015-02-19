@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		574-617
+@LINES:		576-619
 @SEEALSO:	splitTracks
 @SHORTDESC:	Merge all tracks into a single stream of events.
 @LONGDESC:	Merge the data from all tracks, but keep the identify

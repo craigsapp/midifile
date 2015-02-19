@@ -5,7 +5,7 @@
 @RETURN:	double
 @PARAMETERS:	int tpq
 @FILE:		MidiMessage.cpp
-@LINES:		265-279
+@LINES:		259-273
 @SEEALSO:	getTempoBPM
 @SEEALSO:	getTempoTPS
 @SEEALSO:	getTempoMicro

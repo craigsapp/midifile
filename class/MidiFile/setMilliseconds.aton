@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		988-1005
+@LINES:		1011-1028
 @SEEALSO:	
 @SHORTDESC:	Set the ticks per quarter note value in the MIDI file header
 		to milliseconds.

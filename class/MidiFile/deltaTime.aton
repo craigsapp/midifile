@@ -5,11 +5,11 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		436-470
+@LINES:		438-472
 @SEEALSO:	absoluteTime
 @SHORTDESC:	Convert timestamps into delta times.
 @LONGDESC:	Convert timestamps into delta times, which means that
-		the time field in the MFEvent structure represents the
+		the time field in the MidiEvents structure represents the
 		time since the last event was played.  When a MIDI file
 		is read from a file, this is the default setting.  Typically
 		a MidiFile will be in absolute time when inserting messages

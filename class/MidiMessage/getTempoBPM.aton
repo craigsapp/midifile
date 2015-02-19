@@ -5,7 +5,7 @@
 @RETURN:	double
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		233-247
+@LINES:		227-241
 @SEEALSO:	getTempoTPS
 @SEEALSO:	getTempoSPT
 @SEEALSO:	getTempoMicro

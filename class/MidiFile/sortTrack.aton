@@ -3,9 +3,9 @@
 @METHOD:	sortTrack
 @ACCESS:	public
 @RETURN:	void
-@PARAMETERS:	vector<MFEvent>& track
+@PARAMETERS:	MidiEventList& track
 @FILE:		MidiFile.cpp
-@LINES:		1007-1017
+@LINES:		1030-1040
 @SEEALSO:	
 @SHORTDESC:	Sort a track in terms of timestamps of the events.
 @LONGDESC:	Sort a track in terms of timestamps of the events.
