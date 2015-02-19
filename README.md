@@ -302,7 +302,7 @@ tick timestamp of the message; the second column is the delta tick value;
 the third column is the original track value; and the last column
 contains the MIDI message (in hex bytes).
 
-<pre style="font-family:Courier,Lucidatypewriter,monospace;">
+<pre style="font-family:Courier,Lucidatypewriter,monospace; -moz-tab-size: 8; -o-tab-size: 8; -webkit-tab-size: 8; tab-size:8;">
 TPQ: 120
 TRACKS: 3
 TICK    DELTA   TRACK   MIDI MESSAGE
