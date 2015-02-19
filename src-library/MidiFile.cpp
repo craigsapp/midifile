@@ -1290,6 +1290,11 @@ int MidiFile::write(ostream& out) {
                                    // expected data input
       trackdata.clear();
       for (j=0; j<(int)events[i]->size(); j++) {
+         if ((*events[i])[j].isEndOfTrack()) {
+            // suppress end-of-track meta messages (one will be added
+            // automatically after all track data has been written).
+            continue;
+         }
          writeVLValue((*events[i])[j].tick, trackdata);
          for (k=0; k<(int)(*events[i])[j].size(); k++) {
             trackdata.push_back((*events[i])[j][k]);
@@ -1323,8 +1328,6 @@ int MidiFile::write(ostream& out) {
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
       absoluteTime();
    }
-
-   // out.close();
 
    return 1;
 }

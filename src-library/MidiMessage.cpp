@@ -438,6 +438,23 @@ int MidiMessage::isPitchbend(void) {
 
 
 
+///////////////////////////////
+//
+// MidiMessage::getMetaType -- returns the meta-message type for the
+//     MidiMessage.  If the message is not a meta message, then returns
+//     -1.
+//
+
+int MidiMessage::getMetaType(void) {
+   if (!isMetaMessage()) {
+      return -1;
+   } else {
+      return (int)(*this)[1];
+   }
+}
+
+
+
 //////////////////////////////
 //
 // MidiMessage::isTempo -- Returns true if message is a meta message
@@ -458,6 +475,20 @@ int MidiMessage::isTempo(void) {
 }
 
 
+
+//////////////////////////////
+//
+// MidiMessage::isEndOfTrack -- Returns true if message is a meta message
+//      for end-of-track (meta message type 0x2f).
+//
+
+int MidiMessage::isEndOfTrack(void) {
+   if (getMetaType() == 0x2f) {
+      return 1;
+   } else {
+      return 0;
+   }
+}
 
 
 

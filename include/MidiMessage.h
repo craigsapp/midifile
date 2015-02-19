@@ -52,6 +52,7 @@ class MidiMessage : public vector<uchar> {
       double         getTempoSPT          (int tpq);
 
       int            isMetaMessage        (void);
+      int            isMeta               (void);
       int            isNoteOff            (void);
       int            isNoteOn             (void);
       int            isAftertouch         (void);
@@ -60,9 +61,6 @@ class MidiMessage : public vector<uchar> {
       int            isPatchChange        (void);
       int            isPressure           (void);
       int            isPitchbend          (void);
-
-      int            isMeta               (void);
-      int            isTempo              (void);
 
       int            getCommandNibble     (void);
       int            getCommandByte       (void);
@@ -82,8 +80,12 @@ class MidiMessage : public vector<uchar> {
       void           setMessage           (vector<char>& message);
       void           setMessage           (vector<int>& message);
 
+      // meta-message related functions:
+      int            getMetaType          (void);
+      int            isTempo              (void);
       void           setTempo             (double tempo);
       void           setMetaTempo         (double tempo);
+      int            isEndOfTrack         (void);
 
 };
 
