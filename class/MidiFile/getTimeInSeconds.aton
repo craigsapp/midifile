@@ -6,7 +6,7 @@
 @PARAMETERS:	int track, int index
 @PARAMETERS:	int absoluteTick
 @FILE:		MidiFile.cpp
-@LINES:		1333-1373
+@LINES:		1336-1376
 @SEEALSO:	
 @SHORTDESC:	Return the time in seconds for the specified message.
 @LONGDESC:	Return the time in seconds for the specified message.
@@ -26,7 +26,7 @@
 //
 
 double MidiFile::getTimeInSeconds(int aTrack, int anIndex) {
-   return getTimeInSeconds(getEvent(aTrack, anIndex).time);
+   return getTimeInSeconds(getEvent(aTrack, anIndex).tick);
 }
 
 

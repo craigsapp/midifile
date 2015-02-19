@@ -327,7 +327,7 @@ int MidiFile::read(istream&amp; input) {
             // uncomment out the following three lines if you don't want
             // to see the end of track message (which is always required,
             // and added automatically when a MIDI is written.
-            event.time = absticks;
+            event.tick = absticks;
             event.track = i;
             events[i]-&gt;push_back(event);
 
@@ -335,11 +335,11 @@ int MidiFile::read(istream&amp; input) {
          }
 
          if (bytes[0] != 0xff &amp;&amp; bytes[0] != 0xf0) {
-            event.time = absticks;
+            event.tick = absticks;
             event.track = i;
             events[i]-&gt;push_back(event);
          } else {
-            event.time = absticks;
+            event.tick = absticks;
             event.track = i;
             events[i]-&gt;push_back(event);
          }

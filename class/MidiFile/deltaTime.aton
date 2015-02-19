@@ -46,13 +46,13 @@ void MidiFile::deltaTime(void) {
    for (i=0; i&lt;length; i++) {
       timedata[i] = 0;
       if (events[i]-&gt;size() &gt; 0) {
-         timedata[i] = (*events[i])[0].time;
+         timedata[i] = (*events[i])[0].tick;
       } else {
          continue;
       }
       for (j=1; j&lt;(int)events[i]-&gt;size(); j++) {
-         temp = (*events[i])[j].time;
-         (*events[i])[j].time = temp - timedata[i];
+         temp = (*events[i])[j].tick;
+         (*events[i])[j].tick = temp - timedata[i];
          timedata[i] = temp;
       }
    }

@@ -33,7 +33,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiEvent&amp; mfevent) {
    if (this == &amp;mfevent) {
       return *this;
    }
-   time  = mfevent.time;
+   tick  = mfevent.tick;
    track = mfevent.track;
    this-&gt;resize(mfevent.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {
@@ -47,7 +47,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiMessage&amp; message) {
    if (this == &amp;message) {
       return *this;
    }
-   time  = 0;
+   tick  = 0;
    track = 0;
    this-&gt;resize(message.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {
@@ -58,7 +58,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiMessage&amp; message) {
 
 
 MidiEvent&amp; MidiEvent::operator=(vector&lt;uchar&gt;&amp; bytes) {
-   time  = 0;
+   tick  = 0;
    track = 0;
    this-&gt;resize(bytes.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {
@@ -69,7 +69,7 @@ MidiEvent&amp; MidiEvent::operator=(vector&lt;uchar&gt;&amp; bytes) {
 
 
 MidiEvent&amp; MidiEvent::operator=(vector&lt;char&gt;&amp; bytes) {
-   time  = 0;
+   tick  = 0;
    track = 0;
    setMessage(bytes);
    return *this;
@@ -77,7 +77,7 @@ MidiEvent&amp; MidiEvent::operator=(vector&lt;char&gt;&amp; bytes) {
 
 
 MidiEvent&amp; MidiEvent::operator=(vector&lt;int&gt;&amp; bytes) {
-   time  = 0;
+   tick  = 0;
    track = 0;
    setMessage(bytes);
    return *this;

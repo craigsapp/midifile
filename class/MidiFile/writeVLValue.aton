@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	long value, vector<uchar>& data
 @FILE:		MidiFile.cpp
-@LINES:		1721-1878
+@LINES:		1724-1881
 @SEEALSO:	
 @SHORTDESC:	Convert an integer int a list of VLV bytes.
 @LONGDESC:	Convert an integer int a list of VLV bytes.
@@ -60,9 +60,9 @@ int eventcompare(const void* a, const void* b) {
    MidiEvent&amp; aevent = **((MidiEvent**)a);
    MidiEvent&amp; bevent = **((MidiEvent**)b);
 
-   if (aevent.time &gt; bevent.time) {
+   if (aevent.tick &gt; bevent.tick) {
       return 1;
-   } else if (aevent.time &lt; bevent.time) {
+   } else if (aevent.tick &lt; bevent.tick) {
       return -1;
    } else if (aevent[0] == 0xff &amp;&amp; bevent[0] != 0xff) {
       return 1;
@@ -118,7 +118,7 @@ ostream&amp; operator&lt;&lt;(ostream&amp; out, MidiFile&amp; aMidiFile) {
       out &lt;&lt; "\nTrack " &lt;&lt; i
           &lt;&lt; "   +++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
       for (j=0; j&lt;aMidiFile.getNumEvents(i); j++) {
-         out &lt;&lt; dec &lt;&lt; aMidiFile.getEvent(i, j).time &lt;&lt; "\t"
+         out &lt;&lt; dec &lt;&lt; aMidiFile.getEvent(i, j).tick &lt;&lt; "\t"
              &lt;&lt; "0x" &lt;&lt; hex &lt;&lt; (int)aMidiFile.getEvent(i, j)[0] &lt;&lt; " ";
          if (aMidiFile.getEvent(i, j)[0] == 0xff) {
 

@@ -29,7 +29,7 @@
 int MidiFile::addEvent(int aTrack, int aTime, vector&lt;uchar&gt;&amp; midiData) {
    timemapvalid = 0;
    MidiEvent anEvent;
-   anEvent.time = aTime;
+   anEvent.tick = aTime;
    anEvent.track = aTrack;
    anEvent.setMessage(midiData);
 

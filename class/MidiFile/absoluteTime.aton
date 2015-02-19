@@ -28,7 +28,7 @@
 //    absolute time, which means that the time field
 //    in the MidiEvent struct represents the exact tick
 //    time to play the event rather than the time since
-//    the last event to wait until playing the current
+//    the last event to wait untill playing the current
 //    event.
 //
 
@@ -42,13 +42,13 @@ void MidiFile::absoluteTime(void) {
    for (i=0; i&lt;length; i++) {
       timedata[i] = 0;
       if (events[i]-&gt;size() &gt; 0) {
-         timedata[i] = (*events[i])[0].time;
+         timedata[i] = (*events[i])[0].tick;
       } else {
          continue;
       }
       for (j=1; j&lt;(int)events[i]-&gt;size(); j++) {
-         timedata[i] += (*events[i])[j].time;
-         (*events[i])[j].time = timedata[i];
+         timedata[i] += (*events[i])[j].tick;
+         (*events[i])[j].tick = timedata[i];
       }
    }
    theTimeState = TIME_STATE_ABSOLUTE;

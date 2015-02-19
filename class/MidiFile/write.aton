@@ -6,7 +6,7 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		1224-1331
+@LINES:		1224-1334
 @SEEALSO:	
 @SHORTDESC:	Write a Standard MIDI file from the MidiFile contents.
 @LONGDESC:	Write a Standard MIDI file from the MidiFile contents.
@@ -87,7 +87,12 @@ int MidiFile::write(ostream&amp; out) {
                                    // expected data input
       trackdata.clear();
       for (j=0; j&lt;(int)events[i]-&gt;size(); j++) {
-         writeVLValue((*events[i])[j].time, trackdata);
+         if ((*events[i])[j].isEndOfTrack()) {
+            // suppress end-of-track meta messages (one will be added
+            // automatically after all track data has been written).
+            continue;
+         }
+         writeVLValue((*events[i])[j].tick, trackdata);
          for (k=0; k&lt;(int)(*events[i])[j].size(); k++) {
             trackdata.push_back((*events[i])[j][k]);
          }
@@ -120,8 +125,6 @@ int MidiFile::write(ostream&amp; out) {
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
       absoluteTime();
    }
-
-   // out.close();
 
    return 1;
 }

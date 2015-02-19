@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	double seconds
 @FILE:		MidiFile.cpp
-@LINES:		1429-1495
+@LINES:		1432-1498
 @SEEALSO:	
 @SHORTDESC:	Return the tick value at a given input time.
 @LONGDESC:	Return the tick value at a given input time.

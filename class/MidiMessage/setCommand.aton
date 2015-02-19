@@ -7,7 +7,7 @@
 @PARAMETERS:	int value, int p1
 @PARAMETERS:	int value, int p1, int p2
 @FILE:		MidiMessage.cpp
-@LINES:		537-558
+@LINES:		568-589
 @SEEALSO:	
 @SHORTDESC:	Set the command byte and any parameters for a message.
 @LONGDESC:	Set the command byte and any parameters for a message.
