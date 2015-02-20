@@ -40,6 +40,7 @@ class MidiEvent : public MidiMessage {
       MidiEvent& operator=     (vector<uchar>& bytes);
       MidiEvent& operator=     (vector<char>& bytes);
       MidiEvent& operator=     (vector<int>& bytes);
+      void       clearVariables(void);
 
       // functions related to event linking (note-ons to note-offs).
       void       unlinkEvent   (void);
@@ -48,9 +49,11 @@ class MidiEvent : public MidiMessage {
       int        isLinked      (void);
       MidiEvent* getLinkedEvent(void);
       int        getTickDuration(void);
+      double     getDurationInSeconds(void);
 
       int       tick;
       int       track;
+      double    seconds;
 
    private:
       MidiEvent* eventlink;      // used to match note-ons and note-offs

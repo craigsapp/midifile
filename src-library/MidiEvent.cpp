@@ -22,31 +22,23 @@ using namespace std;
 //
 
 MidiEvent::MidiEvent(void) : MidiMessage() {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
 }
 
 
 MidiEvent::MidiEvent(int command) : MidiMessage(command)  {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
 }
 
 
 MidiEvent::MidiEvent(int command, int p1) : MidiMessage(command, p1) {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
 }
 
 
 MidiEvent::MidiEvent(int command, int p1, int p2) 
       : MidiMessage(command, p1, p2) {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
 }
 
 
@@ -83,6 +75,18 @@ MidiEvent::~MidiEvent() {
 }
 
 
+//////////////////////////////
+//
+// MidiEvent::clearVariables --  Clear everything except MidiMessage data.
+//
+
+void MidiEvent::clearVariables(void) {
+   tick  = 0;
+   track = 0;
+   seconds = 0.0;
+   eventlink = NULL;
+}
+
 
 //////////////////////////////
 //
@@ -108,9 +112,7 @@ MidiEvent& MidiEvent::operator=(MidiMessage& message) {
    if (this == &message) {
       return *this;
    }
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
    this->resize(message.size());
    for (int i=0; i<this->size(); i++) {
       (*this)[i] = message[i];
@@ -120,9 +122,7 @@ MidiEvent& MidiEvent::operator=(MidiMessage& message) {
 
 
 MidiEvent& MidiEvent::operator=(vector<uchar>& bytes) {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
    this->resize(bytes.size());
    for (int i=0; i<this->size(); i++) {
       (*this)[i] = bytes[i];
@@ -132,18 +132,14 @@ MidiEvent& MidiEvent::operator=(vector<uchar>& bytes) {
 
 
 MidiEvent& MidiEvent::operator=(vector<char>& bytes) {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
    setMessage(bytes);
    return *this;
 }
 
 
 MidiEvent& MidiEvent::operator=(vector<int>& bytes) {
-   tick  = 0;
-   track = 0;
-   eventlink = NULL;
+   clearVariables();
    setMessage(bytes);
    return *this;
 }
@@ -238,6 +234,29 @@ int MidiEvent::getTickDuration(void) {
       return tick2 - tick;
    } else {
       return tick - tick2;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiEvent::getDurationInSeconds -- For linked events (note-ons and 
+//     note-offs), return the duration of the note in seconds.  The
+//     seconds analysis must be done first; otherwise the duration will be
+//     reported as zero.
+//
+
+double MidiEvent::getDurationInSeconds(void) {
+   MidiEvent* mev = getLinkedEvent();
+   if (mev == NULL) {
+      return 0;
+   }
+   double seconds2 = mev->seconds;
+   if (seconds2 > seconds) {
+      return seconds2 - seconds;
+   } else {
+      return seconds - seconds2;
    }
 }
 

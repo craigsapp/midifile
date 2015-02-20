@@ -21,6 +21,7 @@ using namespace std;
 Options  options;
 int      quarterQ = 0;  // used with -q option: time units in quarter notes.
 int      joinQ    = 0;  // used with -j option: join tracks before printing.
+int      secondsQ = 0;  // used with -s option: print times in seconds.
 
 // function declarations:
 void     checkOptions        (Options& opts);
@@ -53,7 +54,13 @@ int main(int argc, char** argv) {
    MidiEvent* mev;
    double duration;
 
-   if (quarterQ) {
+   if (secondsQ) {
+      midifile.doTimeInSecondsAnalysis();
+   }
+
+   if (secondsQ) {
+      cout << "SEC\tDUR\tTRACK\tNOTE\n";
+   } else if (quarterQ) {
       cout << "QTRS\tDUR\tTRACK\tNOTE\n";
    } else {
       cout << "TICKS\tDUR\tTRACK\tNOTE\n";
@@ -66,8 +73,16 @@ int main(int argc, char** argv) {
          if (!mev->isNoteOn()) {
             continue;
          }
-         duration = mev->getTickDuration();
-         if (quarterQ) {
+         if (secondsQ) {
+            duration = mev->getDurationInSeconds();
+         } else {
+            duration = mev->getTickDuration();
+         }
+
+         if (secondsQ) {
+            cout << mev->seconds << '\t';
+            cout << duration << '\t';
+         } else if (quarterQ) {
             cout << mev->tick/tpq << '\t';
             cout << duration/tpq << '\t';
          } else {
@@ -95,8 +110,9 @@ int main(int argc, char** argv) {
 //
 
 void checkOptions(Options& opts) {
-   opts.define("q|quarter=b","Display ticks in quarter note units");
-   opts.define("j|join=b",   "Join tracks before printing");
+   opts.define("q|quarter=b", "Display ticks in quarter note units");
+   opts.define("j|join=b",    "Join tracks before printing");
+   opts.define("s|seconds=b", "Display times in seconds");
 
    opts.define("author=b",   "Author of the program");
    opts.define("version=b",  "Version of the program");
@@ -120,8 +136,12 @@ void checkOptions(Options& opts) {
       exit(0);
    }
 
-   quarterQ = opts.getBoolean("quarter");
-   joinQ    = opts.getBoolean("join");
+   quarterQ  = opts.getBoolean("quarter");
+   joinQ     = opts.getBoolean("join");
+   secondsQ  = opts.getBoolean("seconds");
+   if (secondsQ) {
+      quarterQ = 0;
+   }
 
    if (opts.getArgCount() > 1) {
       cerr << "Error: One input file or standard input is required." << endl;

@@ -1594,11 +1594,13 @@ void MidiFile::buildTimeMap(void) {
 
    for (i=0; i<getNumEvents(0); i++) {
       curtick = getEvent(0, i).tick;
+      getEvent(0, i).seconds = cursec;
       if ((curtick > lasttick) || !tickinit) {
          tickinit = 1;
 
          // calculate the current time in seconds:
          cursec = lastsec + (curtick - lasttick) * secondsPerTick;
+         getEvent(0, i).seconds = cursec;
 
          // store the new tick to second mapping
          value.tick = curtick;
