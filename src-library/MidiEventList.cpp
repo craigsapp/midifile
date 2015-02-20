@@ -14,6 +14,7 @@
 #include "MidiEventList.h"
 
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -48,6 +49,19 @@ MidiEvent&  MidiEventList::operator[](int index) {
    return *list[index];
 
 }
+
+
+
+//////////////////////////////
+//
+// MidiEventList::getEvent -- The same thing as operator[], for 
+//      internal use when operator[] would look more messy.
+//   
+
+MidiEvent& MidiEventList::getEvent(int index) {
+     return *list[index];
+}
+
 
 
 //////////////////////////////
@@ -131,6 +145,71 @@ int MidiEventList::push_back(MidiEvent& event) {
 }
 
 
+//////////////////////////////
+//
+// MidiEventList::linkNotePairs -- Match note-ones and note-offs together
+//   There are two models that can be done if two notes are overlapping
+//   on the same pitch: the first note-off affects the last note-on,
+//   or the first note-off affects the first note-on.  Currently  the 
+//   first note-off affects the last note-on, but both methods could
+//   be implemented with user selectability.  The current state of the
+//   track is assumed to be in time-sorted order.  Returns the number
+//   of linked notes (note-on/note-off pairs).
+//
+
+int MidiEventList::linkNotePairs(void) {
+   // dimension 1: MIDI channel (0-15)
+   // dimension 2: MIDI key     (0-127)  (but 0 not used for note-ons)
+   // dimension 3: List of active note-ons or note-offs.
+   vector<vector<vector<MidiEvent*> > > noteons;
+   noteons.resize(16);
+   int i;
+   for (i=0; i<noteons.size(); i++) {
+      noteons[i].resize(128);
+   }
+
+   // Now iterate through the MidiEventList keeping track of note
+   // states and linking notes as needed.
+   int channel;
+   int key;
+   int counter = 0;
+   MidiEvent* mev;
+   MidiEvent* noteon;
+   for (i=0; i<getSize(); i++) {
+      mev = &getEvent(i);
+      mev->unlinkEvent();
+      if (mev->isNoteOn()) {
+         // store the note-on to pair later with a note-off message.
+         key = mev->getKeyNumber();
+         channel = mev->getChannel();
+         noteons[channel][key].push_back(mev);
+      } else if (mev->isNoteOff()) {
+         key = mev->getKeyNumber();
+         channel = mev->getChannel();
+         if (noteons[channel][key].size() > 0) {
+            noteon = noteons[channel][key].back();
+            noteons[channel][key].pop_back();
+            noteon->linkEvent(mev);
+            counter++;
+         }
+      }
+   }
+   return counter;
+}
+
+
+
+//////////////////////////////
+//
+// MidiEventList::clearLinks -- remove all note-on/note-off links.
+//
+
+void MidiEventList::clearLinks(void) {
+   for (int i=0; i<getSize(); i++) {
+      getEvent(i).unlinkEvent();
+   }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 //
@@ -148,6 +227,21 @@ int MidiEventList::push_back(MidiEvent& event) {
 void MidiEventList::detach(void) {
    list.resize(0);
 }
+
+
+
+//////////////////////////////
+//
+// MidiEventList::push_back_no_copy -- add a MidiEvent at the end of 
+//     the list.  The event is not copied, but memory from the 
+//     remote location is used.  Returns the index of the appended event.
+//
+
+int MidiEventList::push_back_no_copy(MidiEvent* event) { 
+   list.push_back(event);
+   return list.size()-1;
+}
+
 
 
 

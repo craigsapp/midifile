@@ -72,6 +72,7 @@ class MidiFile {
       void      deleteTrack               (int aTrack);
       void      erase                     (void);
       void      clear                     (void);
+      void      clear_no_deallocate       (void);
       MidiEvent&  getEvent                (int aTrack, int anIndex);
       MidiEventList& operator[]           (int aTrack);
       int       getTimeState              (void);
@@ -110,6 +111,9 @@ class MidiFile {
       void      setFilename               (const char* aname);
       void      setFilename               (const string& aname);
       const char* getFilename             (void);
+
+      int 	linkNotePairs             (void);
+      void      clearLinks                (void);
 
       // static functions:
       static uchar    readByte                (istream& input);

@@ -55,12 +55,23 @@ class MidiMessage : public vector<uchar> {
       int            isMeta               (void);
       int            isNoteOff            (void);
       int            isNoteOn             (void);
+      int            isNote               (void);
       int            isAftertouch         (void);
       int            isController         (void);
       int            isTimbre             (void);
       int            isPatchChange        (void);
       int            isPressure           (void);
       int            isPitchbend          (void);
+
+      int            getP1                (void);
+      int            getP2                (void);
+      int            getKeyNumber         (void);
+      int            getVelocity          (void);
+
+      void           setP1                (int value);
+      void           setP2                (int value);
+      void           setKeyNumber         (int value);
+      void           setVelocity          (int value);
 
       int            getCommandNibble     (void);
       int            getCommandByte       (void);

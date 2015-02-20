@@ -345,6 +345,18 @@ int MidiMessage::isNoteOn(void) {
 
 //////////////////////////////
 //
+// MidiMessage::isNote -- Returns true if either a note-on or a note-off
+//     message.
+//
+
+int MidiMessage::isNote(void) {
+   return isNoteOn() || isNoteOff();
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::isAftertouch -- Returns true if the command byte is in the 0xA0
 //    range.
 //
@@ -483,10 +495,144 @@ int MidiMessage::isTempo(void) {
 //
 
 int MidiMessage::isEndOfTrack(void) {
-   if (getMetaType() == 0x2f) {
-      return 1;
+   return getMetaType() == 0x2f ? 1 : 0;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getP1 -- Return index 1 byte, or -1 if it doesn't exist.
+//
+
+int MidiMessage::getP1(void) { 
+   return size() < 2 ? -1 : (*this)[1];
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getP2 -- Return index 2 byte, or -1 if it doesn't exist.
+//
+
+int MidiMessage::getP2(void) { 
+   return size() < 3 ? -1 : (*this)[2];
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getKeyNumber -- Return the key number (such as 60 for 
+//    middle C).  If the message does not have a note parameter, then 
+//    return -1;  if the key is invalid (above 127 in value), then 
+//    limit to the range 0 to 127.
+//
+
+int MidiMessage::getKeyNumber(void) { 
+   if (isNote() || isAftertouch()) {
+      int output = getP1();
+      if (output < 0) {
+         return output;
+      } else {
+         return 0xff & output;
+      }
    } else {
-      return 0;
+      return -1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getVelocity -- Return the key veolocity.  If the message
+//   is not a note-on or a note-off, then return -1.  If the value is
+//   out of the range 0-127, then chop off the high-bits.
+//
+
+int MidiMessage::getVelocity(void) { 
+   if (isNote()) {
+      int output = getP2();
+      if (output < 0) {
+         return output;
+      } else {
+         return 0xff & output;
+      }
+   } else {
+      return -1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setP1 -- Set the first parameter value.
+//   If the MidiMessage is too short, add extra spaces to
+//   allow for P1.  The command byte will be undefined if
+//   it was added.  The value should be in the range from
+//   0 to 127, but this function will not babysit you.
+//
+
+void MidiMessage::setP1(int value) { 
+   if (getSize() < 2) {
+      resize(2);
+   }
+   (*this)[1] = value;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setP2 -- Set the second paramter value.
+//     If the MidiMessage is too short, add extra spaces
+//     to allow for P2.  The command byte and/or the P1 value
+//     will be undefined if extra space needs to be added and
+//     those slots are created.  The value should be in the range
+//     from 0 to 127, but this function will not babysit you.
+//
+
+void MidiMessage::setP2(int value) { 
+   if (getSize() < 2) {
+      resize(2);
+   }
+   (*this)[1] = value;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setKeyNumber -- Set the note on/off key number (or
+//    aftertouch key).  Ignore if not note or aftertouch message.
+//    Limits the input value to the range from 0 to 127.
+//
+
+void MidiMessage::setKeyNumber(int value) { 
+   if (isNote() || isAftertouch()) {
+      setP1(value & 0xff);
+   } else {
+      // don't do anything since this is not a note-related message.
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setVelocity -- Set the note on/off velocity; ignore
+//   if note a note message.  Limits the input value to the range 
+//   from 0 to 127.
+//
+
+void MidiMessage::setVelocity(int value) { 
+   if (isNote()) {
+      setP2(value & 0xff);
+   } else {
+      // don't do anything since this is not a note-related message.
    }
 }
 

@@ -1,5 +1,4 @@
 //
-// Copyright 1999 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Nov 26 14:12:01 PST 1999
 // Last Modified: Fri Dec  2 13:26:29 PST 1999
@@ -593,28 +592,36 @@ void MidiFile::joinTracks(void) {
 
    MidiEventList* joinedTrack;
    joinedTrack = new MidiEventList;
-   joinedTrack->reserve(200000);
-   joinedTrack->clear();
+
+   int messagesum = 0;
+   int length = getNumTracks();
+   int i, j;
+   for (i=0; i<length; i++) {
+      messagesum += (*events[i]).size();
+   }
+   joinedTrack->reserve((int)(messagesum + 32 + messagesum * 0.1));
+
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_DELTA) {
       absoluteTime();
    }
-   int i, j;
-   int length = getNumTracks();
    for (i=0; i<length; i++) {
       for (j=0; j<(int)events[i]->size(); j++) {
-         joinedTrack->push_back((*events[i])[j]);
+         joinedTrack->push_back_no_copy(&(*events[i])[j]);
       }
    }
 
-   clear();
+   clear_no_deallocate();
 
    delete events[0];
-   events[0] = joinedTrack;
+   events.resize(0);
+   events.push_back(joinedTrack);
    sortTracks();
    if (oldTimeState == TIME_STATE_DELTA) {
       deltaTime();
    }
+
+   theTrackState = TRACK_STATE_JOINED;
 }
 
 
@@ -1055,7 +1062,7 @@ void MidiFile::sortTracks(void) {
 
 //////////////////////////////
 //
-// MidiFile::splitTracks -- take the joined tracks and split them
+// MidiFile::splitTracks -- Take the joined tracks and split them
 //   back into their separate track identities.
 //
 
@@ -1063,7 +1070,6 @@ void MidiFile::splitTracks(void) {
    if (getTrackState() == TRACK_STATE_SPLIT) {
       return;
    }
-
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_DELTA) {
       absoluteTime();
@@ -1077,26 +1083,33 @@ void MidiFile::splitTracks(void) {
           maxTrack = (*events[0])[i].track;
       }
    }
+   int trackCount = maxTrack + 1;
+
+   if (trackCount <= 1) {
+      return;
+   }
 
    MidiEventList* olddata = events[0];
    events[0] = NULL;
-   events.resize(maxTrack);
-   for (i=0; i<maxTrack; i++) {
+   events.resize(trackCount);
+   for (i=0; i<=trackCount; i++) {
       events[i] = new MidiEventList;
-      events[i]->clear();
    }
 
    int trackValue = 0;
-   for (i=0; length; i++) {
+   for (i=0; i<length; i++) {
       trackValue = (*olddata)[i].track;
-      events[trackValue]->push_back((*olddata)[i]);
+      events[trackValue]->push_back_no_copy(&(*olddata)[i]);
    }
 
+   olddata->detach();
    delete olddata;
 
    if (oldTimeState == TIME_STATE_DELTA) {
       deltaTime();
    }
+
+   theTrackState = TRACK_STATE_SPLIT;
 }
 
 
@@ -1425,6 +1438,43 @@ void MidiFile::doTimeInSecondsAnalysis(void) {
 
 
 
+//////////////////////////////
+//
+// MidiFile::linkNotePairs --  Link note-ons to note-offs separately
+//     for each track.  Returns the total number of note message pairs 
+//     that were linked.
+//
+
+int MidiFile::linkNotePairs(void) {
+   int i;
+   int sum = 0;
+   for (i=0; i<getTrackCount(); i++) {
+      if (events[i] == NULL) {
+         continue;
+      }
+      sum += events[i]->linkNotePairs();
+   }
+   return sum;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::clearLinks --
+//
+
+void MidiFile::clearLinks(void) {
+   for (int i=0; i<getTrackCount(); i++) {
+      if (events[i] == NULL) {
+         continue;
+      }
+      events[i]->clearLinks();
+   }
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // private functions
@@ -1749,10 +1799,35 @@ void MidiFile::writeVLValue(long aValue, vector<uchar>& outdata) {
 
 
 
+//////////////////////////////
+//
+// MidiFile::clear_no_deallocate -- Similar to clear() but does not
+//   delete the Events in the lists.  This is primarily used internally
+//   to the MidiFile class, so don't use unless you really know what you
+//   are doing (otherwise you will end up with memory leaks or
+//   segmentation faults).
+//
+
+void MidiFile::clear_no_deallocate(void) {
+   for (int i=0; i<getTrackCount(); i++) {
+      events[i]->detach();
+      delete events[i];
+      events[i] = NULL;
+   }
+   events.resize(1);
+   events[0] = new MidiEventList;
+   timemapvalid=0;
+   timemap.clear();
+   events.resize(0);
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // external functions
 //
+
 
 
 //////////////////////////////

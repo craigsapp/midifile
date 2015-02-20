@@ -25,18 +25,22 @@ class MidiEventList {
                  ~MidiEventList    ();
 
       MidiEvent&  operator[]       (int index);
+      MidiEvent&  getEvent         (int index);
       void        clear            (void);
       void        reserve          (int rsize);
       int         getSize          (void);
       int         size             (void);
+      int         linkNotePairs    (void);
+      void        clearLinks       (void);
       MidiEvent** data             (void);
 
       int         push             (MidiEvent& event);
       int         push_back        (MidiEvent& event);
       int         append           (MidiEvent& event);
 
-   protected:
-      void        detach           (void);
+      // careful when using these, intended for internal use in MidiFile class:
+      void        detach              (void);
+      int         push_back_no_copy   (MidiEvent* event);
 
    private:
       vector<MidiEvent*>     list;
