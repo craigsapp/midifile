@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1055-1101
+@LINES:		1062-1114
 @SEEALSO:	
 @SHORTDESC:	Take joined tracks and split them back into their separate
 		track identities.
@@ -22,7 +22,7 @@
 
 //////////////////////////////
 //
-// MidiFile::splitTracks -- take the joined tracks and split them
+// MidiFile::splitTracks -- Take the joined tracks and split them
 //   back into their separate track identities.
 //
 
@@ -30,7 +30,6 @@ void MidiFile::splitTracks(void) {
    if (getTrackState() == TRACK_STATE_SPLIT) {
       return;
    }
-
    int oldTimeState = getTimeState();
    if (oldTimeState == TIME_STATE_DELTA) {
       absoluteTime();
@@ -44,26 +43,33 @@ void MidiFile::splitTracks(void) {
           maxTrack = (*events[0])[i].track;
       }
    }
+   int trackCount = maxTrack + 1;
+
+   if (trackCount &lt;= 1) {
+      return;
+   }
 
    MidiEventList* olddata = events[0];
    events[0] = NULL;
-   events.resize(maxTrack);
-   for (i=0; i&lt;maxTrack; i++) {
+   events.resize(trackCount);
+   for (i=0; i&lt;=trackCount; i++) {
       events[i] = new MidiEventList;
-      events[i]-&gt;clear();
    }
 
    int trackValue = 0;
-   for (i=0; length; i++) {
+   for (i=0; i&lt;length; i++) {
       trackValue = (*olddata)[i].track;
-      events[trackValue]-&gt;push_back((*olddata)[i]);
+      events[trackValue]-&gt;push_back_no_copy(&amp;(*olddata)[i]);
    }
 
+   olddata-&gt;detach();
    delete olddata;
 
    if (oldTimeState == TIME_STATE_DELTA) {
       deltaTime();
    }
+
+   theTrackState = TRACK_STATE_SPLIT;
 }
 
 @@END:	FunctionDocumentation

@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1128-1138
+@LINES:		1141-1151
 @SEEALSO:	
 @SHORTDESC:	Return whether event timestamps are in absolute or delta
 		form.

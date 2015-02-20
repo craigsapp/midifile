@@ -1,0 +1,36 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	clearLinks
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiEventList.cpp
+@LINES:		201-212
+@SEEALSO:	
+@SHORTDESC:	Remove all note-on/note-off links.
+@LONGDESC:	Remove all note-on/note-off links.  These are typically
+		created by MidiEventList::linkNotePairs().
+
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::clearLinks -- remove all note-on/note-off links.
+//
+
+void MidiEventList::clearLinks(void) {
+   for (int i=0; i&lt;getSize(); i++) {
+      getEvent(i).unlinkEvent();
+   }
+}
+
+@@END:	FunctionDocumentation
+

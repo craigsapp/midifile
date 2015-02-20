@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1500-1578
+@LINES:		1550-1630
 @SEEALSO:	
 @SHORTDESC:	Create a time map relating ticks to absolute time.
 @LONGDESC:	Builds an index of the absolute tick values found
@@ -76,11 +76,13 @@ void MidiFile::buildTimeMap(void) {
 
    for (i=0; i&lt;getNumEvents(0); i++) {
       curtick = getEvent(0, i).tick;
+      getEvent(0, i).seconds = cursec;
       if ((curtick &gt; lasttick) || !tickinit) {
          tickinit = 1;
 
          // calculate the current time in seconds:
          cursec = lastsec + (curtick - lasttick) * secondsPerTick;
+         getEvent(0, i).seconds = cursec;
 
          // store the new tick to second mapping
          value.tick = curtick;

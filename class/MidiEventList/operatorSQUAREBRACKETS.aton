@@ -1,0 +1,33 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	operator[]
+@ALIAS:		getEvent
+@ACCESS:	public
+@RETURN:	MidiEvent&
+@PARAMETERS:	int index
+@FILE:		MidiEventList.cpp
+@LINES:		42-52
+@SEEALSO:	
+@SHORTDESC:	Access a MidiEvent in the event list.
+@LONGDESC:	Access a MidiEvent in the event list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::operator[] --
+//
+
+MidiEvent&amp;  MidiEventList::operator[](int index) {
+   return *list[index];
+
+}
+
+@@END:	FunctionDocumentation
+

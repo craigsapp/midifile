@@ -1,0 +1,50 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	getTickDuration
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiEvent.cpp
+@LINES:		218-239
+@SEEALSO:	getDurationInSeconds
+@SHORTDESC:	Get the duration of a note in terms of MIDI ticks.
+@LONGDESC:	For linked events (note-ons and 
+		note-offs), returns the duration of the note in seconds
+		if the MidiFile::linkNotePairs() or 
+		MidiEventList::linkNotePairs() functions has already 
+		been run to link note-ons to note-offs.  
+		The duration will be reported as zero if the note-on
+		and note-offs have not been linked.
+
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::getTickDuration --  For linked events (note-ons and note-offs),
+//    return the absolute tick time difference between the two events.
+//    The tick values are presumed to be in absolute tick mode rather than
+//    delta tick mode.  Returns 0 if not linked.
+// 
+
+int MidiEvent::getTickDuration(void) {
+   MidiEvent* mev = getLinkedEvent();
+   if (mev == NULL) {
+      return 0;
+   }
+   int tick2 = mev-&gt;tick;
+   if (tick2 &gt; tick) {
+      return tick2 - tick;
+   } else {
+      return tick - tick2;
+   }
+}
+
+@@END:	FunctionDocumentation
+

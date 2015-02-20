@@ -1,0 +1,85 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	linkNotePairs
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiEventList.cpp
+@LINES:		147-199
+@SEEALSO:	
+@SHORTDESC:	Match note-ons and note-offs.
+@LONGDESC:	Match note-ones and note-offs together There are
+		two models that can be done if two notes are
+		overlapping on the same pitch: the first note-off
+		affects the last note-on, or the first note-off
+		affects the first note-on.  Currently  the first
+		note-off affects the last note-on, but both methods
+		could be implemented with user selectability.  The
+		current state of the track is assumed to be in
+		time-sorted order.  Returns the number of linked
+		notes (note-on/note-off pairs).
+
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::linkNotePairs -- Match note-ones and note-offs together
+//   There are two models that can be done if two notes are overlapping
+//   on the same pitch: the first note-off affects the last note-on,
+//   or the first note-off affects the first note-on.  Currently  the 
+//   first note-off affects the last note-on, but both methods could
+//   be implemented with user selectability.  The current state of the
+//   track is assumed to be in time-sorted order.  Returns the number
+//   of linked notes (note-on/note-off pairs).
+//
+
+int MidiEventList::linkNotePairs(void) {
+   // dimension 1: MIDI channel (0-15)
+   // dimension 2: MIDI key     (0-127)  (but 0 not used for note-ons)
+   // dimension 3: List of active note-ons or note-offs.
+   vector&lt;vector&lt;vector&lt;MidiEvent*&gt; &gt; &gt; noteons;
+   noteons.resize(16);
+   int i;
+   for (i=0; i&lt;noteons.size(); i++) {
+      noteons[i].resize(128);
+   }
+
+   // Now iterate through the MidiEventList keeping track of note
+   // states and linking notes as needed.
+   int channel;
+   int key;
+   int counter = 0;
+   MidiEvent* mev;
+   MidiEvent* noteon;
+   for (i=0; i&lt;getSize(); i++) {
+      mev = &amp;getEvent(i);
+      mev-&gt;unlinkEvent();
+      if (mev-&gt;isNoteOn()) {
+         // store the note-on to pair later with a note-off message.
+         key = mev-&gt;getKeyNumber();
+         channel = mev-&gt;getChannel();
+         noteons[channel][key].push_back(mev);
+      } else if (mev-&gt;isNoteOff()) {
+         key = mev-&gt;getKeyNumber();
+         channel = mev-&gt;getChannel();
+         if (noteons[channel][key].size() &gt; 0) {
+            noteon = noteons[channel][key].back();
+            noteons[channel][key].pop_back();
+            noteon-&gt;linkEvent(mev);
+            counter++;
+         }
+      }
+   }
+   return counter;
+}
+
+@@END:	FunctionDocumentation
+

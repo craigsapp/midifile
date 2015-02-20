@@ -1,0 +1,32 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	isLinked
+@ACCESS:	public
+@RETURN:	void
+@FILE:		MidiEvent.cpp
+@LINES:		206-216
+@SEEALSO:	getLinkedEvent
+@SHORTDESC:	Returns true of the message is linked to another event.
+@LONGDESC:	Returns true if there is an event which is not
+		NULL.  This function is similar to MidiEvent::getLinkedEvent().
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::isLinked -- Returns true if there is an event which is not
+//   NULL.  This function is similar to getLinkedEvent().
+//
+
+int MidiEvent::isLinked(void) {
+   return eventlink == NULL ? 0 : 1;
+}
+
+@@END:	FunctionDocumentation
+

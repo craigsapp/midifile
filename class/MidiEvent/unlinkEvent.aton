@@ -1,0 +1,38 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	unlinkEvent
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiEvent.cpp
+@LINES:		148-163
+@SEEALSO:	linkEvent
+@SHORTDESC:	Disassociates any MidiEvents linked to this one.
+@LONGDESC:	Disassociate this event with another.  Also tells the 
+		other event to disassociate itself from this event.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::unlinkEvent -- Disassociate this event with another.
+//   Also tell the other event to disassociate from this event.
+//
+
+void MidiEvent::unlinkEvent(void) { 
+   if (eventlink == NULL) {
+      return;
+   }
+   MidiEvent* mev = eventlink;
+   eventlink = NULL;
+   mev-&gt;unlinkEvent();
+}
+
+@@END:	FunctionDocumentation
+

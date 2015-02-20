@@ -1,0 +1,41 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	push_back_no_copy
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	MidiEvent*
+@FILE:		MidiEventList.cpp
+@LINES:		232-244
+@SEEALSO:	push_back
+@SHORTDESC:	Store a MidiEvent without first copying it.
+@LONGDESC:	Store a MidiEvent without first copying it.  Usually
+		events are copied when stored in the Event list, and 
+		these events are automatically deleted when the
+		event list is deconstructed.  Be careful when using
+		this fuction.  It is intended for interal use in the
+		MidiFile class, and you should only use it if you know
+		what you are doing.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::push_back_no_copy -- add a MidiEvent at the end of 
+//     the list.  The event is not copied, but memory from the 
+//     remote location is used.  Returns the index of the appended event.
+//
+
+int MidiEventList::push_back_no_copy(MidiEvent* event) { 
+   list.push_back(event);
+   return list.size()-1;
+}
+
+@@END:	FunctionDocumentation
+

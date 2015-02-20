@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	int byte
 @FILE:		MidiMessage.cpp
-@LINES:		549-566
+@LINES:		695-712
 @SEEALSO:	
 @SHORTDESC:	Set the command byte of a MIDI message.
 @LONGDESC:	Set the command byte (command nibble + channel nibble) of a MIDI message.

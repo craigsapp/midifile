@@ -6,7 +6,7 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		1224-1334
+@LINES:		1237-1347
 @SEEALSO:	
 @SHORTDESC:	Write a Standard MIDI file from the MidiFile contents.
 @LONGDESC:	Write a Standard MIDI file from the MidiFile contents.

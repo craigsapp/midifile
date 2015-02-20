@@ -1,0 +1,53 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	linkEvent
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	MidiEvent* event
+@PARAMETERS:	MidiEvent& event
+@FILE:		MidiEvent.cpp
+@LINES:		165-191
+@SEEALSO:	unlinkEvent
+@SHORTDESC:	Links one event with another (such as note-ons/note-offs).
+@LONGDESC:	Makes a link between two messages.  MidiEvent::getTickDuration()
+		and MidiEvent::getDurationInSeconds() will return the
+		time different between the linked events.  Typically 
+		a note-on and its paired note-off are linked by running
+		the MidiFile::linkNotePairs() function.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::linkEvent -- Make a link between two messages.  
+//   Unlinking
+//
+
+void MidiEvent::linkEvent(MidiEvent* mev) { 
+   if (mev-&gt;eventlink != NULL) {
+      // unlink other event if it is linked to something else;
+      mev-&gt;unlinkEvent();
+   }
+   // if this is already linked to something else, then unlink:
+   if (eventlink != NULL) {
+      eventlink-&gt;unlinkEvent();
+   }
+   unlinkEvent();
+
+   mev-&gt;eventlink = this;
+   eventlink = mev;
+}
+
+
+void MidiEvent::linkEvent(MidiEvent&amp; mev) { 
+   linkEvent(&amp;mev);
+}
+
+@@END:	FunctionDocumentation
+

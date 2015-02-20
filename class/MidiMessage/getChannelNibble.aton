@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		526-547
+@LINES:		672-693
 @SEEALSO:	
 @SHORTDESC:	Return channel number of the MIDI command byte (offset from 0).
 @LONGDESC:	Return the bottom 4 bits of the command byte for the 

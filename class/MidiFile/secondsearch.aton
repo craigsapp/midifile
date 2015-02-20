@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	const void* A, const void* B
 @FILE:		MidiFile.cpp
-@LINES:		1902-1919
+@LINES:		1979-1996
 @SEEALSO:	
 @SHORTDESC:	Comparison function for sorting time.
 @LONGDESC:	Comparison function for sorting time.

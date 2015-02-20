@@ -1,0 +1,51 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	getDurationInSeconds
+@ACCESS:	public
+@RETURN:	double
+@PARAMETERS:	void
+@FILE:		MidiEvent.cpp
+@LINES:		241-262
+@SEEALSO:	getTickDuration
+@SHORTDESC:	Get the duration of a note in seconds.
+@LONGDESC:	For linked events (note-ons and 
+		note-offs), returns the duration of the note in seconds
+		if the MidiFile::linkNotePairs() or 
+		MidiEventList::linkNotePairs() functions has already 
+		been run to link note-ons to note-offs.  Also The
+		MidiFile::doTimeInSecondsAnalysis() function must be
+		run before the return value is valid; otherwise, the 
+		duration of the note will be reported as zero.
+
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::getDurationInSeconds -- For linked events (note-ons and 
+//     note-offs), return the duration of the note in seconds.  The
+//     seconds analysis must be done first; otherwise the duration will be
+//     reported as zero.
+//
+
+double MidiEvent::getDurationInSeconds(void) {
+   MidiEvent* mev = getLinkedEvent();
+   if (mev == NULL) {
+      return 0;
+   }
+   double seconds2 = mev-&gt;seconds;
+   if (seconds2 &gt; seconds) {
+      return seconds2 - seconds;
+   } else {
+      return seconds - seconds2;
+   }
+}
+
+@@END:	FunctionDocumentation
+

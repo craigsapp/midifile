@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	istream& input, vector<uchar>& array, uchar& runningCommand
 @FILE:		MidiFile.cpp
-@LINES:		1580-1672
+@LINES:		1632-1724
 @SEEALSO:	
 @SHORTDESC:	Extract a MIDI message from the input stream.
 @LONGDESC:	Extract a MIDI message from the input stream.  If the

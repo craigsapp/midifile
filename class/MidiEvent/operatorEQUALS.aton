@@ -9,7 +9,7 @@
 @PARAMETERS:	vector<char>& bytes
 @PARAMETERS:	vector<int>& bytes
 @FILE:		MidiEvent.cpp
-@LINES:		79-138
+@LINES:		90-146
 @SEEALSO:	
 @SHORTDESC:	Copy the contents of another MidiEvent or MidiMessage.
 @LONGDESC:	Copy the contents of another MidiEvent or MidiMessage.  If
@@ -35,6 +35,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiEvent&amp; mfevent) {
    }
    tick  = mfevent.tick;
    track = mfevent.track;
+   eventlink = NULL;
    this-&gt;resize(mfevent.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {
       (*this)[i] = mfevent[i];
@@ -47,8 +48,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiMessage&amp; message) {
    if (this == &amp;message) {
       return *this;
    }
-   tick  = 0;
-   track = 0;
+   clearVariables();
    this-&gt;resize(message.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {
       (*this)[i] = message[i];
@@ -58,8 +58,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiMessage&amp; message) {
 
 
 MidiEvent&amp; MidiEvent::operator=(vector&lt;uchar&gt;&amp; bytes) {
-   tick  = 0;
-   track = 0;
+   clearVariables();
    this-&gt;resize(bytes.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {
       (*this)[i] = bytes[i];
@@ -69,16 +68,14 @@ MidiEvent&amp; MidiEvent::operator=(vector&lt;uchar&gt;&amp; bytes) {
 
 
 MidiEvent&amp; MidiEvent::operator=(vector&lt;char&gt;&amp; bytes) {
-   tick  = 0;
-   track = 0;
+   clearVariables();
    setMessage(bytes);
    return *this;
 }
 
 
 MidiEvent&amp; MidiEvent::operator=(vector&lt;int&gt;&amp; bytes) {
-   tick  = 0;
-   track = 0;
+   clearVariables();
    setMessage(bytes);
    return *this;
 }

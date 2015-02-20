@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiEventList.cpp
-@LINES:		94-108
+@LINES:		108-122
 @SEEALSO:	
 @SHORTDESC:	Return the number of events in the list.
 @LONGDESC:	Return the number of events in the list.

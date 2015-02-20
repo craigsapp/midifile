@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		163-196
+@LINES:		162-195
 @SEEALSO:	deltaTime
 @SHORTDESC:	Convert event timestamps into Absolute time.
 @LONGDESC:	Convert timestamps of all MidiEvents into absolute time as

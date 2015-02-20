@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		404-420
+@LINES:		416-432
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an channel pressure message.
 @LONGDESC:	Returns true if command nibble is 0xD0 for an channel pressure

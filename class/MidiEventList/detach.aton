@@ -1,0 +1,37 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEventList
+@METHOD:	detach
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	void
+@FILE:		MidiEventList.cpp
+@LINES:		219-230
+@SEEALSO:	clear
+@SHORTDESC:	Clear event list without deallocating events.
+@LONGDESC:	This function is similar to clear(), but storage
+		for MidiEvents are not deleted.  This function is used
+		internally in the MidiFile class, and you should not use
+		it unless you know what you are doing.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::detach -- De-allocate any MidiEvents present in the list
+//    and set the size of the list to 0.
+//
+
+
+void MidiEventList::detach(void) {
+   list.resize(0);
+}
+
+@@END:	FunctionDocumentation
+

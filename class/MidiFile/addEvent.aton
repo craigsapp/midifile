@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	int track, int time, vector<uchar>& data
 @FILE:		MidiFile.cpp
-@LINES:		198-214
+@LINES:		197-213
 @SEEALSO:	
 @SHORTDESC:	Add a new MidiEvents to the end of the specified track.
 @LONGDESC:	Create an MidiEvents and store at the end of the specified

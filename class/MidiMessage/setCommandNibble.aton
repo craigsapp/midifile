@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	int nibble
 @FILE:		MidiMessage.cpp
-@LINES:		591-607
+@LINES:		737-753
 @SEEALSO:	setChannelNibble
 @SHORTDESC:	Set the command nibble of a command byte.
 @LONGDESC:	Set the command nibble of a command byte.  The value can 

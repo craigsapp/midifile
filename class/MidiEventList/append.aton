@@ -7,7 +7,7 @@
 @RETURN:	int
 @PARAMETERS:	MidiEvent& event
 @FILE:		MidiEventList.cpp
-@LINES:		110-132
+@LINES:		124-146
 @SEEALSO:	
 @SHORTDESC:	Add a event to the end of the list.
 @LONGDESC:	Add a event to the end of the list.

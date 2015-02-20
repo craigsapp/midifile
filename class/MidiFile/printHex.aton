@@ -5,7 +5,7 @@
 @RETURN:	ostream&
 @PARAMETERS:	ostream& out
 @FILE:		MidiFile.cpp
-@LINES:		1192-1222
+@LINES:		1205-1235
 @SEEALSO:	
 @SHORTDESC:	Print MidiFile as a list of ASCII hex bytes.
 @LONGDESC:	Print the MIDI file as a sequence of ASCII hex bytes, 

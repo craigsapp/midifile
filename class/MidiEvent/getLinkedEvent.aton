@@ -1,0 +1,35 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiEvent
+@METHOD:	getLinkedEvent
+@ACCESS:	public
+@RETURN:	MidiEvent*
+@PARAMETERS:	void
+@FILE:		MidiEvent.cpp
+@LINES:		193-204
+@SEEALSO:	linkEvent
+@SHORTDESC:	Returns a linked event (such as for note-on/note-off pair).
+@LONGDESC:	Returns a linked event.  Usually this is the note-off 
+		message for a note-on message and vice-versa.
+		Returns NULL if there are no links.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEvent::getLinkedEvent -- Returns a linked event.  Usually
+//   this is the note-off message for a note-on message and vice-versa.
+//   Returns null if there are no links.
+//
+
+MidiEvent* MidiEvent::getLinkedEvent(void) {
+   return eventlink;
+}
+
+@@END:	FunctionDocumentation
+

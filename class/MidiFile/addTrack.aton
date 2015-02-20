@@ -6,7 +6,7 @@
 @PARAMETERS:	void
 @PARAMETERS:	int count
 @FILE:		MidiFile.cpp
-@LINES:		369-397
+@LINES:		368-396
 @SEEALSO:	
 @SHORTDESC:	Added one or more empty tracks to the MidiFile.
 @LONGDESC:	Adds a blank track at the end of the track list.
