@@ -8,9 +8,10 @@ group: [
 ]
 ---
 
-{% include docslot/docslot.html %}
+The Options class handles options and arguments.
 
-Documentation for the Options class.
+
+{% include docslot/docslot.html %}
 
 Public functions
 ----------------

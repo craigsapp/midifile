@@ -13,5 +13,6 @@
 all: class
 
 class:
-	(cd class; $(MAKE))
+	(cd class && $(MAKE))
+	(cd _includes/class && $(MAKE))
 
