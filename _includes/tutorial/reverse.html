@@ -1,0 +1,36 @@
+
+<a name="reverse"> </a>
+<details class="tutorial-entry" ontoggle="showSingleTut(event, this);">
+
+<summary class="tutorial-title">
+	Reverse the order of notes in a MIDI file.
+</summary>
+
+
+The following example program will reverse the order of notes
+in a MIDI file.  First note-ons and note-offs are linked, then
+a list of note-ons are extracted and the notes are reversed.
+
+``` cpp
+{% include tutorial/code/reverse.cpp %}
+```
+
+Library functions used in this example:
+
+<ul class="function-list">
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::linkNotePairs </li>
+<li class="docslot"> MidiFile::write </li>
+<li class="docslot"> MidiFile::getNumTracks </li>
+<li class="docslot"> MidiFile::getNumEvents </li>
+<li class="docslot"> MidiEvent::isLinked </li>
+<li class="docslot"> MidiMessage::isNoteOn </li>
+<li class="docslot"> Options::process </li>
+<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> Options::getArg </li>
+</ul>
+
+</details>
+
+
+
