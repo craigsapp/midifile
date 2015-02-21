@@ -121,6 +121,18 @@ void Binasc::setCommentsOff(void) {
 
 //////////////////////////////
 //
+// Binasc::getComments -- Get the comment display style for
+//    showing comments in ASCII output;
+//
+
+int Binasc::getComments(void) {
+   return commentsQ;
+}
+
+
+
+//////////////////////////////
+//
 // Binasc::setBytes -- Display or not display hex codes (only
 //    print ASCII printable characters).
 //
@@ -139,6 +151,15 @@ void Binasc::setBytesOff(void) {
    setBytes(false);
 }
 
+
+//////////////////////////////
+//
+// Binasc::getBytes -- Get hex byte display status.
+//
+
+int Binasc::getBytes(void) {
+   return bytesQ;
+}
 
 
 //////////////////////////////

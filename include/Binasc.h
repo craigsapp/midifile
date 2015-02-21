@@ -34,12 +34,15 @@ class Binasc {
       void     setComments    (int state);
       void     setCommentsOn  (void);
       void     setCommentsOff (void);
+      int      getComments    (void);
       void     setBytes       (int state);
       void     setBytesOn     (void);
       void     setBytesOff    (void);
+      int      getBytes       (void);
       void     setMidi        (int state);
       void     setMidiOn      (void);
       void     setMidiOff     (void);
+      int      getMidi        (void);
 
       // functions for converting into a binary file:
       int      writeToBinary  (const string& outfile, const string& infile);
