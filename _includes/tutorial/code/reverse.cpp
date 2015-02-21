@@ -15,8 +15,8 @@ int main(int argc, char** argv) {
    midifile.linkNotePairs();
    vector<MidiEvent*> notes;
    notes.reserve(123456);
-   for (int track=0; track<midifile.getNumTracks(); track++) {
-      for (int event=0; event<midifile.getNumEvents(track); event++) {
+   for (int track=0; track<midifile.getTrackCount(); track++) {
+      for (int event=0; event<midifile.getEventCount(track); event++) {
          if (midifile[track][event].isNoteOn()) {
             if (midifile[track][event].isLinked()) {
                notes.push_back(&midifile[track][event]);
