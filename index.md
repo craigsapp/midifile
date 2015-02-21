@@ -19,36 +19,7 @@ make
 
 <!-- TUTORIAL LIST ------------------------------------------------- -->
 
-<script>
-document.addEventListener("DOMContentLoaded", function(event) {
-   var tutorials = document.querySelectorAll("ul.tutorial-list > li");
-   var i;
-   for (i=0; i<tutorials.length; i++) {
-      var target = tutorials[i].textContent.replace(/\s/g, '');
-      var newcontent = "";
-      newcontent += '<a href="tutorial/#' + target + '">';
-      newcontent += target;
-      newcontent += '</a>';
-      tutorials[i].innerHTML = newcontent;
-   }
-});
-</script>
-
-<style>
-ul.tutorial-list {
-	-webkit-column-count: 6;
-	-moz-column-count: 6;
-	column-count: 6;
-	margin-left: 30px;
-}
-</style>
-
-<ul class="tutorial-list">
-<li> fixsize </li>
-<li> noteattacks </li>
-<li> offswitch </li>
-</ul>
-
+{% include tutorial/tutoriallist.html %}
 
 <!-- CLASS LIST ---------------------------------------------------- -->
 

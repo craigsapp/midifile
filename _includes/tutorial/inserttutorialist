@@ -1,0 +1,67 @@
+#!/usr/bin/perl
+#
+# Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+# Creation Date: Sat Feb 21 00:37:04 PST 2015
+# Last Modified: Sat Feb 21 00:37:04 PST 2015
+# Filename:      /tmp/midifile/_includes/tutorial/inserttutorialist
+# Syntax:        perl 5
+#
+# Description:
+#
+
+use strict;
+
+my @tutorials = getTutorialList('contents.html');
+
+open(TFILE, 'tutoriallist.html') or die "Cannot read tutoriallist.html";
+my $line;
+while ($line = <TFILE>) {
+   if ($line !~ /BEGIN_TUTORIAL_LIST/) {
+      print $line;
+      next;
+   }
+   print $line;
+   $line = <TFILE>;
+   while ($line !~ /END_TUTORIAL_LIST/) {
+      $line = <TFILE>;
+   }
+   my $i;
+   for ($i=0; $i<@tutorials; $i++) {
+      print "\t'$tutorials[$i]'";
+      if ($i < $#tutorials) {
+         print ",\n";
+      } else {
+         print "\n";
+      }
+   }
+   print $line;
+}
+
+
+
+##############################
+##
+## getTutorialList --
+##
+##    {% include tutorial/reverse.html %}
+## To:
+##    reverse
+
+sub getTutorialList {
+   my ($file) = @_;
+   my @output;
+   open(FILE, $file) or die "Cannot open $file for reading\n";
+   my $line;
+   while ($line = <FILE>) {
+      if ($line =~ /{%\s*include\s+tutorial\/(.*)\.html\s*%}/) {
+         $output[@output] = $1;
+      }
+   }
+   close FILE;
+   return @output;
+}
+
+
+
+
+

@@ -1,0 +1,37 @@
+
+<script>
+document.addEventListener("DOMContentLoaded", function(event) {
+   tutoriallist = [  // BEGIN_TUTORIAL_LIST
+	'fixsize',
+	'offswitch',
+	'noteattacks',
+	'reverse'
+   ];                // END_TUTORIAL_LIST
+
+   var tutorials = document.getElementById('tutorial-list');
+   tutorials.textContent = '';
+   var i;
+   for (i=0; i<tutoriallist.length; i++) {
+      var li = document.createElement("LI");
+      tutorials.appendChild(li);
+      var newcontent = "";
+      newcontent += '<a href="tutorial/#' + tutoriallist[i] + '">';
+      newcontent += tutoriallist[i];
+      newcontent += '</a>';
+      li.innerHTML = newcontent;
+   }
+});
+</script>
+
+<style>
+ul#tutorial-list {
+	-webkit-column-count: 6;
+	-moz-column-count: 6;
+	column-count: 6;
+	margin-left: 30px;
+}
+</style>
+
+
+<ul id="tutorial-list"> </ul>
+

@@ -15,4 +15,5 @@ all: class
 class:
 	(cd class && $(MAKE))
 	(cd _includes/class && $(MAKE))
+	(cd _includes/tutorial && $(MAKE))
 
