@@ -1,0 +1,43 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	linkNotePairs
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		1440-1459
+@SEEALSO:	
+@SHORTDESC:	Link corresponding note-ons and note-offs.
+@LONGDESC:	Link corresponding note-ons and note-offs.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::linkNotePairs --  Link note-ons to note-offs separately
+//     for each track.  Returns the total number of note message pairs 
+//     that were linked.
+//
+
+int MidiFile::linkNotePairs(void) {
+   int i;
+   int sum = 0;
+   for (i=0; i&lt;getTrackCount(); i++) {
+      if (events[i] == NULL) {
+         continue;
+      }
+      sum += events[i]-&gt;linkNotePairs();
+   }
+   return sum;
+}
+
+@@END:	FunctionDocumentation
+
+
+
