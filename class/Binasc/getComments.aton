@@ -1,0 +1,22 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	getComments
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	setComments
+@SHORTDESC:	Get comment display style for ASCII output.
+@LONGDESC:	Get comment display style for ASCII output.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

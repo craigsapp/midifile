@@ -1,0 +1,65 @@
+#!/usr/bin/perl
+#
+# Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+# Creation Date: Fri Feb 20 13:21:57 PST 2015
+# Last Modified: Fri Feb 20 13:21:57 PST 2015
+# Filename:      /tmp/midifile/_includes/class/updateclasslist
+# Syntax:        perl 5
+#
+# Description:
+#
+
+use strict;
+
+my $classdir = "../../class";
+my @contents = <>;
+my $i;
+
+for ($i=0; $i<@contents; $i++) {
+   my $line = $contents[$i];
+   chomp $line;
+   if ($line =~ /START_DOCLIST\(([^\)]+)\)/) {
+      print "$line\n";
+      my $class = $1;
+      printClassListContents($class);
+      $line = $contents[++$i];
+      while ($line !~ /END_DOCLIST/) {
+         # careful of a possible infinite loop here.
+         $line = $contents[++$i];
+      }
+      print "$line\n";
+   } else {
+      print "$line\n";
+   }
+}
+
+
+##############################
+##
+## printClassListContents --
+##
+## ../../class/MidiFile/absoluteTime.aton:@ACCESS:	public
+##
+
+sub printClassListContents {
+   my ($classname) = @_;
+   my $list = `grep ACCESS.*public ../../class/$classname/*.aton`;
+   my @items = split(/\n/, $list);
+   my $i;
+   my $item;
+   for ($i=0; $i<@items; $i++) {
+      $item = $items[$i];
+      $item =~ s/.*\///;
+      $item =~ s/\.aton.*//;
+      $item =~ s/SQUAREBRACKETS/[]/;
+      $item =~ s/EQUALS/=/;
+      $item =~ s/EQUAL/=/;
+      print "\t'$item'";
+      if ($i < $#items) {
+         print ",\n";
+      } else {
+         print "\n";
+      }
+   }
+}
+

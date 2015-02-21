@@ -1,0 +1,25 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	readFromBinary
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	const string& outfile, const string& infile
+@PARAMETERS:	const string& outfile, istream& input
+@PARAMETERS:	ostream& output, const string& infile
+@PARAMETERS:	ostream& output, istream& input
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	writeToBinary
+@SHORTDESC:	Convert ASCII byte codes into a binary file.
+@LONGDESC:	Convert ASCII byte codes into a binary file.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

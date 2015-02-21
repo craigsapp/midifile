@@ -1,0 +1,25 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	setLineLength
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int size
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	getLineLength
+@SHORTDESC:	Set the maximum length of an ASCII text line.
+@LONGDESC:	Set the maximum length of a line when converting binary
+		content into ASCII byte codes.  If the input size is less
+		than one, then set to the default value of 75 characters
+		per line.  The return value is the value of the new setting.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

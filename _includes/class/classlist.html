@@ -1,0 +1,225 @@
+
+<style>
+ul.function-listing {
+	-webkit-column-count: 3;
+	-moz-column-count: 3;
+	column-count: 3;
+	margin-left: 30px;
+}
+.h2subtitle {
+   font-weight: 200;
+   font-size: 80%;
+}
+</style>
+
+
+<script>
+function addClassListContent(classname, listing) {
+   var id = classname + "-list";
+   var list = document.getElementById(id);
+   if (!list) {
+      return;
+   }
+   list.textContent = '';
+   var li;
+   var a;
+   for (i=0; i<listing.length; i++) {
+      li = document.createElement("LI");
+      a = document.createElement("A");
+      li.appendChild(a);
+      list.appendChild(li);
+      a.textContent = listing[i];
+      a.href = classname + "#" + listing[i];
+   }
+}
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded', function(event) {
+   list = [   // START_DOCLIST(MidiFile)
+	'absoluteTime',
+	'addEvent',
+	'addMetaEvent',
+	'addPitchBend',
+	'addTrack',
+	'allocateEvents',
+	'clear',
+	'deleteTrack',
+	'deltaTime',
+	'doTimeInSecondsAnalysis',
+	'extractVlvTime',
+	'getAbsoluteTickTime',
+	'getEvent',
+	'getEventCount',
+	'getFilename',
+	'getTicksPerQuarterNote',
+	'getTimeInSeconds',
+	'getTrack',
+	'getTrackCount',
+	'getTrackState',
+	'joinTracks',
+	'mergeTracks',
+	'printHex',
+	'read',
+	'readByte',
+	'readLittleEndian2Bytes',
+	'readLittleEndian4Bytes',
+	'secondsearch',
+	'setFilename',
+	'setMilliseconds',
+	'setTicksPerQuarterNote',
+	'sortTrack',
+	'sortTracks',
+	'splitTracks',
+	'timeState',
+	'write'
+   ];   // END_DOCLIST(MidiFile)
+
+   addClassListContent("MidiFile", list);
+});
+</script>
+
+<h2> <a href="MidiFile">MidiFile</a>:: <span class="h2subtitle">Main interface for reading/writing Standard MIDI Files</span></h2>
+<ul id="MidiFile-list" class="function-listing"></ul>
+
+
+
+<script>
+window.addEventListener("DOMContentLoaded", function(event) {
+   list = [   // START_DOCLIST(MidiEventList)
+	'append',
+	'clear',
+	'clearLinks',
+	'detach',
+	'getSize',
+	'linkNotePairs',
+	'operator[]',
+	'push_back_no_copy',
+	'reserve'
+   ];   // END_DOCLIST(MidiEventList)
+
+   addClassListContent("MidiEventList", list);
+});
+</script>
+
+<h2> <a href="MidiEventList">MidiEventList</a>:: <span class="h2subtitle">MidiFile track storage for MidiEvent lists</span></h2>
+<ul id="MidiEventList-list" class="function-listing"></ul>
+
+
+<script>
+window.addEventListener("DOMContentLoaded", function(event) {
+   list = [   // START_DOCLIST(MidiEvent)
+	'getDurationInSeconds',
+	'getLinkedEvent',
+	'getTickDuration',
+	'isLinked',
+	'linkEvent',
+	'operator=',
+	'unlinkEvent'
+   ];   // END_DOCLIST(MidiEvent
+
+   addClassListContent("MidiEvent", list);
+});
+</script>
+
+
+<h2> <a href="MidiEvent">MidiEvent</a>:: (also inherits from <a href="MidiMessage">MidiMessage</a>) <span class="h2subtitle"> MidiMessage + timestamp</span> </h2>
+<ul id="MidiEvent-list" class="function-listing"></ul>
+
+<script>
+window.addEventListener("DOMContentLoaded", function(event) {
+   list = [   // START_DOCLIST(MidiMessage)
+	'getChannelNibble',
+	'getCommandByte',
+	'getCommandNibble',
+	'getSize',
+	'getTempoBPM',
+	'getTempoMicro',
+	'getTempoSPT',
+	'getTempoSeconds',
+	'getTempoTPS',
+	'isAftertouch',
+	'isController',
+	'isMeta',
+	'isNoteOff',
+	'isNoteOn',
+	'isPitchbend',
+	'isPressure',
+	'isTempo',
+	'isTimbre',
+	'operator=',
+	'setChannelNibble',
+	'setCommand',
+	'setCommandByte',
+	'setCommandNibble',
+	'setMetaTempo',
+	'setParameters',
+	'setSize',
+	'setSizeToCommand'
+   ];   // END_DOCLIST(MidiMessage)
+
+   addClassListContent("MidiMessage", list);
+});
+</script>
+
+<h2> <a href="MidiMessage">MidiMessage</a>:: (also inherits from 
+<a href="http://www.cplusplus.com/reference/vector/vector">vector&lt;uchar&gt;</a>) </h2>
+
+<ul id="MidiMessage-list" class="function-listing"></ul>
+
+
+
+<script>
+window.addEventListener("DOMContentLoaded", function(event) {
+   list = [   // START_DOCLIST(Options)
+	'appendOptions',
+	'argc',
+	'argv',
+	'define',
+	'getArg',
+	'getArgCount',
+	'getArgList',
+	'getBoolean',
+	'getChar',
+	'getCommand',
+	'getCommandLine',
+	'getDouble',
+	'getFlag',
+	'getFloat',
+	'getInt',
+	'getRegIndex',
+	'getString',
+	'isDefined',
+	'optionsArg',
+	'printOptionBooleanState',
+	'printOptionList',
+	'printRegister',
+	'process',
+	'setFlag',
+	'setOptions',
+	'storeOption',
+	'xverify'
+   ];   // END_DOCLIST(Options)
+
+   addClassListContent("Options", list);
+});
+</script>
+
+<h2> <a href="Options">Options</a>:: <span class="h2subtitle">Auxiliary class for command-line option parsing</span></h2>
+<ul id="Options-list" class="function-listing"> </ul>
+
+
+
+<script>
+window.addEventListener("DOMContentLoaded", function(event) {
+   list = [   // START_DOCLIST(Binasc)
+   ];   // END_DOCLIST(Binasc)
+
+   addClassListContent("Binasc", list);
+});
+</script>
+
+<h2> <a href="Binasc">Binasc</a>:: <span class="h2subtitle">Helper class for ASCII MIDI file parsing</span></h2>
+<ul id="Binasc-list" class="function-listing"> </ul>
+
+

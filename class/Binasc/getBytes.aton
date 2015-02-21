@@ -1,0 +1,22 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	getBytes
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	setBytes
+@SHORTDESC:	Get hex byte display option.
+@LONGDESC:	Get hex byte display option.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

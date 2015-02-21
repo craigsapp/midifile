@@ -1,0 +1,24 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	setBytes
+@ALIAS:		setBytesOn()
+@ALIAS:		setBytesOff()
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int state
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	getBytes
+@SHORTDESC:	Display or not display hex codes in ASCII output.
+@LONGDESC:	Display or not display hex codes in ASCII output.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

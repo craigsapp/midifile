@@ -1,0 +1,23 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	getLineLength
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	setLineLength
+@SHORTDESC:	Returns the maximum length of an ASCII text line.
+@LONGDESC:	Returns the maximum length of a line when converting binary
+		content into ASCII byte codes.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+

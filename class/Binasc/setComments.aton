@@ -1,0 +1,24 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	Binasc
+@METHOD:	setComments
+@ALIAS:		setCommentsOn()
+@ALIAS:		setCommentsOff()
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int size
+@FILE:		Binasc.cpp
+@LINES:		
+@SEEALSO:	getComments
+@SHORTDESC:	Display or not display printable characters as ASCII comments.
+@LONGDESC:	Display or not display printable characters as ASCII comments.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+
