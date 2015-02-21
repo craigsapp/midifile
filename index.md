@@ -63,13 +63,11 @@ window.addEventListener('load', function(event) {
          list[i].setAttribute('href', 'class/' + attrib);
       } else if (attrib === 'Options') {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'Options') {
-         list[i].setAttribute('href', 'class/' + attrib);
       } else if (attrib === 'MidiFile') {
          list[i].setAttribute('href', 'class/' + attrib);
       } else if (attrib === 'MidiEventList') {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'href', 'MidiEvent') {
+      } else if (attrib === 'MidiEvent') {
          list[i].setAttribute('href', 'class/' + attrib);
       } else if (attrib === 'MidiMessage') {
          list[i].setAttribute('href', 'class/' + attrib);
