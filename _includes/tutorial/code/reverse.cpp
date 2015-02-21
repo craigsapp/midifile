@@ -3,6 +3,8 @@
 
 using namespace std;
 
+void swapNotes(vector<MidiEvent*>& notes, int index1, int index2);
+
 int main(int argc, char** argv) {
    Options options;
    options.process(argc, argv);
@@ -30,4 +32,24 @@ int main(int argc, char** argv) {
    }
    midifile.write(options.getArg(2));
    return 0;
+}
+
+void swapNotes(vector<MidiEvent*>& notes, int index1, int index2) {
+   MidiEvent* noteon1  = notes[index1];
+   MidiEvent* noteon2  = notes[index2];
+   MidiEvent* noteoff1 = notes[index1]->getLinkedEvent();
+   MidiEvent* noteoff2 = notes[index2]->getLinkedEvent();
+   if (noteon1  == NULL) { return; }
+   if (noteon2  == NULL) { return; }
+   if (noteoff1 == NULL) { return; }
+   if (noteoff2 == NULL) { return; }
+   int pitch1 = noteon1->getKeyNumber();
+   int pitch2 = noteon2->getKeyNumber();
+   if (pitch1 == pitch2) { return; }
+   if (pitch1 < 0) { return; }
+   if (pitch2 < 0) { return; }
+   noteon1->setKeyNumber(pitch2);
+   noteoff1->setKeyNumber(pitch2);
+   noteon2->setKeyNumber(pitch1);
+   noteoff2->setKeyNumber(pitch1);
 }
