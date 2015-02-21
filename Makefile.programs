@@ -40,7 +40,7 @@ ifeq ($(shell uname),Darwin)
    # The MACOSX_DEPLOYMENT_TARGET allows you to compile on newer OS X computers,
    # but allows the code to run on older OS X computers.  In this case the
    # minimum OS version target will be 10.6:
-   ENV = MACOSX_DEPLOYMENT_TARGET=10.6
+   ENV = MACOSX_DEPLOYMENT_TARGET=10.9
 
    # The ARCH setting below forces the library to be compiled for
    # 32-bit architectures in OS X.  Uncomment the ARCH variable below
