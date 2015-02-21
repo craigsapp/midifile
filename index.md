@@ -59,17 +59,17 @@ window.addEventListener('load', function(event) {
    var list = document.querySelectorAll('a');
    for (var i=0; i<list.length; i++) {
       var attrib = list[i].getAttribute('href');
-      if (attrib === 'Binasc') {
+      if (attrib.match(/^Binasc/)) {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'Options') {
+      } else if (attrib.match(/^Options/)) {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'MidiFile') {
+      } else if (attrib.match(/^MidiMessage/)) {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'MidiEventList') {
+      } else if (attrib.match(/^MidiEvent/)) {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'MidiEvent') {
+      } else if (attrib.match(/^MidiEventList/)) {
          list[i].setAttribute('href', 'class/' + attrib);
-      } else if (attrib === 'MidiMessage') {
+      } else if (attrib.match(/^MidiFile/)) {
          list[i].setAttribute('href', 'class/' + attrib);
       }
    }
@@ -77,11 +77,5 @@ window.addEventListener('load', function(event) {
 </script>
 
 {% include class/classlist.html %}
-
-
-
-
-
-
 
 
