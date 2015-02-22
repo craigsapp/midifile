@@ -185,6 +185,17 @@ void Binasc::setMidiOff(void) {
 
 //////////////////////////////
 //
+// Binasc::getMidi -- Get the MIDI file printing style option state.
+//
+
+int Binasc::getMidi(void) {
+   return midiQ;
+}
+
+
+
+//////////////////////////////
+//
 // Binasc::writeToBinary -- Convert an ASCII representation of bytes into
 //     the binary file that it describes.  Returns 0 if there was a problem
 //     otherwise returns 1.
