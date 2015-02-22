@@ -4,7 +4,7 @@ breadcrumbs: [['/doc','documentation'], ['/class', 'classes']]
 title:  MidiMessage class
 grouptitle: ['https://github.com/craigsapp/midifile/blob/master/src-library', 'Source Code']
 group: [
-   ['https://github.com/craigsapp/scorelib/blob/master/src-library/MidiMessage.cpp', 'MidiMessage.cpp'],
+   ['https://github.com/craigsapp/midifile/blob/master/src-library/MidiMessage.cpp', 'MidiMessage.cpp'],
 ]
 ---
 

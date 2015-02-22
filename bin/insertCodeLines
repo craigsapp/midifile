@@ -45,7 +45,7 @@ sub processFile {
    $code =~ s/\&/\&amp;/gs;
    $code =~ s/>/\&gt;/gm;
    $code =~ s/</\&lt;/gm;
-   print "$function: $linerange\n";
+   #print "$function: $linerange\n";
    my $i;
    my $line;
    open (XFILE, ">$file") or die "Cannot write to $file\n";

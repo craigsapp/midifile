@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	int state
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		133-153
 @SEEALSO:	getBytes
 @SHORTDESC:	Display or not display hex codes in ASCII output.
 @LONGDESC:	Display or not display hex codes in ASCII output.
@@ -19,6 +19,26 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::setBytes -- Display or not display hex codes (only
+//    print ASCII printable characters).
+//
+
+void Binasc::setBytes(int state) {
+   commentsQ = state ? 1 : 0;
+}
+
+
+void Binasc::setBytesOn(void) {
+   setBytes(true);
+}
+
+
+void Binasc::setBytesOff(void) {
+   setBytes(false);
+}
 
 @@END:	FunctionDocumentation
 

@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		185-194
 @SEEALSO:	setMidi
 @SHORTDESC:	Get display option for showing ASCII MIDI file markup.
 @LONGDESC:	Get display option for showing ASCII MIDI file markup.
@@ -17,6 +17,15 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::getMidi -- Get the MIDI file printing style option state.
+//
+
+int Binasc::getMidi(void) {
+   return midiQ;
+}
 
 @@END:	FunctionDocumentation
 

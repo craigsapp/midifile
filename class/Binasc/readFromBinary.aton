@@ -8,7 +8,7 @@
 @PARAMETERS:	ostream& output, const string& infile
 @PARAMETERS:	ostream& output, istream& input
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		269-339
 @SEEALSO:	writeToBinary
 @SHORTDESC:	Convert ASCII byte codes into a binary file.
 @LONGDESC:	Convert ASCII byte codes into a binary file.
@@ -20,6 +20,76 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::readFromBinary -- convert an ASCII representation of bytes into
+//     the binary file that it describes.
+//
+
+int Binasc::readFromBinary(const string&amp; outfile, const string&amp; infile) { 
+   ifstream input;
+   input.open(infile.data());
+   if (!input.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; infile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+
+   ofstream output;
+   output.open(outfile.data());
+   if (!output.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; outfile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+
+   int status = readFromBinary(output, input);
+   input.close();
+   output.close();
+   return status;
+}
+
+
+int Binasc::readFromBinary(const string&amp; outfile, istream&amp; input) { 
+   ofstream output;
+   output.open(outfile.data());
+   if (!output.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; outfile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+
+   int status = readFromBinary(output, input);
+   output.close();
+   return status;
+}
+
+
+int Binasc::readFromBinary(ostream&amp; out, const string&amp; infile) { 
+   ifstream input;
+   input.open(infile.data());
+   if (!input.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; infile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+
+   int status = readFromBinary(out, input);
+   input.close();
+   return status;
+}
+
+
+int Binasc::readFromBinary(ostream&amp; out, istream&amp; input) { 
+   int status;
+   if (midiQ) {
+      status = outputStyleMidi(out, input);
+   } else if (!bytesQ) {
+      status = outputStyleAscii(out, input);
+   } else if (bytesQ &amp;&amp; commentsQ) {
+      status = outputStyleBoth(out, input);
+   } else {
+      status = outputStyleBinary(out, input);
+   }
+   return status;
+}
 
 @@END:	FunctionDocumentation
 

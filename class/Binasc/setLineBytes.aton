@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	int size
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		70-86
 @SEEALSO:	getLineBytes
 @SHORTDESC:	Set the maximum number of hex bytes in ASCII output.
 @LONGDESC:	Set the maximum number of hex bytes in ASCII output.
@@ -19,6 +19,22 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::setLineBytes -- Set the maximum number of hex bytes in ASCII output.
+//    If the input size is less than one, set to the default value of 25
+//    hex bytes per line.
+//
+
+int Binasc::setLineBytes(int length) {
+   if (length &lt; 1) {
+      maxLineBytes = 25;
+   } else {
+      maxLineBytes = length;
+   }
+   return maxLineBytes;
+}
 
 @@END:	FunctionDocumentation
 

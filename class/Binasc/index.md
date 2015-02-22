@@ -4,9 +4,12 @@ breadcrumbs: [['/doc','documentation'], ['/class', 'classes']]
 title:  Binasc class
 grouptitle: ['https://github.com/craigsapp/midifile/blob/master/src-library', 'Source Code']
 group: [
-   ['https://github.com/craigsapp/scorelib/blob/master/src-library/Binasc.cpp', 'Binasc.cpp'],
+   ['https://github.com/craigsapp/midifile/blob/master/src-library/Binasc.cpp', 'Binasc.cpp'],
 ]
 ---
+
+<details open>
+<summary><span style="font-weight:600; color:black; font-size:130%;">Description<span></summary>
 
 The Binasc class manages conversion between ASCII representation of bytes
 and their conversion into bytes.  This class is used by the 
@@ -124,9 +127,9 @@ for the tick delta times means to convert the decimal value 120
 into a variable-length value.  A string such as <b>'64<b> means to
 store the decimal value 64 into a single output byte.
 
-{% include docslot/docslot.html %}
+</details>
 
-&nbsp;
+{% include docslot/docslot.html %}
 
 Primary functions
 ----------------

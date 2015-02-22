@@ -8,7 +8,7 @@
 @PARAMETERS:	ostream& output, const string& infile
 @PARAMETERS:	ostream& output, istream& input
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		196-267
 @SEEALSO:	readFromBinary
 @SHORTDESC:	Convert a binary file into ASCII byte codes.
 @LONGDESC:	Convert a binary file into ASCII byte codes.
@@ -20,6 +20,77 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::writeToBinary -- Convert an ASCII representation of bytes into
+//     the binary file that it describes.  Returns 0 if there was a problem
+//     otherwise returns 1.
+//
+
+int Binasc::writeToBinary(const string&amp; outfile, const string&amp; infile) {
+   ifstream input;
+   input.open(infile.data());
+   if (!input.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; infile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+   
+   ofstream output;
+   output.open(outfile.data());
+   if (!output.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; outfile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+  
+   int status = writeToBinary(output, input);
+   input.close();
+   output.close();
+   return status;
+}
+
+
+int Binasc::writeToBinary(const string&amp; outfile, istream&amp; input) {
+   ofstream output;
+   output.open(outfile.data());
+   if (!output.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; outfile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+  
+   int status = writeToBinary(output, input);
+   output.close();
+   return status;
+}
+
+
+int Binasc::writeToBinary(ostream&amp; out, const string&amp; infile) {
+   ifstream input;
+   input.open(infile.data());
+   if (!input.is_open()) {
+      cerr &lt;&lt; "Cannot open " &lt;&lt; infile &lt;&lt; " for reading in binasc." &lt;&lt; endl;
+      return 0;
+   }
+   
+   int status = writeToBinary(out, input);
+   input.close();
+   return status;
+}
+
+
+int Binasc::writeToBinary(ostream&amp; out, istream&amp; input) {
+   char inputLine[1024] = {0};    // current line being processed
+   int  lineNum = 0;              // current line number
+
+   input.getline(inputLine, 1024, '\n');
+   lineNum++;
+   while (!input.eof()) {
+      processLine(out, inputLine, lineNum);
+      input.getline(inputLine, 1024, '\n');
+      lineNum++;
+   }
+   return 1;
+}
 
 @@END:	FunctionDocumentation
 

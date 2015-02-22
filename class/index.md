@@ -4,7 +4,7 @@ breadcrumbs: [['/doc', 'documentation']]
 title: Class documentation
 ---
 
-The Midifile library contains five classes:
+The Midifile library contains six classes:
 
 
 <style>
@@ -19,6 +19,7 @@ table.classlist td {
 table.classlist tr td:nth-child(1) {
    text-align: right;
    font-weight: 400;
+   width: 140px;
 }
 
 table.classlist tr td:nth-child(1)::after {
@@ -36,7 +37,7 @@ table.classlist tr td:nth-child(2) {
 
 <tr valign=top>
    <td> <a href="MidiFile">MidiFile</a> </td> <td> 
-	The primary class, responsible for reading and writing MIDI files.
+	Primary class, responsible for reading and writing MIDI files.
    </td>
 </tr>
 
@@ -48,20 +49,27 @@ table.classlist tr td:nth-child(2) {
 
 <tr valign=top>
    <td> <a href="MidiEvent">MidiEvent</a> </td> <td> 
-	A MidiMessage plus a timestamp and other bookkeeping 
-	variables for a MidiMessage.
+	MidiMessage plus a timestamp and other bookkeeping 
+	variables.
    </td>
 </tr>
 
 <tr valign=top>
    <td> <a href="MidiMessage">MidiMessage</a> </td> <td> 
-	A raw MIDI protocol message.  Inherited by the MidiEvent class.
+	Raw MIDI protocol message.  Inherited by the MidiEvent class.
    </td>
 </tr>
 
 <tr valign=top>
    <td> <a href="Options">Options</a> </td> <td> 
-	An independent helper class for processing command-line options.
+	Independent helper class for processing command-line options.
+   </td>
+</tr>
+
+<tr valign=top>
+   <td> <a href="Binasc">Binasc</a> </td> <td> 
+	Support class for MidiFile will allows reading/writing
+	MIDI files with ASCII-based byte codes.
    </td>
 </tr>
 

@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	int size
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		99-119
 @SEEALSO:	getComments
 @SHORTDESC:	Display or not display printable characters as ASCII comments.
 @LONGDESC:	Display or not display printable characters as ASCII comments.
@@ -19,6 +19,26 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::setComments -- Display or not display printable characters 
+//    as comments when converting binary files to ASCII byte codes.
+//
+
+void Binasc::setComments(int state) {
+   commentsQ = state ? 1 : 0;
+}
+
+
+void Binasc::setCommentsOn(void) {
+   setComments(true);
+}
+
+
+void Binasc::setCommentsOff(void) {
+   setComments(false);
+}
 
 @@END:	FunctionDocumentation
 

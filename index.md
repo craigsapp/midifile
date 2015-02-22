@@ -15,15 +15,23 @@ cd midifile
 make
 ```
 
-<h2> <a href="tutorial">Tutorial</a> </h2>
-
 <!-- TUTORIAL LIST ------------------------------------------------- -->
+
+<details open>
+<summary style="outline:none;">
+   <span style="font-weight:600; font-size:130%;"><a href="tutorial">Tutorials</a></span>
+</summary>
 
 {% include tutorial/tutoriallist.html %}
 
+</details>
+
 <!-- CLASS LIST ---------------------------------------------------- -->
 
-<h2>   <a href="class">Class documentation</h2> 
+<details open>
+<summary style="outline:none;">
+   <span style="font-weight:600; font-size:130%;"><a href="class">Class documentation</a></span>
+</summary>
 
 <script>
 window.addEventListener('load', function(event) {
@@ -49,4 +57,5 @@ window.addEventListener('load', function(event) {
 
 {% include class/classlist.html %}
 
+</details>
 
