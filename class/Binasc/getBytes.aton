@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		154-163
 @SEEALSO:	setBytes
 @SHORTDESC:	Get hex byte display option.
 @LONGDESC:	Get hex byte display option.
@@ -17,6 +17,15 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::getBytes -- Get hex byte display status.
+//
+
+int Binasc::getBytes(void) {
+   return bytesQ;
+}
 
 @@END:	FunctionDocumentation
 

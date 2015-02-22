@@ -16,4 +16,5 @@ class:
 	(cd class && $(MAKE))
 	(cd _includes/class && $(MAKE))
 	(cd _includes/tutorial && $(MAKE))
+	(cd _includes/docslot && $(MAKE))
 

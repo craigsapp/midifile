@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		Binasc.cpp
-@LINES:		
+@LINES:		121-131
 @SEEALSO:	setComments
 @SHORTDESC:	Get comment display style for ASCII output.
 @LONGDESC:	Get comment display style for ASCII output.
@@ -17,6 +17,16 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// Binasc::getComments -- Get the comment display style for
+//    showing comments in ASCII output;
+//
+
+int Binasc::getComments(void) {
+   return commentsQ;
+}
 
 @@END:	FunctionDocumentation
 

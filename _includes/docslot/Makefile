@@ -8,8 +8,14 @@
 # Description:   Fill in short descriptions of functions in index files.
 #
 
+all: fix
 
-all: 
+fix:
+	./fixcontent [A-Z]*.html
+
+fixold: 
 	./processFiles [A-Z]*.html
+
+
 
 

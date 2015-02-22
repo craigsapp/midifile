@@ -1,0 +1,93 @@
+#!/usr/bin/perl
+#
+# Programmer:    Craig Stuart Sapp <craig.stanford.edu>
+# Creation Date: Sat Feb 21 22:35:54 PST 2015
+# Last Modified: Sat Feb 21 22:36:00 PST 2015
+# Filename:      _includes/docslot/fixcontent
+# Syntax:        perl 5
+# vim:           ts=3 expandtab
+#
+# Description:   Re-fill the content of prefetched docslot entries.
+#
+
+use strict;
+
+my @files = @ARGV;
+my $classdir    = "../../class";
+
+foreach my $file (@files) {
+   processFile($file);
+}
+
+exit(0);
+
+
+##############################
+##
+## processFile --
+##
+
+sub processFile {
+   my ($file) = @_;
+
+   my $template = '<div class="docslot" id="CLASS::FUNCTION"><span class="docslot-short-title" style="padding-left:19px;">FUNCTION</span><span class="short-desc"> &mdash; DESCRIPTION</span></div>';
+
+   open (FILE, $file) or die "Cannot open $file\n";
+   my @contents = <FILE>;
+   my $line;
+   my $i;
+   my $xtem;
+   my $class;
+   my $function;
+   my $description;
+   my $output = "";
+   for ($i=0; $i<@contents; $i++) {
+      $line = $contents[$i];
+      if ($line !~ /^<div class="docslot"/) {
+         $output .= $line;
+         next;
+      }
+      if ($line =~ /id="([^:]+)::([^"]+)/) {
+         $class = $1;
+         $function = $2;
+         $description = getDescription($1, $2);
+         $xtem = $template;
+         $xtem =~ s/CLASS/$class/g; 
+         $xtem =~ s/FUNCTION/$function/g; 
+         $xtem =~ s/DESCRIPTION/$description/g; 
+         $output .= "$xtem\n";
+      } else {
+         $output .= $line;
+      }
+   }
+   close(FILE);
+ 
+   open(FILE, ">$file") or die "Cannot write to $file\n";
+   print FILE $output;
+   close FILE;
+}
+
+
+
+##############################
+##
+## getDescription --
+##
+
+sub getDescription { 
+   my ($class, $function) = @_;
+   my $file = "$classdir/$class/$function.aton";
+   open (IFILE, $file) or die "Cannot read $file";
+   my $description = "";
+   while (my $line = <IFILE>) {
+      if ($line =~ /^\@SHORTDESC:\s*(.*)\s*$/) {
+         close IFILE;
+         return $1;
+      }
+   }
+   close IFILE;
+   die "SHOULD NOT GET HERE";
+}
+
+
+
