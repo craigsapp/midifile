@@ -7,7 +7,7 @@ MIDI files.  The library consists of 6 classes:
 <table>
 
 <tr valign="top"><td>
-	[**MidiFile**](http://midifile.sapp.org/class/MidiFile) 
+	<a href="http://midifile.sapp.org/class/MidiFile">MidiFile</a>
 </td><td>
 	The main interface for dealing with MIDI files.  The MidiFile class
 	appears as a two dimensional array of MidiEvents: the first dimension
@@ -15,28 +15,28 @@ MIDI files.  The library consists of 6 classes:
 </td></tr>
 
 <tr valign="top"><td>
-	[**MidiEvent**](http://midifile.sapp.org/class/MidiEvent) 
+	<a href="http://midifile.sapp.org/class/MidiEvent">MidiEvent</a>
 </td><td>
 	The primary storage unit for MidiMessages in a MidiFile.  The class
 	consists of a (delta)tick timestamp and a MIDI (or meta) message.
 </td></tr>
 
 <tr valign="top"><td>
-	[**MidiEventList**](http://midifile.sapp.org/class/MidiEventList) 
+	<a href="http://midifile.sapp.org/class/MidiEventList">MidiEventList</a>
 </td><td>
 	A data structure that manages the list of MidiEvents in a track.
 </td></tr>
 
 
 <tr valign="top"><td>
-	[**MidiMessage**](http://midifile.sapp.org/class/MidiMessage) 
+	<a href="http://midifile.sapp.org/class/MidiMessage">MidiMessage</a>
 </td><td>
 	The base class for MidiEvents.  This is a vector&lt;uchar&gt; of 
 	bytes in a MIDI (or meta) message.
 </td></tr>
 
 <tr valign="top"><td>
-	[**Binasc**](http://midifile.sapp.org/class/Binasc) 
+	<a href="http://midifile.sapp.org/class/Binasc">Binasc</a>
 </td><td>
 	A helper class for MidiFile which allows reading/writing of MIDI
 	files in an ASCII format describing the bytes of the binary Standard
@@ -44,7 +44,7 @@ MIDI files.  The library consists of 6 classes:
 </td></tr>
 
 <tr valign="top"><td>
-	[**Options**](http://midifile.sapp.org/class/Options) 
+	<a href="http://midifile.sapp.org/class/Options">Options</a>
 </td><td>
 	A convenience class used for parsing command-line options in 
 	the example programs.
