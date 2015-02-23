@@ -9,11 +9,11 @@ source code are:
 2. [include](https://github.com/craigsapp/midifile/tree/master/include) &mdash; Include files for the classes in the library.
 3. [src-programs](https://github.com/craigsapp/midifile/tree/master/src-programs) &mdash; Example programs which use the library.
 
-The library consists of 6 classes:
+The library consists of 6 classes (click on the class name to view documentation):
 
 * [**MidiFile**](http://midifile.sapp.org/class/MidiFile) &mdash; The main interface for dealing with MIDI files.  The MidiFile class appears as a two dimensional array of MidiEvents: the first dimension is a list of tracks, and the second dimension is a list of MidiEvents.
 * [**MidiEvent**](http://midifile.sapp.org/class/MidiEvent) &mdash; The primary storage unit for MidiMessages in a MidiFile.  The class consists of a (delta)tick timestamp and a MIDI (or meta) message.
-* **MidiEventList**](http://midifile.sapp.org/class/MidiEventList) &mdash; A data structure that manages the list of MidiEvents in a track.
+* [**MidiEventList**](http://midifile.sapp.org/class/MidiEventList) &mdash; A data structure that manages the list of MidiEvents in a track.
 * [**MidiMessage**](http://midifile.sapp.org/class/MidiMessage) &mdash; The base class for MidiEvents.  This is a vector&lt;uchar&gt; of bytes in a MIDI (or meta) message.
 * [**Binasc**](http://midifile.sapp.org/class/Binasc) &mdash; A helper class for MidiFile which allows reading/writing of MIDI files in an ASCII format describing the bytes of the binary Standard MIDI Files.
 * [**Options**](http://midifile.sapp.org/class/Options) &mdash; A convenience class used for parsing command-line options in the example programs.
