@@ -19,6 +19,11 @@ The library consists of 6 classes:
 * **Options** &mdash; A convenience class used for parsing command-line options in the example programs.
 
 
+Documentation is under construction at 
+[http://midifile.sapp.org](http://midifile.sapp.org).
+Essential examples for reading and writing MIDI files
+are given below.
+
 
 Downloading
 -----------
@@ -68,13 +73,6 @@ The compiled program will be `bin/myprogram`.
 
 
 
-Documentation
--------------
-
-Documentation is under construction at 
-[http://midifile.sapp.org](http://midifile.sapp.org).
-Essential examples for reading and writing MIDI files
-are given below.
 
 
 
