@@ -19,6 +19,7 @@
 // Filename:      midifile/src/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
+// vim:           ts=3 expandtab hlsearch
 //
 // Description:   A class which can read/write Standard MIDI files.
 //                MIDI data is stored by track in an array.  This
@@ -43,10 +44,10 @@ using namespace std;
 //
 
 MidiFile::MidiFile(void) {
-   ticksPerQuarterNote = 120;             // time base of file
+   ticksPerQuarterNote = 120;            // TPQ time base of file
    trackCount = 1;                       // # of tracks in file
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
-   theTimeState = TIME_STATE_DELTA;      // absolute or delta
+   theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
    readFileName.resize(1);
@@ -57,10 +58,10 @@ MidiFile::MidiFile(void) {
 
 
 MidiFile::MidiFile(const char* filename) {
-   ticksPerQuarterNote = 120;             // time base of file
+   ticksPerQuarterNote = 120;            // TPQ time base of file
    trackCount = 1;                       // # of tracks in file
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
-   theTimeState = TIME_STATE_DELTA;      // absolute or delta
+   theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
    readFileName.resize(1);
@@ -72,7 +73,8 @@ MidiFile::MidiFile(const char* filename) {
 
 
 MidiFile::MidiFile(const string& filename) {
-   ticksPerQuarterNote = 120;             // time base of file
+
+   ticksPerQuarterNote = 120;            // TQP time base of file
    trackCount = 1;                       // # of tracks in file
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
    theTimeState = TIME_STATE_DELTA;      // absolute or delta
@@ -81,6 +83,22 @@ MidiFile::MidiFile(const string& filename) {
    readFileName.resize(1);
    readFileName[0] = '\0';
    read(filename);
+   timemap.clear();
+   timemapvalid = 0;
+
+}
+
+
+MidiFile::MidiFile(istream& input) {
+   ticksPerQuarterNote = 120;            // TQP time base of file
+   trackCount = 1;                       // # of tracks in file
+   theTrackState = TRACK_STATE_SPLIT;    // joined or split
+   theTimeState = TIME_STATE_DELTA;      // absolute or delta
+   events.resize(1);
+   events[0] = new MidiEventList;
+   readFileName.resize(1);
+   readFileName[0] = '\0';
+   read(input);
    timemap.clear();
    timemapvalid = 0;
 }
@@ -109,6 +127,591 @@ MidiFile::~MidiFile() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
+//
+// reading/writing functions --
+//
+
+//////////////////////////////
+//
+// MidiFile::read -- Parse a Standard MIDI File and store its contents
+//      in the object.
+//
+
+int MidiFile::read(const char* filename) {
+   timemapvalid = 0;
+   if (filename != NULL) {
+      setFilename(filename);
+   }
+
+   fstream input;
+   input.open(filename, ios::binary | ios::in);
+
+   if (!input.is_open()) {
+      return 0;
+   }
+
+   return MidiFile::read(input);
+}
+
+
+//
+// string version of read().
+//
+
+
+int MidiFile::read(const string& filename) {
+   timemapvalid = 0;
+   setFilename(filename);
+
+   fstream input;
+   input.open(filename.data(), ios::binary | ios::in);
+
+   if (!input.is_open()) {
+      return 0;
+   }
+
+   return MidiFile::read(input);
+}
+
+
+//
+// istream version of read().
+//
+
+int MidiFile::read(istream& input) {
+   if (input.peek() != 'M') {
+      // If the first byte in the input stream is not 'M', then presume that
+      // the MIDI file is in the binasc format which is an ASCII representation
+      // of the MIDI file.  Convert the binasc content into binary content and
+      // then continue reading with this function.
+      stringstream binarydata;
+      Binasc binasc;
+      binasc.writeToBinary(binarydata, input);
+      binarydata.seekg(0, ios_base::beg);
+      if (binarydata.peek() != 'M') {
+         cerr << "Bad MIDI data input" << endl;
+	 return 0;
+      } else {
+         return read(binarydata);
+      }
+   }
+
+   const char* filename = getFilename();
+
+   int    character;
+   // uchar  buffer[123456] = {0};
+   ulong  longdata;
+   ushort shortdata;
+
+
+   // Read the MIDI header (4 bytes of ID, 4 byte data size,
+   // anticipated 6 bytes of data.
+
+   character = input.get();
+   if (character == EOF) {
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'M' at first byte, but found nothing." << endl;
+      return 0;
+   } else if (character != 'M') {
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'M' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   character = input.get();
+   if (character == EOF) {
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'T' at first byte, but found nothing." << endl;
+      return 0;
+   } else if (character != 'T') {
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'T' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   character = input.get();
+   if (character == EOF) {
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'h' at first byte, but found nothing." << endl;
+      return 0;
+   } else if (character != 'h') {
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'h' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   character = input.get();
+   if (character == EOF) {
+      cerr << "In file " << filename << ": unexpected end of file." << endl;
+      cerr << "Expecting 'd' at first byte, but found nothing." << endl;
+      return 0;
+   } else if (character != 'd') {
+      cerr << "File " << filename << " is not a MIDI file" << endl;
+      cerr << "Expecting 'd' at first byte but got '"
+           << character << "'" << endl;
+      return 0;
+   }
+
+   // read header size (allow larger header size?)
+   longdata = MidiFile::readLittleEndian4Bytes(input);
+   if (longdata != 6) {
+      cerr << "File " << filename
+           << " is not a MIDI 1.0 Standard MIDI file." << endl;
+      cerr << "The header size is " << longdata << " bytes." << endl;
+      return 0;
+   }
+
+   // Header parameter #1: format type
+   int type;
+   shortdata = MidiFile::readLittleEndian2Bytes(input);
+   switch (shortdata) {
+      case 0:
+         type = 0;
+         break;
+      case 1:
+         type = 1;
+         break;
+      case 2:    // Type-2 MIDI files should probably be allowed as well.
+      default:
+         cerr << "Error: cannot handle a type-" << shortdata
+              << " MIDI file" << endl;
+         return 0;
+   }
+
+   // Header parameter #2: track count
+   int tracks;
+   shortdata = MidiFile::readLittleEndian2Bytes(input);
+   if (type == 0 && shortdata != 1) {
+      cerr << "Error: Type 0 MIDI file can only contain one track" << endl;
+      cerr << "Instead track count is: " << shortdata << endl;
+      return 0;
+   } else {
+      tracks = shortdata;
+   }
+   clear();
+   if (events[0] != NULL) {
+      delete events[0];
+   }
+   events.resize(tracks);
+   for (int z=0; z<tracks; z++) {
+      events[z] = new MidiEventList;
+      events[z]->reserve(10000);   // Initialize with 10,000 event storage.
+      events[z]->clear();
+   }
+
+   // Header parameter #3: Ticks per quarter note
+   shortdata = MidiFile::readLittleEndian2Bytes(input);
+   if (shortdata >= 0x8000) {
+      int framespersecond = ((!(shortdata >> 8))+1) & 0x00ff;
+      int resolution      = shortdata & 0x00ff;
+      switch (framespersecond) {
+         case 232:  framespersecond = 24; break;
+         case 231:  framespersecond = 25; break;
+         case 227:  framespersecond = 29; break;
+         case 226:  framespersecond = 30; break;
+         default:
+               cerr << "Warning: unknown FPS: " << framespersecond << endl;
+               framespersecond = 255 - framespersecond + 1;
+               cerr << "Setting FPS to " << framespersecond << endl;
+      }
+      // actually ticks per second (except for frame=29 (drop frame)):
+      ticksPerQuarterNote = shortdata;
+
+      cerr << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
+      cerr << "SMPTE frames per second: " << framespersecond << endl;
+      cerr << "SMPTE frame resolution per frame: " << resolution << endl;
+   }  else {
+      ticksPerQuarterNote = shortdata;
+   }
+
+
+   //////////////////////////////////////////////////
+   //
+   // now read individual tracks:
+   //
+
+   uchar runningCommand;
+   MidiEvent event;
+   vector<uchar> bytes;
+   int absticks;
+   int status;
+   // int barline;
+
+   for (int i=0; i<tracks; i++) {
+      runningCommand = 0;
+
+      // cout << "\nReading Track: " << i + 1 << flush;
+
+      // read track header...
+
+      character = input.get();
+      if (character == EOF) {
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'M' at first byte in track, but found nothing."
+              << endl;
+         return 0;
+      } else if (character != 'M') {
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'M' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      character = input.get();
+      if (character == EOF) {
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'T' at first byte in track, but found nothing."
+              << endl;
+         return 0;
+      } else if (character != 'T') {
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'T' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      character = input.get();
+      if (character == EOF) {
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'r' at first byte in track, but found nothing."
+              << endl;
+         return 0;
+      } else if (character != 'r') {
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'r' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      character = input.get();
+      if (character == EOF) {
+         cerr << "In file " << filename << ": unexpected end of file." << endl;
+         cerr << "Expecting 'k' at first byte in track, but found nothing."
+              << endl;
+         return 0;
+      } else if (character != 'k') {
+         cerr << "File " << filename << " is not a MIDI file" << endl;
+         cerr << "Expecting 'k' at first byte in track but got '"
+              << character << "'" << endl;
+         return 0;
+      }
+
+      // Now read track chunk size and throw it away because it is
+      // not really necessary since the track MUST end with an
+      // end of track meta event, and 50% of Midi files or so
+      // do not correctly give the track size.
+      longdata = MidiFile::readLittleEndian4Bytes(input);
+
+      // set the size of the track allocation so that it might
+      // approximately fit the data.
+      events[i]->reserve(longdata/2);
+      events[i]->clear();
+
+      // process the track
+      absticks = 0;
+      // barline = 1;
+      while (!input.eof()) {
+         longdata = extractVlvTime(input);
+         //cout << "ticks = " << longdata << endl;
+         absticks += longdata;
+         status = extractMidiData(input, bytes, runningCommand);
+         if (status == 0) {
+            return 0;
+         }
+         event.setMessage(bytes);
+         //cout << "command = " << hex << (int)event.data[0] << dec << endl;
+         if (bytes[0] == 0xff && (bytes[1] == 1 ||
+             bytes[1] == 2 || bytes[1] == 3 || bytes[1] == 4)) {
+           // mididata.push_back('\0');
+           // cout << '\t';
+           // for (int m=0; m<event.data[2]; m++) {
+           //    cout << event.data[m+3];
+           // }
+           // cout.flush();
+         } else if (bytes[0] == 0xff && bytes[1] == 0x2f) {
+            // end of track message
+            // uncomment out the following three lines if you don't want
+            // to see the end of track message (which is always required,
+            // and added automatically when a MIDI is written.
+            event.tick = absticks;
+            event.track = i;
+            events[i]->push_back(event);
+
+            break;
+         }
+
+         if (bytes[0] != 0xff && bytes[0] != 0xf0) {
+            event.tick = absticks;
+            event.track = i;
+            events[i]->push_back(event);
+         } else {
+            event.tick = absticks;
+            event.track = i;
+            events[i]->push_back(event);
+         }
+
+      }
+
+   }
+
+   theTimeState = TIME_STATE_ABSOLUTE;
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::write -- write a standard MIDI file to a file or an output
+//    stream.
+//
+
+int MidiFile::write(const char* filename) {
+   fstream output(filename, ios::out);
+
+   if (!output.is_open()) {
+      cerr << "Error: could not write: " << filename << endl;
+      return 0;
+   }
+   int status = write(output);
+   output.close();
+   return status;
+}
+
+
+int MidiFile::write(const string& filename) {
+   return MidiFile::write(filename.data());
+}
+
+
+int MidiFile::write(ostream& out) {
+   int oldTimeState = getTimeState();
+   if (oldTimeState == TIME_STATE_ABSOLUTE) {
+      deltaTime();
+   }
+
+   // write the header of the Standard MIDI File
+
+   char ch;
+
+   // 1. The characters "MThd"
+   ch = 'M'; out << ch;
+   ch = 'T'; out << ch;
+   ch = 'h'; out << ch;
+   ch = 'd'; out << ch;
+
+   // 2. write the size of the header (always a "6" stored in unsigned long
+   //    (4 bytes).
+   ulong longdata = 6;
+   writeBigEndianULong(out, longdata);
+
+   // 3. MIDI file format, type 0, 1, or 2
+   ushort shortdata;
+   shortdata = (getNumTracks() == 1) ? 0 : 1;
+   writeBigEndianUShort(out,shortdata);
+
+   // 4. write out the number of tracks.
+   shortdata = getNumTracks();
+   writeBigEndianUShort(out, shortdata);
+
+   // 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
+   shortdata = getTicksPerQuarterNote();
+   writeBigEndianUShort(out, shortdata);
+
+   // now write each track.
+   vector<uchar> trackdata;
+   uchar endoftrack[4] = {0, 0xff, 0x2f, 0x00};
+   int i, j, k;
+   int size;
+   for (i=0; i<getNumTracks(); i++) {
+      trackdata.reserve(123456);   // make the track data larger than
+                                   // expected data input
+      trackdata.clear();
+      for (j=0; j<(int)events[i]->size(); j++) {
+         if ((*events[i])[j].isEndOfTrack()) {
+            // suppress end-of-track meta messages (one will be added
+            // automatically after all track data has been written).
+            continue;
+         }
+         writeVLValue((*events[i])[j].tick, trackdata);
+         for (k=0; k<(int)(*events[i])[j].size(); k++) {
+            trackdata.push_back((*events[i])[j][k]);
+         }
+      }
+      size = trackdata.size();
+      if ((size < 3) || !((trackdata[size-3] == 0xff)
+            && (trackdata[size-2] == 0x2f))) {
+         trackdata.push_back(endoftrack[0]);
+         trackdata.push_back(endoftrack[1]);
+         trackdata.push_back(endoftrack[2]);
+         trackdata.push_back(endoftrack[3]);
+      }
+
+      // now ready to write to MIDI file.
+
+      // first write the track ID marker "MTrk":
+      ch = 'M'; out << ch;
+      ch = 'T'; out << ch;
+      ch = 'r'; out << ch;
+      ch = 'k'; out << ch;
+
+      // A. write the size of the MIDI data to follow:
+      longdata = trackdata.size();
+      writeBigEndianULong(out, longdata);
+
+      // B. write the actual data
+      out.write((char*)trackdata.data(), trackdata.size());
+   }
+
+   if (oldTimeState == TIME_STATE_ABSOLUTE) {
+      absoluteTime();
+   }
+
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeHex -- print the Standard MIDI file as a list of
+//    ASCII Hex bytes, formatted 25 to a line by default, and
+//    two digits for each hex byte code.  If the input width is 0,
+//    then don't wrap lines.
+//
+//  default value: width=25
+//
+
+int MidiFile::writeHex(const char* aFile, int width) {
+   fstream output(aFile, ios::out);
+   if (!output.is_open()) {
+      cerr << "Error: could not write: " << aFile << endl;
+      return 0;
+   }
+   int status = writeHex(output, width);
+   output.close();
+   return status;
+}
+
+
+//
+// string version of writeHex().
+//
+
+int MidiFile::writeHex(const string& aFile, int width) {
+   return MidiFile::writeHex(aFile.data(), width);
+}
+
+
+//
+// ostream version of writeHex().
+//
+
+int MidiFile::writeHex(ostream& out, int width) {
+   stringstream tempstream;
+   MidiFile::write(tempstream);
+   int value = 0;
+   int len = tempstream.str().length();
+   int wordcount = 1;
+   int linewidth = width >= 0 ? width : 25;
+   for (int i=0; i<len; i++) {
+      value = (unsigned char)tempstream.str()[i];
+      printf("%02x", value);
+      if (linewidth) {
+         if (i < len - 1) {
+            out << (wordcount % linewidth ? ' ' : '\n');
+         }
+         wordcount++;
+      } else {
+         // print with no line breaks
+         if (i < len - 1) {
+            out << ' ';
+         }
+      }
+   }
+   if (linewidth) {
+      out << '\n';
+   }
+   return 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::writeBinasc -- write a standard MIDI file from data into
+//    the binasc format (ASCII version of the MIDI file).
+//
+
+int MidiFile::writeBinasc(const char* aFile) {
+   fstream output(aFile, ios::out);
+
+   if (!output.is_open()) {
+      cerr << "Error: could not write: " << aFile << endl;
+      return 0;
+   }
+   int status = writeBinasc(output);
+   output.close();
+   return status;
+}
+
+
+int MidiFile::writeBinasc(const string& aFile) {
+   return writeBinasc(aFile.data());
+}
+
+
+int MidiFile::writeBinasc(ostream& output) {
+   stringstream binarydata;
+   int status = write(binarydata);
+   if (status == 0) {
+      return 0;
+   }
+
+   Binasc binasc;
+   binasc.setMidiOn();
+   binarydata.seekg(0, ios_base::beg);
+   binasc.readFromBinary(output, binarydata);
+   return 1;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// track-related functions --
+//
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// tick-related functions --
+//
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// physical-time analysis functions --
+//
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// note-analysis functions --
+//
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// filename functions --
+//
 
 //////////////////////////////
 //
@@ -146,6 +749,21 @@ void MidiFile::setFilename(const string& aname) {
 const char* MidiFile::getFilename(void) {
    return readFileName.data();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -673,336 +1291,6 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 
 
 
-//////////////////////////////
-//
-// MidiFile::read -- Parse a Standard MIDI File and store its contents
-//      in the object.
-//
-
-int MidiFile::read(const char* filename) {
-   timemapvalid = 0;
-   if (filename != NULL) {
-      setFilename(filename);
-   }
-
-   fstream input;
-   input.open(filename, ios::binary | ios::in);
-
-   if (!input.is_open()) {
-      return 0;
-   }
-
-   return MidiFile::read(input);
-}
-
-
-//
-// string version of read().
-//
-
-
-int MidiFile::read(const string& filename) {
-   timemapvalid = 0;
-   setFilename(filename);
-
-   fstream input;
-   input.open(filename.data(), ios::binary | ios::in);
-
-   if (!input.is_open()) {
-      return 0;
-   }
-
-   return MidiFile::read(input);
-}
-
-
-//
-// istream version of read().
-//
-
-int MidiFile::read(istream& input) {
-   if (input.peek() != 'M') {
-      // If the first byte in the input stream is not 'M', then presume that
-      // the MIDI file is in the binasc format which is an ASCII representation
-      // of the MIDI file.  Convert the binasc content into binary content and
-      // then continue reading with this function.
-      stringstream binarydata;
-      Binasc binasc;
-      binasc.writeToBinary(binarydata, input);
-      binarydata.seekg(0, ios_base::beg);
-      if (binarydata.peek() != 'M') {
-         cerr << "Bad MIDI data input" << endl;
-	 return 0;
-      } else {
-         return read(binarydata);
-      }
-   }
-
-   const char* filename = getFilename();
-
-   int    character;
-   // uchar  buffer[123456] = {0};
-   ulong  longdata;
-   ushort shortdata;
-
-
-   // Read the MIDI header (4 bytes of ID, 4 byte data size,
-   // anticipated 6 bytes of data.
-
-   character = input.get();
-   if (character == EOF) {
-      cerr << "In file " << filename << ": unexpected end of file." << endl;
-      cerr << "Expecting 'M' at first byte, but found nothing." << endl;
-      return 0;
-   } else if (character != 'M') {
-      cerr << "File " << filename << " is not a MIDI file" << endl;
-      cerr << "Expecting 'M' at first byte but got '"
-           << character << "'" << endl;
-      return 0;
-   }
-
-   character = input.get();
-   if (character == EOF) {
-      cerr << "In file " << filename << ": unexpected end of file." << endl;
-      cerr << "Expecting 'T' at first byte, but found nothing." << endl;
-      return 0;
-   } else if (character != 'T') {
-      cerr << "File " << filename << " is not a MIDI file" << endl;
-      cerr << "Expecting 'T' at first byte but got '"
-           << character << "'" << endl;
-      return 0;
-   }
-
-   character = input.get();
-   if (character == EOF) {
-      cerr << "In file " << filename << ": unexpected end of file." << endl;
-      cerr << "Expecting 'h' at first byte, but found nothing." << endl;
-      return 0;
-   } else if (character != 'h') {
-      cerr << "File " << filename << " is not a MIDI file" << endl;
-      cerr << "Expecting 'h' at first byte but got '"
-           << character << "'" << endl;
-      return 0;
-   }
-
-   character = input.get();
-   if (character == EOF) {
-      cerr << "In file " << filename << ": unexpected end of file." << endl;
-      cerr << "Expecting 'd' at first byte, but found nothing." << endl;
-      return 0;
-   } else if (character != 'd') {
-      cerr << "File " << filename << " is not a MIDI file" << endl;
-      cerr << "Expecting 'd' at first byte but got '"
-           << character << "'" << endl;
-      return 0;
-   }
-
-   // read header size (allow larger header size?)
-   longdata = MidiFile::readLittleEndian4Bytes(input);
-   if (longdata != 6) {
-      cerr << "File " << filename
-           << " is not a MIDI 1.0 Standard MIDI file." << endl;
-      cerr << "The header size is " << longdata << " bytes." << endl;
-      return 0;
-   }
-
-   // Header parameter #1: format type
-   int type;
-   shortdata = MidiFile::readLittleEndian2Bytes(input);
-   switch (shortdata) {
-      case 0:
-         type = 0;
-         break;
-      case 1:
-         type = 1;
-         break;
-      case 2:    // Type-2 MIDI files should probably be allowed as well.
-      default:
-         cerr << "Error: cannot handle a type-" << shortdata
-              << " MIDI file" << endl;
-         return 0;
-   }
-
-   // Header parameter #2: track count
-   int tracks;
-   shortdata = MidiFile::readLittleEndian2Bytes(input);
-   if (type == 0 && shortdata != 1) {
-      cerr << "Error: Type 0 MIDI file can only contain one track" << endl;
-      cerr << "Instead track count is: " << shortdata << endl;
-      return 0;
-   } else {
-      tracks = shortdata;
-   }
-   clear();
-   if (events[0] != NULL) {
-      delete events[0];
-   }
-   events.resize(tracks);
-   for (int z=0; z<tracks; z++) {
-      events[z] = new MidiEventList;
-      events[z]->reserve(10000);   // Initialize with 10,000 event storage.
-      events[z]->clear();
-   }
-
-   // Header parameter #3: Ticks per quarter note
-   shortdata = MidiFile::readLittleEndian2Bytes(input);
-   if (shortdata >= 0x8000) {
-      int framespersecond = ((!(shortdata >> 8))+1) & 0x00ff;
-      int resolution      = shortdata & 0x00ff;
-      switch (framespersecond) {
-         case 232:  framespersecond = 24; break;
-         case 231:  framespersecond = 25; break;
-         case 227:  framespersecond = 29; break;
-         case 226:  framespersecond = 30; break;
-         default:
-               cerr << "Warning: unknown FPS: " << framespersecond << endl;
-               framespersecond = 255 - framespersecond + 1;
-               cerr << "Setting FPS to " << framespersecond << endl;
-      }
-      // actually ticks per second (except for frame=29 (drop frame)):
-      ticksPerQuarterNote = shortdata;
-
-      cerr << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
-      cerr << "SMPTE frames per second: " << framespersecond << endl;
-      cerr << "SMPTE frame resolution per frame: " << resolution << endl;
-   }  else {
-      ticksPerQuarterNote = shortdata;
-   }
-
-
-   //////////////////////////////////////////////////
-   //
-   // now read individual tracks:
-   //
-
-   uchar runningCommand;
-   MidiEvent event;
-   vector<uchar> bytes;
-   int absticks;
-   int status;
-   // int barline;
-
-   for (int i=0; i<tracks; i++) {
-      runningCommand = 0;
-
-      // cout << "\nReading Track: " << i + 1 << flush;
-
-      // read track header...
-
-      character = input.get();
-      if (character == EOF) {
-         cerr << "In file " << filename << ": unexpected end of file." << endl;
-         cerr << "Expecting 'M' at first byte in track, but found nothing."
-              << endl;
-         return 0;
-      } else if (character != 'M') {
-         cerr << "File " << filename << " is not a MIDI file" << endl;
-         cerr << "Expecting 'M' at first byte in track but got '"
-              << character << "'" << endl;
-         return 0;
-      }
-
-      character = input.get();
-      if (character == EOF) {
-         cerr << "In file " << filename << ": unexpected end of file." << endl;
-         cerr << "Expecting 'T' at first byte in track, but found nothing."
-              << endl;
-         return 0;
-      } else if (character != 'T') {
-         cerr << "File " << filename << " is not a MIDI file" << endl;
-         cerr << "Expecting 'T' at first byte in track but got '"
-              << character << "'" << endl;
-         return 0;
-      }
-
-      character = input.get();
-      if (character == EOF) {
-         cerr << "In file " << filename << ": unexpected end of file." << endl;
-         cerr << "Expecting 'r' at first byte in track, but found nothing."
-              << endl;
-         return 0;
-      } else if (character != 'r') {
-         cerr << "File " << filename << " is not a MIDI file" << endl;
-         cerr << "Expecting 'r' at first byte in track but got '"
-              << character << "'" << endl;
-         return 0;
-      }
-
-      character = input.get();
-      if (character == EOF) {
-         cerr << "In file " << filename << ": unexpected end of file." << endl;
-         cerr << "Expecting 'k' at first byte in track, but found nothing."
-              << endl;
-         return 0;
-      } else if (character != 'k') {
-         cerr << "File " << filename << " is not a MIDI file" << endl;
-         cerr << "Expecting 'k' at first byte in track but got '"
-              << character << "'" << endl;
-         return 0;
-      }
-
-      // Now read track chunk size and throw it away because it is
-      // not really necessary since the track MUST end with an
-      // end of track meta event, and 50% of Midi files or so
-      // do not correctly give the track size.
-      longdata = MidiFile::readLittleEndian4Bytes(input);
-
-      // set the size of the track allocation so that it might
-      // approximately fit the data.
-      events[i]->reserve(longdata/2);
-      events[i]->clear();
-
-      // process the track
-      absticks = 0;
-      // barline = 1;
-      while (!input.eof()) {
-         longdata = extractVlvTime(input);
-         //cout << "ticks = " << longdata << endl;
-         absticks += longdata;
-         status = extractMidiData(input, bytes, runningCommand);
-         if (status == 0) {
-            return 0;
-         }
-         event.setMessage(bytes);
-         //cout << "command = " << hex << (int)event.data[0] << dec << endl;
-         if (bytes[0] == 0xff && (bytes[1] == 1 ||
-             bytes[1] == 2 || bytes[1] == 3 || bytes[1] == 4)) {
-           // mididata.push_back('\0');
-           // cout << '\t';
-           // for (int m=0; m<event.data[2]; m++) {
-           //    cout << event.data[m+3];
-           // }
-           // cout.flush();
-         } else if (bytes[0] == 0xff && bytes[1] == 0x2f) {
-            // end of track message
-            // uncomment out the following three lines if you don't want
-            // to see the end of track message (which is always required,
-            // and added automatically when a MIDI is written.
-            event.tick = absticks;
-            event.track = i;
-            events[i]->push_back(event);
-
-            break;
-         }
-
-         if (bytes[0] != 0xff && bytes[0] != 0xf0) {
-            event.tick = absticks;
-            event.track = i;
-            events[i]->push_back(event);
-         } else {
-            event.tick = absticks;
-            event.track = i;
-            events[i]->push_back(event);
-         }
-
-      }
-
-   }
-
-   theTimeState = TIME_STATE_ABSOLUTE;
-   return 1;
-}
-
 
 
 //////////////////////////////
@@ -1165,190 +1453,6 @@ int MidiFile::getTrackState(void) {
 
 //////////////////////////////
 //
-// MidiFile::writeBinasc -- write a standard MIDI file from data into
-//    the binasc format (ASCII version of the MIDI file).
-//
-
-int MidiFile::writeBinasc(const char* filename) {
-   fstream output(filename, ios::out);
-
-   if (!output.is_open()) {
-      cerr << "Error: could not write: " << filename << endl;
-      return 0;
-   }
-   int status = writeBinasc(output);
-   output.close();
-   return status;
-}
-
-
-int MidiFile::writeBinasc(const string& filename) {
-   return writeBinasc(filename.data());
-}
-
-
-int MidiFile::writeBinasc(ostream& output) {
-   stringstream binarydata;
-   int status = write(binarydata);
-   if (status == 0) {
-      return 0;
-   }
-
-   Binasc binasc;
-   binasc.setMidiOn();
-   binarydata.seekg(0, ios_base::beg);
-   binasc.readFromBinary(output, binarydata);
-   return 1;
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::printHex -- print as a list of ASCII Hex bytes,
-//    formatted 25 to a line, and two digits each.
-//
-
-ostream& MidiFile::printHex(ostream& out) {
-   stringstream tempstream;
-   MidiFile::write(tempstream);
-   int value = 0;
-   int i;
-   int len = tempstream.str().length();
-   int wordcount = 1;
-   int linewidth = 25;
-   for (i=0; i<len; i++) {
-      value = (unsigned char)tempstream.str()[i];
-      printf("%02x", value);
-      if (i < len - 1) {
-         if (wordcount % linewidth) {
-            out << ' ';
-         } else {
-            out << '\n';
-         }
-      }
-      wordcount++;
-   }
-   out << '\n';
-   return out;
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::write -- write a standard MIDI file to a file or an output
-//    stream.
-//
-
-int MidiFile::write(const char* filename) {
-   fstream output(filename, ios::out);
-
-   if (!output.is_open()) {
-      cerr << "Error: could not write: " << filename << endl;
-      return 0;
-   }
-   int status = write(output);
-   output.close();
-   return status;
-}
-
-
-int MidiFile::write(const string& filename) {
-   return MidiFile::write(filename.data());
-}
-
-
-int MidiFile::write(ostream& out) {
-   int oldTimeState = getTimeState();
-   if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      deltaTime();
-   }
-
-   // write the header of the Standard MIDI File
-
-   char ch;
-
-   // 1. The characters "MThd"
-   ch = 'M'; out << ch;
-   ch = 'T'; out << ch;
-   ch = 'h'; out << ch;
-   ch = 'd'; out << ch;
-
-   // 2. write the size of the header (always a "6" stored in unsigned long
-   //    (4 bytes).
-   ulong longdata = 6;
-   writeBigEndianULong(out, longdata);
-
-   // 3. MIDI file format, type 0, 1, or 2
-   ushort shortdata;
-   shortdata = (getNumTracks() == 1) ? 0 : 1;
-   writeBigEndianUShort(out,shortdata);
-
-   // 4. write out the number of tracks.
-   shortdata = getNumTracks();
-   writeBigEndianUShort(out, shortdata);
-
-   // 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
-   shortdata = getTicksPerQuarterNote();
-   writeBigEndianUShort(out, shortdata);
-
-   // now write each track.
-   vector<uchar> trackdata;
-   uchar endoftrack[4] = {0, 0xff, 0x2f, 0x00};
-   int i, j, k;
-   int size;
-   for (i=0; i<getNumTracks(); i++) {
-      trackdata.reserve(123456);   // make the track data larger than
-                                   // expected data input
-      trackdata.clear();
-      for (j=0; j<(int)events[i]->size(); j++) {
-         if ((*events[i])[j].isEndOfTrack()) {
-            // suppress end-of-track meta messages (one will be added
-            // automatically after all track data has been written).
-            continue;
-         }
-         writeVLValue((*events[i])[j].tick, trackdata);
-         for (k=0; k<(int)(*events[i])[j].size(); k++) {
-            trackdata.push_back((*events[i])[j][k]);
-         }
-      }
-      size = trackdata.size();
-      if ((size < 3) || !((trackdata[size-3] == 0xff)
-            && (trackdata[size-2] == 0x2f))) {
-         trackdata.push_back(endoftrack[0]);
-         trackdata.push_back(endoftrack[1]);
-         trackdata.push_back(endoftrack[2]);
-         trackdata.push_back(endoftrack[3]);
-      }
-
-      // now ready to write to MIDI file.
-
-      // first write the track ID marker "MTrk":
-      ch = 'M'; out << ch;
-      ch = 'T'; out << ch;
-      ch = 'r'; out << ch;
-      ch = 'k'; out << ch;
-
-      // A. write the size of the MIDI data to follow:
-      longdata = trackdata.size();
-      writeBigEndianULong(out, longdata);
-
-      // B. write the actual data
-      out.write((char*)trackdata.data(), trackdata.size());
-   }
-
-   if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      absoluteTime();
-   }
-
-   return 1;
-}
-
-
-
-//////////////////////////////
-//
 // MidiFile::getTimeInSeconds -- return the time in seconds for
 //     the current message.
 //
@@ -1441,7 +1545,7 @@ void MidiFile::doTimeInSecondsAnalysis(void) {
 //////////////////////////////
 //
 // MidiFile::linkNotePairs --  Link note-ons to note-offs separately
-//     for each track.  Returns the total number of note message pairs 
+//     for each track.  Returns the total number of note message pairs
 //     that were linked.
 //
 

@@ -53,9 +53,65 @@ class MidiFile {
                 MidiFile                  (void);
                 MidiFile                  (const char* aFile);
                 MidiFile                  (const string& aFile);
+                MidiFile                  (istream& input);
                ~MidiFile                  ();
 
+      // reading/writing functions:
+      int       read                      (const char* aFile);
+      int       read                      (const string& aFile);
+      int       read                      (istream& istream);
+      int       write                     (const char* aFile);
+      int       write                     (const string& aFile);
+      int       write                     (ostream& out);
+      int       writeHex                  (const char* aFile,   int width = 25);
+      int       writeHex                  (const string& aFile, int width = 25);
+      int       writeHex                  (ostream& out,        int width = 25);
+      int       writeBinasc               (const char* aFile);
+      int       writeBinasc               (const string& aFile);
+      int       writeBinasc               (ostream& out);
+
+      // track-related functions:
+      int       getNumTracks              (void);
+      int       addTrack                  (void);
+      int       addTrack                  (int count);
+      void      deleteTrack               (int aTrack);
+      void      joinTracks                (void);
+      void      mergeTracks               (int aTrack1, int aTrack2);
+      void      sortTrack                 (MidiEventList& trackData);
+      void      sortTracks                (void);
+      void      splitTracks               (void);
+      int       getTrackState             (void);
+      int       getTrackCountAsType1      (void);
+      int       getTrackCount             (void);
+      int       getTrack                  (int track, int index);
+
+      int       getEventCount             (int aTrack);
+      void      allocateEvents            (int track, int aSize);
+      int       getNumEvents              (int aTrack);
+
+      // tick-related functions:
+      void      deltaTime                 (void);
       void      absoluteTime              (void);
+      int       getTimeState              (void);
+      void      setMillisecondDelta       (void);
+
+      // physical-time analysis functions:
+      void      doTimeInSecondsAnalysis   (void);
+      double    getTimeInSeconds          (int aTrack, int anIndex);
+      double    getTimeInSeconds          (int tickvalue);
+      int       getAbsoluteTickTime       (double starttime);
+
+      // note-analysis functions:
+      int 	linkNotePairs             (void);
+      void      clearLinks                (void);
+
+      // filename functions:
+      void      setFilename               (const char* aname);
+      void      setFilename               (const string& aname);
+      const char* getFilename             (void);
+
+
+
       int       addEvent                  (int aTrack, int aTime, 
                                              vector<uchar>& midiData);
       int       addEvent                  (MidiEvent& mfevent);
@@ -65,55 +121,15 @@ class MidiFile {
                                              const char* metaData);
       int       addPitchBend              (int aTrack, int aTime,
                                            int aChannel, double amount);
-      int       addTrack                  (void);
-      int       addTrack                  (int count);
-      void      allocateEvents            (int track, int aSize);
-      void      deltaTime                 (void);
-      void      deleteTrack               (int aTrack);
       void      erase                     (void);
       void      clear                     (void);
       void      clear_no_deallocate       (void);
       MidiEvent&  getEvent                (int aTrack, int anIndex);
       MidiEventList& operator[]           (int aTrack);
-      int       getTimeState              (void);
-      int       getTrackState             (void);
+
       int       getTicksPerQuarterNote    (void);
-      int       getTrackCountAsType1      (void);
-      int       getTrackCount             (void);
-      int       getTrack                  (int track, int index);
-      int       getNumTracks              (void);
-      int       getEventCount             (int aTrack);
-      int       getNumEvents              (int aTrack);
-      void      joinTracks                (void);
-      void      mergeTracks               (int aTrack1, int aTrack2);
-      int       read                      (const char* aFile);
-      int       read                      (const string& aFile);
-      int       read                      (istream& istream);
-
       void      setTicksPerQuarterNote    (int ticks);
-      void      setMillisecondDelta       (void);
 
-      void      doTimeInSecondsAnalysis   (void);
-      double    getTimeInSeconds          (int aTrack, int anIndex);
-      double    getTimeInSeconds          (int tickvalue);
-      int       getAbsoluteTickTime       (double starttime);
-
-      void      sortTrack                 (MidiEventList& trackData);
-      void      sortTracks                (void);
-      void      splitTracks               (void);
-      int       write                     (const char* aFile);
-      int       write                     (const string& aFile);
-      int       write                     (ostream& out);
-      int       writeBinasc               (const char* aFile);
-      int       writeBinasc               (const string& aFile);
-      int       writeBinasc               (ostream& out);
-      ostream&  printHex                  (ostream& out);
-      void      setFilename               (const char* aname);
-      void      setFilename               (const string& aname);
-      const char* getFilename             (void);
-
-      int 	linkNotePairs             (void);
-      void      clearLinks                (void);
 
       // static functions:
       static uchar    readByte                (istream& input);
