@@ -93,7 +93,13 @@ class MidiFile {
       void      deltaTime                 (void);
       void      absoluteTime              (void);
       int       getTimeState              (void);
-      void      setMillisecondDelta       (void);
+      int       isDeltaTime               (void);
+      int       isAbsoluteTime            (void);
+
+      // ticks-per-quarter related functions:
+      void      setMillisecondTicks       (void);
+      int       getTicksPerQuarterNote    (void);
+      void      setTicksPerQuarterNote    (int ticks);
 
       // physical-time analysis functions:
       void      doTimeInSecondsAnalysis   (void);
@@ -127,8 +133,6 @@ class MidiFile {
       MidiEvent&  getEvent                (int aTrack, int anIndex);
       MidiEventList& operator[]           (int aTrack);
 
-      int       getTicksPerQuarterNote    (void);
-      void      setTicksPerQuarterNote    (int ticks);
 
 
       // static functions:

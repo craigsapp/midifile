@@ -692,6 +692,111 @@ int MidiFile::writeBinasc(ostream& output) {
 // tick-related functions --
 //
 
+//////////////////////////////
+//
+// MidiFile::deltaTime -- convert the time data to
+//     delta time, which means that the time field
+//     in the MidiEvent struct represents the time
+//     since the last event was played. When a MIDI file
+//     is read from a file, this is the default setting.
+//
+
+void MidiFile::deltaTime(void) {
+   if (getTimeState() == TIME_STATE_DELTA) {
+      return;
+   }
+   int i, j;
+   int temp;
+   int length = getNumTracks();
+   int *timedata = new int[length];
+   for (i=0; i<length; i++) {
+      timedata[i] = 0;
+      if (events[i]->size() > 0) {
+         timedata[i] = (*events[i])[0].tick;
+      } else {
+         continue;
+      }
+      for (j=1; j<(int)events[i]->size(); j++) {
+         temp = (*events[i])[j].tick;
+         (*events[i])[j].tick = temp - timedata[i];
+         timedata[i] = temp;
+      }
+   }
+   theTimeState = TIME_STATE_DELTA;
+   delete [] timedata;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::absoluteTime -- convert the time data to
+//    absolute time, which means that the time field
+//    in the MidiEvent struct represents the exact tick
+//    time to play the event rather than the time since
+//    the last event to wait untill playing the current
+//    event.
+//
+
+void MidiFile::absoluteTime(void) {
+   if (getTimeState() == TIME_STATE_ABSOLUTE) {
+      return;
+   }
+   int i, j;
+   int length = getNumTracks();
+   int* timedata = new int[length];
+   for (i=0; i<length; i++) {
+      timedata[i] = 0;
+      if (events[i]->size() > 0) {
+         timedata[i] = (*events[i])[0].tick;
+      } else {
+         continue;
+      }
+      for (j=1; j<(int)events[i]->size(); j++) {
+         timedata[i] += (*events[i])[j].tick;
+         (*events[i])[j].tick = timedata[i];
+      }
+   }
+   theTimeState = TIME_STATE_ABSOLUTE;
+   delete [] timedata;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getTimeState -- returns what type of time method is
+//   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
+//
+
+int MidiFile::getTimeState(void) {
+   return theTimeState;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::isDeltaTime -- Returns true if MidiEvent .tick 
+//    variables are in delta time mode.
+//
+
+int MidiFile::isDeltaTime(void) {
+   return theTimeState == TIME_STATE_DELTA ? 1 : 0;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::isAbsoluteTime -- Returns true if MidiEvent .tick 
+//    variables are in absolute time mode.
+//
+
+int MidiFile::isAbsoluteTime(void) {
+   return theTimeState == TIME_STATE_ABSOLUTE ? 1 : 0;
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -774,41 +879,6 @@ const char* MidiFile::getFilename(void) {
 
 int MidiFile::getTrack(int track, int index) {
    return getEvent(track, index).track;
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::absoluteTime -- convert the time data to
-//    absolute time, which means that the time field
-//    in the MidiEvent struct represents the exact tick
-//    time to play the event rather than the time since
-//    the last event to wait untill playing the current
-//    event.
-//
-
-void MidiFile::absoluteTime(void) {
-   if (getTimeState() == TIME_STATE_ABSOLUTE) {
-      return;
-   }
-   int i, j;
-   int length = getNumTracks();
-   int* timedata = new int[length];
-   for (i=0; i<length; i++) {
-      timedata[i] = 0;
-      if (events[i]->size() > 0) {
-         timedata[i] = (*events[i])[0].tick;
-      } else {
-         continue;
-      }
-      for (j=1; j<(int)events[i]->size(); j++) {
-         timedata[i] += (*events[i])[j].tick;
-         (*events[i])[j].tick = timedata[i];
-      }
-   }
-   theTimeState = TIME_STATE_ABSOLUTE;
-   delete [] timedata;
 }
 
 
@@ -1055,42 +1125,6 @@ void MidiFile::deleteTrack(int aTrack) {
 
 //////////////////////////////
 //
-// MidiFile::deltaTime -- convert the time data to
-//     delta time, which means that the time field
-//     in the MidiEvent struct represents the time
-//     since the last event was played. When a MIDI file
-//     is read from a file, this is the default setting.
-//
-
-void MidiFile::deltaTime(void) {
-   if (getTimeState() == TIME_STATE_DELTA) {
-      return;
-   }
-   int i, j;
-   int temp;
-   int length = getNumTracks();
-   int *timedata = new int[length];
-   for (i=0; i<length; i++) {
-      timedata[i] = 0;
-      if (events[i]->size() > 0) {
-         timedata[i] = (*events[i])[0].tick;
-      } else {
-         continue;
-      }
-      for (j=1; j<(int)events[i]->size(); j++) {
-         temp = (*events[i])[j].tick;
-         (*events[i])[j].tick = temp - timedata[i];
-         timedata[i] = temp;
-      }
-   }
-   theTimeState = TIME_STATE_DELTA;
-   delete [] timedata;
-}
-
-
-
-//////////////////////////////
-//
 // MidiFile::clear -- make the MIDI file empty with one
 //     track with no data in it.
 //
@@ -1291,8 +1325,6 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 
 
 
-
-
 //////////////////////////////
 //
 // MidiFile::setTicksPerQuarterNote --
@@ -1306,7 +1338,7 @@ void MidiFile::setTicksPerQuarterNote(int ticks) {
 
 //////////////////////////////
 //
-// MidiFile::setMilliseconds -- set the ticks per quarter note
+// MidiFile::setMillisecondTicks -- set the ticks per quarter note
 //   value to milliseconds.  The format for this specification is
 //   highest 8-bits: SMPTE Frame rate (as a negative 2's compliment value).
 //   lowest 8-bits: divisions per frame (as a positive number).
@@ -1317,7 +1349,7 @@ void MidiFile::setTicksPerQuarterNote(int ticks) {
 //   delta times in the MIDI file to represent milliseconds.
 //
 
-void MidiFile::setMillisecondDelta(void) {
+void MidiFile::setMillisecondTicks(void) {
    ticksPerQuarterNote = 0xE728;
 }
 
@@ -1423,18 +1455,6 @@ int MidiFile::getTrackCountAsType1(void) {
    } else {
       return events.size();
    }
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::timeState -- returns what type of time method is
-//   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
-//
-
-int MidiFile::getTimeState(void) {
-   return theTimeState;
 }
 
 
