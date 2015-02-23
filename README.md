@@ -1,15 +1,8 @@
 Midifile: C++ MIDI file parsing library
 =======================================
 
-Midifile is a library of C++ classes for reading/writing 
-Standard MIDI files. The three main components of the 
-source code are:
-
-1. [src-library](https://github.com/craigsapp/midifile/tree/master/src-library) &mdash; Source code for the classes in the library.
-2. [include](https://github.com/craigsapp/midifile/tree/master/include) &mdash; Include files for the classes in the library.
-3. [src-programs](https://github.com/craigsapp/midifile/tree/master/src-programs) &mdash; Example programs which use the library.
-
-The library consists of 6 classes (click on the class name to view documentation):
+Midifile is a library of C++ classes for reading/writing Standard
+MIDI files.  The library consists of 6 classes:
 
 * [**MidiFile**](http://midifile.sapp.org/class/MidiFile) &mdash; The main interface for dealing with MIDI files.  The MidiFile class appears as a two dimensional array of MidiEvents: the first dimension is a list of tracks, and the second dimension is a list of MidiEvents.
 * [**MidiEvent**](http://midifile.sapp.org/class/MidiEvent) &mdash; The primary storage unit for MidiMessages in a MidiFile.  The class consists of a (delta)tick timestamp and a MIDI (or meta) message.
