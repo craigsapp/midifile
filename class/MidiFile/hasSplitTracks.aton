@@ -1,0 +1,34 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	hasSplitTracks
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		858-868
+@SEEALSO:	hasJoinedTracks
+@SHORTDESC:	Return true if MidiFile is in the split-track state.
+@LONGDESC:	Return true if MidiFile is in the split-track state.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::hasSplitTracks -- Returns true if the MidiFile tracks
+//     are in a split state.
+//
+
+int MidiFile::hasSplitTracks(void) {
+   return theTrackState == TRACK_STATE_SPLIT;
+}
+
+@@END:	FunctionDocumentation
+
+
+

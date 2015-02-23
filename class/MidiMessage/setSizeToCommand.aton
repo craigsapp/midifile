@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		141-185
+@LINES:		142-186
 @SEEALSO:	resizeToCommand
 @SHORTDESC:	Set the number of parameters given the stored command byte.
 @LONGDESC:	Set the number of parameters given the stored command byte

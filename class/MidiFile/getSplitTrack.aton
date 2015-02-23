@@ -1,0 +1,56 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	getSplitTrack
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	int track, int index
+@FILE:		MidiFile.cpp
+@LINES:		870-899
+@SEEALSO:	
+@SHORTDESC:	Get the track number of an event when MidiFile is in split state.
+@LONGDESC:	Get the track number of a MidiEvent when the MidiFile is
+		in the split state.  This function will return the
+		original track index when the MidiFile is in the
+		joined-track state.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::getSplitTrack --  Return the track index when the MidiFile
+//   is in the split state.  This function returns the original track
+//   when the MidiFile is in the joined state.  The MidiEvent::track
+//   variable is used to store the original track index when the 
+//   MidiFile is converted to the joined-track state.
+//
+
+int MidiFile::getSplitTrack(int track, int index) {
+   if (hasSplitTracks()) {
+      return track;
+   } else {
+      return getEvent(track, index).track;
+   }
+}
+
+//
+// When the parameter is void, assume track 0:
+//
+
+int MidiFile::getSplitTrack(int index) {
+   if (hasSplitTracks()) {
+      return 0;
+   } else {
+      return getEvent(0, index).track;
+   }
+}
+
+@@END:	FunctionDocumentation
+
+
+

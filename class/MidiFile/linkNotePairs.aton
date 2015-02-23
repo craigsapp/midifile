@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1440-1459
+@LINES:		1635-1654
 @SEEALSO:	
 @SHORTDESC:	Link corresponding note-ons and note-offs.
 @LONGDESC:	Link corresponding note-ons and note-offs.
@@ -21,7 +21,7 @@
 //////////////////////////////
 //
 // MidiFile::linkNotePairs --  Link note-ons to note-offs separately
-//     for each track.  Returns the total number of note message pairs 
+//     for each track.  Returns the total number of note message pairs
 //     that were linked.
 //
 

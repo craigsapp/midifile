@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1062-1114
+@LINES:		780-832
 @SEEALSO:	
 @SHORTDESC:	Take joined tracks and split them back into their separate
 		track identities.

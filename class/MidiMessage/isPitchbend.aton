@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		434-450
+@LINES:		435-451
 @SEEALSO:	getCommandNibble
 @SHORTDESC:	Returns true if MIDI message is an pitch-bend message.
 @LONGDESC:	Returns true if command nibble is 0xE0 for an pitch-bend

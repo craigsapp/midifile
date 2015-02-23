@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		305-323
+@LINES:		306-324
 @SEEALSO:	
 @SHORTDESC:	Return true if MIDI message is a note off message.
 @LONGDESC:	Return true if command nibble is 0x80, or command nibble

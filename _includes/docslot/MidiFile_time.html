@@ -14,34 +14,33 @@ switch the event tick values within the MidiFile between these two modes:
 <div class="docslot" id="MidiFile::absoluteTime"><span class="docslot-short-title" style="padding-left:19px;">absoluteTime</span><span class="short-desc"> &mdash; Convert event delta tick values into absolute ticks.</span></div>
 <div class="docslot" id="MidiFile::deltaTime"><span class="docslot-short-title" style="padding-left:19px;">deltaTime</span><span class="short-desc"> &mdash; Convert timestamps into delta times.</span></div>
 
-<p>
+<br/>
 The <span class="function">isDeltaTime</span>
 and <span class="function">isAbsoluteTime</span> 
 functions can be used to check
 which mode in which the event ticks are currently given.
-</p>
 
-<div class="docslot" id="MidiFile::isDeltaTime"><span class="docslot-short-title" style="padding-left:19px;">absoluteTime</span><span class="short-desc"> &mdash; Convert event delta tick values into absolute ticks.</span></div>
-<div class="docslot" id="MidiFile::isAbsoluteTime"><span class="docslot-short-title" style="padding-left:19px;">deltaTime</span><span class="short-desc"> &mdash; Convert timestamps into delta times.</span></div>
+<div class="docslot" id="MidiFile::isDeltaTime"><span class="docslot-short-title" style="padding-left:19px;">isDeltaTime</span><span class="short-desc"> &mdash; Returns true if event ticks are in delta-time mode.</span></div>
+<div class="docslot" id="MidiFile::isAbsoluteTime"><span class="docslot-short-title" style="padding-left:19px;">isAbsoluteTime</span><span class="short-desc"> &mdash; Returns true if event ticks are in absolute-time mode.</span></div>
 
-<p>
+<br/>
 Tick values are symbolic time units, such as rhythms in music
 notation.  For example quarter notes do not have a specific duration
 in seconds until a tempo is applied to the rhythm.  Within Standard
 MIDI Files, there is a field which specifies how many ticks represent
 a quarter note.  This convserion value can be read or set with the
 following two MidiFile member functions:
-</p>
 
 <div class="docslot" id="MidiFile::getTicksPerQuarterNote"><span class="docslot-short-title" style="padding-left:19px;">getTicksPerQuarterNote</span><span class="short-desc"> &mdash; Return the delta time ticks units which represent a quarter note.</span></div>
 <div class="docslot" id="MidiFile::setTicksPerQuarterNote"><span class="docslot-short-title" style="padding-left:19px;">setTicksPerQuarterNote</span><span class="short-desc"> &mdash; Set the ticks-per-quarter note value.</span></div>
 
+<br/>
 <h4> Physical time of events </h4>
 
 <div class="docslot" id="MidiFile::doTimeInSecondsAnalysis"><span class="docslot-short-title" style="padding-left:19px;">doTimeInSecondsAnalysis</span><span class="short-desc"> &mdash; Calculate the time in seconds for each event in the MidiFile.</span></div>
 <div class="docslot" id="MidiFile::getTimeInSeconds"><span class="docslot-short-title" style="padding-left:19px;">getTimeInSeconds</span><span class="short-desc"> &mdash; Return the time in seconds for the specified message.</span></div>
-<div class="docslot" id="MidiFile::setMilliseconds"><span class="docslot-short-title" style="padding-left:19px;">setMilliseconds</span><span class="short-desc"> &mdash; Set the ticks per quarter note value in the MIDI file header</span></div>
+<div class="docslot" id="MidiFile::setMillisecondTicks"><span class="docslot-short-title" style="padding-left:19px;">setMillisecondTicks</span><span class="short-desc"> &mdash; Set the ticks per quarter note value in the MIDI file header</span></div>
 <div class="docslot" id="MidiFile::getAbsoluteTickTime"><span class="docslot-short-title" style="padding-left:19px;">getAbsoluteTickTime</span><span class="short-desc"> &mdash; Convert a time in seconds into an absolute tick time.</span></div>
 
-<div class="docslot" id="MidiFile::sortTrack"><span class="docslot-short-title" style="padding-left:19px;">getAbsoluteTickTime</span><span class="short-desc"> &mdash; Convert a time in seconds into an absolute tick time.</span></div>
-<div class="docslot" id="MidiFile::sortTracks"><span class="docslot-short-title" style="padding-left:19px;">getAbsoluteTickTime</span><span class="short-desc"> &mdash; Convert a time in seconds into an absolute tick time.</span></div>
+<div class="docslot" id="MidiFile::sortTrack"><span class="docslot-short-title" style="padding-left:19px;">sortTrack</span><span class="short-desc"> &mdash; Sort a track in terms of timestamps of the events.</span></div>
+<div class="docslot" id="MidiFile::sortTracks"><span class="docslot-short-title" style="padding-left:19px;">sortTracks</span><span class="short-desc"> &mdash; Sort all tracks in the MidiFile by event timestamps.</span></div>

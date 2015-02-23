@@ -1,8 +1,80 @@
-<div class="docslot" id="MidiFile::addTrack"><span class="docslot-short-title" style="padding-left:19px;">addTrack</span><span class="short-desc"> &mdash; Added one or more empty tracks to the MidiFile.</span></div>
+
+The MidiFile class contains a list tracks, each stored as a 
+<a href=../MidiEventList>MidiEventList</a> object.  The []
+operator accesses each list, and the 
+<span class="function">getTrackCount</span> function will report
+the current number of tracks in a MidiFile object.
+
+<div class="docslot" id="MidiFile::operatorSQUAREBRACKETS"><span class="docslot-short-title" style="padding-left:19px;">operatorSQUAREBRACKETS</span><span class="short-desc"> &mdash; Returns the list of events for a track.</span></div>
 <div class="docslot" id="MidiFile::getTrackCount"><span class="docslot-short-title" style="padding-left:19px;">getTrackCount</span><span class="short-desc"> &mdash; Return the number of tracks in the MidiFile.</span></div>
-<div class="docslot" id="MidiFile::mergeTracks"><span class="docslot-short-title" style="padding-left:19px;">mergeTracks</span><span class="short-desc"> &mdash; Combine two tracks into a single track.</span></div>
+
+<br/>
+The tracks in a MidiFile can reversibly be merged into a single 
+event list by calling the
+<span class="function">joinTracks</span> 
+function.  This will cause the
+<span class="function">getTrackCount</span> 
+function to report that there is one track in the file, and if the 
+file is written in this state, it will be saved as a type-0 MIDI file
+(from which the multi-track state will not be recoverable).  Before
+tracks are joined, the events in each track must be in correct
+time sequence, so the 
+<span class="function">sort</span> 
+function may need to be called before joining the tracks.
+
 <div class="docslot" id="MidiFile::joinTracks"><span class="docslot-short-title" style="padding-left:19px;">joinTracks</span><span class="short-desc"> &mdash; Merge all tracks into a single stream of events.</span></div>
 <div class="docslot" id="MidiFile::splitTracks"><span class="docslot-short-title" style="padding-left:19px;">splitTracks</span><span class="short-desc"> &mdash; Take joined tracks and split them back into their separate</span></div>
+
+<br/>
+The 
+<span class="function">hasJoinedTracks</span> 
+and
+<span class="function">hasSplitTracks</span> 
+functions can be used to detect the current state of the
+tracks in a MidiFile.  By default, a MidiFile will be in the
+split state.
+
+<div class="docslot" id="MidiFile::hasJoinedTracks"><span class="docslot-short-title" style="padding-left:19px;">hasJoinedTracks</span><span class="short-desc"> &mdash; Return true if MidiFile is in the joined-track state.</span></div>
+<div class="docslot" id="MidiFile::hasSplitTracks"><span class="docslot-short-title" style="padding-left:19px;">hasSplitTracks</span><span class="short-desc"> &mdash; Return true if MidiFile is in the split-track state.</span></div>
+
+<br/>
+When a MidiFile is in the joined state, the original track is stored in
+the track variable of each <a href="../MidiEvent">MidiEvent</a>.  The
+<span class="function">getSplitTrack</span> 
+function returns the track index for when a MidiFile is in the
+split state.
+
+<div class="docslot" id="MidiFile::getSplitTrack"><span class="docslot-short-title" style="padding-left:19px;">getSplitTrack</span><span class="short-desc"> &mdash; Get the track number of an event when MidiFile is in split state.</span></div>
+
+<br/>
+Here are functions which relate to adding, deleting and merging
+tracks:
+
+<div class="docslot" id="MidiFile::addTrack"><span class="docslot-short-title" style="padding-left:19px;">addTrack</span><span class="short-desc"> &mdash; Added one or more empty tracks to the MidiFile.</span></div>
 <div class="docslot" id="MidiFile::deleteTrack"><span class="docslot-short-title" style="padding-left:19px;">deleteTrack</span><span class="short-desc"> &mdash; Remove the specified track from the MidiFile.</span></div>
-<div class="docslot" id="MidiFile::getTrack"><span class="docslot-short-title" style="padding-left:19px;">getTrack</span><span class="short-desc"> &mdash; Get the track number of an MidiEvents in the MidiFile.</span></div>
-<div class="docslot" id="MidiFile::getTrackState"><span class="docslot-short-title" style="padding-left:19px;">getTrackState</span><span class="short-desc"> &mdash; Return if tracks are joined or split.</span></div>
+<div class="docslot" id="MidiFile::mergeTracks"><span class="docslot-short-title" style="padding-left:19px;">mergeTracks</span><span class="short-desc"> &mdash; Combine two tracks into a single track.</span></div>
+
+<br/>
+When a MidiFile is in absolute-tick mode (see further below), the tick 
+variable of 
+<a href="../MidiFile">MidiEvent</a> objects in the MidiFile are the total
+number of ticks since the start time for the file.  In the absolute-tick
+mode, MidiEvents can be added to tracks in non-sequential order.  To re-arrange
+the events into proper time order (such as before writing the file), use
+the 
+<span class="function">sortTracks</span> function, which will sort all 
+tracks in the MIDI file, or
+<span class="function">sortTrack</span> function, which will sort a
+particular track by its index number.
+
+<div class="docslot" id="MidiFile::sortTracks"><span class="docslot-short-title" style="padding-left:19px;">sortTracks</span><span class="short-desc"> &mdash; Sort all tracks in the MidiFile by event timestamps.</span></div>
+<div class="docslot" id="MidiFile::sortTrack"><span class="docslot-short-title" style="padding-left:19px;">sortTrack</span><span class="short-desc"> &mdash; Sort a track in terms of timestamps of the events.</span></div>
+
+
+
+
+
+
+
+
+

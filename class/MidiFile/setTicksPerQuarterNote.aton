@@ -1,11 +1,12 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiFile
 @METHOD:	setTicksPerQuarterNote
+@ALIAS:		setTPQ
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	int ticks
 @FILE:		MidiFile.cpp
-@LINES:		1007-1016
+@LINES:		1457-1474
 @SEEALSO:	
 @SHORTDESC:	Set the ticks-per-quarter note value.
 @LONGDESC:	Set the ticks-per-quarter note value in the MIDI header.
@@ -25,6 +26,14 @@
 
 void MidiFile::setTicksPerQuarterNote(int ticks) {
    ticksPerQuarterNote = ticks;
+}
+
+//
+// Alias for setTicksPerQuarterNote:
+//
+
+void MidiFile::setTPQ(int ticks) {
+   setTicksPerQuarterNote(ticks);
 }
 
 @@END:	FunctionDocumentation

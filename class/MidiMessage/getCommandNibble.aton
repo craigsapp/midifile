@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		640-654
+@LINES:		641-655
 @SEEALSO:	getChannelNibble
 @SHORTDESC:	Return the command nibble of the MIDI message.
 @LONGDESC:	Return the top four bits of the command byte of

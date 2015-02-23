@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	long value, vector<uchar>& data
 @FILE:		MidiFile.cpp
-@LINES:		1776-1801
+@LINES:		1971-1996
 @SEEALSO:	
 @SHORTDESC:	Convert an integer int a list of VLV bytes.
 @LONGDESC:	Convert an integer int a list of VLV bytes.

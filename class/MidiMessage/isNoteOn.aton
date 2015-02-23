@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		325-343
+@LINES:		326-344
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a note-on message.
 @LONGDESC:	Returns true if MIDI message is a note-on message.

@@ -1,0 +1,33 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	operator[]
+@ACCESS:	public
+@RETURN:	MidiEventList&
+@PARAMETERS:	int index
+@FILE:		MidiFile.cpp
+@LINES:		687-696
+@SEEALSO:	
+@SHORTDESC:	Returns the list of events for a track.
+@LONGDESC:	Returns the list of events for a track.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::operator[] -- return the event list for the specified track.
+//
+
+MidiEventList&amp; MidiFile::operator[](int aTrack) {
+   return *events[aTrack];
+}
+
+@@END:	FunctionDocumentation
+
+
+

@@ -1,11 +1,12 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiFile
 @METHOD:	getTicksPerQuarterNote
+@ALIAS:		getTPQ
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		521-539
+@LINES:		1365-1391
 @SEEALSO:	
 @SHORTDESC:	Return the delta time ticks units which represent a quarter note.
 @LONGDESC:	Return the delta time ticks units which represent a quarter note.
@@ -34,6 +35,14 @@ int MidiFile::getTicksPerQuarterNote(void) {
       // return 1000;
    }
    return ticksPerQuarterNote;
+}
+
+//
+// Alias for getTicksPerQuarterNote:
+//
+
+int MidiFile::getTPQ(void) {
+   return getTicksPerQuarterNote();
 }
 
 @@END:	FunctionDocumentation

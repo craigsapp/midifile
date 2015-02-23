@@ -5,7 +5,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		575-626
+@LINES:		725-778
 @SEEALSO:	splitTracks
 @SHORTDESC:	Merge all tracks into a single stream of events.
 @LONGDESC:	Merge the data from all tracks, but keep the identify
@@ -24,11 +24,13 @@
 
 //////////////////////////////
 //
-// MidiFile::joinTracks -- merge the data from all tracks,
+// MidiFile::joinTracks -- Interleave the data from all tracks,
 //   but keeping the identity of the tracks unique so that
 //   the function splitTracks can be called to split the
 //   tracks into separate units again.  The style of the
 //   MidiFile when read from a file is with tracks split.
+//   The original track index is stored in the MidiEvent::track
+//   variable.
 //
 
 void MidiFile::joinTracks(void) {

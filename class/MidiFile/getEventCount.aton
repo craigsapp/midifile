@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	int track
 @FILE:		MidiFile.cpp
-@LINES:		558-573
+@LINES:		1393-1408
 @SEEALSO:	
 @SHORTDESC:	Return the number of events in the specified track.
 @LONGDESC:	Return the number of events in the specified track.

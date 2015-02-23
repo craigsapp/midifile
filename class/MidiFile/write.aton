@@ -6,14 +6,22 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		1237-1347
+@LINES:		466-576
 @SEEALSO:	
 @SHORTDESC:	Write a Standard MIDI file from the MidiFile contents.
 @LONGDESC:	Write a Standard MIDI file from the MidiFile contents.
 
 @@BEGIN: EXAMPLE
-@DESCRIPTION:
+@DESCRIPTION: Read MIDI file and then save a copy.
 @CODE:
+#include "MidiFile.h"
+
+int main(void) {
+   MidiFile midifile;
+   midifile.read("input.mid");
+   midifile.write("output.mid");
+   return 0;
+}
 @OUTPUT:
 @@END:	EXAMPLE
 

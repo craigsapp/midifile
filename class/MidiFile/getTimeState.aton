@@ -1,16 +1,15 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiFile
-@METHOD:	timeState
+@METHOD:	getTimeState
 @ACCESS:	public
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1141-1151
-@SEEALSO:	
-@SHORTDESC:	Return whether event timestamps are in absolute or delta
-		form.
-@LONGDESC:	Return whether event timestamps are in absolute or delta
-		form.
+@LINES:		977-987
+@SEEALSO:	isDeltaTime
+@SEEALSO:	isAbsoluteTime
+@SHORTDESC:	Return whether event timestamps are in absolute or delta form.
+@LONGDESC:	Return whether event timestamps are in absolute or delta form.
 
 @@BEGIN: EXAMPLE
 @DESCRIPTION:
@@ -22,7 +21,7 @@
 
 //////////////////////////////
 //
-// MidiFile::timeState -- returns what type of time method is
+// MidiFile::getTimeState -- returns what type of time method is
 //   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
 //
 

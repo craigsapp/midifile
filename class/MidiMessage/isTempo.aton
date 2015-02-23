@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		469-488
+@LINES:		470-489
 @SEEALSO:	
 @SHORTDESC:	Returns true if MIDI message is a tempo meta message.
 @LONGDESC:	Returns true if MIDI message is a tempo meta message.

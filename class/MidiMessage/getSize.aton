@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiMessage.cpp
-@LINES:		130-139
+@LINES:		131-140
 @SEEALSO:	vector<uchar>::size
 @SHORTDESC:	Returns the number of bytes in the MIDI message.
 @LONGDESC:	Returns the number of bytes in the MIDI message.  The same

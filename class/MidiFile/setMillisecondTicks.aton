@@ -1,11 +1,11 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiFile
-@METHOD:	setMilliseconds
+@METHOD:	setMillisecondTicks
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1018-1035
+@LINES:		1475-1492
 @SEEALSO:	
 @SHORTDESC:	Set the ticks per quarter note value in the MIDI file header
 		to milliseconds.
@@ -30,7 +30,7 @@
 
 //////////////////////////////
 //
-// MidiFile::setMilliseconds -- set the ticks per quarter note
+// MidiFile::setMillisecondTicks -- set the ticks per quarter note
 //   value to milliseconds.  The format for this specification is
 //   highest 8-bits: SMPTE Frame rate (as a negative 2's compliment value).
 //   lowest 8-bits: divisions per frame (as a positive number).
@@ -41,7 +41,7 @@
 //   delta times in the MIDI file to represent milliseconds.
 //
 
-void MidiFile::setMillisecondDelta(void) {
+void MidiFile::setMillisecondTicks(void) {
    ticksPerQuarterNote = 0xE728;
 }
 

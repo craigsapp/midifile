@@ -5,7 +5,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		
+@LINES:		989-999
 @SEEALSO:	isDeltaTime
 @SHORTDESC:	Returns true if event ticks are in delta-time mode.
 @LONGDESC:	Returns true if event ticks are in delta-time mode.
@@ -17,6 +17,16 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::isDeltaTime -- Returns true if MidiEvent .tick 
+//    variables are in delta time mode.
+//
+
+int MidiFile::isDeltaTime(void) {
+   return theTimeState == TIME_STATE_DELTA ? 1 : 0;
+}
 
 @@END:	FunctionDocumentation
 

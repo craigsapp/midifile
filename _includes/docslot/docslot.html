@@ -157,6 +157,10 @@ summary {
 	outline:none; /* prevent a box from showing around summary text */
 }
 
+details[open].example-details {
+	content: "XXX";
+}
+
 /* For displaying keyboard short-cut keys. */
 .keyboard-char {
 	background: #999999;
@@ -192,9 +196,24 @@ summary {
 
 }
 
+pre.code-example {
+	/* margin-left:20px; */
+	margin-bottom:0; 
+	padding:0; 
+	padding-left:10px;
+}
+
+pre.output-example {
+	/* margin-left:20px; */
+	margin-bottom:0; 
+	padding:0; 
+   padding-top: 15px;
+	padding-left:10px;
+}
+
 .example-output {
 	padding-left:5px;
-	margin-right:-20px !important;
+   color: #333;
 	background: #888; /* Old browsers */
 	background: -moz-linear-gradient(left,  #888 0%, #888 3%, #3a3c42 91%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#888), color-stop(3%,#888), color-stop(91%,#3a3c42)); /* Chrome,Safari4+ */
@@ -251,16 +270,16 @@ summary {
 
 <script id="method-example" type="text/x-handlebars-template">
 	<summary>{{{DESCRIPTION}}}</summary>
-	<div class="highlight">
-	<pre style="margin-left:20px; margin-bottom:0; padding:0; padding-left:10px;">
+	<div>
+	<pre class="code-example">
 		<code class="language-javascript" data-lang="javascript">
 {{CODE}}</code>
 	</pre>
 	</div>
 {{#if OUTPUT}}
 	<div class="example-output">output:</div>
-	<div class="highlight">
-	<pre style="margin-left:20px; padding:0; padding-top:12px; padding-left:10px;">
+	<div>
+	<pre class="output-example">
 {{OUTPUT}}
 	</pre>
 	</div>
@@ -270,16 +289,16 @@ summary {
 
 
 <script id="method-example-single" type="text/x-handlebars-template">
-	<div class="highlight">
-	<pre style="margin-left:20px; margin-bottom:0; padding:0; padding-left:10px;">
+	<div>
+	<pre class="code-example">
 		<code class="language-javascript" data-lang="javascript">
 {{CODE}}</code>
 	</pre>
 	</div>
 {{#if OUTPUT}}
 	<div class="example-output">output:</div>
-	<div class="highlight">
-	<pre style="margin-left:20px; padding:0; padding-top:12px; padding-left:10px;">
+	<div>
+	<pre class="output-example">
 {{OUTPUT}}
 	</pre>
 	</div>
@@ -420,13 +439,13 @@ Handlebars.registerHelper('showExamples', function (entry) {
 
 	var output = '';
 	if (entry instanceof Array) {
-		output += '<span style="font-weight:700">Examples</span>';
+		output += '<br><span style="font-weight:700">Examples:</span>';
 		output += '<span';
 		output += ' class="example-button"';
 		output += ' onclick="expandAllExamples(this);">'
 		output += 'Expand all';
 		output += '</span>\n';
-		output += '<ol style="padding-left:0; margin-left:0;">\n';
+		output += '<ol style="margin-bottom:0; padding-left:0; margin-left:-3px;">\n';
 		for (var i=0; i<entry.length; i++) {
 			output += '<li>\n';
 			output += '<details class="example-details">\n';
@@ -443,7 +462,6 @@ Handlebars.registerHelper('showExamples', function (entry) {
 		output += '</summary>';
 		output += templatesingle(entry);
 		output += '</details>';
-		output += '<br>';
 	}
 
 	return output;

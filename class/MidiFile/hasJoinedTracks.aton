@@ -1,0 +1,34 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	hasJoinedTracks
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiFile.cpp
+@LINES:		846-856
+@SEEALSO:	hasSplitTracks
+@SHORTDESC:	Return true if MidiFile is in the joined-track state.
+@LONGDESC:	Return true if MidiFile is in the joined-track state.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::hasJoinedTracks -- Returns true if the MidiFile tracks
+//    are in a joined state.
+//
+
+int MidiFile::hasJoinedTracks(void) {
+   return theTrackState == TRACK_STATE_JOINED;
+}
+
+@@END:	FunctionDocumentation
+
+
+

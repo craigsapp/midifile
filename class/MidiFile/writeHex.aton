@@ -1,52 +1,106 @@
 @@BEGIN:	FunctionDocumentation
 @CLASSNAME:	MidiFile
-@METHOD:	printHex
+@METHOD:	writeHex
 @ACCESS:	public
 @RETURN:	ostream&
-@PARAMETERS:	ostream& out
+@PARAMETERS:	const char* filename
+@PARAMETERS:	const string& filename
+@PARAMETERS:	int
 @FILE:		MidiFile.cpp
-@LINES:		1205-1235
+@LINES:		578-641
 @SEEALSO:	
 @SHORTDESC:	Print MidiFile as a list of ASCII hex bytes.
 @LONGDESC:	Print the MIDI file as a sequence of ASCII hex bytes, 
 		formatted 25 bytes to a line and two digits each.
 
 @@BEGIN: EXAMPLE
-@DESCRIPTION:
+@DESCRIPTION: Write a MIDI file with a single note as Hex bytes.
 @CODE:
+#include "MidiFile.h"
+#include <iostream>
+int main(void) {
+   MidiFile midifile;
+   MidiEvent event;
+   event.tick = 0;
+   event.track = 0;
+   event.makeNoteOn(60, 64);
+   midifile.addEvent(event);
+   event.makeNoteOff();
+   event.tick = midifile.getTPQ() * 2;  // half-note
+   midifile.addEvent(event);
+   midifile.writeHex(std::cout);
+   return 0;
+}
+
 @OUTPUT:
+4d 54 68 64 00 00 00 06 00 00 00 01 00 78 4d 54 72 6b 00 00 00 0d 00 90 3c
+40 81 70 90 3c 00 00 ff 2f 00
+
 @@END:	EXAMPLE
 
 @SRCCODE:
 
 //////////////////////////////
 //
-// MidiFile::printHex -- print as a list of ASCII Hex bytes,
-//    formatted 25 to a line, and two digits each.
+// MidiFile::writeHex -- print the Standard MIDI file as a list of
+//    ASCII Hex bytes, formatted 25 to a line by default, and
+//    two digits for each hex byte code.  If the input width is 0,
+//    then don't wrap lines.
+//
+//  default value: width=25
 //
 
-ostream&amp; MidiFile::printHex(ostream&amp; out) {
+int MidiFile::writeHex(const char* aFile, int width) {
+   fstream output(aFile, ios::out);
+   if (!output.is_open()) {
+      cerr &lt;&lt; "Error: could not write: " &lt;&lt; aFile &lt;&lt; endl;
+      return 0;
+   }
+   int status = writeHex(output, width);
+   output.close();
+   return status;
+}
+
+
+//
+// string version of writeHex().
+//
+
+int MidiFile::writeHex(const string&amp; aFile, int width) {
+   return MidiFile::writeHex(aFile.data(), width);
+}
+
+
+//
+// ostream version of writeHex().
+//
+
+int MidiFile::writeHex(ostream&amp; out, int width) {
    stringstream tempstream;
    MidiFile::write(tempstream);
    int value = 0;
-   int i;
    int len = tempstream.str().length();
    int wordcount = 1;
-   int linewidth = 25;
-   for (i=0; i&lt;len; i++) {
+   int linewidth = width &gt;= 0 ? width : 25;
+   for (int i=0; i&lt;len; i++) {
       value = (unsigned char)tempstream.str()[i];
       printf("%02x", value);
-      if (i &lt; len - 1) {
-         if (wordcount % linewidth) {
+      if (linewidth) {
+         if (i &lt; len - 1) {
+            out &lt;&lt; (wordcount % linewidth ? ' ' : '\n');
+         }
+         wordcount++;
+      } else {
+         // print with no line breaks
+         if (i &lt; len - 1) {
             out &lt;&lt; ' ';
-         } else {
-            out &lt;&lt; '\n';
          }
       }
-      wordcount++;
    }
-   out &lt;&lt; '\n';
-   return out;
+   if (linewidth) {
+      out &lt;&lt; '\n';
+   }
+   return 1;
 }
 
 @@END:	FunctionDocumentation

@@ -8,7 +8,7 @@
 @PARAMETERS:	vector<char>& bytes
 @PARAMETERS:	vector<int>& bytes
 @FILE:		MidiMessage.cpp
-@LINES:		83-117
+@LINES:		84-118
 @SEEALSO:	
 @SHORTDESC:	Copy the contents of another MidiMessage.
 @LONGDESC:	Copy the contents of another MidiMessage.

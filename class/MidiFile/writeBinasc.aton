@@ -7,18 +7,85 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		
+@LINES:		643-681
 @SEEALSO:	
 @SHORTDESC:	Print ASCII version of MIDI file in binasc format.
 @LONGDESC:	Print ASCII version of MIDI file in binasc format.
 
 @@BEGIN: EXAMPLE
-@DESCRIPTION:
+@DESCRIPTION: Write a MIDI file with a single note as binasc text.
 @CODE:
+#include "MidiFile.h"
+#include <iostream>
+int main(void) {
+   MidiFile midifile;
+   MidiEvent event;
+   event.tick = 0;
+   event.track = 0;
+   event.makeNoteOn(60, 64);
+   midifile.addEvent(event);
+   event.makeNoteOff();
+   event.tick = midifile.getTPQ() * 2;  // half-note
+   midifile.addEvent(event);
+   midifile.writeBinasc(std::cout);
+   return 0;
+}
+
 @OUTPUT:
++M +T +h +d
+4'6
+2'0
+2'1
+2'120
+
+; TRACK 0 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++M +T +r +k
+4'13
+v0	90 '60 '64
+v240	90 '60 '0
+v0	ff 2f '0
+
 @@END:	EXAMPLE
 
 @SRCCODE:
+
+//////////////////////////////
+//
+// MidiFile::writeBinasc -- write a standard MIDI file from data into
+//    the binasc format (ASCII version of the MIDI file).
+//
+
+int MidiFile::writeBinasc(const char* aFile) {
+   fstream output(aFile, ios::out);
+
+   if (!output.is_open()) {
+      cerr &lt;&lt; "Error: could not write: " &lt;&lt; aFile &lt;&lt; endl;
+      return 0;
+   }
+   int status = writeBinasc(output);
+   output.close();
+   return status;
+}
+
+
+int MidiFile::writeBinasc(const string&amp; aFile) {
+   return writeBinasc(aFile.data());
+}
+
+
+int MidiFile::writeBinasc(ostream&amp; output) {
+   stringstream binarydata;
+   int status = write(binarydata);
+   if (status == 0) {
+      return 0;
+   }
+
+   Binasc binasc;
+   binasc.setMidiOn();
+   binarydata.seekg(0, ios_base::beg);
+   binasc.readFromBinary(output, binarydata);
+   return 1;
+}
 
 @@END:	FunctionDocumentation
 

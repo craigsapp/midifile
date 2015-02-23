@@ -7,16 +7,38 @@
 @PARAMETERS:	const string& filename
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		675-1005
+@LINES:		134-464
 @SEEALSO:	
-@SHORTDESC:	Read in a Standard MIDI File.
+@SHORTDESC:	Read a Standard MIDI File in binary or ASCII formats.
 @LONGDESC:	Parse a Standard MIDI File from either a file or from
 		an already opened input stream, and store its contents
-		in the MidiFile object.
+		in the MidiFile object.  The function can also handle
+		ASCII text input that describes a Stadard MIDI file in
+		the binasc format (either as hex byte codes, or in
+		more structured content).
 
 @@BEGIN: EXAMPLE
-@DESCRIPTION:
+@DESCRIPTION: Read a MidiFile from a file with the read() function.
 @CODE:
+#include "MidiFile.h"
+
+int main(void) {
+   MidiFile midifile;
+   MidiFile midifile.read("test.mid");
+   return 0;
+}
+@OUTPUT:
+@@END:	EXAMPLE
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION: Use the MidiFile constructor to read from a file.
+@CODE:
+#include "MidiFile.h"
+
+int main(void) {
+   MidiFile midifile("test.mid");
+   return 0;
+}
 @OUTPUT:
 @@END:	EXAMPLE
 
