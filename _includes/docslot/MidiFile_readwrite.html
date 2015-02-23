@@ -1,0 +1,22 @@
+
+The two main member functions for reading and writing Standard MIDI Files
+are <span class="function">read</span> and <span class="function">write</span>.
+The argument to these functions can be either a filename or an input/output
+stream object.
+
+<div class="docslot" id="MidiFile::read"><span class="docslot-short-title" style="padding-left:19px;">read</span><span class="short-desc"> &mdash; Read in a Standard MIDI File.</span></div>
+<div class="docslot" id="MidiFile::write"><span class="docslot-short-title" style="padding-left:19px;">write</span><span class="short-desc"> &mdash; Write a Standard MIDI file from the MidiFile contents.</span></div>
+
+<br/>
+Two additional functions, called
+<span class="function">writeHex</span> and
+<span class="function">writeBinasc</span>
+can be used to print ASCII hex codes that determinstically
+represent a binary Standard MIDI File.  The
+<span class="function">read</span> function will transparently parse
+either binary MIDI files, or their ASCII representations in one of these
+two formats.
+
+<div class="docslot" id="MidiFile::writeHex"><span class="docslot-short-title" style="padding-left:19px;">write</span><span class="short-desc"> &mdash; Write a Standard MIDI file from the MidiFile contents.</span></div>
+<div class="docslot" id="MidiFile::writeBinasc"><span class="docslot-short-title" style="padding-left:19px;">write</span><span class="short-desc"> &mdash; Write a Standard MIDI file from the MidiFile contents.</span></div>
+

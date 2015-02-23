@@ -1,0 +1,47 @@
+
+<h4> Event tick interpretation </h4>
+
+Tick values on MidiEvents can be set to two types of states: (1) delta time, 
+which indicate the number of ticks to wait from the last event in the track
+before performing the current event, and (2) absoute time, where the tick value
+represents the cumulative tick time since the start of the MidiFile until the
+performance time of the current event. Standard MIDI Files store tick times
+as delta ticks, but it is often more useful to manipulate event data with
+absolute ticks.  The <span class="function">absoluteTime</span> 
+and <span class="function">deltaTime</span> functions
+switch the event tick values within the MidiFile between these two modes:
+
+<div class="docslot" id="MidiFile::absoluteTime"><span class="docslot-short-title" style="padding-left:19px;">absoluteTime</span><span class="short-desc"> &mdash; Convert event delta tick values into absolute ticks.</span></div>
+<div class="docslot" id="MidiFile::deltaTime"><span class="docslot-short-title" style="padding-left:19px;">deltaTime</span><span class="short-desc"> &mdash; Convert timestamps into delta times.</span></div>
+
+<p>
+The <span class="function">isDeltaTime</span>
+and <span class="function">isAbsoluteTime</span> 
+functions can be used to check
+which mode in which the event ticks are currently given.
+</p>
+
+<div class="docslot" id="MidiFile::isDeltaTime"><span class="docslot-short-title" style="padding-left:19px;">absoluteTime</span><span class="short-desc"> &mdash; Convert event delta tick values into absolute ticks.</span></div>
+<div class="docslot" id="MidiFile::isAbsoluteTime"><span class="docslot-short-title" style="padding-left:19px;">deltaTime</span><span class="short-desc"> &mdash; Convert timestamps into delta times.</span></div>
+
+<p>
+Tick values are symbolic time units, such as rhythms in music
+notation.  For example quarter notes do not have a specific duration
+in seconds until a tempo is applied to the rhythm.  Within Standard
+MIDI Files, there is a field which specifies how many ticks represent
+a quarter note.  This convserion value can be read or set with the
+following two MidiFile member functions:
+</p>
+
+<div class="docslot" id="MidiFile::getTicksPerQuarterNote"><span class="docslot-short-title" style="padding-left:19px;">getTicksPerQuarterNote</span><span class="short-desc"> &mdash; Return the delta time ticks units which represent a quarter note.</span></div>
+<div class="docslot" id="MidiFile::setTicksPerQuarterNote"><span class="docslot-short-title" style="padding-left:19px;">setTicksPerQuarterNote</span><span class="short-desc"> &mdash; Set the ticks-per-quarter note value.</span></div>
+
+<h4> Physical time of events </h4>
+
+<div class="docslot" id="MidiFile::doTimeInSecondsAnalysis"><span class="docslot-short-title" style="padding-left:19px;">doTimeInSecondsAnalysis</span><span class="short-desc"> &mdash; Calculate the time in seconds for each event in the MidiFile.</span></div>
+<div class="docslot" id="MidiFile::getTimeInSeconds"><span class="docslot-short-title" style="padding-left:19px;">getTimeInSeconds</span><span class="short-desc"> &mdash; Return the time in seconds for the specified message.</span></div>
+<div class="docslot" id="MidiFile::setMilliseconds"><span class="docslot-short-title" style="padding-left:19px;">setMilliseconds</span><span class="short-desc"> &mdash; Set the ticks per quarter note value in the MIDI file header</span></div>
+<div class="docslot" id="MidiFile::getAbsoluteTickTime"><span class="docslot-short-title" style="padding-left:19px;">getAbsoluteTickTime</span><span class="short-desc"> &mdash; Convert a time in seconds into an absolute tick time.</span></div>
+
+<div class="docslot" id="MidiFile::sortTrack"><span class="docslot-short-title" style="padding-left:19px;">getAbsoluteTickTime</span><span class="short-desc"> &mdash; Convert a time in seconds into an absolute tick time.</span></div>
+<div class="docslot" id="MidiFile::sortTracks"><span class="docslot-short-title" style="padding-left:19px;">getAbsoluteTickTime</span><span class="short-desc"> &mdash; Convert a time in seconds into an absolute tick time.</span></div>

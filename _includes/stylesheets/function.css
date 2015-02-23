@@ -1,0 +1,14 @@
+
+<style>
+/* vim: set ts=3 : */
+
+span.function {
+	font-weight: 600;
+}
+
+span.function:after {
+	content: "()";
+}
+
+</style>
+

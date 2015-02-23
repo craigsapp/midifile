@@ -1,10 +1,10 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jan 22 19:09:03 PST 2015
-// Last Modified: Sun Feb 15 23:45:11 PST 2015
+// Last Modified: Sun Feb 22 17:33:25 PST 2015 Avoid null of a@name hyperlinks.
 // Filename:      midifile/javascripts/external-links.js
 // Syntax:        JavaScript 1.8.5/ECMAScript 5.1
-// vim:           ts=3
+// vim:           ts=3 hlsearch
 //
 // Description:   Examine all links on a page, an if they start 
 //                with ^https?:// then make then open in a new 
@@ -22,8 +22,10 @@ function externalLinks(tabname) {
 	var links = document.querySelectorAll('a');
 	var i;
 	for (var i=0; i<links.length; i++) {
-		if (links[i].getAttribute('href').match(/^https?:\/\//)) {
-			links[i].target = tabname;
+		if (links[i].getAttribute('href')) {
+			if (links[i].getAttribute('href').match(/^https?:\/\//)) {
+				links[i].target = tabname;
+			}
 		}
 	}
 }

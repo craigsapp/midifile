@@ -1,0 +1,26 @@
+@@BEGIN:	FunctionDocumentation
+@CLASSNAME:	MidiFile
+@METHOD:	writeBinasc
+@ACCESS:	public
+@RETURN:	ostream&
+@PARAMETERS:	ostream& out
+@PARAMETERS:	const char* filename
+@PARAMETERS:	const string& filename
+@FILE:		MidiFile.cpp
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Print ASCII version of MIDI file in binasc format.
+@LONGDESC:	Print ASCII version of MIDI file in binasc format.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+@@END:	FunctionDocumentation
+
+
+
