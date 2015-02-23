@@ -61,15 +61,15 @@ table.classlist tr td:nth-child(2) {
 </tr>
 
 <tr valign=top>
-   <td> <a href="Options">Options</a> </td> <td> 
-	Independent helper class for processing command-line options.
+   <td> <a href="Binasc">Binasc</a> </td> <td> 
+	MidiFile Support class for reading/writing
+	ASCII byte codes representing MIDI files.
    </td>
 </tr>
 
 <tr valign=top>
-   <td> <a href="Binasc">Binasc</a> </td> <td> 
-	Support class for MidiFile will allows reading/writing
-	MIDI files with ASCII-based byte codes.
+   <td> <a href="Options">Options</a> </td> <td> 
+	Independent helper class for processing command-line options.
    </td>
 </tr>
 

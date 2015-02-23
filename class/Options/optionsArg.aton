@@ -1,4 +1,5 @@
 @@BEGIN:	FunctionDocumentation
+@INDEXED:	yes
 @CLASSNAME:	Options
 @METHOD:	optionsArg
 @ACCESS:	public

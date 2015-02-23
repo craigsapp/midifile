@@ -1,4 +1,5 @@
 @@BEGIN:	FunctionDocumentation
+@INDEXED:	yes
 @CLASSNAME:	MidiMessage
 @METHOD:	setChannelNibble
 @ACCESS:	public

@@ -38,12 +38,12 @@ for ($i=0; $i<@contents; $i++) {
 ##
 ## printClassListContents --
 ##
-## ../../class/MidiFile/absoluteTime.aton:@ACCESS:	public
+## ../../class/MidiFile/absoluteTime.aton:@INDEXED:	yes
 ##
 
 sub printClassListContents {
    my ($classname) = @_;
-   my $list = `grep ACCESS.*public ../../class/$classname/*.aton`;
+   my $list = `grep INDEXED.*yes ../../class/$classname/*.aton`;
    my @items = split(/\n/, $list);
    my $i;
    my $item;
