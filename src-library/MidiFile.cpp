@@ -685,6 +685,218 @@ int MidiFile::writeBinasc(ostream& output) {
 // track-related functions --
 //
 
+//////////////////////////////
+//
+// MidiFile::operator[] -- return the event list for the specified track.
+//
+
+MidiEventList& MidiFile::operator[](int aTrack) {
+   return *events[aTrack];
+}
+
+
+//////////////////////////////
+//
+// MidiFile::getTrackCount -- return the number of tracks in
+//   the Midi File.
+//
+
+int MidiFile::getTrackCount(void) {
+   return events.size();
+}
+
+//
+// Alias for getTrackCount()
+//
+
+int MidiFile::getNumTracks(void) {
+   return getTrackCount();
+}
+
+//
+// Alias for getTrackCount()
+//
+
+int MidiFile::size(void) {
+   return getTrackCount();
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::joinTracks -- Interleave the data from all tracks,
+//   but keeping the identity of the tracks unique so that
+//   the function splitTracks can be called to split the
+//   tracks into separate units again.  The style of the
+//   MidiFile when read from a file is with tracks split.
+//   The original track index is stored in the MidiEvent::track
+//   variable.
+//
+
+void MidiFile::joinTracks(void) {
+   if (getTrackState() == TRACK_STATE_JOINED) {
+      return;
+   }
+   if (getNumTracks() == 1) {
+      return;
+   }
+
+   MidiEventList* joinedTrack;
+   joinedTrack = new MidiEventList;
+
+   int messagesum = 0;
+   int length = getNumTracks();
+   int i, j;
+   for (i=0; i<length; i++) {
+      messagesum += (*events[i]).size();
+   }
+   joinedTrack->reserve((int)(messagesum + 32 + messagesum * 0.1));
+
+   int oldTimeState = getTimeState();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      absoluteTime();
+   }
+   for (i=0; i<length; i++) {
+      for (j=0; j<(int)events[i]->size(); j++) {
+         joinedTrack->push_back_no_copy(&(*events[i])[j]);
+      }
+   }
+
+   clear_no_deallocate();
+
+   delete events[0];
+   events.resize(0);
+   events.push_back(joinedTrack);
+   sortTracks();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      deltaTime();
+   }
+
+   theTrackState = TRACK_STATE_JOINED;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::splitTracks -- Take the joined tracks and split them
+//   back into their separate track identities.
+//
+
+void MidiFile::splitTracks(void) {
+   if (getTrackState() == TRACK_STATE_SPLIT) {
+      return;
+   }
+   int oldTimeState = getTimeState();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      absoluteTime();
+   }
+
+   int maxTrack = 0;
+   int i;
+   int length = events[0]->size();
+   for (i=0; i<length; i++) {
+      if ((*events[0])[i].track > maxTrack) {
+          maxTrack = (*events[0])[i].track;
+      }
+   }
+   int trackCount = maxTrack + 1;
+
+   if (trackCount <= 1) {
+      return;
+   }
+
+   MidiEventList* olddata = events[0];
+   events[0] = NULL;
+   events.resize(trackCount);
+   for (i=0; i<=trackCount; i++) {
+      events[i] = new MidiEventList;
+   }
+
+   int trackValue = 0;
+   for (i=0; i<length; i++) {
+      trackValue = (*olddata)[i].track;
+      events[trackValue]->push_back_no_copy(&(*olddata)[i]);
+   }
+
+   olddata->detach();
+   delete olddata;
+
+   if (oldTimeState == TIME_STATE_DELTA) {
+      deltaTime();
+   }
+
+   theTrackState = TRACK_STATE_SPLIT;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getTrackState -- returns what type of track method
+//     is being used: either TRACK_STATE_JOINED or TRACK_STATE_SPLIT.
+//
+
+int MidiFile::getTrackState(void) {
+   return theTrackState;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::hasJoinedTracks -- Returns true if the MidiFile tracks
+//    are in a joined state.
+//
+
+int MidiFile::hasJoinedTracks(void) {
+   return theTrackState == TRACK_STATE_JOINED;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::hasSplitTracks -- Returns true if the MidiFile tracks
+//     are in a split state.
+//
+
+int MidiFile::hasSplitTracks(void) {
+   return theTrackState == TRACK_STATE_SPLIT;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getSplitTrack --  Return the track index when the MidiFile
+//   is in the split state.  This function returns the original track
+//   when the MidiFile is in the joined state.  The MidiEvent::track
+//   variable is used to store the original track index when the 
+//   MidiFile is converted to the joined-track state.
+//
+
+int MidiFile::getSplitTrack(int track, int index) {
+   if (hasSplitTracks()) {
+      return track;
+   } else {
+      return getEvent(track, index).track;
+   }
+}
+
+//
+// When the parameter is void, assume track 0:
+//
+
+int MidiFile::getSplitTrack(int index) {
+   if (hasSplitTracks()) {
+      return 0;
+   } else {
+      return getEvent(0, index).track;
+   }
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -871,15 +1083,6 @@ const char* MidiFile::getFilename(void) {
 
 
 
-
-//////////////////////////////
-//
-// MidiFile::getTrack --
-//
-
-int MidiFile::getTrack(int track, int index) {
-   return getEvent(track, index).track;
-}
 
 
 
@@ -1162,17 +1365,6 @@ MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
 
 //////////////////////////////
 //
-// MidiFile::operator[] -- return the event list for the specified track.
-//
-
-MidiEventList& MidiFile::operator[](int aTrack) {
-   return *events[aTrack];
-}
-
-
-
-//////////////////////////////
-//
 // MidiFile::getTicksPerQuarterNote -- returns the number of
 //   time units that are supposed to occur during a quarternote.
 //
@@ -1189,21 +1381,12 @@ int MidiFile::getTicksPerQuarterNote(void) {
    return ticksPerQuarterNote;
 }
 
-
-
-//////////////////////////////
 //
-// MidiFile::getTrackCount -- return the number of tracks in
-//   the Midi File.
+// Alias for getTicksPerQuarterNote:
 //
 
-int MidiFile::getTrackCount(void) {
-   return events.size();
-}
-
-
-int MidiFile::getNumTracks(void) {
-   return events.size();
+int MidiFile::getTPQ(void) {
+   return getTicksPerQuarterNote();
 }
 
 
@@ -1221,59 +1404,6 @@ int MidiFile::getEventCount(int aTrack) {
 
 int MidiFile::getNumEvents(int aTrack) {
    return events[aTrack]->size();
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::joinTracks -- merge the data from all tracks,
-//   but keeping the identity of the tracks unique so that
-//   the function splitTracks can be called to split the
-//   tracks into separate units again.  The style of the
-//   MidiFile when read from a file is with tracks split.
-//
-
-void MidiFile::joinTracks(void) {
-   if (getTrackState() == TRACK_STATE_JOINED) {
-      return;
-   }
-   if (getNumTracks() == 1) {
-      return;
-   }
-
-   MidiEventList* joinedTrack;
-   joinedTrack = new MidiEventList;
-
-   int messagesum = 0;
-   int length = getNumTracks();
-   int i, j;
-   for (i=0; i<length; i++) {
-      messagesum += (*events[i]).size();
-   }
-   joinedTrack->reserve((int)(messagesum + 32 + messagesum * 0.1));
-
-   int oldTimeState = getTimeState();
-   if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
-   }
-   for (i=0; i<length; i++) {
-      for (j=0; j<(int)events[i]->size(); j++) {
-         joinedTrack->push_back_no_copy(&(*events[i])[j]);
-      }
-   }
-
-   clear_no_deallocate();
-
-   delete events[0];
-   events.resize(0);
-   events.push_back(joinedTrack);
-   sortTracks();
-   if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
-   }
-
-   theTrackState = TRACK_STATE_JOINED;
 }
 
 
@@ -1334,6 +1464,13 @@ void MidiFile::setTicksPerQuarterNote(int ticks) {
    ticksPerQuarterNote = ticks;
 }
 
+//
+// Alias for setTicksPerQuarterNote:
+//
+
+void MidiFile::setTPQ(int ticks) {
+   setTicksPerQuarterNote(ticks);
+}
 
 
 //////////////////////////////
@@ -1382,61 +1519,7 @@ void MidiFile::sortTracks(void) {
 
 //////////////////////////////
 //
-// MidiFile::splitTracks -- Take the joined tracks and split them
-//   back into their separate track identities.
-//
-
-void MidiFile::splitTracks(void) {
-   if (getTrackState() == TRACK_STATE_SPLIT) {
-      return;
-   }
-   int oldTimeState = getTimeState();
-   if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
-   }
-
-   int maxTrack = 0;
-   int i;
-   int length = events[0]->size();
-   for (i=0; i<length; i++) {
-      if ((*events[0])[i].track > maxTrack) {
-          maxTrack = (*events[0])[i].track;
-      }
-   }
-   int trackCount = maxTrack + 1;
-
-   if (trackCount <= 1) {
-      return;
-   }
-
-   MidiEventList* olddata = events[0];
-   events[0] = NULL;
-   events.resize(trackCount);
-   for (i=0; i<=trackCount; i++) {
-      events[i] = new MidiEventList;
-   }
-
-   int trackValue = 0;
-   for (i=0; i<length; i++) {
-      trackValue = (*olddata)[i].track;
-      events[trackValue]->push_back_no_copy(&(*olddata)[i]);
-   }
-
-   olddata->detach();
-   delete olddata;
-
-   if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
-   }
-
-   theTrackState = TRACK_STATE_SPLIT;
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::getTrackCount --  Return the number of tracks in the
+// MidiFile::getTrackCountAsType1 --  Return the number of tracks in the
 //    MIDI file.  Returns the size of the events if not in joined state.
 //    If in joined state, reads track 0 to find the maximum track
 //    value from the original unjoined tracks.
@@ -1455,18 +1538,6 @@ int MidiFile::getTrackCountAsType1(void) {
    } else {
       return events.size();
    }
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::getTrackState -- returns what type of track method
-//     is being used: either TRACK_STATE_JOINED or TRACK_STATE_SPLIT.
-//
-
-int MidiFile::getTrackState(void) {
-   return theTrackState;
 }
 
 

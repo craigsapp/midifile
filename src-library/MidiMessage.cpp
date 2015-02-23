@@ -14,6 +14,7 @@
 #include "MidiMessage.h"
 
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -852,6 +853,59 @@ void MidiMessage::setMetaTempo(double tempo) {
 void MidiMessage::setTempo(double tempo) {
    setMetaTempo(tempo);
 }
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// make functions to create various MIDI message --
+//
+
+
+//////////////////////////////
+//
+// MidiMessage::makeNoteOn -- create a note-on message. 
+//
+// default value: channel = 0
+//
+
+void MidiMessage::makeNoteOn(int key, int velocity, int channel) {
+   resize(3);
+   (*this)[0] = 0x90 | (0x0f & channel);
+   (*this)[1] = key & 0x7f;
+   (*this)[2] = velocity & 0x7f;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeNoteOff -- create a note-off message.   If no
+//   parameters are given, the current contents is presumed to be a
+//   note-on message, which will be converted into a note-off message.
+//
+// default value: channel = 0
+//
+
+
+void MidiMessage::makeNoteOff(int key, int velocity, int channel) {
+   resize(3);
+   (*this)[0] = 0x80 | (0x0f & channel);
+   (*this)[1] = key & 0x7f;
+   (*this)[2] = velocity & 0x7f;
+}
+
+
+void MidiMessage::makeNoteOff(void) {
+   if (!isNoteOn()) {
+      resize(3);
+      (*this)[0] = 0x90;
+      (*this)[1] = 0;
+      (*this)[2] = 0;
+   } else {
+      (*this)[2] = 0;
+   }
+}
+
 
 
 

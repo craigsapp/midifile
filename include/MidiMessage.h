@@ -91,6 +91,13 @@ class MidiMessage : public vector<uchar> {
       void           setMessage           (vector<char>& message);
       void           setMessage           (vector<int>& message);
 
+      // helper functions to create various MidiMessages
+      void           makeNoteOn           (int key, int velocity, 
+                                           int channel = 0);
+      void           makeNoteOff          (int key, int velocity, 
+                                           int channel = 0);
+      void           makeNoteOff          (void);
+
       // meta-message related functions:
       int            getMetaType          (void);
       int            isTempo              (void);

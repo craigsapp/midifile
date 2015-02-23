@@ -71,19 +71,28 @@ class MidiFile {
       int       writeBinasc               (ostream& out);
 
       // track-related functions:
+      MidiEventList& operator[]           (int aTrack);
+      int       getTrackCount             (void);
       int       getNumTracks              (void);
+      int       size                      (void);
+
+      // join/split track functionality:
+      void      joinTracks                (void);
+      void      splitTracks               (void);
+      int       getTrackState             (void);
+      int       hasJoinedTracks           (void);
+      int       hasSplitTracks            (void);
+      int       getSplitTrack             (int track, int index);
+      int       getSplitTrack             (int index);
+
+      void      sortTrack                 (MidiEventList& trackData);
+      void      sortTracks                (void);
+
       int       addTrack                  (void);
       int       addTrack                  (int count);
       void      deleteTrack               (int aTrack);
-      void      joinTracks                (void);
       void      mergeTracks               (int aTrack1, int aTrack2);
-      void      sortTrack                 (MidiEventList& trackData);
-      void      sortTracks                (void);
-      void      splitTracks               (void);
-      int       getTrackState             (void);
       int       getTrackCountAsType1      (void);
-      int       getTrackCount             (void);
-      int       getTrack                  (int track, int index);
 
       int       getEventCount             (int aTrack);
       void      allocateEvents            (int track, int aSize);
@@ -99,7 +108,9 @@ class MidiFile {
       // ticks-per-quarter related functions:
       void      setMillisecondTicks       (void);
       int       getTicksPerQuarterNote    (void);
+      int       getTPQ                    (void);
       void      setTicksPerQuarterNote    (int ticks);
+      void      setTPQ                    (int ticks);
 
       // physical-time analysis functions:
       void      doTimeInSecondsAnalysis   (void);
@@ -131,7 +142,6 @@ class MidiFile {
       void      clear                     (void);
       void      clear_no_deallocate       (void);
       MidiEvent&  getEvent                (int aTrack, int anIndex);
-      MidiEventList& operator[]           (int aTrack);
 
 
 
