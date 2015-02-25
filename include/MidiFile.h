@@ -69,6 +69,7 @@ class MidiFile {
       int       writeBinasc               (const char* aFile);
       int       writeBinasc               (const string& aFile);
       int       writeBinasc               (ostream& out);
+      int       status                    (void);
 
       // track-related functions:
       MidiEventList& operator[]           (int aTrack);
@@ -172,6 +173,7 @@ class MidiFile {
 
       int               timemapvalid;    
       vector<_TickTime> timemap;
+      int               rwstatus;                // read/write success flag
 
    private:
       int        extractMidiData  (istream& inputfile, vector<uchar>& array, 
