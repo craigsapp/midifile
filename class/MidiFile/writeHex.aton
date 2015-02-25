@@ -8,7 +8,7 @@
 @PARAMETERS:	const string& filename
 @PARAMETERS:	int
 @FILE:		MidiFile.cpp
-@LINES:		578-641
+@LINES:		586-649
 @SEEALSO:	
 @SHORTDESC:	Print MidiFile as a list of ASCII hex bytes.
 @LONGDESC:	Print the MIDI file as a sequence of ASCII hex bytes, 
@@ -57,9 +57,9 @@ int MidiFile::writeHex(const char* aFile, int width) {
       cerr &lt;&lt; "Error: could not write: " &lt;&lt; aFile &lt;&lt; endl;
       return 0;
    }
-   int status = writeHex(output, width);
+   rwstatus = writeHex(output, width);
    output.close();
-   return status;
+   return rwstatus;
 }
 
 

@@ -7,7 +7,7 @@
 @RETURN:	ulong
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		2198-2215
+@LINES:		2218-2235
 @SEEALSO:	
 @SHORTDESC:	Read four bytes from the input stream in little-endian order.
 @LONGDESC:	Read four bytes from the input stream in little-endian order.

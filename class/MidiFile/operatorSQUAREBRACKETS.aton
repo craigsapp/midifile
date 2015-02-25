@@ -6,7 +6,7 @@
 @RETURN:	MidiEventList&
 @PARAMETERS:	int index
 @FILE:		MidiFile.cpp
-@LINES:		687-696
+@LINES:		707-716
 @SEEALSO:	
 @SHORTDESC:	Returns the list of events for a track.
 @LONGDESC:	Returns the list of events for a track.

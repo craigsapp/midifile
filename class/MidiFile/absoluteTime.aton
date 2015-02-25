@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		942-975
+@LINES:		962-995
 @SEEALSO:	deltaTime
 @SHORTDESC:	Convert event delta tick values into absolute ticks.
 @LONGDESC:	Convert delta ticks values for all MidiEvents into absolute 

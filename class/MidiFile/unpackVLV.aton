@@ -6,7 +6,7 @@
 @RETURN:	ulong
 @PARAMETERS:	uchar a, uchar b, uchar c, uchar d, uchar e
 @FILE:		MidiFile.cpp
-@LINES:		1941-1969
+@LINES:		1961-1989
 @SEEALSO:	
 @SHORTDESC:	Convert VLV byte list into an unsigned long value.
 @LONGDESC:	Convert VLV byte list into an unsigned long value.

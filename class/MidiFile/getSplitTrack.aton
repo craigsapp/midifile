@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	int track, int index
 @FILE:		MidiFile.cpp
-@LINES:		870-899
+@LINES:		890-919
 @SEEALSO:	
 @SHORTDESC:	Get the track number of an event when MidiFile is in split state.
 @LONGDESC:	Get the track number of a MidiEvent when the MidiFile is

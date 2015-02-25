@@ -7,7 +7,7 @@
 @RETURN:	ushort
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		2217-2234
+@LINES:		2237-2254
 @SEEALSO:	readLittleEndian4Bytes
 @SHORTDESC:	Read two bytes from the input stream in little-endian format.
 @LONGDESC:	Read two bytes from the input stream in little-endian format.

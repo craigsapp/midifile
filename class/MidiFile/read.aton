@@ -8,7 +8,7 @@
 @PARAMETERS:	const string& filename
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		134-464
+@LINES:		135-472
 @SEEALSO:	
 @SHORTDESC:	Read a Standard MIDI File in binary or ASCII formats.
 @LONGDESC:	Parse a Standard MIDI File from either a file or from
@@ -52,6 +52,7 @@ int main(void) {
 //
 
 int MidiFile::read(const char* filename) {
+   rwstatus = 1;
    timemapvalid = 0;
    if (filename != NULL) {
       setFilename(filename);
@@ -64,7 +65,8 @@ int MidiFile::read(const char* filename) {
       return 0;
    }
 
-   return MidiFile::read(input);
+   rwstatus = MidiFile::read(input);
+   return rwstatus;
 }
 
 
@@ -76,6 +78,7 @@ int MidiFile::read(const char* filename) {
 int MidiFile::read(const string&amp; filename) {
    timemapvalid = 0;
    setFilename(filename);
+   rwstatus = 1;
 
    fstream input;
    input.open(filename.data(), ios::binary | ios::in);
@@ -84,7 +87,8 @@ int MidiFile::read(const string&amp; filename) {
       return 0;
    }
 
-   return MidiFile::read(input);
+   rwstatus = MidiFile::read(input);
+   return rwstatus;
 }
 
 
@@ -93,6 +97,7 @@ int MidiFile::read(const string&amp; filename) {
 //
 
 int MidiFile::read(istream&amp; input) {
+   rwstatus = 1;
    if (input.peek() != 'M') {
       // If the first byte in the input stream is not 'M', then presume that
       // the MIDI file is in the binasc format which is an ASCII representation
@@ -104,9 +109,11 @@ int MidiFile::read(istream&amp; input) {
       binarydata.seekg(0, ios_base::beg);
       if (binarydata.peek() != 'M') {
          cerr &lt;&lt; "Bad MIDI data input" &lt;&lt; endl;
-	 return 0;
+	 rwstatus = 0;
+         return rwstatus;
       } else {
-         return read(binarydata);
+         rwstatus = read(binarydata);
+         return rwstatus;
       }
    }
 
@@ -125,48 +132,48 @@ int MidiFile::read(istream&amp; input) {
    if (character == EOF) {
       cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'M' at first byte, but found nothing." &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    } else if (character != 'M') {
       cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'M' at first byte but got '"
            &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    }
 
    character = input.get();
    if (character == EOF) {
       cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'T' at first byte, but found nothing." &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    } else if (character != 'T') {
       cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'T' at first byte but got '"
            &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    }
 
    character = input.get();
    if (character == EOF) {
       cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'h' at first byte, but found nothing." &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    } else if (character != 'h') {
       cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'h' at first byte but got '"
            &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    }
 
    character = input.get();
    if (character == EOF) {
       cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'd' at first byte, but found nothing." &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    } else if (character != 'd') {
       cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
       cerr &lt;&lt; "Expecting 'd' at first byte but got '"
            &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    }
 
    // read header size (allow larger header size?)
@@ -175,7 +182,7 @@ int MidiFile::read(istream&amp; input) {
       cerr &lt;&lt; "File " &lt;&lt; filename
            &lt;&lt; " is not a MIDI 1.0 Standard MIDI file." &lt;&lt; endl;
       cerr &lt;&lt; "The header size is " &lt;&lt; longdata &lt;&lt; " bytes." &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    }
 
    // Header parameter #1: format type
@@ -192,7 +199,7 @@ int MidiFile::read(istream&amp; input) {
       default:
          cerr &lt;&lt; "Error: cannot handle a type-" &lt;&lt; shortdata
               &lt;&lt; " MIDI file" &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
    }
 
    // Header parameter #2: track count
@@ -201,7 +208,7 @@ int MidiFile::read(istream&amp; input) {
    if (type == 0 &amp;&amp; shortdata != 1) {
       cerr &lt;&lt; "Error: Type 0 MIDI file can only contain one track" &lt;&lt; endl;
       cerr &lt;&lt; "Instead track count is: " &lt;&lt; shortdata &lt;&lt; endl;
-      return 0;
+      rwstatus = 0; return rwstatus;
    } else {
       tracks = shortdata;
    }
@@ -251,7 +258,7 @@ int MidiFile::read(istream&amp; input) {
    MidiEvent event;
    vector&lt;uchar&gt; bytes;
    int absticks;
-   int status;
+   int xstatus;
    // int barline;
 
    for (int i=0; i&lt;tracks; i++) {
@@ -266,12 +273,12 @@ int MidiFile::read(istream&amp; input) {
          cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'M' at first byte in track, but found nothing."
               &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       } else if (character != 'M') {
          cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'M' at first byte in track but got '"
               &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       }
 
       character = input.get();
@@ -279,12 +286,12 @@ int MidiFile::read(istream&amp; input) {
          cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'T' at first byte in track, but found nothing."
               &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       } else if (character != 'T') {
          cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'T' at first byte in track but got '"
               &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       }
 
       character = input.get();
@@ -292,12 +299,12 @@ int MidiFile::read(istream&amp; input) {
          cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'r' at first byte in track, but found nothing."
               &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       } else if (character != 'r') {
          cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'r' at first byte in track but got '"
               &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       }
 
       character = input.get();
@@ -305,12 +312,12 @@ int MidiFile::read(istream&amp; input) {
          cerr &lt;&lt; "In file " &lt;&lt; filename &lt;&lt; ": unexpected end of file." &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'k' at first byte in track, but found nothing."
               &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       } else if (character != 'k') {
          cerr &lt;&lt; "File " &lt;&lt; filename &lt;&lt; " is not a MIDI file" &lt;&lt; endl;
          cerr &lt;&lt; "Expecting 'k' at first byte in track but got '"
               &lt;&lt; character &lt;&lt; "'" &lt;&lt; endl;
-         return 0;
+         rwstatus = 0; return rwstatus;
       }
 
       // Now read track chunk size and throw it away because it is
@@ -331,9 +338,9 @@ int MidiFile::read(istream&amp; input) {
          longdata = extractVlvTime(input);
          //cout &lt;&lt; "ticks = " &lt;&lt; longdata &lt;&lt; endl;
          absticks += longdata;
-         status = extractMidiData(input, bytes, runningCommand);
-         if (status == 0) {
-            return 0;
+         xstatus = extractMidiData(input, bytes, runningCommand);
+         if (xstatus == 0) {
+            rwstatus = 0;  return rwstatus;
          }
          event.setMessage(bytes);
          //cout &lt;&lt; "command = " &lt;&lt; hex &lt;&lt; (int)event.data[0] &lt;&lt; dec &lt;&lt; endl;

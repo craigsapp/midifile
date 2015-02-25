@@ -3,22 +3,25 @@
 <details class="tutorial-entry" ontoggle="showSingleTut(event, this);">
 
 <summary class="tutorial-title">
-	Fix track byte counts
+	Fix MIDI track byte counts
 </summary>
 
 MIDI track chunk byte counts are often incorrect in standard
 MIDI files.  This example program shows how to correct the byte
-counts by reading the MIDI file and then writing it out again,
+counts by reading a MIDI file and then writing it out again,
 without doing anything else.
 
-The MidiFile class ignores the byte-count value for a track chunk
-when reading a MIDI file, so incorret byte counts do not affect
-parsing of the file.  When writing a file out again, the byte count
-for each track is calculated and automatically corrected.
+The MidiFile class ignores the byte-count value in track chunk
+headers when reading a MIDI file, so incorrect byte counts do not
+affect parsing of the file.  When writing a file out again, the
+byte count for each track is calculated and automatically corrected.
 
-The MidiFile class automatically expands running-status messages,
+Note that the MidiFile class usually expands running-status messages,
 so the size of the MIDI file may increase if running-status was
-originally used.
+originally used.  Also note that this example overwrites the old
+file contents.  To ensure that there was not a problem reading the
+file, the .status() function is checked to see if the parsing of
+the input data was successful.
 
 ``` cpp
 {% include tutorial/code/fixsize.cpp %}
@@ -29,6 +32,7 @@ Library functions used in this example:
 <ul class="function-list">
 <li class="docslot"> MidiFile::read </li>
 <li class="docslot"> MidiFile::write </li>
+<li class="docslot"> MidiFile::status </li>
 <li class="docslot"> Options::process </li>
 <li class="docslot"> Options::getCommand </li>
 <li class="docslot"> Options::getArgCount </li>

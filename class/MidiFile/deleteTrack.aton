@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	int track
 @FILE:		MidiFile.cpp
-@LINES:		1303-1326
+@LINES:		1323-1346
 @SEEALSO:	
 @SHORTDESC:	Remove the specified track from the MidiFile.
 @LONGDESC:	Remove a track from the MidiFile.  Tracks are numbered

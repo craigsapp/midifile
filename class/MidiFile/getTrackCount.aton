@@ -7,7 +7,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		697-723
+@LINES:		717-743
 @SEEALSO:	
 @SHORTDESC:	Return the number of tracks in the MidiFile.
 @LONGDESC:	Return the number of tracks in the MidiFile.

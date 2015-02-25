@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		846-856
+@LINES:		866-876
 @SEEALSO:	hasSplitTracks
 @SHORTDESC:	Return true if MidiFile is in the joined-track state.
 @LONGDESC:	Return true if MidiFile is in the joined-track state.

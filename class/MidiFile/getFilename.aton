@@ -6,7 +6,7 @@
 @RETURN:	const char* 
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1059-1069
+@LINES:		1079-1089
 @SEEALSO:	
 @SHORTDESC:	Return the filename for the MidiFile.
 @LONGDESC:	Return the filename for the MidiFile.  Return an empty

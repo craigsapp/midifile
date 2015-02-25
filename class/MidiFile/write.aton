@@ -7,7 +7,7 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		466-576
+@LINES:		474-584
 @SEEALSO:	
 @SHORTDESC:	Write a Standard MIDI file from the MidiFile contents.
 @LONGDESC:	Write a Standard MIDI file from the MidiFile contents.
@@ -41,9 +41,9 @@ int MidiFile::write(const char* filename) {
       cerr &lt;&lt; "Error: could not write: " &lt;&lt; filename &lt;&lt; endl;
       return 0;
    }
-   int status = write(output);
+   rwstatus = write(output);
    output.close();
-   return status;
+   return rwstatus;
 }
 
 

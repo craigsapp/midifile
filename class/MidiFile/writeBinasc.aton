@@ -8,7 +8,7 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		643-681
+@LINES:		651-689
 @SEEALSO:	
 @SHORTDESC:	Print ASCII version of MIDI file in binasc format.
 @LONGDESC:	Print ASCII version of MIDI file in binasc format.
@@ -63,9 +63,9 @@ int MidiFile::writeBinasc(const char* aFile) {
       cerr &lt;&lt; "Error: could not write: " &lt;&lt; aFile &lt;&lt; endl;
       return 0;
    }
-   int status = writeBinasc(output);
+   rwstatus = writeBinasc(output);
    output.close();
-   return status;
+   return rwstatus;
 }
 
 
@@ -76,8 +76,8 @@ int MidiFile::writeBinasc(const string&amp; aFile) {
 
 int MidiFile::writeBinasc(ostream&amp; output) {
    stringstream binarydata;
-   int status = write(binarydata);
-   if (status == 0) {
+   rwstatus = write(binarydata);
+   if (rwstatus == 0) {
       return 0;
    }
 

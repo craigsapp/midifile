@@ -26,8 +26,11 @@ while ($line = <TFILE>) {
       $line = <TFILE>;
    }
    my $i;
+
    for ($i=0; $i<@tutorials; $i++) {
-      print "\t'$tutorials[$i]'";
+      my $description = getDescription($tutorials[$i]);
+      print "\t[\"$tutorials[$i]\", " ;
+      print "\"$description\"]";
       if ($i < $#tutorials) {
          print ",\n";
       } else {
@@ -35,6 +38,30 @@ while ($line = <TFILE>) {
       }
    }
    print $line;
+}
+
+
+
+##############################
+##
+## getDescription --
+##
+
+sub getDescription {
+   my ($name) = @_;
+   open(DFILE, "$name.html") or die;
+   local $/;
+   my $content = <DFILE>;
+   close DFILE;
+   if ($content =~ /<summary[^>]*>([^<]+)<\/summary>/) {
+      my $description = $1;
+      $description =~ s/\s+$//;
+      $description =~ s/^\s+//;
+      $description =~ s/"/&quot;/g;
+      return $description;
+   } else {
+      die "Cannot find description\n";
+   }
 }
 
 

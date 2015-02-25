@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		989-999
+@LINES:		1009-1019
 @SEEALSO:	isDeltaTime
 @SHORTDESC:	Returns true if event ticks are in delta-time mode.
 @LONGDESC:	Returns true if event ticks are in delta-time mode.

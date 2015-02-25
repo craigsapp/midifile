@@ -15,7 +15,11 @@ int main(int argc, char** argv) {
    MidiFile midifile;
    for (int i=1; i<options.getArgCount(); i++ ) {
       midifile.read(options.getArg(i));
-      midifile.write(options.getArg(i));
+      if (midifile.status()) {
+         midifile.write(options.getArg(i));
+      } else {
+         cerr << "Error reading MIDI file: " << options.getArg(i) << endl;
+      }
    }
 
    return 0;

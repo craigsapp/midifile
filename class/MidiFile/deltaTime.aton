@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		906-940
+@LINES:		926-960
 @SEEALSO:	absoluteTime
 @SHORTDESC:	Convert timestamps into delta times.
 @LONGDESC:	Convert timestamps into delta times, which means that
