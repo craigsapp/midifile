@@ -2,10 +2,12 @@
 The two main member functions for reading and writing Standard MIDI Files
 are <span class="function">read</span> and <span class="function">write</span>.
 The argument to these functions can be either a filename or an input/output
-stream object.
+stream object.  The <span class="function">status</span> function can be
+called after reading or writing to determine if the action was successful.
 
 <div class="docslot" id="MidiFile::read"><span class="docslot-short-title" style="padding-left:19px;">read</span><span class="short-desc"> &mdash; Read a Standard MIDI File in binary or ASCII formats.</span></div>
 <div class="docslot" id="MidiFile::write"><span class="docslot-short-title" style="padding-left:19px;">write</span><span class="short-desc"> &mdash; Write a Standard MIDI file from the MidiFile contents.</span></div>
+<div class="docslot" id="MidiFile::status"><span class="docslot-short-title" style="padding-left:19px;">status</span><span class="short-desc"> &mdash; Returns true if last read/write was successful.</span></div>
 
 <br/>
 Two additional functions, called

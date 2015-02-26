@@ -1,6 +1,7 @@
 ---
 layout: default
 title: programming tutorial
+vim: ts=3 hlsearch
 ---
 
 <script>
@@ -25,17 +26,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					element.scrollIntoViewIfNeeded();
 				}
 			}
-		} 
+		}
 	}
 });
 
 </script>
 
-The code in the following tutorials can be placed into the
-`midifile/src-programs` directory.  If the program file is named
-"myprogram.cpp", then type `make myprogram` in the `midifile`
-directory to compile it.  The compiled program will be placed in
-the `midifile/bin` directory.
+The code examples in the following tutorials can be placed into the
+`midifile/src-programs` directory to compile them.  For example if
+the program is named "src-programs/myprogram.cpp", then type `make
+myprogram` in the `midifile` base directory to compile it.  The compiled
+program will be named in the `myprogram` in the `midifile/bin` directory.
 
 {% include docslot/docslot.html %}
 

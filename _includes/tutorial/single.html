@@ -1,0 +1,13 @@
+
+
+<script>
+
+window.addEventListener("DOMContentLoaded", function(event) {
+   var details = document.querySelectorAll("details.tutorial-entry");
+   for (var i=0; i<details.length; i++) {
+      var content = details[i].innerHTML;
+      details[i].outerHTML = content;
+   }
+});
+
+</script>

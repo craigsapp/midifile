@@ -107,7 +107,10 @@ sub getSourceLines {
    }
    if ($startline <= 0) {
       print join("\n", @src), "\n";
-      die "Could not find function '$function' in $file. startline = $startline\n";
+      return ("", "");
+      # Allow for cases where the is not any definition in the file.
+      # Could be handled more elegantly: don't try to search an empty filename.
+      # die "Could not find function '$function' in $file. startline = $startline\n";
    }
 
    $endline = $startline;
@@ -175,7 +178,10 @@ sub getSourceContents {
          }
       }
    }
-   die "Cannot find source code filename in $file.\n";
+   # die "Cannot find source code filename in $file.\n";
+   # allow empty source code contents for certain cases such as
+   # MidiMessage::operator[]
+   return "";
 }
 
 

@@ -12,10 +12,13 @@ int main(int argc, char** argv) {
    }
    MidiFile midifile;
    midifile.read(options.getArg(1));
-   midifile.absoluteTime();
+   if (!midifile.status()) {
+      cerr << "Error reading MIDI file " << options.getArg(1)) << endl;
+      exit(1);
+   }
    midifile.joinTracks();
    int track = 0;
-   for (int i=0; i<midifile.getEventCount(track); i++) {
+   for (int i=0; i<midifile[track].size(); i++) {
       if (!midifile[track][i].isNoteOn()) {
          continue;
       }

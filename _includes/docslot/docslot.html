@@ -240,7 +240,7 @@ pre.output-example {
 		<a name="{{METHOD}}"> </a>
 		<details ontoggle='showOrHideShortDescriptionReverse(this);'>
 			<summary>
-				{{#if longname}}{{CLASSNAME}}::{{/if}}<span class="docslot-short-title">{{METHOD}}</span>
+				{{#if longname}}<a href="/class/{{CLASSNAME}}">{{CLASSNAME}}</a>::{{/if}}<span class="docslot-short-title">{{METHOD}}</span>
 			<span class='short-desc'> &mdash;
 			{{{SHORTDESC}}}
 			</span>
@@ -324,19 +324,21 @@ Handlebars.registerHelper('codeLink', function (method, file, linerange,
 	}
 	var output = '';
 
-	output += '<details class="srccode">\n';
-	output += '<summary>\n';
-	output += 'Source code for ' + method 
-	output += ' <a target="new" href="' + url;
-	output += '">on GitHub';
-   output += '</a>\n';
-	output += '</summary>\n';
-	if (!srccode.match(/^\s*$/)) {
-		output += '<pre style="background:#888888;">';
-		output += srccode;
-		output += '</pre>';
+   if (!file.match(/^\s*$/)) {
+		output += '<details class="srccode">\n';
+		output += '<summary>\n';
+		output += 'Source code for ' + method 
+		output += ' <a target="new" href="' + url;
+		output += '">on GitHub';
+   	output += '</a>\n';
+		output += '</summary>\n';
+		if (!srccode.match(/^\s*$/)) {
+			output += '<pre style="background:#888888;">';
+			output += srccode;
+			output += '</pre>';
+		}
+		output += '</details>\n';
 	}
-	output += '</details>\n';
 
 	return output;
 });
@@ -524,6 +526,7 @@ function insertDocumentation(target, template) {
 	var classname    = matches[1];
 	var functionname = matches[2];
    functionname = functionname.replace(/=/, "EQUALS");
+   functionname = functionname.replace(/\[\]/, "SQUAREBRACKETS");
    
 	var local = sessionStorage[classname + '/' + functionname + '.aton'];
 	if (local && !local.match(/^\s*$/)) {

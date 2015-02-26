@@ -1,0 +1,28 @@
+@@BEGIN:	FunctionDocumentation
+@INDEXED:	yes
+@CLASSNAME:	MidiMessage
+@METHOD:	operator[]
+@ACCESS:	public
+@RETURN:	uchar&
+@PARAMETERS:	int index
+@FILE:		
+@LINES:		
+@SEEALSO:	
+@SHORTDESC:	Returns the specified byte of a MIDI message.
+@LONGDESC:	Returns the specified byte of a MIDI message.  The
+		first byte will always be a command byte in the
+		range from 0x80 to 0xff for the first byte of a
+		valid MIDI message (or meta message).  In other words,
+		running status is not allowed in MidiMessage data.
+		This function is inherited from the Standard Template
+		Library class <tt>vector&lt;uchar&gt;</tt>.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+@@END:	FunctionDocumentation
+

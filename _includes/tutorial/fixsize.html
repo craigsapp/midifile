@@ -3,40 +3,44 @@
 <details class="tutorial-entry" ontoggle="showSingleTut(event, this);">
 
 <summary class="tutorial-title">
-	Fix MIDI track byte counts
+	Fix Standard MIDI File track chunk byte counts.
 </summary>
 
-MIDI track chunk byte counts are often incorrect in standard
-MIDI files.  This example program shows how to correct the byte
+MIDI track chunk byte counts are often incorrect in Standard
+MIDI Files.  This example program shows how to correct byte
 counts by reading a MIDI file and then writing it out again,
-without doing anything else.
+without doing anything else to automatically fix the track
+chunk sizes.
 
-The MidiFile class ignores the byte-count value in track chunk
-headers when reading a MIDI file, so incorrect byte counts do not
-affect parsing of the file.  When writing a file out again, the
-byte count for each track is calculated and automatically corrected.
+The <a href="/class/MidiFile">MidiFile</a> class ignores the
+byte-count value in track chunk headers when reading a MIDI file,
+so incorrect byte counts do not affect parsing of the file.  When
+writing a file out again, the byte count for each track is calculated
+and automatically corrected.
 
 Note that the MidiFile class usually expands running-status messages,
-so the size of the MIDI file may increase if running-status was
-originally used.  Also note that this example overwrites the old
-file contents.  To ensure that there was not a problem reading the
-file, the .status() function is checked to see if the parsing of
-the input data was successful.
+so the size of the MIDI file may change from the original size.
+Also note that this example overwrites the old file contents.  To
+ensure that there was not a problem reading the file, the .<a
+href="/class/MidiFile/#status">status</a>() function is checked to
+see if the parsing of the input data was successful.
 
-``` cpp
+{% highlight cpp linenos=table %}
 {% include tutorial/code/fixsize.cpp %}
-```
+{% endhighlight %}
 
 Library functions used in this example:
 
 <ul class="function-list">
+
 <li class="docslot"> MidiFile::read </li>
-<li class="docslot"> MidiFile::write </li>
 <li class="docslot"> MidiFile::status </li>
-<li class="docslot"> Options::process </li>
-<li class="docslot"> Options::getCommand </li>
-<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> MidiFile::write </li>
 <li class="docslot"> Options::getArg </li>
+<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> Options::getCommand </li>
+<li class="docslot"> Options::process </li>
+
 </ul>
 
 </details>

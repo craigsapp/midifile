@@ -1,0 +1,66 @@
+
+<a name="mirror"> </a>
+<details class="tutorial-entry" ontoggle="showSingleTut(event, this);">
+
+<summary class="tutorial-title">
+	Mirror a MIDI file in time or pitch.
+</summary>
+
+The following example program will perform a mirror operation on a
+MIDI file, either reversing the timeline of the file, or mirroring
+the pitches in the file.
+
+Without options, the time of the MIDI file will be reversed.  Specifying
+the <tt>-p</tt> option with a MIDI key number to reflect on will cause
+the pitches to be mirrored, such as <tt>-p 60</tt> to invert the pitch
+around middle-C.  To both mirror time and pitch, add the <tt>-r</tt> 
+option, such as `mirror -r -p 60 input.mid output.mid` or
+`mirror -rp 60 input.mid output.mid`.
+
+As a demonstration, here are four MIDI files for Bach's Well-tempered Clavier, 
+Book II, prelude 2 in C minor in for orientations:
+
+<ol style="margin-left:30px;">
+<li> <a href="/tutorial/mirror/wtc2p02.mid">Original MIDI file</a>
+<li> <a href="/tutorial/mirror/wtc2p02-reversed.mid">Retrograde</a>
+<li> <a href="/tutorial/mirror/wtc2p02-middle-c-mirror.mid">Inverted around middle-C</a>
+<li> <a href="/tutorial/mirror/wtc2p02-middle-c-mirror-reversed.mid">Retrograde Inversion</a>
+</ol>
+
+{% highlight cpp linenos=table %}
+{% include tutorial/code/mirror.cpp %}
+{% endhighlight %}
+
+Library functions used in this example:
+
+<ul class="function-list">
+
+<li class="docslot"> MidiEvent::getLinkedEvent </li>
+<li class="docslot"> MidiEvent::isLinked </li>
+<li class="docslot"> MidiEventList::back </li>
+<li class="docslot"> MidiEventList::operator[] </li>
+<li class="docslot"> MidiEventList::size </li>
+<li class="docslot"> MidiFile::joinTracks </li>
+<li class="docslot"> MidiFile::linkNotePairs </li>
+<li class="docslot"> MidiFile::operator[] </li>
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::size </li>
+<li class="docslot"> MidiFile::sortTracks </li>
+<li class="docslot"> MidiFile::splitTracks </li>
+<li class="docslot"> MidiFile::status </li>
+<li class="docslot"> MidiFile::write </li>
+<li class="docslot"> MidiMessage::isNoteOn </li>
+<li class="docslot"> MidiMessage::operator[] </li>
+<li class="docslot"> MidiMessage::setKeyNumber </li>
+<li class="docslot"> Options::getArg </li>
+<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> Options::getBoolean </li>
+<li class="docslot"> Options::getDouble </li>
+<li class="docslot"> Options::process </li>
+
+</ul>
+
+</details>
+
+
+

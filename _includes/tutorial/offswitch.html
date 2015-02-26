@@ -3,38 +3,45 @@
 <details class="tutorial-entry" ontoggle="showSingleTut(event, this);">
 
 <summary class="tutorial-title">
-	Changing note-off message styles
+	Switch note-offs between 0x90 w/ 0 velocity and 0x80 styles.
 </summary>
 
-The MIDI protocol allows two types of note-off messages: (1) using the 
-a command byte starting with the hex digit "8" which indicates a note
-off for a given key with a given off-velocity, and (2) using note-on
-commands, setting the attack velocity to 0.  
+The MIDI protocol allows two types of note-off messages: (1) using the
+a command byte starting with the hex digit "8" that always indicates a
+note-off message for a given key with a given off-velocity, and (2)
+using note-on commands (starting with the hex digit "8"), but setting
+the attack velocity to 0.
 
-The following program can convert between these two different styles.
-The default behavior is to convert all to "8" style note-offs.  If
-the <tt>-0</tt> option is used, the note-offs will be converted
-into the "9" style note-off message which use a zero attack velocity
-within a note-on message.
+The following program can convert between these two different styles. The
+default behavior is to convert all note-off messages to the "8"
+style.  If the <tt>-0</tt> option is used, the note-offs will be
+converted into the "9" style note-off message which use a zero
+attack velocity within a note-on message.
 
-``` cpp
+{% highlight cpp linenos=table %}
 {% include tutorial/code/offswitch.cpp %}
-```
+{% endhighlight %}
+
+The MidiFile::<a href="/class/MidiFile/#size">size</a>() function
 
 Library functions used in this example:
 
 <ul class="function-list">
-<li class="docslot"> MidiFile::read </li>
-<li class="docslot"> MidiFile::getTrackCount </li>
+
 <li class="docslot"> MidiFile::getEventCount </li>
+<li class="docslot"> MidiFile::getTrackCount </li>
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::status </li>
 <li class="docslot"> MidiFile::write </li>
 <li class="docslot"> MidiMessage::isNoteOff </li>
 <li class="docslot"> MidiMessage::setCommandNibble </li>
-<li class="docslot"> Options::process </li>
-<li class="docslot"> Options::getBoolean </li>
-<li class="docslot"> Options::getArgCount </li>
-<li class="docslot"> Options::getCommand </li>
+<li class="docslot"> Options::define </li>
 <li class="docslot"> Options::getArg </li>
+<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> Options::getBoolean </li>
+<li class="docslot"> Options::getCommand </li>
+<li class="docslot"> Options::process </li>
+
 </ul>
 
 

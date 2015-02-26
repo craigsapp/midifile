@@ -8,23 +8,30 @@
 
 
 The following example program will print a list of all note-ons
-in the MIDI file.  The notes are will be time sorted, and each note 
+in the MIDI file.  The notes are will be time sorted, and each note
 will be prefixed with the absolute time tick value.
 
-``` cpp
+{% highlight cpp linenos=table %}
 {% include tutorial/code/noteattacks.cpp %}
-```
+{% endhighlight %}
 
 Library functions used in this example:
 
 <ul class="function-list">
-<li class="docslot"> MidiFile::read </li>
+
+<li class="docslot"> MidiEventList::operator[] </li>
 <li class="docslot"> MidiFile::absoluteTime </li>
 <li class="docslot"> MidiFile::joinTracks </li>
+<li class="docslot"> MidiFile::operator[] </li>
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::size </li>
+<li class="docslot"> MidiFile::status </li>
 <li class="docslot"> MidiMessage::isNoteOn </li>
-<li class="docslot"> Options::process </li>
-<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> MidiMessage::operator[] </li>
 <li class="docslot"> Options::getArg </li>
+<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> Options::process </li>
+
 </ul>
 
 </details>

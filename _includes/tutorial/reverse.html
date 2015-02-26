@@ -6,28 +6,46 @@
 	Reverse the order of notes in a MIDI file.
 </summary>
 
+The following example program will reverse the order of pitches in
+a MIDI file, while at the same time preserve the original rhythms.
+First note-ons and note-offs are linked by calling the MidiFile::<a
+href="/class/MidiFile/#linkNotePairs">linkNotePairs</a> function.
+Then a list of note-ons are extracted by iterating through each
+event in each track.  And finally the extracted note list is used
+to switch the key numbers in reverse order in the list.
 
-The following example program will reverse the order of notes
-in a MIDI file.  First note-ons and note-offs are linked, then
-a list of note-ons are extracted and the notes are reversed.
+If the MIDI file is monophonic (single melody), then this program
+will reverse the order of notes in the music, but keep the rhythms
+in theor original locations.  If the music is polyphonic, the
+sonorities will likely change.  See the <a href="#mirror">mirror</a>
+tutorial for how to reverse both pitch and durations.
 
-``` cpp
+{% highlight cpp linenos=table %}
 {% include tutorial/code/reverse.cpp %}
-```
+{% endhighlight %}
 
 Library functions used in this example:
 
 <ul class="function-list">
-<li class="docslot"> MidiFile::read </li>
-<li class="docslot"> MidiFile::linkNotePairs </li>
-<li class="docslot"> MidiFile::write </li>
-<li class="docslot"> MidiFile::getTrackCount </li>
-<li class="docslot"> MidiFile::getEventCount </li>
+
+<li class="docslot"> MidiEvent::getLinkedEvent </li>
 <li class="docslot"> MidiEvent::isLinked </li>
+<li class="docslot"> MidiEventList::operator[] </li>
+<li class="docslot"> MidiFile::getEventCount </li>
+<li class="docslot"> MidiFile::getTrackCount </li>
+<li class="docslot"> MidiFile::linkNotePairs </li>
+<li class="docslot"> MidiFile::operator[] </li>
+<li class="docslot"> MidiFile::read </li>
+<li class="docslot"> MidiFile::size </li>
+<li class="docslot"> MidiFile::status </li>
+<li class="docslot"> MidiFile::write </li>
+<li class="docslot"> MidiMessage::getKeyNumber </li>
 <li class="docslot"> MidiMessage::isNoteOn </li>
-<li class="docslot"> Options::process </li>
-<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> MidiMessage::setKeyNumber </li>
 <li class="docslot"> Options::getArg </li>
+<li class="docslot"> Options::getArgCount </li>
+<li class="docslot"> Options::process </li>
+
 </ul>
 
 </details>

@@ -1,27 +1,5 @@
 
-<script>
-// vim: ts=3
-
-function showSingleTut(event, element) {
-	var tutorials = document.querySelectorAll("details.tutorial-entry");
-}
-</script>
-
-
-<style>
-
-summary.tutorial-title {
-	font-size: 22px;
-	font-weight: bold;
-	font-color: #555555;
-}
-
-ul.function-list li {
-	list-style: none !important;
-}
-
-</style>
-
+{% include tutorial/header.html %}
 
 {% include tutorial/fixsize.html %}
 
@@ -30,5 +8,7 @@ ul.function-list li {
 {% include tutorial/noteattacks.html %}
 
 {% include tutorial/reverse.html %}
+
+{% include tutorial/mirror.html %}
 
 

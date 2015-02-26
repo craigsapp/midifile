@@ -6,7 +6,7 @@ using namespace std;
 int main(int argc, char** argv) {
 
    Options options;
-   options.define("0|zero=b", 
+   options.define("0|O|o|z|9|zero=b", 
       "Set note-offs to note-on messages with zero velocity.");
    options.process(argc, argv);
    bool zeroQ = options.getBoolean("zero");
@@ -17,8 +17,12 @@ int main(int argc, char** argv) {
 
    MidiFile midifile;
    midifile.read(options.getArg(1));
-   for (int track=0; track<midifile.getTrackCount(); track++) {
-      for (int event=0; event<midifile.getEventCount(track); event++) {
+   if (!midifile.status()) {
+      cerr << "Error: could not read file" << options.getArg(1) << endl;
+      exit(1);
+   }
+   for (int track=0; track<midifile.size(); track++) {
+      for (int event=0; event<midifile[track].size(); event++) {
          if (!midifile[track][event].isNoteOff()) {
             continue;
          }

@@ -4,10 +4,11 @@
 
 document.addEventListener("DOMContentLoaded", function(event) {
 	tutoriallist = [  // BEGIN_TUTORIAL_LIST
-	["fixsize", "Fix MIDI track byte counts"],
-	["offswitch", "Changing note-off message styles"],
+	["fixsize", "Fix Standard MIDI File track chunk byte counts."],
+	["offswitch", "Switch note-offs between 0x90 w/ 0 velocity and 0x80 styles."],
 	["noteattacks", "Print a list of note attacks in a MIDI file"],
-	["reverse", "Reverse the order of notes in a MIDI file."]
+	["reverse", "Reverse the order of notes in a MIDI file."],
+	["mirror", "Mirror a MIDI file in time or pitch."]
 	];                // END_TUTORIAL_LIST
 
 	var tlist = document.getElementById('tutorial-list');
@@ -17,15 +18,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	tlist.textContent = '';
 	var i;
 	for (i=0; i<tutoriallist.length; i++) {
-		var li = document.createElement("LI");
-		tlist.appendChild(li);
+		var tr = document.createElement("TR");
+      tr.setAttribute("border", 0);
+      tr.setAttribute("margin", 0);
+		tlist.appendChild(tr);
 		var newcontent = "";
-		newcontent += '<a href="tutorial/#' + tutoriallist[i][0] + '">';
+      newcontent += '<td style="border:0; margin:0; width:90px;">';
+		newcontent += '<a href="tutorial/' + tutoriallist[i][0] + '">';
 		newcontent += tutoriallist[i][0];
-		newcontent += '</a> &mdash;';
-		newcontent += '<span id="' + tutoriallist[i][0] + '-description">';
+		newcontent += '</a>';
+      newcontent += '</td><td style="border:0; margin:0; padding-right:5px;"> ';
+		newcontent += '&mdash;';
+		newcontent += '</td><td style="text-align:left; border:0; margin:0;">';
+      newcontent += '<span id="' + tutoriallist[i][0] + '-description">';
       newcontent += tutoriallist[i][1] + '</span>';
-		li.innerHTML = newcontent;
+		newcontent += '</td>';
+		tr.innerHTML = newcontent;
 	}
 });
 
@@ -42,5 +50,5 @@ ul#tutorial-list li {
 </style>
 
 
-<ul id="tutorial-list"> </ul>
+<table style="border:0; margin:0;" id="tutorial-list"> </table>
 

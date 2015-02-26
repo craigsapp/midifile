@@ -14,11 +14,15 @@ int main(int argc, char** argv) {
    }
    MidiFile midifile;
    midifile.read(options.getArg(1));
+   if (!midifile.status()) {
+      cerr << "Error reading MIDI file " << options.getArg(1) << endl;
+      exit(1);
+   }
    midifile.linkNotePairs();
    vector<MidiEvent*> notes;
    notes.reserve(123456);
-   for (int track=0; track<midifile.getTrackCount(); track++) {
-      for (int event=0; event<midifile.getEventCount(track); event++) {
+   for (int track=0; track<midifile.size(); track++) {
+      for (int event=0; event<midifile[track].size(); event++) {
          if (midifile[track][event].isNoteOn()) {
             if (midifile[track][event].isLinked()) {
                notes.push_back(&midifile[track][event]);
