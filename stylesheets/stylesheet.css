@@ -46,6 +46,12 @@ table {
 	border-collapse: collapse;
 }
 
+tt {
+ 	font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal;
+	font-size: 90%;
+	color: #333;
+}
+
 /* LAYOUT STYLES */
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, serif;

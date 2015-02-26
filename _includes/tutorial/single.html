@@ -1,13 +1,137 @@
 
-
 <script>
+// vim: ts=3 hlsearch
 
 window.addEventListener("DOMContentLoaded", function(event) {
-   var details = document.querySelectorAll("details.tutorial-entry");
-   for (var i=0; i<details.length; i++) {
-      var content = details[i].innerHTML;
-      details[i].outerHTML = content;
-   }
+	var details = document.querySelectorAll("details.tutorial-entry");
+	for (var i=0; i<details.length; i++) {
+		var content = details[i].innerHTML;
+		details[i].outerHTML = content;
+	}
 });
+
+</script>
+
+{% include layout/qtip.html %}
+
+<style>
+span.codetip {
+  color: #990022;
+}
+
+.qtipCustomClass {
+	padding: 0,
+	margin: 0,
+	border: 0;
+	border-color: black;
+   color: red;
+}
+</style>
+
+<script>
+// This code constructs tooltips for code snippets on the page.
+// Search for span.codetip elements, then extract the line range
+// from the text content and place into a tooltip for that span.
+// At the moment this works only for single-tutorial pages, and
+// will need generalization for multi-tutorial pages.
+//
+
+window.addEventListener("DOMContentLoaded", function(event) {
+	var $codetips = $('span.codetip');
+	if ($codetips.length == 0) {
+		return;
+	}
+	var $codelist = $('td.code > div.highlight > pre');
+	if ($codelist.length == 0) {
+		return;
+	}
+
+	for (var i=0; i<$codetips.length; i++) {
+		constructTooltip($codetips[i], $codelist[0]);
+	}
+});
+
+
+//////////////////////////////
+//
+// constructTooltip -- Extract lines from main code example and
+//   insert into a tooltip.
+//
+
+function constructTooltip(codetip, codelist) {
+	var range = codetip.textContent.match(/[0-9]+/g);
+	var startline = range[0];
+	var endline = range[1];
+	if (!startline || startline.match(/^\s*$/)) {
+		return;
+	}
+	if (!endline || endline.match(/^\s*$/)) {
+		return;
+	}
+   codetip.innerHTML = codetip.innerHTML.replace("-", "&ndash;");
+
+	startline = parseInt(startline);
+	endline = parseInt(endline);
+	// startline and endline are index from 1
+	var selectedlines = codelist.innerHTML.split(/\n/)
+			.slice(startline-1, endline)
+			.join("\n");
+	var tooltiptext = '<div style="padding:0; margin:0;" class="highlight"><pre';
+	tooltiptext += ' style="padding:0; margin:0; font-size:120%; line-height:130%"';
+	tooltiptext += '>';
+	tooltiptext += selectedlines + '</pre></div>';
+
+	$(codetip)
+		.qtip({
+			content: { text: tooltiptext },
+			position: {
+				my: 'bottom center',
+				at: 'top center'
+			},
+			style:   { classes: 'qtipCustomClass' }
+		});
+}
+
+</script>
+
+
+<script>
+// <span class="classlink">MidiMessage</span>
+// goes to
+// <span class="classlink"><a href="/class/MidiMessage">MidiMessage</a></span>
+//
+// <span class="functionlink" cname="MidiFile">linkNotePairs</span>
+// goes to
+// <span class="functionlink" cname="MidiFile">
+//    <a href="/class/MidiMessage/#linkNotePairs">linkNotePairs</a>
+// </span>
+//
+
+window.addEventListener("DOMContentLoaded", function(event) {
+   var spans = document.querySelectorAll("span.functionlink");
+
+   for (var i=0; i<spans.length; i++) {
+      var libclass = spans[i].getAttribute("cname");
+      var text = spans[i].innerHTML;
+      if (text.match(/[<>]/)) {
+         continue;
+      }
+      text = '<a href="/class/' + libclass + '/#' + text + '">' + text + '</a>';
+      spans[i].innerHTML = text;
+   }
+
+   var spans = document.querySelectorAll("span.classlink");
+
+   for (i=0; i<spans.length; i++) {
+      libclass = spans[i].innerHTML;
+      if (libclass.match(/[<>]/)) {
+         continue;
+      }
+      text = '<a href="/class/' + libclass + '">' + libclass + '</a>';
+      spans[i].innerHTML = text;
+   }
+
+});
+
 
 </script>

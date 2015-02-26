@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
       cerr << "two MIDI filenames are required.\n";
       exit(1);
    }
+
    MidiFile midifile;
    midifile.read(options.getArg(1));
    if (!midifile.status()) {
@@ -82,11 +83,13 @@ void doTimeMirror(MidiFile& midifile) {
 void doPitchMirror(MidiFile& midifile, double pivot) {
    vector<int> mirror;
    setMirror(mirror, pivot);
-   midifile.linkNotePairs();
    
    for (int i=0; i<midifile.size(); i++) {
       for (int j=0; j<midifile[i].size(); j++) {
          if (!midifile[i][j].isNote()) {
+            continue;
+         }
+         if (midifile[i][j].getChannel() == 9) {
             continue;
          }
          midifile[i][j].setKeyNumber(mirror[midifile[i][j][1]]);
