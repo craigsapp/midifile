@@ -29,6 +29,7 @@ MidiEventList::MidiEventList(void) {
 }
 
 
+
 //////////////////////////////
 //
 // MidiEventList::~MidiEventList -- Deconstructor.  Deallocate all stored
@@ -40,6 +41,7 @@ MidiEventList::~MidiEventList() {
 }
 
 
+
 //////////////////////////////
 //
 // MidiEventList::operator[] --
@@ -47,7 +49,23 @@ MidiEventList::~MidiEventList() {
 
 MidiEvent&  MidiEventList::operator[](int index) {
    return *list[index];
+}
 
+
+
+//////////////////////////////
+//
+// MidiEventList::back -- Return the last element in the list.
+//
+
+MidiEvent& MidiEventList::back(void) {
+   return *list.back();
+}
+
+// Alias for back:
+
+MidiEvent& MidiEventList::last(void) {
+   return back();
 }
 
 

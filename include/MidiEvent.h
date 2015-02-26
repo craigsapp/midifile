@@ -44,8 +44,11 @@ class MidiEvent : public MidiMessage {
 
       // functions related to event linking (note-ons to note-offs).
       void       unlinkEvent   (void);
+      void       unlinkEvents  (void);
       void       linkEvent     (MidiEvent* mev);
+      void       linkEvents    (MidiEvent* mev);
       void       linkEvent     (MidiEvent& mev);
+      void       linkEvents    (MidiEvent& mev);
       int        isLinked      (void);
       MidiEvent* getLinkedEvent(void);
       int        getTickDuration(void);

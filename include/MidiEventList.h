@@ -25,6 +25,8 @@ class MidiEventList {
                  ~MidiEventList    ();
 
       MidiEvent&  operator[]       (int index);
+      MidiEvent&  back             (void);
+      MidiEvent&  last             (void);
       MidiEvent&  getEvent         (int index);
       void        clear            (void);
       void        reserve          (int rsize);
