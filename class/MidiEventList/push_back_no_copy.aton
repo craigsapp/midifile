@@ -7,7 +7,7 @@
 @RETURN:	int
 @PARAMETERS:	MidiEvent*
 @FILE:		MidiEventList.cpp
-@LINES:		232-244
+@LINES:		250-262
 @SEEALSO:	push_back
 @SHORTDESC:	Store a MidiEvent without first copying it.
 @LONGDESC:	Store a MidiEvent without first copying it.  Usually

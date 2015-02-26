@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiEventList.cpp
-@LINES:		219-230
+@LINES:		237-248
 @SEEALSO:	clear
 @SHORTDESC:	Clear event list without deallocating events.
 @LONGDESC:	This function is similar to clear(), but storage

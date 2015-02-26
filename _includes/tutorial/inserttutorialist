@@ -60,7 +60,7 @@ sub getDescription {
       $description =~ s/"/&quot;/g;
       return $description;
    } else {
-      die "Cannot find description\n";
+      die "Cannot find description for $name\n";
    }
 }
 
@@ -79,8 +79,11 @@ sub getTutorialList {
    my @output;
    open(FILE, $file) or die "Cannot open $file for reading\n";
    my $line;
+   my $match;
    while ($line = <FILE>) {
       if ($line =~ /{%\s*include\s+tutorial\/(.*)\.html\s*%}/) {
+         $match = $1;
+         next if $match =~ /header/;
          $output[@output] = $1;
       }
    }

@@ -8,8 +8,7 @@
 @FILE:		MidiFile.cpp
 @LINES:		800-852
 @SEEALSO:	
-@SHORTDESC:	Take joined tracks and split them back into their separate
-		track identities.
+@SHORTDESC:	Separate events into their original track configuration.
 @LONGDESC:	Take joined tracks and split them back into their separate
 		track identities.
 

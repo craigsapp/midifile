@@ -1,0 +1,38 @@
+@@BEGIN:	FunctionDocumentation
+@INDEXED:	yes
+@CLASSNAME:	MidiMessage
+@METHOD:	setKeyNumber
+@ACCESS:	public
+@RETURN:	void
+@PARAMETERS:	int size
+@FILE:		MidiMessage.cpp
+@LINES:		607-622
+@SEEALSO:	vector<uchar>::resize
+@SHORTDESC:	Set the MIDI key number for notes and aftertouch.
+@LONGDESC:	Set the MIDI key number for notes and aftertouch.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::setKeyNumber -- Set the note on/off key number (or
+//    aftertouch key).  Ignore if not note or aftertouch message.
+//    Limits the input value to the range from 0 to 127.
+//
+
+void MidiMessage::setKeyNumber(int value) { 
+   if (isNote() || isAftertouch()) {
+      setP1(value &amp; 0xff);
+   } else {
+      // don't do anything since this is not a note-related message.
+   }
+}
+
+@@END:	FunctionDocumentation
+

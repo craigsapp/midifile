@@ -1,0 +1,39 @@
+@@BEGIN:	FunctionDocumentation
+@INDEXED:	yes
+@CLASSNAME:	MidiEventList
+@METHOD:	back
+@ALIAS:		
+@ACCESS:	public
+@RETURN:	MidiEvent&
+@PARAMETERS:	void
+@FILE:		MidiEventList.cpp
+@LINES:		55-70
+@SEEALSO:	
+@SHORTDESC:	Access the last element in a list.
+@LONGDESC:	Access the last element in a list.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiEventList::back -- Return the last element in the list.
+//
+
+MidiEvent&amp; MidiEventList::back(void) {
+   return *list.back();
+}
+
+// Alias for back:
+
+MidiEvent&amp; MidiEventList::last(void) {
+   return back();
+}
+
+@@END:	FunctionDocumentation
+

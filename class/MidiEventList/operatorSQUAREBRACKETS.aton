@@ -7,7 +7,7 @@
 @RETURN:	MidiEvent&
 @PARAMETERS:	int index
 @FILE:		MidiEventList.cpp
-@LINES:		42-52
+@LINES:		44-53
 @SEEALSO:	
 @SHORTDESC:	Access a MidiEvent in the event list.
 @LONGDESC:	Access a MidiEvent in the event list.
@@ -27,7 +27,6 @@
 
 MidiEvent&amp;  MidiEventList::operator[](int index) {
    return *list[index];
-
 }
 
 @@END:	FunctionDocumentation
