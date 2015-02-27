@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
    vector<uchar> mididata;
    midifile.setTicksPerQuarterNote(tpq);
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for
                                                     // max expected MIDI events
 

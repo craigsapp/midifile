@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
 //
 
 void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.joinTracks();
    vector<double> event(8);
    vector<double> ontimes(128);

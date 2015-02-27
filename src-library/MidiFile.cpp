@@ -497,9 +497,9 @@ int MidiFile::write(const string& filename) {
 
 
 int MidiFile::write(ostream& out) {
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      deltaTime();
+      deltaTicks();
    }
 
    // write the header of the Standard MIDI File
@@ -576,7 +576,7 @@ int MidiFile::write(ostream& out) {
    }
 
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      absoluteTime();
+      absoluteTicks();
    }
 
    return 1;
@@ -773,9 +773,9 @@ void MidiFile::joinTracks(void) {
    }
    joinedTrack->reserve((int)(messagesum + 32 + messagesum * 0.1));
 
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
+      absoluteTicks();
    }
    for (i=0; i<length; i++) {
       for (j=0; j<(int)events[i]->size(); j++) {
@@ -790,7 +790,7 @@ void MidiFile::joinTracks(void) {
    events.push_back(joinedTrack);
    sortTracks();
    if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
 
    theTrackState = TRACK_STATE_JOINED;
@@ -808,9 +808,9 @@ void MidiFile::splitTracks(void) {
    if (getTrackState() == TRACK_STATE_SPLIT) {
       return;
    }
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
+      absoluteTicks();
    }
 
    int maxTrack = 0;
@@ -844,7 +844,7 @@ void MidiFile::splitTracks(void) {
    delete olddata;
 
    if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
 
    theTrackState = TRACK_STATE_SPLIT;
@@ -926,15 +926,15 @@ int MidiFile::getSplitTrack(int index) {
 
 //////////////////////////////
 //
-// MidiFile::deltaTime -- convert the time data to
+// MidiFile::deltaTicks -- convert the time data to
 //     delta time, which means that the time field
 //     in the MidiEvent struct represents the time
 //     since the last event was played. When a MIDI file
 //     is read from a file, this is the default setting.
 //
 
-void MidiFile::deltaTime(void) {
-   if (getTimeState() == TIME_STATE_DELTA) {
+void MidiFile::deltaTicks(void) {
+   if (getTickState() == TIME_STATE_DELTA) {
       return;
    }
    int i, j;
@@ -962,7 +962,7 @@ void MidiFile::deltaTime(void) {
 
 //////////////////////////////
 //
-// MidiFile::absoluteTime -- convert the time data to
+// MidiFile::absoluteTicks -- convert the time data to
 //    absolute time, which means that the time field
 //    in the MidiEvent struct represents the exact tick
 //    time to play the event rather than the time since
@@ -970,8 +970,8 @@ void MidiFile::deltaTime(void) {
 //    event.
 //
 
-void MidiFile::absoluteTime(void) {
-   if (getTimeState() == TIME_STATE_ABSOLUTE) {
+void MidiFile::absoluteTicks(void) {
+   if (getTickState() == TIME_STATE_ABSOLUTE) {
       return;
    }
    int i, j;
@@ -997,11 +997,11 @@ void MidiFile::absoluteTime(void) {
 
 //////////////////////////////
 //
-// MidiFile::getTimeState -- returns what type of time method is
+// MidiFile::getTickState -- returns what type of time method is
 //   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
 //
 
-int MidiFile::getTimeState(void) {
+int MidiFile::getTickState(void) {
    return theTimeState;
 }
 
@@ -1009,11 +1009,11 @@ int MidiFile::getTimeState(void) {
 
 //////////////////////////////
 //
-// MidiFile::isDeltaTime -- Returns true if MidiEvent .tick 
+// MidiFile::isDeltaTicks -- Returns true if MidiEvent .tick 
 //    variables are in delta time mode.
 //
 
-int MidiFile::isDeltaTime(void) {
+int MidiFile::isDeltaTicks(void) {
    return theTimeState == TIME_STATE_DELTA ? 1 : 0;
 }
 
@@ -1021,11 +1021,11 @@ int MidiFile::isDeltaTime(void) {
 
 //////////////////////////////
 //
-// MidiFile::isAbsoluteTime -- Returns true if MidiEvent .tick 
+// MidiFile::isAbsoluteTicks -- Returns true if MidiEvent .tick 
 //    variables are in absolute time mode.
 //
 
-int MidiFile::isAbsoluteTime(void) {
+int MidiFile::isAbsoluteTicks(void) {
    return theTimeState == TIME_STATE_ABSOLUTE ? 1 : 0;
 }
 
@@ -1441,9 +1441,9 @@ int MidiFile::getNumEvents(int aTrack) {
 void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
    MidiEventList* mergedTrack;
    mergedTrack = new MidiEventList;
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
+      absoluteTicks();
    }
    int i, j;
    int length = getNumTracks();
@@ -1469,7 +1469,7 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
    events.resize(length-1);
 
    if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
 }
 
@@ -1784,9 +1784,9 @@ void MidiFile::buildTimeMap(void) {
    // in that state when this function was called.
    //
    int trackstate = getTrackState();
-   int timestate  = getTimeState();
+   int timestate  = getTickState();
 
-   absoluteTime();
+   absoluteTicks();
    joinTracks();
 
    int allocsize = getNumEvents(0);
@@ -1833,7 +1833,7 @@ void MidiFile::buildTimeMap(void) {
 
    // reset the states of the tracks or time values if necessary here:
    if (timestate == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
    if (trackstate == TRACK_STATE_SPLIT) {
       splitTracks();
@@ -2098,10 +2098,10 @@ ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
    int i, j, k;
    out << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
    out << "Number of Tracks: " << aMidiFile.getTrackCount() << "\n";
-   out << "Time method: " << aMidiFile.getTimeState();
-   if (aMidiFile.getTimeState() == TIME_STATE_DELTA) {
+   out << "Time method: " << aMidiFile.getTickState();
+   if (aMidiFile.getTickState() == TIME_STATE_DELTA) {
       out << " (Delta timing)";
-   } else if (aMidiFile.getTimeState() == TIME_STATE_ABSOLUTE) {
+   } else if (aMidiFile.getTickState() == TIME_STATE_ABSOLUTE) {
       out << " (Absolute timing)";
    } else {
       out << " (unknown method)";

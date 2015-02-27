@@ -115,7 +115,7 @@ void printMelody(vector<Melody>& melody, int tpq) {
 //
 
 void convertToMelody(MidiFile& midifile, vector<Melody>& melody) {
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    if (track < 0 || track >= midifile.getNumTracks()) {
       cout << "Invalid track: " << track << " Maximum track is: "
            << midifile.getNumTracks() - 1 << endl;

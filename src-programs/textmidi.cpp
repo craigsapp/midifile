@@ -42,8 +42,8 @@ int main(int argc, char** argv) {
       }
       if (status != 0) {
          switch (timestyle) {
-            case 'd': inputfile.deltaTime();    break;
-            case 'a': inputfile.absoluteTime(); break;
+            case 'd': inputfile.deltaTicks();    break;
+            case 'a': inputfile.absoluteTicks(); break;
          }
          cout << inputfile;
       } else {

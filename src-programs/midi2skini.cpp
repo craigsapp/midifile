@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile midifile;
    midifile.read(options.getArg(1));
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.joinTracks();
    printMidiAsSkini(midifile);
    return 0;

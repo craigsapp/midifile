@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile midifile;
    midifile.read(options.getArg(1));
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    vector<int> noteondeltas;
    noteondeltas.reserve(maxcount);
    noteondeltas.clear();

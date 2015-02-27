@@ -92,7 +92,7 @@ void processFile(const string& filename) {
 
 void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
    MidiFile midifile;
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.addTrack(1);
    int tpq = 120;
    double beat = 0.0;

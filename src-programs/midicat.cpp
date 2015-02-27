@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile outfile;
    outfile.joinTracks();
-   outfile.deltaTime();
+   outfile.deltaTicks();
 
    int i;
    int initQ = 0;
@@ -75,7 +75,7 @@ void appendMidi(MidiFile& outfile, const char* filename,
       double seconds, int initQ) {
    MidiFile infile(filename);
    infile.joinTracks();
-   infile.deltaTime();
+   infile.deltaTicks();
    int i;
    int tpq;
    int count;

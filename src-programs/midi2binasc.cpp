@@ -61,7 +61,7 @@ void convertMidiFile(MidiFile& midifile) {
    if (type0Q) {
       midifile.joinTracks();
    }
-   midifile.deltaTime();
+   midifile.deltaTicks();
 
    printMidiHeader(midifile);
    int trackcount = midifile.getTrackCount();

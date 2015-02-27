@@ -29,7 +29,7 @@ void AddDrumTrack(MidiFile& midifile, int* data, int instrument, int ticks);
 
 int main(int argc, char** argv) {
    MidiFile outputfile;        // create an empty MIDI file with one track
-   outputfile.absoluteTime();  // time information stored as absolute time
+   outputfile.absoluteTicks(); // time information stored as absolute time
                                // (will be coverted to delta time when written)
    outputfile.setTicksPerQuarterNote(QUARTER);
 

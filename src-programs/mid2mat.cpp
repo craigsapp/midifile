@@ -187,7 +187,7 @@ void printOpcodeVariables(vector<int> opcodes) {
 //
 
 void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.joinTracks();
    if (secQ || msecQ) {
       midifile.doTimeInSecondsAnalysis();

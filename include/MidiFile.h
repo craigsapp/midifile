@@ -100,11 +100,11 @@ class MidiFile {
       int       getNumEvents              (int aTrack);
 
       // tick-related functions:
-      void      deltaTime                 (void);
-      void      absoluteTime              (void);
-      int       getTimeState              (void);
-      int       isDeltaTime               (void);
-      int       isAbsoluteTime            (void);
+      void      deltaTicks                (void);
+      void      absoluteTicks             (void);
+      int       getTickState              (void);
+      int       isDeltaTicks              (void);
+      int       isAbsoluteTicks           (void);
 
       // ticks-per-quarter related functions:
       void      setMillisecondTicks       (void);

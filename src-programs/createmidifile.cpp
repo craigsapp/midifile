@@ -19,7 +19,7 @@ typedef unsigned char uchar;
 
 int main(int argc, char** argv) {
    MidiFile outputfile;        // create an empty MIDI file with one track
-   outputfile.absoluteTime();  // time information stored as absolute time
+   outputfile.absoluteTicks();  // time information stored as absolute time
                                // (will be coverted to delta time when written)
    outputfile.addTrack(2);     // Add another two tracks to the MIDI file
    vector<uchar> midievent;     // temporary storage for MIDI events

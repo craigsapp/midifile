@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 //
 
 void processMidiFile(MidiFile& midifile) {
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.joinTracks();
    int i, j;
    int eventcount = midifile.getEventCount(0);

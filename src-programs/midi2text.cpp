@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 //
 
 void convertMidiFileToText(MidiFile& midifile) {
-   midifile.absoluteTime();
+   midifile.absoluteTicks();
    midifile.joinTracks();
 
    vector<double> ontimes(128);
