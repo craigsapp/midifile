@@ -14,6 +14,39 @@ git pull https://github.com/craigsapp/midifile
 cd midifile
 make
 ```
+<!-- FEATURE LIST ------------------------------------------------- -->
+
+<details open>
+<summary style="outline:none;">
+   <span style="color:#000; font-weight:600; font-size:130%;">Features</span>
+</summary>
+
+<ol style="margin-left:30px;">
+<li> Event timestamps can be converted between absolute 
+     or delta tick values with the
+         <span class="function-link">MidiFile::deltaTicks</span>
+     and
+         <span class="function-link">MidiFile::absoluteTicks</span>
+     functions.
+
+<li> In absolute tick mode, messages can be inserted into tracks
+     in any order and later sorted by timestamp with the
+         <span class="function-link">MidiFile::sortTracks</span>
+     function.
+<li> Multi-track files can be converted to a single track in a
+     reversible process.
+<li> Event performance times in seconds can be calculated from
+     tick times and tempo meta messages with the
+         <span class="function-link">MidiFile::doTimeAnalysis</span>
+     function.
+<li> Durations of notes can be extracted using the
+        <span class="function-link">MidiFile::linkNotePairs</span>
+     function.
+</ol>
+
+
+</details>
+
 
 <!-- TUTORIAL LIST ------------------------------------------------- -->
 

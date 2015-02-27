@@ -7,12 +7,12 @@ before performing the current event, and (2) absoute time, where the tick value
 represents the cumulative tick time since the start of the MidiFile until the
 performance time of the current event. Standard MIDI Files store tick times
 as delta ticks, but it is often more useful to manipulate event data with
-absolute ticks.  The <span class="function">absoluteTime</span> 
-and <span class="function">deltaTime</span> functions
+absolute ticks.  The <span class="function">absoluteTicks</span> 
+and <span class="function">deltaTicks</span> functions
 switch the event tick values within the MidiFile between these two modes:
 
-<div class="docslot" id="MidiFile::absoluteTime"><span class="docslot-short-title" style="padding-left:19px;">absoluteTime</span><span class="short-desc"> &mdash; Convert event delta tick values into absolute ticks.</span></div>
-<div class="docslot" id="MidiFile::deltaTime"><span class="docslot-short-title" style="padding-left:19px;">deltaTime</span><span class="short-desc"> &mdash; Convert timestamps into delta times.</span></div>
+<div class="docslot" id="MidiFile::absoluteTicks"><span class="docslot-short-title" style="padding-left:19px;">absoluteTicks</span><span class="short-desc"> &mdash; Convert event delta tick values into absolute ticks.</span></div>
+<div class="docslot" id="MidiFile::deltaTicks"><span class="docslot-short-title" style="padding-left:19px;">deltaTicks</span><span class="short-desc"> &mdash; Convert timestamps into delta times.</span></div>
 
 <br/>
 The <span class="function">isDeltaTime</span>

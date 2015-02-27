@@ -1,7 +1,8 @@
 @@BEGIN:	FunctionDocumentation
 @INDEXED:	yes
 @CLASSNAME:	MidiFile
-@METHOD:	deleteTrack
+@METHOD:	deleteTicks
+@ALIAS:		deltaTime
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	int track

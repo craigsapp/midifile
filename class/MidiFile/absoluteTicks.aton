@@ -1,13 +1,14 @@
 @@BEGIN:	FunctionDocumentation
 @INDEXED:	yes
 @CLASSNAME:	MidiFile
-@METHOD:	absoluteTime
+@METHOD:	absoluteTicks
 @ACCESS:	public
+@ALIAS:		absoluteTime
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
 @LINES:		962-995
-@SEEALSO:	deltaTime
+@SEEALSO:	deltaTicks
 @SHORTDESC:	Convert event delta tick values into absolute ticks.
 @LONGDESC:	Convert delta ticks values for all MidiEvents into absolute 
 		tick times.  In absolute time, the tick parameter

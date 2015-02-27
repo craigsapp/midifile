@@ -1,13 +1,13 @@
 @@BEGIN:	FunctionDocumentation
 @INDEXED:	yes
 @CLASSNAME:	MidiFile
-@METHOD:	deltaTime
+@METHOD:	deltaTicks
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
 @LINES:		926-960
-@SEEALSO:	absoluteTime
+@SEEALSO:	absoluteTicks
 @SHORTDESC:	Convert timestamps into delta times.
 @LONGDESC:	Convert timestamps into delta times, which means that
 		the time field in the MidiEvents structure represents the
