@@ -1,0 +1,134 @@
+
+<script>
+// vim: ts=3 hlsearch ft=javascript
+//
+// This event listener converts various span classes into internal
+// hyperlinks on the website.  This allows the various locations for
+// the resources to be moved around, and all new links can be corrected
+// at the same time by adjusting the hyperlink addresses in this file.
+//
+
+window.addEventListener("DOMContentLoaded", function(event) {
+	processClassLinks();
+	processFunctionLinks();
+	processTutorialLinks();
+});
+
+
+
+//////////////////////////////
+//
+// processClassLinks -- Convert span element such as this:
+//       <span class="class-link">MidiMessage</span>
+//    into a hyperlink in this form:
+//       <span class="class-link">
+//          <a href="/class/MidiMessage">MidiMessage</a>
+//       </span>
+//    If the class name does not match the text of the span element,
+//    then a cname attribute can list the class name:
+//       <span class="class-link" cname="MidiMessage">MidiMessages</span>
+//    will get converted into:
+//       <span class="class-link">
+//          <a href="/class/MidiMessage">MidiMessages</a>
+//       </span>
+//
+
+function processClassLinks() {
+	var spans = document.querySelectorAll("span.class-link");
+	for (var i=0; i<spans.length; i++) {
+		var clink = spans[i].innerHTML;
+		var cname = spans[i].getAttribute('cname');
+		if (cname) {
+			var temp = cname;
+			cname = clink;
+			clink = temp;
+		} else {
+			cname = clink;
+		}
+		if (clink.match(/[<>]/)) {
+			// don't redo links if they were already done.
+			continue;
+		}
+		var text = '<a href="/class/' + clink + '">' + cname + '</a>';
+		spans[i].innerHTML = text;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// processFunctionLinks -- Span elements for linking to specific functions:
+//      <span class="function-link" cname="MidiFile">linkNotePairs</span>
+//   get converted into hyperlinks with this form:
+//      <span class="functionlink" cname="MidiFile">
+//         <a href="/class/MidiMessage/#linkNotePairs">linkNotePairs</a>
+//      </span>
+//
+//  Or to explicitly display the class scope:
+//      <span class="function-link">MidiFile::linkNotePairs</span>
+//  which converts to:
+//      <span class="function-link">
+//         MidiFile::
+//         <a href="/class/MidiFile/#linkNotePairs</a>
+//      </span>
+//
+
+function processFunctionLinks() {
+	var spans = document.querySelectorAll("span.function-link");
+	for (var i=0; i<spans.length; i++) {
+		var libclass = spans[i].getAttribute("cname");
+		var text = spans[i].innerHTML;
+		if (text.match(/[<>]/)) {
+		// don't redo links if they were already done.
+		continue;
+		}
+		var matches = text.match(/(.*)::(.*)/);
+		if (matches) {
+			var classname = matches[1];
+			var fname = matches[2];
+			if (!libclass) {
+				libclass = classname;
+			}
+			text = libclass;
+			text += '::';
+			text += '<a href="/class/' + libclass
+			text += '/#' + fname + '">' + fname + '</a>';
+		} else {
+			text = '<a href="/class/' + libclass + '/#' + fname + '">'
+						+ fname + '</a>';
+		}
+		spans[i].innerHTML = text;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// processTutorialLinks -- Convert span element such as this:
+//       <span class="tutorial-link">mirror</span>
+//    into a hyperlink in this form:
+//       <span class="class-link">
+//          <a href="/tutorial/mirror">mirror</a>
+//       </span>
+//
+
+function processTutorialLinks() {
+	var spans = document.querySelectorAll("span.tutorial-link");
+	for (var i=0; i<spans.length; i++) {
+		var tutorial = spans[i].innerHTML;
+		if (tutorial.match(/[<>]/)) {
+			// don't redo links if they were already done.
+			continue;
+		}
+		var text = '<a href="/tutorial/' + tutorial + '">' + tutorial + '</a>';
+		spans[i].innerHTML = text;
+	}
+}
+
+
+</script>
+
+
+

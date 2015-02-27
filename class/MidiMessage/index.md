@@ -1,6 +1,10 @@
 ---
 layout: default
-breadcrumbs: [['/doc','documentation'], ['/class', 'classes']]
+breadcrumbs: [
+		['/','home'], 
+		['/doc','documentation'], 
+		['/class', 'classes']
+	]
 title:  MidiMessage class
 grouptitle: ['https://github.com/craigsapp/midifile/blob/master/src-library', 'Source Code']
 group: [

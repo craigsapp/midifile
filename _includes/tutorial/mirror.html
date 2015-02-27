@@ -34,26 +34,29 @@ Book II, prelude 2 in C minor in for orientations:
 Trying mirroring a MIDI file and then repeat the mirroring process
 to take the MIDI file back to its original state.
 
-The <tt>doTimeMirror</tt>() function (<span class="codetip">lines
-51-69</span>) reverses time by extracting the largest absolute tick
-time and subtracting each <span class="classlink">MidiMessage</span>
+The <tt>doTimeMirror</tt>() function
+   (<span class="codetip">lines 51-69</span>)
+reverses time by extracting the largest absolute tick time and
+subtracting each
+   <span class="class-link">MidiMessage</span>
 tick time from that maximum timestamp to reverse the time sequence.
 This will place note-offs before their matching note-ons, so the
 times of note-ons and their matching note-offs are then swapped.
-At the end of the function the <a
-href="/class/MidiFile/#sortTracks"><tt>sortTracks</tt></a>() function
-is called to reverse messages in each track, as well as move notes-ons
-back in front of their matching note-offs.
+At the end of the function the
+  <span class="function-link" cname="MidiFile">sortTracks</span>
+function is called to reverse messages in each track, as well as
+move notes-ons back in front of their matching note-offs.
 
-The <tt>doPitchMirror</tt>() function (<span class="codetip">lines
-83-98</span>) does not require moving any events around in the MIDI
-file, since the note-ons and note-offs do not reverse order. Notes
-on the 10th MIDI channel (channel "9" from a programming viewpoint)
-are not altered since this is the General MIDI drum track channel.
-The <span class="functionlink" cname="MidiMessage">setKeyNumber</span>
+The <tt>doPitchMirror</tt>() function
+   (<span class="codetip">lines 83-98</span>)
+does not require moving any events around in the MIDI file, since
+the note-ons and note-offs do not reverse order. Notes on the 10th
+MIDI channel (channel "9" from a programming viewpoint) are not
+altered since this is the General MIDI drum track channel.  The
+   <span class="function-link" cname="MidiMessage">setKeyNumber</span>
 function has built in range checking which prevents values other
-than 0&ndash;127 from incorrectly being inserted into the MIDI message.
-
+than 0&ndash;127 from incorrectly being inserted into the MIDI
+message.
 
 {% highlight cpp linenos=table %}
 {% include tutorial/code/mirror.cpp %}

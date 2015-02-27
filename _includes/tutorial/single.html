@@ -52,6 +52,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 });
 
 
+
 //////////////////////////////
 //
 // constructTooltip -- Extract lines from main code example and
@@ -95,43 +96,4 @@ function constructTooltip(codetip, codelist) {
 </script>
 
 
-<script>
-// <span class="classlink">MidiMessage</span>
-// goes to
-// <span class="classlink"><a href="/class/MidiMessage">MidiMessage</a></span>
-//
-// <span class="functionlink" cname="MidiFile">linkNotePairs</span>
-// goes to
-// <span class="functionlink" cname="MidiFile">
-//    <a href="/class/MidiMessage/#linkNotePairs">linkNotePairs</a>
-// </span>
-//
 
-window.addEventListener("DOMContentLoaded", function(event) {
-   var spans = document.querySelectorAll("span.functionlink");
-
-   for (var i=0; i<spans.length; i++) {
-      var libclass = spans[i].getAttribute("cname");
-      var text = spans[i].innerHTML;
-      if (text.match(/[<>]/)) {
-         continue;
-      }
-      text = '<a href="/class/' + libclass + '/#' + text + '">' + text + '</a>';
-      spans[i].innerHTML = text;
-   }
-
-   var spans = document.querySelectorAll("span.classlink");
-
-   for (i=0; i<spans.length; i++) {
-      libclass = spans[i].innerHTML;
-      if (libclass.match(/[<>]/)) {
-         continue;
-      }
-      text = '<a href="/class/' + libclass + '">' + libclass + '</a>';
-      spans[i].innerHTML = text;
-   }
-
-});
-
-
-</script>

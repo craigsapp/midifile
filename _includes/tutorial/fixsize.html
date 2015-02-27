@@ -12,17 +12,19 @@ counts by reading a MIDI file and then writing it out again,
 without doing anything else to automatically fix the track
 chunk sizes.
 
-The <a href="/class/MidiFile">MidiFile</a> class ignores the
-byte-count value in track chunk headers when reading a MIDI file,
-so incorrect byte counts do not affect parsing of the file.  When
-writing a file out again, the byte count for each track is calculated
-and automatically corrected.
+The
+   <span class="class-link">MidiFile</span>
+class ignores the byte-count value in track chunk headers when
+reading a MIDI file, so incorrect byte counts do not affect parsing
+of the file.  When writing a file out again, the byte count for
+each track is calculated and automatically corrected.
 
 Note that the MidiFile class usually expands running-status messages,
 so the size of the MIDI file may change from the original size.
 Also note that this example overwrites the old file contents.  To
-ensure that there was not a problem reading the file, the .<a
-href="/class/MidiFile/#status">status</a>() function is checked to
+ensure that there was not a problem reading the file, the
+  <span class="function-link">MidiFile::status</span>
+function is checked to
 see if the parsing of the input data was successful.
 
 {% highlight cpp linenos=table %}

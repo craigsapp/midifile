@@ -1,9 +1,9 @@
 
 {% if page.breadcrumbs %}
 <!-- breadcrumbs navigator: -->
-<span style="position: relative; left: 4px; bottom: 3px">
+<span style="position: relative; left: 1px; bottom: 28px;">
    {% for item in page.breadcrumbs %}
-     &nbsp;&nbsp;&raquo;&nbsp;&nbsp;<a style="letter-spacing: -0.5px;" href="{{ item[0] | prepend: site.baseurl }}">{{ item[1] }}</a>
+     {% if forloop.index0 > 0 %}&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;{% endif %}<a style="letter-spacing: -0.5px;" href="{{ item[0] | prepend: site.baseurl }}">{{ item[1] }}</a>
    {% endfor %}
 </span>
 {% endif %}

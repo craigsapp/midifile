@@ -1,7 +1,10 @@
 ---
 layout: default
-breadcrumbs: [['/doc', 'documentation']]
-title: Class documentation
+breadcrumbs: [
+		['/', 'home'],
+		['/doc', 'documentation']
+	]
+title: Classes in the midifile library
 ---
 
 The Midifile library contains six classes:

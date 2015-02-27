@@ -8,16 +8,17 @@
 
 The following example program will reverse the order of pitches in
 a MIDI file, while at the same time preserve the original rhythms.
-First note-ons and note-offs are linked by calling the MidiFile::<a
-href="/class/MidiFile/#linkNotePairs">linkNotePairs</a> function.
-Then a list of note-ons are extracted by iterating through each
-event in each track.  And finally the extracted note list is used
-to switch the key numbers in reverse order in the list.
+First note-ons and note-offs are linked by calling the
+   <span class="function-link">MidiFile::linkNotePairs</span>
+function.  Then a list of note-ons are extracted by iterating through
+each event in each track.  And finally the extracted note list is
+used to switch the key numbers in reverse order in the list.
 
 If the MIDI file is monophonic (single melody), then this program
 will reverse the order of notes in the music, but keep the rhythms
 in theor original locations.  If the music is polyphonic, the
-sonorities will likely change.  See the <a href="#mirror">mirror</a>
+sonorities will likely change.  See the 
+   <span class="tutorial-link">mirror</span>
 tutorial for how to reverse both pitch and durations.
 
 {% highlight cpp linenos=table %}

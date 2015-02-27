@@ -1,6 +1,10 @@
 ---
 layout: default
-breadcrumbs: [['/doc','documentation'], ['/class', 'classes']]
+breadcrumbs: [
+		['/','home'], 
+		['/doc','documentation'], 
+		['/class', 'classes']
+	]
 title:  MidiEvent class
 grouptitle: ['https://github.com/craigsapp/midifile/blob/master/src-library', 'Source Code']
 group: [
@@ -8,10 +12,12 @@ group: [
 ]
 ---
 
-The MidiEvent class is a <a href="../MidiMessage">MidiMessage</a> plus an 
-added timestamp public variable, <b>.time</b>.  The MidiEvent class also
-adds other support variables such as <b>.track</b> which store the 
-track number in the MIDI file that the MidiEvent occurs in.
+The MidiEvent class is a
+  <span class="class-link">MidiMessage</span>
+plus an added timestamp public variable, <b>.time</b>.  The MidiEvent
+class also adds other support variables such as <b>.track</b> which
+store the track number in the MIDI file that the MidiEvent occurs
+in.
 
 {% include docslot/docslot.html %}
 
@@ -24,7 +30,7 @@ Public functions
 
 &nbsp;
 
-Functions inherited from <a href="../MidiMessage">MidiMessage</a>
+Functions inherited from <span class="class-link">MidiMessage</span>
 ---------------------------------------------------------------
 
 {% include docslot/MidiMessage_other.html %}
