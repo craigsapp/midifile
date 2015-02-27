@@ -1,0 +1,44 @@
+@@BEGIN:	FunctionDocumentation
+@INDEXED:	yes
+@CLASSNAME:	MidiMessage
+@METHOD:	getKeyNumber
+@ACCESS:	public
+@RETURN:	int
+@PARAMETERS:	void
+@FILE:		MidiMessage.cpp
+@LINES:		525-546
+@SEEALSO:	setKeyNumber
+@SHORTDESC:	Get the MIDI key number for notes and aftertouch.
+@LONGDESC:	Get the MIDI key number for notes and aftertouch.
+
+@@BEGIN: EXAMPLE
+@DESCRIPTION:
+@CODE:
+@OUTPUT:
+@@END:	EXAMPLE
+
+@SRCCODE:
+
+//////////////////////////////
+//
+// MidiMessage::getKeyNumber -- Return the key number (such as 60 for 
+//    middle C).  If the message does not have a note parameter, then 
+//    return -1;  if the key is invalid (above 127 in value), then 
+//    limit to the range 0 to 127.
+//
+
+int MidiMessage::getKeyNumber(void) { 
+   if (isNote() || isAftertouch()) {
+      int output = getP1();
+      if (output &lt; 0) {
+         return output;
+      } else {
+         return 0xff &amp; output;
+      }
+   } else {
+      return -1;
+   }
+}
+
+@@END:	FunctionDocumentation
+

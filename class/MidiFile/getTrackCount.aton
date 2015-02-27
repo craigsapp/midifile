@@ -4,6 +4,7 @@
 @METHOD:	getTrackCount
 @ACCESS:	public
 @ALIAS:		getNumTracks
+@ALIAS:		size
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp

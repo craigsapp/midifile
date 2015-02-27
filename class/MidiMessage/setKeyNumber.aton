@@ -7,7 +7,7 @@
 @PARAMETERS:	int size
 @FILE:		MidiMessage.cpp
 @LINES:		607-622
-@SEEALSO:	vector<uchar>::resize
+@SEEALSO:	getKeyNumber
 @SHORTDESC:	Set the MIDI key number for notes and aftertouch.
 @LONGDESC:	Set the MIDI key number for notes and aftertouch.
 
