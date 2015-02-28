@@ -12,8 +12,12 @@ group: [
 ]
 ---
 
-The MidiEventList class manages <a href="../MidiEvent">MidiEvent</a> object
-for a <a href="../MidiFile">MidiFile</a> track.
+The MidiEventList class manages 
+  <span class="class-link">MidiEvent</span>
+objects
+for a 
+  <span class="class-link">MidiFile</span>
+track.
 
 {% include docslot/docslot.html %}
 

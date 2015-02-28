@@ -1,7 +1,7 @@
 @@BEGIN:	FunctionDocumentation
 @INDEXED:	yes
 @CLASSNAME:	MidiFile
-@METHOD:	doTimeInSecondsAnalysis
+@METHOD:	doTimeAnalysis
 @ACCESS:	public
 @RETURN:	void
 @PARAMETERS:	void
