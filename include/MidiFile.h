@@ -114,7 +114,7 @@ class MidiFile {
       void      setTPQ                    (int ticks);
 
       // physical-time analysis functions:
-      void      doTimeInSecondsAnalysis   (void);
+      void      doTimeAnalysis            (void);
       double    getTimeInSeconds          (int aTrack, int anIndex);
       double    getTimeInSeconds          (int tickvalue);
       int       getAbsoluteTickTime       (double starttime);

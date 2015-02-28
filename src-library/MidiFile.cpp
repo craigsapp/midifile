@@ -1644,10 +1644,12 @@ int MidiFile::getAbsoluteTickTime(double starttime) {
 
 //////////////////////////////
 //
-// MidiFile::doTimeInSecondsAnalysis --
+// MidiFile::doTimeAnalysis -- Identify the real-time position of
+//    all events by monitoring the tempo in relations to the tick
+//    times in the file.
 //
 
-void MidiFile::doTimeInSecondsAnalysis(void) {
+void MidiFile::doTimeAnalysis(void) {
     buildTimeMap();
 }
 

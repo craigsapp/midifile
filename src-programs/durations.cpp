@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
    double duration;
 
    if (secondsQ) {
-      midifile.doTimeInSecondsAnalysis();
+      midifile.doTimeAnalysis();
    }
 
    if (secondsQ) {

@@ -190,7 +190,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
    midifile.absoluteTicks();
    midifile.joinTracks();
    if (secQ || msecQ) {
-      midifile.doTimeInSecondsAnalysis();
+      midifile.doTimeAnalysis();
    }
    vector<double> event(7);
    vector<double> ontimes(128);
