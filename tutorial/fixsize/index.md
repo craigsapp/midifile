@@ -10,8 +10,6 @@ breadcrumbs: [['/','home'],
 
 {% include tutorial/single.html %}
 
-{% include docslot/docslot.html %}
-
 {% include tutorial/header.html %}
 
 {% include tutorial/fixsize.html %}

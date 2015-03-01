@@ -2,7 +2,7 @@
 <script>
 // vim: ts=3 hlsearch
 
-document.addEventListener("DOMContentLoaded", function(event) {
+window.addEventListener("DOMContentLoaded", function(event) {
 	tutoriallist = [  // BEGIN_TUTORIAL_LIST
 	["fixsize", "Fix Standard MIDI File track chunk byte counts."],
 	["offswitch", "Switch note-offs between 0x90 w/ 0 velocity and 0x80 styles."],
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		tlist.appendChild(tr);
 		var newcontent = "";
       newcontent += '<td style="border:0; margin:0; width:90px;">';
-		newcontent += '<a href="tutorial/' + tutoriallist[i][0] + '">';
+		newcontent += '<a href="/tutorial/' + tutoriallist[i][0] + '">';
 		newcontent += tutoriallist[i][0];
 		newcontent += '</a>';
       newcontent += '</td><td style="border:0; margin:0; padding-right:5px;"> ';

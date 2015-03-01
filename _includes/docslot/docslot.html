@@ -44,7 +44,7 @@ var ExampleView = false;
 //    download the documentation and insert it into the docslots.
 //
 
-document.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("DOMContentLoaded", function () {
 	var docslots = document.querySelectorAll(".docslot");
 	var source   = document.getElementById("docslot-main").textContent;
 	var template = Handlebars.compile(source);
@@ -54,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	if (matches) {
 		// have a download preference for the specific function documetation
 		// that should be viewed.
-
 		for (var i=0; i<docslots.length; i++) {
 			matches2 = docslots[i].id.match(/\s*(.*)::(.*)\s*/);
 			if (matches2) {
@@ -521,8 +520,13 @@ function insertDocumentation(target, template) {
 	if (!fullname) {
       fullname = target.textContent.replace(/\s/g, '');
 	   fullQ = 1;	
+      target.id = fullname;
 	}
 	var matches      = fullname.match(/(.*)::(.*)/);
+   if (!matches) {
+      console.log("Error: not a class function:", fullname);
+      returnl;
+   }
 	var classname    = matches[1];
 	var functionname = matches[2];
    functionname = functionname.replace(/=/, "EQUALS");
@@ -539,8 +543,9 @@ function insertDocumentation(target, template) {
 		request.addEventListener('load', function () {
 			sessionStorage[classname + '/' + functionname + '.aton'] = 
 					this.responseText;
-			processAtonData(this.responseText, fullname, functionname, 
-					target, template, fullQ);
+	      local = sessionStorage[classname + '/' + functionname + '.aton'];
+			processAtonData(local, fullname, functionname, target, template, 
+					fullQ);
 		});
 		request.addEventListener('error', function () {
 			console.error(this.statusText);
@@ -558,6 +563,10 @@ function insertDocumentation(target, template) {
 
 function processAtonData(atondata, fullname, functionname, target, template, 
 		fullQ) {
+   if (target.querySelector("details")) {
+      // don't re display documentation
+      return;
+   }
 	var aton = new ATON;
 	aton.setOnlyChildRoot();
 	var docobj = aton.parse(atondata);
@@ -565,6 +574,9 @@ function processAtonData(atondata, fullname, functionname, target, template,
    	docobj.longname = true;
 	}
 	var dochtml = template(docobj);
+   if (!target.id) {
+      target.id = fullname;
+   }
 	target.innerHTML = dochtml;
 	var matches = window.location.href.match(/#([^\/]+)$/);
 	if (matches && (matches[1] === functionname)) {
