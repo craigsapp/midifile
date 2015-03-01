@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
          } else {
             midifile[track][event].setCommandNibble(0x80);
          }
-	}
+      }
    }
    midifile.write(options.getArg(2));
 
