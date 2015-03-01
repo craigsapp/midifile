@@ -17,8 +17,9 @@ group: [
 The MIDI message class contains the raw MIDI bytes which are stored in
 a Standard MIDI File.  The class is inherited from vector<uchar>, so all
 [STL vector class functions](http://www.cplusplus.com/reference/vector/vector)
-can be used in this class.  The [MidiEvent class](../MidiEvent) inherits
-these function from the MidiMessage class.
+can be used in this class.  The 
+   <span class="class-link" cname="MidiEvent">MidiEvent class</span> 
+inherits these function from the MidiMessage class.
 
 The first byte in the MIDI message is expected to be a command byte, which is
 a byte in the range from 0x80 to 0xff.  Running status is not allowed in 
