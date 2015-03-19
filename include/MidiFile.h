@@ -178,7 +178,7 @@ class MidiFile {
    private:
       int        extractMidiData  (istream& inputfile, vector<uchar>& array, 
                                        uchar& runningCommand);
-      ulong      extractVlvTime   (istream& inputfile);
+      ulong      readVLValue      (istream& inputfile);
       ulong      unpackVLV        (uchar a, uchar b, uchar c, uchar d, uchar e);
       void       writeVLValue     (long aValue, vector<uchar>& data);
       int        makeVLV          (uchar *buffer, int number);

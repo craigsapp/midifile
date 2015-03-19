@@ -16,6 +16,7 @@
 // Last Modified: Mon Feb  9 12:22:18 PST 2015 Remove dep. on FileIO class.
 // Last Modified: Sat Feb 14 23:40:17 PST 2015 Split out subclasses.
 // Last Modified: Wed Feb 18 20:06:39 PST 2015 Added binasc MIDI read/write.
+// Last Modified: Thu Mar 19 13:09:00 PDT 2015 Improve Sysex read/write.
 // Filename:      midifile/src/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -410,7 +411,7 @@ int MidiFile::read(istream& input) {
 
       // Now read track chunk size and throw it away because it is
       // not really necessary since the track MUST end with an
-      // end of track meta event, and 50% of Midi files or so
+      // end of track meta event, and many MIDI files found in the wild
       // do not correctly give the track size.
       longdata = MidiFile::readLittleEndian4Bytes(input);
 
@@ -423,7 +424,7 @@ int MidiFile::read(istream& input) {
       absticks = 0;
       // barline = 1;
       while (!input.eof()) {
-         longdata = extractVlvTime(input);
+         longdata = readVLValue(input);
          //cout << "ticks = " << longdata << endl;
          absticks += longdata;
          xstatus = extractMidiData(input, bytes, runningCommand);
@@ -546,8 +547,26 @@ int MidiFile::write(ostream& out) {
             continue;
          }
          writeVLValue((*events[i])[j].tick, trackdata);
-         for (k=0; k<(int)(*events[i])[j].size(); k++) {
-            trackdata.push_back((*events[i])[j][k]);
+         if (((*events[i])[j].getCommandByte() == 0xf0) ||
+             ((*events[i])[j].getCommandByte() == 0xf7)) {
+            // 0xf0 == Complete sysex message (0xf0 is part of the raw MIDI).
+            // 0xf7 == Raw byte message (0xf7 not part of the raw MIDI).
+            // Print the first byte of the message (0xf0 or 0xf7), then
+            // print a VLV length for the rest of the bytes in the message.
+            // In other words, when creating a 0xf0 or 0xf7 MIDI message,
+            // do not insert the VLV byte length yourself, as this code will
+            // do it for you automatically.
+            trackdata.push_back((*events[i])[j][0]); // 0xf0 or 0xf7;
+            writeVLValue((*events[i])[j].size()-1, trackdata);
+            for (k=1; k<(int)(*events[i])[j].size(); k++) {
+               trackdata.push_back((*events[i])[j][k]);
+            }
+         } else {
+            // non-sysex type of message, so just output the
+            // bytes of the message:
+            for (k=0; k<(int)(*events[i])[j].size(); k++) {
+               trackdata.push_back((*events[i])[j][k]);
+            }
          }
       }
       size = trackdata.size();
@@ -1872,7 +1891,12 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
    if (byte < 0x80) {
       runningQ = 1;
       if (runningCommand == 0) {
-         cout << "Error: running command with no previous command" << endl;
+         cerr << "Error: running command with no previous command" << endl;
+         return 0;
+      }
+      if (runningCommand >= 0xf0) {
+         cerr << "Error: running status not permitted with meta and sysex"
+              << " event." << endl;
          return 0;
       }
    } else {
@@ -1885,6 +1909,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       array.push_back(byte);
    }
 
+   int i;
    uchar metai;
    switch (runningCommand & 0xf0) {
       case 0x80:        // note off (2 more bytes)
@@ -1922,13 +1947,29 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                }
                }
                break;
-            case 0xf0:                // sysex
-               // read until you find a 0xf7 character
-               byte = 0;
-               while (byte != 0xf7 && !input.eof()) {
-                  byte = MidiFile::readByte(input); // meta data
+            // The 0xf0 and 0xf7 meta commands deal with system-exclusive 
+            // messages. 0xf0 is used to either start a message or to store
+            // a complete message.  The 0xf0 is part of the outgoing MIDI
+            // bytes.  The 0xf7 message is used to send arbitrary bytes,
+            // typically the middle or ends of system exclusive messages.  The
+            // 0xf7 byte at the start of the message is not part of the
+            // outgoing raw MIDI bytes, but is kept in the MidiFile message
+            // to indicate a raw MIDI byte message (typically a partial
+            // system exclusive message).
+            case 0xf7:                // Raw bytes. 0xf7 is not part of the raw
+                                      // bytes, but are included to indicate
+                                      // that this is a raw byte message.
+            case 0xf0:                // System Exclusive message
+               {                      // (complete, or start of message).
+               int length = readVLValue(input);
+               for (i=0; i<length; i++) {
+                  byte = MidiFile::readByte(input);
+                  array.push_back(byte);
+               }
                }
                break;
+             // other "F" MIDI commands are not expected, but can be
+             // handled here if they exist.
          }
          break;
       default:
@@ -1943,10 +1984,11 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 
 //////////////////////////////
 //
-// MidiFile::extractVlvTime --
+// MidiFile::readVLValue -- The VLV value is expected to be unpacked into
+//   a 4-byte integer, so only up to 5 bytes will be considered.
 //
 
-ulong MidiFile::extractVlvTime(istream& input) {
+ulong MidiFile::readVLValue(istream& input) {
    uchar b[5] = {0};
 
    for (int i=0; i<5; i++) {
@@ -1963,13 +2005,13 @@ ulong MidiFile::extractVlvTime(istream& input) {
 
 //////////////////////////////
 //
-// MidiFile::unpackVLV -- converts a VLV value to pure unsigned long value.
+// MidiFile::unpackVLV -- converts a VLV value to an unsigned long value.
 // default values: a = b = c = d = e = 0;
 //
 
 ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
    if (e > 0x7f) {
-      cout << "Error: VLV value was too long" << endl;
+      cerr << "Error: VLV value was too long" << endl;
       exit(1);
    }
 

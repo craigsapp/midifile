@@ -574,12 +574,13 @@ int Binasc::readMidiEvent(ostream& out, istream& infile, int& trackbytes,
       trackbytes++;
    }
    byte1 = ch;
-   int count;
    int i;
    int metatype = 0;
+
 if (command == 0) {
 exit(1);
 }
+
    switch (command & 0xf0) {
       case 0x80:    // note-off: 2 bytes
          out << " '" << dec << (int)byte1;
@@ -625,51 +626,57 @@ exit(1);
       case 0xF0:    // various system bytes: variable bytes
          switch (command) {
             case 0xf0:
+            case 0xf7:
+               // Read the first byte which is either 0xf0 or 0xf7.
+               // Then a VLV byte count for the number of bytes 
+               // that remain in the message will follow.
+               // Then read that number of bytes.
+               {
+               infile.putback(byte1);
+               trackbytes--;
+               int length = getVLV(infile, trackbytes);
+               out << " v" << dec << length;
+               for (i=0; i<length; i++) {
+                  infile.read((char*)&ch, 1);
+                  trackbytes++;
+                  if (ch < 0x10) {
+                     out << " 0" << hex << (int)ch;
+                  } else {
+                     out << " " << hex << (int)ch;
+                  }
+               }
+               }
                break;
             case 0xf1:
-               break;
             case 0xf2:
-               break;
             case 0xf3:
-               break;
             case 0xf4:
-               break;
             case 0xf5:
-               break;
             case 0xf6:
-               break;
-            case 0xf7:
-               break;
             case 0xf8:
-               break;
             case 0xf9:
-               break;
             case 0xfa:
-               break;
             case 0xfb:
-               break;
             case 0xfc:
-               break;
             case 0xfd:
-               break;
             case 0xfe:
-               cerr << "Error command no yet handled" << endl;
+               cerr << "Error command not yet handled" << endl;
                exit(1);
                break;
             case 0xff:  // meta message
+               {
                metatype = ch;
                out << " " << hex << metatype;
-               infile.read((char*)&ch, 1);
-               trackbytes++;
-               count = ch;
-               out << " '" << dec << count;
-               for (i=0; i<count; i++) {
+               int length = getVLV(infile, trackbytes);
+               out << " v" << dec << length;
+               for (i=0; i<length; i++) {
                   infile.read((char*)&ch, 1);
                   trackbytes++;
                   out << " " << hex << (int)ch;
                }
                if (metatype == 0x2f) {
                   return 0;
+               }
                }
                break;
                
