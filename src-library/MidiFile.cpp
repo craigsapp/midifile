@@ -1826,7 +1826,7 @@ void MidiFile::buildTimeMap(void) {
    double secondsPerTick = 60.0 / (defaultTempo * tpq);
 
    double lastsec = 0.0;
-   double cursec;
+   double cursec = 0.0;
 
    for (i=0; i<getNumEvents(0); i++) {
       curtick = getEvent(0, i).tick;
