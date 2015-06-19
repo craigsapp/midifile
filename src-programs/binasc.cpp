@@ -9,6 +9,8 @@
 // todo:          Add standard input source.
 //
 
+#include <string.h>
+
 #include "Binasc.h"
 #include "Options.h"
 
