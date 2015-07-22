@@ -10,7 +10,7 @@ and unpack and type <tt>make</tt> in the base directory of the midifile
 package.  Or if you use git, download on the terminal with these commands:
 
 ``` bash
-git pull https://github.com/craigsapp/midifile
+git clone https://github.com/craigsapp/midifile
 cd midifile
 make
 ```
