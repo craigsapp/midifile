@@ -68,6 +68,11 @@ or if you use git, then download with this command:
 ``` bash
 git clone https://github.com/craigsapp/midifile
 ```
+or
+
+``` bash
+git clone https://cm-github.stanford.edu/craig/midifile
+```
 
 This will create the `midifile` directory with the source code for the library.
 
