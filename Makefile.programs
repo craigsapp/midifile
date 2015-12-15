@@ -72,6 +72,7 @@ INCDIR    = include
 OBJDIR    = obj
 LIBDIR    = lib
 LIBFILE   = midifile
+LIBPATH   = $(LIBDIR)/lib$(LIBFILE).a
 TARGDIR   = bin
 COMPILER  = LANG=C $(ENV) g++ $(ARCH)
 DEFINES   = 
@@ -151,7 +152,7 @@ $(TARGDIR)/midiexcerpt:
 # Default targets:
 #
 
-$(TARGDIR)/% : $(notdir %.cpp)
+$(TARGDIR)/% : $(notdir %.cpp) $(LIBPATH)
 ifeq ($(wildcard $(TARGDIR)),)
 	@-mkdir -p $(TARGDIR)
 endif
@@ -163,7 +164,7 @@ endif
 		&& strip $@$(EXTEN)
 
 
-% : $(notdir %.cpp)
+% : $(notdir %.cpp) $(LIBPATH)
 ifeq ($(wildcard $(TARGDIR)),)
 	@-mkdir -p $(TARGDIR)
 endif

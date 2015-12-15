@@ -124,8 +124,8 @@ clean:
 
 
 makedirs:
-	@-mkdir $(OBJDIR)
-	@-mkdir $(LIBDIR)
+	@-mkdir -p $(OBJDIR)
+	@-mkdir -p $(LIBDIR)
 
 
 ##############################
