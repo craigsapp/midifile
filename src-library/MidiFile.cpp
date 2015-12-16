@@ -122,6 +122,16 @@ MidiFile::MidiFile(const MidiFile& other) {
    std::generate_n(std::back_inserter(events), other.events.size(), [&]() -> MidiEventList* {
       return new MidiEventList(**it++);
    });
+
+   ticksPerQuarterNote = other.ticksPerQuarterNote;
+   trackCount = other.trackCount;
+   theTrackState = other.theTrackState;
+   theTimeState = other.theTimeState;
+   readFileName = other.readFileName;
+
+   timemapvalid = other.timemapvalid;
+   timemap = other.timemap;
+   rwstatus = other.rwstatus;
 }
 
 
@@ -135,6 +145,16 @@ MidiFile::MidiFile(MidiFile&& other) {
     events = std::move(other.events);
     other.events.clear();
     other.events.push_back(new MidiEventList);
+
+   ticksPerQuarterNote = other.ticksPerQuarterNote;
+   trackCount = other.trackCount;
+   theTrackState = other.theTrackState;
+   theTimeState = other.theTimeState;
+   readFileName = other.readFileName;
+
+   timemapvalid = other.timemapvalid;
+   timemap = other.timemap;
+   rwstatus = other.rwstatus;
 }
 
 
