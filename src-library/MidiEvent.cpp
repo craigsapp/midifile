@@ -54,6 +54,7 @@ MidiEvent::MidiEvent(int aTime, int aTrack, vector<uchar>& message)
 MidiEvent::MidiEvent(const MidiEvent& mfevent) {
    tick  = mfevent.tick;
    track = mfevent.track;
+   seconds = mfevent.seconds;
    eventlink = NULL;
    this->resize(mfevent.size());
    for (int i=0; i<this->size(); i++) {
@@ -100,6 +101,7 @@ MidiEvent& MidiEvent::operator=(MidiEvent& mfevent) {
    }
    tick  = mfevent.tick;
    track = mfevent.track;
+   seconds = mfevent.seconds;
    eventlink = NULL;
    this->resize(mfevent.size());
    for (int i=0; i<this->size(); i++) {
