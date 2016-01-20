@@ -480,7 +480,7 @@ int MidiFile::read(istream& input) {
 //
 
 int MidiFile::write(const char* filename) {
-   fstream output(filename, ios::out);
+   fstream output(filename, ios::binary | ios::out);
 
    if (!output.is_open()) {
       cerr << "Error: could not write: " << filename << endl;
