@@ -804,8 +804,6 @@ void MidiFile::joinTracks(void) {
 
    clear_no_deallocate();
 
-   delete events[0];
-   events.resize(0);
    events.push_back(joinedTrack);
    sortTracks();
    if (oldTimeState == TIME_STATE_DELTA) {
@@ -849,7 +847,7 @@ void MidiFile::splitTracks(void) {
    MidiEventList* olddata = events[0];
    events[0] = NULL;
    events.resize(trackCount);
-   for (i=0; i<=trackCount; i++) {
+   for (i=0; i<trackCount; i++) {
       events[i] = new MidiEventList;
    }
 
@@ -2075,11 +2073,9 @@ void MidiFile::clear_no_deallocate(void) {
       delete events[i];
       events[i] = NULL;
    }
-   events.resize(1);
-   events[0] = new MidiEventList;
    timemapvalid=0;
    timemap.clear();
-   events.resize(0);
+   events.clear();
 }
 
 
