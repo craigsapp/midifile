@@ -2079,7 +2079,7 @@ void MidiFile::clear_no_deallocate(void) {
    events[0] = new MidiEventList;
    timemapvalid=0;
    timemap.clear();
-   events.resize(0);
+   // events.resize(0);   // causes a memory leak [20150205 Jorden Thatcher]
 }
 
 
