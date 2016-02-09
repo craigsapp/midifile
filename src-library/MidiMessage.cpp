@@ -135,7 +135,7 @@ void MidiMessage::setSize(int asize) {
 //
 
 int MidiMessage::getSize(void) {
-   return this->size();
+   return (int)this->size();
 }
 
 
@@ -148,7 +148,7 @@ int MidiMessage::getSize(void) {
 //
 
 int MidiMessage::setSizeToCommand(void) {
-   int osize = this->size();
+   int osize = (int)this->size();
    if (osize < 1) {
       return 0;
    }
@@ -176,7 +176,7 @@ int MidiMessage::setSizeToCommand(void) {
       }
    }
 
-   return size();
+   return (int)size();
 }
 
 
@@ -782,7 +782,7 @@ void MidiMessage::setChannel(int value) {
 //
 
 void MidiMessage::setParameters(int p1) {
-   int oldsize = size();
+   int oldsize = (int)size();
    resize(2);
    (*this)[1] = (uchar)p1;
    if (oldsize < 1) {
@@ -792,7 +792,7 @@ void MidiMessage::setParameters(int p1) {
 
 
 void MidiMessage::setParameters(int p1, int p2) {
-   int oldsize = size();
+   int oldsize = (int)size();
    resize(3);
    (*this)[1] = (uchar)p1;
    (*this)[2] = (uchar)p2;

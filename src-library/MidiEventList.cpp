@@ -130,7 +130,7 @@ void MidiEventList::reserve(int rsize) {
 //
 
 int MidiEventList::getSize(void) {
-   return list.size();
+   return (int)list.size();
 }
 
 
@@ -149,7 +149,7 @@ int MidiEventList::size(void) {
 int MidiEventList::append(MidiEvent& event) { 
    MidiEvent* ptr = new MidiEvent(event);
    list.push_back(ptr);
-   return list.size()-1;
+   return (int)list.size()-1;
 }
 
 
@@ -257,7 +257,7 @@ void MidiEventList::detach(void) {
 
 int MidiEventList::push_back_no_copy(MidiEvent* event) { 
    list.push_back(event);
-   return list.size()-1;
+   return (int)list.size()-1;
 }
 
 

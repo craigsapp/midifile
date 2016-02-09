@@ -417,7 +417,7 @@ int MidiFile::read(istream& input) {
 
       // set the size of the track allocation so that it might
       // approximately fit the data.
-      events[i]->reserve(longdata/2);
+      events[i]->reserve((int)longdata/2);
       events[i]->clear();
 
       // process the track
@@ -569,7 +569,7 @@ int MidiFile::write(ostream& out) {
             }
          }
       }
-      size = trackdata.size();
+      size = (int)trackdata.size();
       if ((size < 3) || !((trackdata[size-3] == 0xff)
             && (trackdata[size-2] == 0x2f))) {
          trackdata.push_back(endoftrack[0]);
@@ -642,7 +642,7 @@ int MidiFile::writeHex(ostream& out, int width) {
    stringstream tempstream;
    MidiFile::write(tempstream);
    int value = 0;
-   int len = tempstream.str().length();
+   int len = (int)tempstream.str().length();
    int wordcount = 1;
    int linewidth = width >= 0 ? width : 25;
    for (int i=0; i<len; i++) {
@@ -741,7 +741,7 @@ MidiEventList& MidiFile::operator[](int aTrack) {
 //
 
 int MidiFile::getTrackCount(void) {
-   return events.size();
+   return (int)events.size();
 }
 
 //
@@ -1079,11 +1079,11 @@ void MidiFile::setFilename(const char* aname) {
    const char* ptr = strrchr(aname, '/');
    int len;
    if (ptr != NULL) {
-     len = strlen(ptr+1);
+     len = (int)strlen(ptr+1);
      readFileName.resize(len+1);
      strncpy(readFileName.data(), ptr+1, len);
    } else {
-      len = strlen(aname);
+      len = (int)strlen(aname);
       readFileName.resize(len+1);
       strncpy(readFileName.data(), aname, len);
    }
@@ -1169,7 +1169,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       vector<uchar>& metaData) {
    timemapvalid = 0;
    int i;
-   int length = metaData.size();
+   int length = (int)metaData.size();
    vector<uchar> fulldata;
    uchar size[23] = {0};
    int lengthsize =  makeVLV(size, length);
@@ -1191,7 +1191,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
 int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       const char* metaData) {
 
-   int length = strlen(metaData);
+   int length = (int)strlen(metaData);
    vector<uchar> buffer;
    buffer.resize(length);
    int i;
@@ -1575,7 +1575,7 @@ int MidiFile::getTrackCountAsType1(void) {
       }
       return output+1;  // I think the track values are 0 offset...
    } else {
-      return events.size();
+      return (int)events.size();
    }
 }
 
@@ -1961,7 +1961,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                                       // that this is a raw byte message.
             case 0xf0:                // System Exclusive message
                {                      // (complete, or start of message).
-               int length = readVLValue(input);
+               int length = (int)readVLValue(input);
                for (i=0; i<length; i++) {
                   byte = MidiFile::readByte(input);
                   array.push_back(byte);
