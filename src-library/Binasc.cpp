@@ -876,7 +876,7 @@ int Binasc::outputStyleMidi(ostream& out, istream& input) {
 
 int Binasc::processDecimalWord(ostream& out, const char* word, 
       int lineNum) {
-   int length = strlen(word);       // length of ascii binary number
+   int length = (int)strlen(word);       // length of ascii binary number
    int byteCount = -1;              // number of bytes to output
    int quoteIndex = -1;             // index of decimal specifier
    int signIndex = -1;              // index of any sign for number
@@ -1165,7 +1165,7 @@ int Binasc::processDecimalWord(ostream& out, const char* word,
 //
 
 int Binasc::processHexWord(ostream& out, const char* word, int lineNum) {
-   int length = strlen(word);
+   int length = (int)strlen(word);
    uchar outputByte;
 
    if (length > 2) {
@@ -1194,7 +1194,7 @@ int Binasc::processHexWord(ostream& out, const char* word, int lineNum) {
 //
 
 int Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
-   int length = strlen(word);
+   int length = (int)strlen(word);
    uchar outputByte;
 
    if (word[0] != '+') {
@@ -1229,7 +1229,7 @@ int Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
 
 int Binasc::processBinaryWord(ostream& out, const char* word, 
       int lineNum) {
-   int length = strlen(word);       // length of ascii binary number
+   int length = (int)strlen(word);       // length of ascii binary number
    int commaIndex = -1;             // index location of comma in number
    int leftDigits = -1;             // number of digits to left of comma
    int rightDigits = -1;            // number of digits to right of comma
