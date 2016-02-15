@@ -119,7 +119,8 @@ MidiFile::MidiFile(istream& input) {
 MidiFile::MidiFile(const MidiFile& other) {
    events.reserve(other.events.size());
    auto it = other.events.begin();
-   std::generate_n(std::back_inserter(events), other.events.size(), [&]() -> MidiEventList* {
+   std::generate_n(std::back_inserter(events), other.events.size(), 
+         [&]() -> MidiEventList* {
       return new MidiEventList(**it++);
    });
 
