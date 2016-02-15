@@ -54,6 +54,8 @@ class MidiFile {
                 MidiFile                  (const char* aFile);
                 MidiFile                  (const string& aFile);
                 MidiFile                  (istream& input);
+                MidiFile                  (const MidiFile& other);
+                MidiFile                  (MidiFile&& other);
                ~MidiFile                  ();
 
       // reading/writing functions:
@@ -143,6 +145,8 @@ class MidiFile {
       void      clear                     (void);
       void      clear_no_deallocate       (void);
       MidiEvent&  getEvent                (int aTrack, int anIndex);
+
+      MidiFile& operator=(MidiFile other);
 
 
 

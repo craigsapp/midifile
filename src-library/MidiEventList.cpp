@@ -15,6 +15,8 @@
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -26,6 +28,33 @@ using namespace std;
 
 MidiEventList::MidiEventList(void) {
    reserve(1000);
+}
+
+
+
+//////////////////////////////
+//
+// MidiEventList::MidiEventList(MidiEventList&) -- Copy constructor.
+//
+
+MidiEventList::MidiEventList(const MidiEventList& other) {
+   list.reserve(other.list.size());
+   auto it = other.list.begin();
+   std::generate_n(std::back_inserter(list), other.list.size(), [&]() -> MidiEvent* {
+      return new MidiEvent(**it++);
+   });
+}
+
+
+
+//////////////////////////////
+//
+// MidiEventList::MidiEventList(MidiEventList&&) -- Move constructor.
+//
+
+MidiEventList::MidiEventList(MidiEventList&& other) {
+    list = std::move(other.list);
+    other.list.clear();
 }
 
 
@@ -261,5 +290,15 @@ int MidiEventList::push_back_no_copy(MidiEvent* event) {
 }
 
 
+
+//////////////////////////////
+//
+// MidiEventList::operator=(MidiEventList) -- Assignment.
+//
+
+MidiEventList& MidiEventList::operator=(MidiEventList other) {
+   list.swap(other.list);
+   return *this;
+}
 
 

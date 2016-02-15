@@ -35,6 +35,8 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -105,6 +107,54 @@ MidiFile::MidiFile(istream& input) {
    timemap.clear();
    timemapvalid = 0;
    rwstatus = 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::MidiFile(MidiFile&) -- Copy constructor.
+//
+
+MidiFile::MidiFile(const MidiFile& other) {
+   events.reserve(other.events.size());
+   auto it = other.events.begin();
+   std::generate_n(std::back_inserter(events), other.events.size(), [&]() -> MidiEventList* {
+      return new MidiEventList(**it++);
+   });
+
+   ticksPerQuarterNote = other.ticksPerQuarterNote;
+   trackCount = other.trackCount;
+   theTrackState = other.theTrackState;
+   theTimeState = other.theTimeState;
+   readFileName = other.readFileName;
+
+   timemapvalid = other.timemapvalid;
+   timemap = other.timemap;
+   rwstatus = other.rwstatus;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::MidiFile(MidiFile&&) -- Move constructor.
+//
+
+MidiFile::MidiFile(MidiFile&& other) {
+    events = std::move(other.events);
+    other.events.clear();
+    other.events.push_back(new MidiEventList);
+
+   ticksPerQuarterNote = other.ticksPerQuarterNote;
+   trackCount = other.trackCount;
+   theTrackState = other.theTrackState;
+   theTimeState = other.theTimeState;
+   readFileName = other.readFileName;
+
+   timemapvalid = other.timemapvalid;
+   timemap = other.timemap;
+   rwstatus = other.rwstatus;
 }
 
 
@@ -2519,4 +2569,15 @@ ostream& MidiFile::writeLittleEndianDouble(ostream& out, double value) {
    return out;
 }
 
+
+
+//////////////////////////////
+//
+// MidiFile::operator=(MidiFile) -- Assignment.
+//
+
+MidiFile& MidiFile::operator=(MidiFile other) {
+   events.swap(other.events);
+   return *this;
+}
 
