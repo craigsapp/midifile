@@ -6,7 +6,7 @@
 @RETURN:	ulong
 @PARAMETERS:	istream& input
 @FILE:		MidiFile.cpp
-@LINES:		1941-1959
+@LINES:		
 @SEEALSO:	
 @SHORTDESC:	Extract a VLV value from the input stream.
 @LONGDESC:	Extract a VLV value from the input stream.
@@ -18,25 +18,6 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
-
-//////////////////////////////
-//
-// MidiFile::extractVlvTime --
-//
-
-ulong MidiFile::extractVlvTime(istream&amp; input) {
-   uchar b[5] = {0};
-
-   for (int i=0; i&lt;5; i++) {
-      b[i] = MidiFile::readByte(input);
-      if (b[i] &lt; 0x80) {
-         break;
-      }
-   }
-
-   return unpackVLV(b[0], b[1], b[2], b[3], b[4]);
-}
-
 @@END:	FunctionDocumentation
 
 

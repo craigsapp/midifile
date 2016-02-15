@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		Binasc.cpp
-@LINES:		58-68
+@LINES:		59-69
 @SEEALSO:	setLineLength
 @SHORTDESC:	Returns the maximum length of an ASCII text line.
 @LONGDESC:	Returns the maximum length of a line when converting binary

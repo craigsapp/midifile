@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		800-852
+@LINES:		869-921
 @SEEALSO:	
 @SHORTDESC:	Separate events into their original track configuration.
 @LONGDESC:	Take joined tracks and split them back into their separate
@@ -30,9 +30,9 @@ void MidiFile::splitTracks(void) {
    if (getTrackState() == TRACK_STATE_SPLIT) {
       return;
    }
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
+      absoluteTicks();
    }
 
    int maxTrack = 0;
@@ -52,7 +52,7 @@ void MidiFile::splitTracks(void) {
    MidiEventList* olddata = events[0];
    events[0] = NULL;
    events.resize(trackCount);
-   for (i=0; i&lt;=trackCount; i++) {
+   for (i=0; i&lt;trackCount; i++) {
       events[i] = new MidiEventList;
    }
 
@@ -66,7 +66,7 @@ void MidiFile::splitTracks(void) {
    delete olddata;
 
    if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
 
    theTrackState = TRACK_STATE_SPLIT;

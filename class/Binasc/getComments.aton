@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		Binasc.cpp
-@LINES:		121-131
+@LINES:		122-132
 @SEEALSO:	setComments
 @SHORTDESC:	Get comment display style for ASCII output.
 @LONGDESC:	Get comment display style for ASCII output.

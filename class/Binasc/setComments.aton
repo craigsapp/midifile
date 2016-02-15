@@ -8,7 +8,7 @@
 @RETURN:	void
 @PARAMETERS:	int size
 @FILE:		Binasc.cpp
-@LINES:		99-119
+@LINES:		100-120
 @SEEALSO:	getComments
 @SHORTDESC:	Display or not display printable characters as ASCII comments.
 @LONGDESC:	Display or not display printable characters as ASCII comments.

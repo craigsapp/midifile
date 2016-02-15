@@ -7,7 +7,7 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		474-584
+@LINES:		525-653
 @SEEALSO:	
 @SHORTDESC:	Write a Standard MIDI file from the MidiFile contents.
 @LONGDESC:	Write a Standard MIDI file from the MidiFile contents.
@@ -35,7 +35,7 @@ int main(void) {
 //
 
 int MidiFile::write(const char* filename) {
-   fstream output(filename, ios::out);
+   fstream output(filename, ios::binary | ios::out);
 
    if (!output.is_open()) {
       cerr &lt;&lt; "Error: could not write: " &lt;&lt; filename &lt;&lt; endl;
@@ -53,9 +53,9 @@ int MidiFile::write(const string&amp; filename) {
 
 
 int MidiFile::write(ostream&amp; out) {
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      deltaTime();
+      deltaTicks();
    }
 
    // write the header of the Standard MIDI File
@@ -102,11 +102,29 @@ int MidiFile::write(ostream&amp; out) {
             continue;
          }
          writeVLValue((*events[i])[j].tick, trackdata);
-         for (k=0; k&lt;(int)(*events[i])[j].size(); k++) {
-            trackdata.push_back((*events[i])[j][k]);
+         if (((*events[i])[j].getCommandByte() == 0xf0) ||
+             ((*events[i])[j].getCommandByte() == 0xf7)) {
+            // 0xf0 == Complete sysex message (0xf0 is part of the raw MIDI).
+            // 0xf7 == Raw byte message (0xf7 not part of the raw MIDI).
+            // Print the first byte of the message (0xf0 or 0xf7), then
+            // print a VLV length for the rest of the bytes in the message.
+            // In other words, when creating a 0xf0 or 0xf7 MIDI message,
+            // do not insert the VLV byte length yourself, as this code will
+            // do it for you automatically.
+            trackdata.push_back((*events[i])[j][0]); // 0xf0 or 0xf7;
+            writeVLValue((*events[i])[j].size()-1, trackdata);
+            for (k=1; k&lt;(int)(*events[i])[j].size(); k++) {
+               trackdata.push_back((*events[i])[j][k]);
+            }
+         } else {
+            // non-sysex type of message, so just output the
+            // bytes of the message:
+            for (k=0; k&lt;(int)(*events[i])[j].size(); k++) {
+               trackdata.push_back((*events[i])[j][k]);
+            }
          }
       }
-      size = trackdata.size();
+      size = (int)trackdata.size();
       if ((size &lt; 3) || !((trackdata[size-3] == 0xff)
             &amp;&amp; (trackdata[size-2] == 0x2f))) {
          trackdata.push_back(endoftrack[0]);
@@ -132,7 +150,7 @@ int MidiFile::write(ostream&amp; out) {
    }
 
    if (oldTimeState == TIME_STATE_ABSOLUTE) {
-      absoluteTime();
+      absoluteTicks();
    }
 
    return 1;

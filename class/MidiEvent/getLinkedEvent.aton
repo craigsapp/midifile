@@ -6,7 +6,7 @@
 @RETURN:	MidiEvent*
 @PARAMETERS:	void
 @FILE:		MidiEvent.cpp
-@LINES:		193-204
+@LINES:		196-207
 @SEEALSO:	linkEvent
 @SHORTDESC:	Returns a linked event (such as for note-on/note-off pair).
 @LONGDESC:	Returns a linked event.  Usually this is the note-off 

@@ -6,7 +6,7 @@
 @RETURN:	ulong
 @PARAMETERS:	uchar a, uchar b, uchar c, uchar d, uchar e
 @FILE:		MidiFile.cpp
-@LINES:		1961-1989
+@LINES:		2055-2083
 @SEEALSO:	
 @SHORTDESC:	Convert VLV byte list into an unsigned long value.
 @LONGDESC:	Convert VLV byte list into an unsigned long value.
@@ -21,13 +21,13 @@
 
 //////////////////////////////
 //
-// MidiFile::unpackVLV -- converts a VLV value to pure unsigned long value.
+// MidiFile::unpackVLV -- converts a VLV value to an unsigned long value.
 // default values: a = b = c = d = e = 0;
 //
 
 ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
    if (e &gt; 0x7f) {
-      cout &lt;&lt; "Error: VLV value was too long" &lt;&lt; endl;
+      cerr &lt;&lt; "Error: VLV value was too long" &lt;&lt; endl;
       exit(1);
    }
 

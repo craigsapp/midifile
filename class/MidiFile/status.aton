@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		691-701
+@LINES:		760-770
 @SEEALSO:	
 @SHORTDESC:	Returns true if last read/write was successful.
 @LONGDESC:	Returns true if the list read or write was successful.

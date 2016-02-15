@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1655-1674
+@LINES:		1726-1745
 @SEEALSO:	
 @SHORTDESC:	Link corresponding note-ons and note-offs.
 @LONGDESC:	Link corresponding note-ons and note-offs.

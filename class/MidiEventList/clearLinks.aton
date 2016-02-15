@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiEventList.cpp
-@LINES:		219-230
+@LINES:		248-259
 @SEEALSO:	
 @SHORTDESC:	Remove all note-on/note-off links.
 @LONGDESC:	Remove all note-on/note-off links.  These are typically

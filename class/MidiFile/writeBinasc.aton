@@ -8,7 +8,7 @@
 @PARAMETERS:	const char* filename
 @PARAMETERS:	const string& filename
 @FILE:		MidiFile.cpp
-@LINES:		651-689
+@LINES:		720-758
 @SEEALSO:	
 @SHORTDESC:	Print ASCII version of MIDI file in binasc format.
 @LONGDESC:	Print ASCII version of MIDI file in binasc format.

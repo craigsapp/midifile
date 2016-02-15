@@ -29,7 +29,7 @@
 //
 
 int MidiMessage::setSizeToCommand(void) {
-   int osize = this-&gt;size();
+   int osize = (int)this-&gt;size();
    if (osize &lt; 1) {
       return 0;
    }
@@ -57,7 +57,7 @@ int MidiMessage::setSizeToCommand(void) {
       }
    }
 
-   return size();
+   return (int)size();
 }
 
 

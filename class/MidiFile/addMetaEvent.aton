@@ -7,7 +7,7 @@
 @PARAMETERS:	int track, int time, int type, vector<uchar>& data
 @PARAMETERS:	int track, int time, int type, const char* data
 @FILE:		MidiFile.cpp
-@LINES:		1143-1184
+@LINES:		1212-1253
 @SEEALSO:	
 @SHORTDESC:	Insert a meta message event.
 @LONGDESC:	Insert a meta message event into a the given track and 
@@ -31,7 +31,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       vector&lt;uchar&gt;&amp; metaData) {
    timemapvalid = 0;
    int i;
-   int length = metaData.size();
+   int length = (int)metaData.size();
    vector&lt;uchar&gt; fulldata;
    uchar size[23] = {0};
    int lengthsize =  makeVLV(size, length);
@@ -53,7 +53,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
 int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       const char* metaData) {
 
-   int length = strlen(metaData);
+   int length = (int)strlen(metaData);
    vector&lt;uchar&gt; buffer;
    buffer.resize(length);
    int i;

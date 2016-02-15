@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		Binasc.cpp
-@LINES:		154-163
+@LINES:		155-164
 @SEEALSO:	setBytes
 @SHORTDESC:	Get hex byte display option.
 @LONGDESC:	Get hex byte display option.

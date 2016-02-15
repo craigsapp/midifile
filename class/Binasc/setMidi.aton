@@ -8,7 +8,7 @@
 @RETURN:	void
 @PARAMETERS:	int state
 @FILE:		Binasc.cpp
-@LINES:		164-183
+@LINES:		165-184
 @SEEALSO:	getMidi
 @SHORTDESC:	Set display option for showing ASCII MIDI file markup.
 @LONGDESC:	Set display option for showing ASCII MIDI file markup.

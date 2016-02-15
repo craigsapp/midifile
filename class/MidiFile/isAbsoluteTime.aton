@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		1021-1031
+@LINES:		
 @SEEALSO:	isDeltaTime
 @SHORTDESC:	Returns true if event ticks are in absolute-time mode.
 @LONGDESC:	Returns true if event ticks are in absolute-time mode.
@@ -18,17 +18,6 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
-
-//////////////////////////////
-//
-// MidiFile::isAbsoluteTime -- Returns true if MidiEvent .tick 
-//    variables are in absolute time mode.
-//
-
-int MidiFile::isAbsoluteTime(void) {
-   return theTimeState == TIME_STATE_ABSOLUTE ? 1 : 0;
-}
-
 @@END:	FunctionDocumentation
 
 

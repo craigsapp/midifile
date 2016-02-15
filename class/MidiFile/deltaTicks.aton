@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		926-960
+@LINES:		995-1029
 @SEEALSO:	absoluteTicks
 @SHORTDESC:	Convert timestamps into delta times.
 @LONGDESC:	Convert timestamps into delta times, which means that
@@ -29,15 +29,15 @@
 
 //////////////////////////////
 //
-// MidiFile::deltaTime -- convert the time data to
+// MidiFile::deltaTicks -- convert the time data to
 //     delta time, which means that the time field
 //     in the MidiEvent struct represents the time
 //     since the last event was played. When a MIDI file
 //     is read from a file, this is the default setting.
 //
 
-void MidiFile::deltaTime(void) {
-   if (getTimeState() == TIME_STATE_DELTA) {
+void MidiFile::deltaTicks(void) {
+   if (getTickState() == TIME_STATE_DELTA) {
       return;
    }
    int i, j;

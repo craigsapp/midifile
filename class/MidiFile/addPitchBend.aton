@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	int track, int time, int channel, double amount
 @FILE:		MidiFile.cpp
-@LINES:		1237-1277
+@LINES:		1306-1346
 @SEEALSO:	
 @SHORTDESC:	Insert a pitch bend message into the given track.
 @LONGDESC:	Insert a pitch bend message into the given track.  The amount

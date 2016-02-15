@@ -30,7 +30,7 @@
 //
 
 void MidiMessage::setParameters(int p1) {
-   int oldsize = size();
+   int oldsize = (int)size();
    resize(2);
    (*this)[1] = (uchar)p1;
    if (oldsize &lt; 1) {
@@ -40,7 +40,7 @@ void MidiMessage::setParameters(int p1) {
 
 
 void MidiMessage::setParameters(int p1, int p2) {
-   int oldsize = size();
+   int oldsize = (int)size();
    resize(3);
    (*this)[1] = (uchar)p1;
    (*this)[2] = (uchar)p2;

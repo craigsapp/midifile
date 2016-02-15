@@ -7,7 +7,7 @@
 @PARAMETERS:	const char* name
 @PARAMETERS:	const string& name
 @FILE:		MidiFile.cpp
-@LINES:		1052-1077
+@LINES:		1121-1146
 @SEEALSO:	
 @SHORTDESC:	Set the filename of the MidiFile.
 @LONGDESC:	Set the filename of the MidiFile.
@@ -30,11 +30,11 @@ void MidiFile::setFilename(const char* aname) {
    const char* ptr = strrchr(aname, '/');
    int len;
    if (ptr != NULL) {
-     len = strlen(ptr+1);
+     len = (int)strlen(ptr+1);
      readFileName.resize(len+1);
      strncpy(readFileName.data(), ptr+1, len);
    } else {
-      len = strlen(aname);
+      len = (int)strlen(aname);
       readFileName.resize(len+1);
       strncpy(readFileName.data(), aname, len);
    }

@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	int size
 @FILE:		Binasc.cpp
-@LINES:		70-86
+@LINES:		71-87
 @SEEALSO:	getLineBytes
 @SHORTDESC:	Set the maximum number of hex bytes in ASCII output.
 @LONGDESC:	Set the maximum number of hex bytes in ASCII output.

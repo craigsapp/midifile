@@ -8,7 +8,7 @@
 @RETURN:	int
 @PARAMETERS:	MidiEvent& event
 @FILE:		MidiEventList.cpp
-@LINES:		142-164
+@LINES:		171-193
 @SEEALSO:	
 @SHORTDESC:	Add a event to the end of the list.
 @LONGDESC:	Add a event to the end of the list.
@@ -30,7 +30,7 @@
 int MidiEventList::append(MidiEvent&amp; event) { 
    MidiEvent* ptr = new MidiEvent(event);
    list.push_back(ptr);
-   return list.size()-1;
+   return (int)list.size()-1;
 }
 
 

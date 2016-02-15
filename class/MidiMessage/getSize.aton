@@ -26,7 +26,7 @@
 //
 
 int MidiMessage::getSize(void) {
-   return this-&gt;size();
+   return (int)this-&gt;size();
 }
 
 @@END:	FunctionDocumentation

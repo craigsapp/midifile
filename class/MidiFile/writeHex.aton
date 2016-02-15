@@ -8,7 +8,7 @@
 @PARAMETERS:	const string& filename
 @PARAMETERS:	int
 @FILE:		MidiFile.cpp
-@LINES:		586-649
+@LINES:		655-718
 @SEEALSO:	
 @SHORTDESC:	Print MidiFile as a list of ASCII hex bytes.
 @LONGDESC:	Print the MIDI file as a sequence of ASCII hex bytes, 
@@ -80,7 +80,7 @@ int MidiFile::writeHex(ostream&amp; out, int width) {
    stringstream tempstream;
    MidiFile::write(tempstream);
    int value = 0;
-   int len = tempstream.str().length();
+   int len = (int)tempstream.str().length();
    int wordcount = 1;
    int linewidth = width &gt;= 0 ? width : 25;
    for (int i=0; i&lt;len; i++) {

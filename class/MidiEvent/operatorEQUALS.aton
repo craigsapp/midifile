@@ -10,7 +10,7 @@
 @PARAMETERS:	vector<char>& bytes
 @PARAMETERS:	vector<int>& bytes
 @FILE:		MidiEvent.cpp
-@LINES:		90-146
+@LINES:		92-149
 @SEEALSO:	
 @SHORTDESC:	Copy the contents of another MidiEvent or MidiMessage.
 @LONGDESC:	Copy the contents of another MidiEvent or MidiMessage.  If
@@ -36,6 +36,7 @@ MidiEvent&amp; MidiEvent::operator=(MidiEvent&amp; mfevent) {
    }
    tick  = mfevent.tick;
    track = mfevent.track;
+   seconds = mfevent.seconds;
    eventlink = NULL;
    this-&gt;resize(mfevent.size());
    for (int i=0; i&lt;this-&gt;size(); i++) {

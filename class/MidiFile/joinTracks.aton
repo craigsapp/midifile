@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		745-798
+@LINES:		814-867
 @SEEALSO:	splitTracks
 @SHORTDESC:	Merge all tracks into a single stream of events.
 @LONGDESC:	Merge the data from all tracks, but keep the identify
@@ -53,9 +53,9 @@ void MidiFile::joinTracks(void) {
    }
    joinedTrack-&gt;reserve((int)(messagesum + 32 + messagesum * 0.1));
 
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
+      absoluteTicks();
    }
    for (i=0; i&lt;length; i++) {
       for (j=0; j&lt;(int)events[i]-&gt;size(); j++) {
@@ -70,7 +70,7 @@ void MidiFile::joinTracks(void) {
    events.push_back(joinedTrack);
    sortTracks();
    if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
 
    theTrackState = TRACK_STATE_JOINED;

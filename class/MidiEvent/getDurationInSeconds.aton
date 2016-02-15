@@ -6,7 +6,7 @@
 @RETURN:	double
 @PARAMETERS:	void
 @FILE:		MidiEvent.cpp
-@LINES:		241-262
+@LINES:		244-265
 @SEEALSO:	getTickDuration
 @SHORTDESC:	Get the duration of a note in seconds.
 @LONGDESC:	For linked events (note-ons and 

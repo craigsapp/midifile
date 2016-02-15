@@ -7,7 +7,7 @@
 @PARAMETERS:	MidiEvent* event
 @PARAMETERS:	MidiEvent& event
 @FILE:		MidiEvent.cpp
-@LINES:		165-191
+@LINES:		168-194
 @SEEALSO:	unlinkEvent
 @SHORTDESC:	Links one event with another (such as note-ons/note-offs).
 @LONGDESC:	Makes a link between two messages.  MidiEvent::getTickDuration()

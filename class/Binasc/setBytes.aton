@@ -8,7 +8,7 @@
 @RETURN:	void
 @PARAMETERS:	int state
 @FILE:		Binasc.cpp
-@LINES:		133-153
+@LINES:		134-154
 @SEEALSO:	getBytes
 @SHORTDESC:	Display or not display hex codes in ASCII output.
 @LONGDESC:	Display or not display hex codes in ASCII output.

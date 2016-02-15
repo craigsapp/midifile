@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	int track1, int track2
 @FILE:		MidiFile.cpp
-@LINES:		1430-1475
+@LINES:		1499-1544
 @SEEALSO:	
 @SHORTDESC:	Combine two tracks into a single track.
 @LONGDESC:	Combine the data from two tracks into one, placing the
@@ -36,9 +36,9 @@
 void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
    MidiEventList* mergedTrack;
    mergedTrack = new MidiEventList;
-   int oldTimeState = getTimeState();
+   int oldTimeState = getTickState();
    if (oldTimeState == TIME_STATE_DELTA) {
-      absoluteTime();
+      absoluteTicks();
    }
    int i, j;
    int length = getNumTracks();
@@ -64,7 +64,7 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
    events.resize(length-1);
 
    if (oldTimeState == TIME_STATE_DELTA) {
-      deltaTime();
+      deltaTicks();
    }
 }
 

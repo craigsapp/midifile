@@ -37,15 +37,15 @@ function addClassListContent(classname, listing) {
 <script>
 window.addEventListener('DOMContentLoaded', function(event) {
    list = [   // START_DOCLIST(MidiFile)
-	'absoluteTime',
+	'absoluteTicks',
 	'addEvent',
 	'addMetaEvent',
 	'addTrack',
 	'allocateEvents',
 	'clear',
 	'deleteTrack',
-	'deltaTime',
-	'doTimeInSecondsAnalysis',
+	'deltaTicks',
+	'doTimeAnalysis',
 	'extractVlvTime',
 	'getAbsoluteTickTime',
 	'getEvent',
@@ -76,6 +76,7 @@ window.addEventListener('DOMContentLoaded', function(event) {
 	'writeBinasc',
 	'writeHex'
    ];   // END_DOCLIST(MidiFile)
+
 
 
 
@@ -142,6 +143,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
 
 
+
    addClassListContent("MidiEventList", list);
 });
 </script>
@@ -183,6 +185,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
 
 
+
    addClassListContent("MidiEvent", list);
 });
 </script>
@@ -197,6 +200,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 	'getChannelNibble',
 	'getCommandByte',
 	'getCommandNibble',
+	'getKeyNumber',
 	'getSize',
 	'getTempoBPM',
 	'getTempoMicro',
@@ -224,6 +228,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 	'setSize',
 	'setSizeToCommand'
    ];   // END_DOCLIST(MidiMessage)
+
 
 
 
@@ -310,6 +315,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 
 
 
+
    addClassListContent("Options", list);
 });
 </script>
@@ -335,6 +341,7 @@ window.addEventListener("DOMContentLoaded", function(event) {
 	'setMidi',
 	'writeToBinary'
    ];   // END_DOCLIST(Binasc)
+
 
 
 

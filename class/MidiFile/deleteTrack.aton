@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	int track
 @FILE:		MidiFile.cpp
-@LINES:		1323-1346
+@LINES:		
 @SEEALSO:	
 @SHORTDESC:	Remove the specified track from the MidiFile.
 @LONGDESC:	Remove a track from the MidiFile.  Tracks are numbered
@@ -20,30 +20,6 @@
 @@END:	EXAMPLE
 
 @SRCCODE:
-
-//////////////////////////////
-//
-// MidiFile::deleteTrack -- remove a track from the MidiFile.
-//   Tracks are numbered starting at track 0.
-//
-
-void MidiFile::deleteTrack(int aTrack) {
-   int length = getNumTracks();
-   if (aTrack &lt; 0 || aTrack &gt;= length) {
-      return;
-   }
-   if (length == 1) {
-      return;
-   }
-   delete events[aTrack];
-   for (int i=aTrack; i&lt;length-1; i++) {
-      events[i] = events[i+1];
-   }
-
-   events[length] = NULL;
-   events.resize(length-1);
-}
-
 @@END:	FunctionDocumentation
 
 

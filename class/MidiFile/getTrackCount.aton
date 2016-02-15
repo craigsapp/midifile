@@ -8,7 +8,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		717-743
+@LINES:		786-812
 @SEEALSO:	
 @SHORTDESC:	Return the number of tracks in the MidiFile.
 @LONGDESC:	Return the number of tracks in the MidiFile.
@@ -28,7 +28,7 @@
 //
 
 int MidiFile::getTrackCount(void) {
-   return events.size();
+   return (int)events.size();
 }
 
 //

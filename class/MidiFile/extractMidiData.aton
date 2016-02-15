@@ -6,7 +6,7 @@
 @RETURN:	int
 @PARAMETERS:	istream& input, vector<uchar>& array, uchar& runningCommand
 @FILE:		MidiFile.cpp
-@LINES:		1847-1939
+@LINES:		1918-2032
 @SEEALSO:	
 @SHORTDESC:	Extract a MIDI message from the input stream.
 @LONGDESC:	Extract a MIDI message from the input stream.  If the
@@ -49,7 +49,12 @@ int MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; array
    if (byte &lt; 0x80) {
       runningQ = 1;
       if (runningCommand == 0) {
-         cout &lt;&lt; "Error: running command with no previous command" &lt;&lt; endl;
+         cerr &lt;&lt; "Error: running command with no previous command" &lt;&lt; endl;
+         return 0;
+      }
+      if (runningCommand &gt;= 0xf0) {
+         cerr &lt;&lt; "Error: running status not permitted with meta and sysex"
+              &lt;&lt; " event." &lt;&lt; endl;
          return 0;
       }
    } else {
@@ -62,6 +67,7 @@ int MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; array
       array.push_back(byte);
    }
 
+   int i;
    uchar metai;
    switch (runningCommand &amp; 0xf0) {
       case 0x80:        // note off (2 more bytes)
@@ -99,13 +105,29 @@ int MidiFile::extractMidiData(istream&amp; input, vector&lt;uchar&gt;&amp; array
                }
                }
                break;
-            case 0xf0:                // sysex
-               // read until you find a 0xf7 character
-               byte = 0;
-               while (byte != 0xf7 &amp;&amp; !input.eof()) {
-                  byte = MidiFile::readByte(input); // meta data
+            // The 0xf0 and 0xf7 meta commands deal with system-exclusive 
+            // messages. 0xf0 is used to either start a message or to store
+            // a complete message.  The 0xf0 is part of the outgoing MIDI
+            // bytes.  The 0xf7 message is used to send arbitrary bytes,
+            // typically the middle or ends of system exclusive messages.  The
+            // 0xf7 byte at the start of the message is not part of the
+            // outgoing raw MIDI bytes, but is kept in the MidiFile message
+            // to indicate a raw MIDI byte message (typically a partial
+            // system exclusive message).
+            case 0xf7:                // Raw bytes. 0xf7 is not part of the raw
+                                      // bytes, but are included to indicate
+                                      // that this is a raw byte message.
+            case 0xf0:                // System Exclusive message
+               {                      // (complete, or start of message).
+               int length = (int)readVLValue(input);
+               for (i=0; i&lt;length; i++) {
+                  byte = MidiFile::readByte(input);
+                  array.push_back(byte);
+               }
                }
                break;
+             // other "F" MIDI commands are not expected, but can be
+             // handled here if they exist.
          }
          break;
       default:

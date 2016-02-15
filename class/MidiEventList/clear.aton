@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiEventList.cpp
-@LINES:		84-100
+@LINES:		113-129
 @SEEALSO:	
 @SHORTDESC:	Clear all events from the list.
 @LONGDESC:	De-allocates all MidiEvents stored in the list, and sets

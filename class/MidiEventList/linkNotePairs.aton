@@ -7,7 +7,7 @@
 @RETURN:	int
 @PARAMETERS:	void
 @FILE:		MidiEventList.cpp
-@LINES:		165-217
+@LINES:		194-246
 @SEEALSO:	
 @SHORTDESC:	Match note-ons and note-offs.
 @LONGDESC:	Match note-ones and note-offs together There are

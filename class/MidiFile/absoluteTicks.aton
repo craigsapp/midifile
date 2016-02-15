@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiFile.cpp
-@LINES:		962-995
+@LINES:		1031-1064
 @SEEALSO:	deltaTicks
 @SHORTDESC:	Convert event delta tick values into absolute ticks.
 @LONGDESC:	Convert delta ticks values for all MidiEvents into absolute 
@@ -28,7 +28,7 @@
 
 //////////////////////////////
 //
-// MidiFile::absoluteTime -- convert the time data to
+// MidiFile::absoluteTicks -- convert the time data to
 //    absolute time, which means that the time field
 //    in the MidiEvent struct represents the exact tick
 //    time to play the event rather than the time since
@@ -36,8 +36,8 @@
 //    event.
 //
 
-void MidiFile::absoluteTime(void) {
-   if (getTimeState() == TIME_STATE_ABSOLUTE) {
+void MidiFile::absoluteTicks(void) {
+   if (getTickState() == TIME_STATE_ABSOLUTE) {
       return;
    }
    int i, j;

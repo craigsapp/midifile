@@ -5,7 +5,7 @@
 @ACCESS:	public
 @RETURN:	void
 @FILE:		MidiEvent.cpp
-@LINES:		206-216
+@LINES:		209-219
 @SEEALSO:	getLinkedEvent
 @SHORTDESC:	Returns true of the message is linked to another event.
 @LONGDESC:	Returns true if there is an event which is not

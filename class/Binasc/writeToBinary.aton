@@ -9,7 +9,7 @@
 @PARAMETERS:	ostream& output, const string& infile
 @PARAMETERS:	ostream& output, istream& input
 @FILE:		Binasc.cpp
-@LINES:		196-267
+@LINES:		197-268
 @SEEALSO:	readFromBinary
 @SHORTDESC:	Convert a binary file into ASCII byte codes.
 @LONGDESC:	Convert a binary file into ASCII byte codes.

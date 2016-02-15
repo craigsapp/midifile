@@ -7,7 +7,7 @@
 @RETURN:	MidiEvent&
 @PARAMETERS:	int index
 @FILE:		MidiEventList.cpp
-@LINES:		44-53
+@LINES:		73-82
 @SEEALSO:	
 @SHORTDESC:	Access a MidiEvent in the event list.
 @LONGDESC:	Access a MidiEvent in the event list.

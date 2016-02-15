@@ -7,7 +7,7 @@
 @RETURN:	void
 @PARAMETERS:	int size
 @FILE:		MidiEventList.cpp
-@LINES:		113-125
+@LINES:		142-154
 @SEEALSO:	
 @SHORTDESC:	Pre-allocate space for events in the list.
 @LONGDESC:	Pre-allocate space for events in the list.

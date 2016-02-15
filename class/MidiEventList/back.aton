@@ -7,7 +7,7 @@
 @RETURN:	MidiEvent&
 @PARAMETERS:	void
 @FILE:		MidiEventList.cpp
-@LINES:		55-70
+@LINES:		84-99
 @SEEALSO:	
 @SHORTDESC:	Access the last element in a list.
 @LONGDESC:	Access the last element in a list.

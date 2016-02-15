@@ -14,7 +14,7 @@ group: [
 
 The MidiEvent class is a
   <span class="class-link">MidiMessage</span>
-plus an added timestamp public variable, <b>.time</b>.  The MidiEvent
+plus an added timestamp public variable, <b>.tick</b>.  The MidiEvent
 class also adds other support variables such as <b>.track</b> which
 store the track number in the MIDI file that the MidiEvent occurs
 in.

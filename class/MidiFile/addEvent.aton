@@ -4,9 +4,9 @@
 @METHOD:	addEvent
 @ACCESS:	public
 @RETURN:	int
-@PARAMETERS:	int track, int time, vector<uchar>& data
+@PARAMETERS:	int track, int tick, vector<uchar>& data
 @FILE:		MidiFile.cpp
-@LINES:		1108-1124
+@LINES:		1177-1193
 @SEEALSO:	
 @SHORTDESC:	Add a new MidiEvents to the end of the specified track.
 @LONGDESC:	Create an MidiEvents and store at the end of the specified

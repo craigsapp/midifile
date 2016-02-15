@@ -6,7 +6,7 @@
 @RETURN:	void
 @PARAMETERS:	void
 @FILE:		MidiEvent.cpp
-@LINES:		148-163
+@LINES:		151-166
 @SEEALSO:	linkEvent
 @SHORTDESC:	Disassociates any MidiEvents linked to this one.
 @LONGDESC:	Disassociate this event with another.  Also tells the 
