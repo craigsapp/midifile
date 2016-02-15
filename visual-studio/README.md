@@ -4,7 +4,7 @@ Compiling for Visual Studio
 See the commentary on compiling for Visual Studio 2010 in midifile issue #10:
      https://github.com/craigsapp/midifile/issues/10
 
-The file [midifile.vcxproj](midifile.vcxproj) created by @kirbyfan can be 
+The file [midifile.vcxproj](midifile.vcxproj) created by @kirbyfan64 can be 
 used to compile the static library for the midifile library. 
 Run `set PLATFORM=` and `msbuild`.
 
