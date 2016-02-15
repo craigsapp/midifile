@@ -849,7 +849,7 @@ void MidiFile::splitTracks(void) {
    MidiEventList* olddata = events[0];
    events[0] = NULL;
    events.resize(trackCount);
-   for (i=0; i<=trackCount; i++) {
+   for (i=0; i<trackCount; i++) {
       events[i] = new MidiEventList;
    }
 
