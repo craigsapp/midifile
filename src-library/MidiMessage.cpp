@@ -867,6 +867,9 @@ void MidiMessage::setTempo(double tempo) {
 //
 // default value: channel = 0
 //
+// Note: I will probably change the parameter order to put the 
+//   channel first at some point...
+//
 
 void MidiMessage::makeNoteOn(int key, int velocity, int channel) {
    resize(3);
@@ -884,6 +887,9 @@ void MidiMessage::makeNoteOn(int key, int velocity, int channel) {
 //   note-on message, which will be converted into a note-off message.
 //
 // default value: channel = 0
+//
+// Note: I will probably change the parameter order to put the 
+//   channel first at some point...
 //
 
 
@@ -906,6 +912,83 @@ void MidiMessage::makeNoteOff(void) {
    }
 }
 
+
+
+//////////////////////////////
+//
+// MidiMessage::makeMetaMessage -- Create a Meta event with the
+//   given text string as the parameter.  The length of the string should
+//   not be longer than 127 characters at the moment (will have to check
+//   if VLV sizes are allowed).
+//
+
+void MidiMessage::makeMetaMessage(int mnum, const string& data) {
+   resize(0);
+   push_back(0xff);
+   push_back(mnum & 0x7f); // I think max is 0x7f.
+   int dsize = data.size();
+   if (dsize > 127) {
+      push_back(127);
+      for (int i=0; i<128; i++) {
+         push_back(data[i]);
+      }
+   } else {
+      push_back(data.size());
+      std::copy(data.begin(), data.end(), std::back_inserter(*this));
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTrackName -- Create a metaevent track name message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeTrackName(const string& name) {
+   makeMetaMessage(0x03, name);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTrackName -- Create a metaevent instrument name message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeInstrumentName(const string& name) {
+   makeMetaMessage(0x04, name);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeLyric -- Create a metaevent lyrics/text message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeLyric(const string& text) {
+   makeMetaMessage(0x05, text);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeCopyright -- Create a metaevent copyright message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeCopyright(const string& text) {
+   makeMetaMessage(0x02, text);
+}
 
 
 

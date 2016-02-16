@@ -98,6 +98,13 @@ class MidiMessage : public vector<uchar> {
                                            int channel = 0);
       void           makeNoteOff          (void);
 
+      // meta-message creation helper functions:
+      void           makeMetaMessage      (int mnum, const string& data);
+      void           makeTrackName        (const string& name);
+      void           makeInstrumentName   (const string& name);
+      void           makeLyric            (const string& text);
+      void           makeCopyright        (const string& text);
+
       // meta-message related functions:
       int            getMetaType          (void);
       int            isTempo              (void);

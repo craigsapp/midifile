@@ -132,15 +132,29 @@ class MidiFile {
 
 
 
-      int       addEvent                  (int aTrack, int aTime, 
+      int       addEvent                  (int aTrack, int aTick,
                                              vector<uchar>& midiData);
       int       addEvent                  (MidiEvent& mfevent);
-      int       addMetaEvent              (int aTrack, int aTime, int aType,
-                                             vector<uchar>& metaData);
-      int       addMetaEvent              (int aTrack, int aTime, int aType,
-                                             const char* metaData);
-      int       addPitchBend              (int aTrack, int aTime,
+
+
+      // MIDI message adding convenience functions:
+      int       addPitchBend              (int aTrack, int aTick,
                                            int aChannel, double amount);
+
+      // Meta-event adding convenience functions:
+      int       addMetaEvent              (int aTrack, int aTick, int aType,
+                                             vector<uchar>& metaData);
+      int       addMetaEvent              (int aTrack, int aTick, int aType,
+                                           const char* metaData);
+      int       addCopyright              (int aTrack, int aTick,
+                                           const string& text);
+      int       addTrackName              (int aTrack, int aTick,
+                                           const string& name);
+      int       addInstrumentName         (int aTrack, int aTick,
+                                           const string& name);
+      int       addLyric                  (int aTrack, int aTick,
+                                           const string& text);
+
       void      erase                     (void);
       void      clear                     (void);
       void      clear_no_deallocate       (void);
@@ -175,12 +189,12 @@ class MidiFile {
       int              theTimeState;             // absolute or delta
       vector<char>     readFileName;             // read file name
 
-      int               timemapvalid;    
+      int               timemapvalid;
       vector<_TickTime> timemap;
       int               rwstatus;                // read/write success flag
 
    private:
-      int        extractMidiData  (istream& inputfile, vector<uchar>& array, 
+      int        extractMidiData  (istream& inputfile, vector<uchar>& array,
                                        uchar& runningCommand);
       ulong      readVLValue      (istream& inputfile);
       ulong      unpackVLV        (uchar a, uchar b, uchar c, uchar d, uchar e);

@@ -1181,10 +1181,10 @@ const char* MidiFile::getFilename(void) {
 // MidiFile::addEvent --
 //
 
-int MidiFile::addEvent(int aTrack, int aTime, vector<uchar>& midiData) {
+int MidiFile::addEvent(int aTrack, int aTick, vector<uchar>& midiData) {
    timemapvalid = 0;
    MidiEvent anEvent;
-   anEvent.tick = aTime;
+   anEvent.tick = aTick;
    anEvent.track = aTrack;
    anEvent.setMessage(midiData);
 
@@ -1216,7 +1216,7 @@ int MidiFile::addEvent(MidiEvent& mfevent) {
 // MidiFile::addMetaEvent --
 //
 
-int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
+int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
       vector<uchar>& metaData) {
    timemapvalid = 0;
    int i;
@@ -1235,11 +1235,11 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
       fulldata[2+lengthsize+i] = metaData[i];
    }
 
-   return addEvent(aTrack, aTime, fulldata);
+   return addEvent(aTrack, aTick, fulldata);
 }
 
 
-int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
+int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
       const char* metaData) {
 
    int length = (int)strlen(metaData);
@@ -1249,7 +1249,67 @@ int MidiFile::addMetaEvent(int aTrack, int aTime, int aType,
    for (i=0; i<length; i++) {
       buffer[i] = (uchar)metaData[i];
    }
-   return addMetaEvent(aTrack, aTime, aType, buffer);
+   return addMetaEvent(aTrack, aTick, aType, buffer);
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addCopyright --  Add a copyright notice meta-message (#2).
+//
+
+int MidiFile::addCopyright(int aTrack, int aTick, const string& text) { 
+   MidiEvent* me = new MidiEvent;
+   me->makeCopyright(text);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addTrackName --  Add an track name meta-message (#3).
+//
+
+int MidiFile::addTrackName(int aTrack, int aTick, const string& name) {
+   MidiEvent* me = new MidiEvent;
+   me->makeTrackName(name);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addInstrumentName --  Add an instrument name meta-message (#4).
+//
+
+int MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) { 
+   MidiEvent* me = new MidiEvent;
+   me->makeInstrumentName(name);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addLyric -- Add a lyric meta-message (meta #5).
+//
+
+int MidiFile::addLyric(int aTrack, int aTick, const string& text) {
+   MidiEvent* me = new MidiEvent;
+   me->makeCopyright(text);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
 }
 
 
@@ -1315,7 +1375,7 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
 //   +1.0 maps to 16383 (0x3FFF --> 0x7F 0x7F)
 //
 
-int MidiFile::addPitchBend(int aTrack, int aTime, int aChannel, double amount) {
+int MidiFile::addPitchBend(int aTrack, int aTick, int aChannel, double amount) {
    timemapvalid = 0;
    amount += 1.0;
    int value = int(amount * 8192 + 0.5);
@@ -1342,7 +1402,7 @@ int MidiFile::addPitchBend(int aTrack, int aTime, int aChannel, double amount) {
    mididata[1] = uchar(lsbint);
    mididata[2] = uchar(msbint);
 
-   return addEvent(aTrack, aTime, mididata);
+   return addEvent(aTrack, aTick, mididata);
 }
 
 
