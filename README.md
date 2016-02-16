@@ -78,8 +78,8 @@ This will create the `midifile` directory with the source code for the library.
 
 
 
-Compiling
-----------
+Compiling with GCC
+------------------
 
 The library can be compiled with the command:
 ``` bash
