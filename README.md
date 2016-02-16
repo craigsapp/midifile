@@ -47,7 +47,8 @@ MIDI files.  The library consists of 6 classes:
 	<a href="http://midifile.sapp.org/class/Options">Options</a>
 </td><td>
 	A convenience class used for parsing command-line options in 
-	the example programs.
+	the example programs.  This class can be removed from the library
+        since it is not needed for using the MidiFile class.
 </td></tr>
 
 </table>
@@ -62,7 +63,7 @@ are given below.
 Downloading
 -----------
 
-You can download as a ZIP file from the GitHub page for the midifile library, 
+You can download as a ZIP file from the Github page for the midifile library, 
 or if you use git, then download with this command:
 
 ``` bash
