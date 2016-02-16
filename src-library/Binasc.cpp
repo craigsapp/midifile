@@ -139,7 +139,7 @@ int Binasc::getComments(void) {
 //
 
 void Binasc::setBytes(int state) {
-   commentsQ = state ? 1 : 0;
+   bytesQ = state ? 1 : 0;
 }
 
 
@@ -509,6 +509,8 @@ int Binasc::processLine(ostream& out, char* inputLine, int lineCount) {
          status = processVlvWord(out, word, lineCount);
       } else if (word[0] == 'p') {
          status = processMidiPitchBendWord(out, word, lineCount);
+      } else if (word[0] == 't') {
+         status = processMidiTempoWord(out, word, lineCount);
       } else if (strchr(word, '\'')) {
          status = processDecimalWord(out, word, lineCount);
       } else if (strchr(word, ',') || strlen(word) > 2) {
@@ -577,11 +579,6 @@ int Binasc::readMidiEvent(ostream& out, istream& infile, int& trackbytes,
    byte1 = ch;
    int i;
    int metatype = 0;
-
-if (command == 0) {
-exit(1);
-}
-
    switch (command & 0xf0) {
       case 0x80:    // note-off: 2 bytes
          out << " '" << dec << (int)byte1;
@@ -627,6 +624,7 @@ exit(1);
       case 0xF0:    // various system bytes: variable bytes
          switch (command) {
             case 0xf0:
+               break;
             case 0xf7:
                // Read the first byte which is either 0xf0 or 0xf7.
                // Then a VLV byte count for the number of bytes 
@@ -649,17 +647,29 @@ exit(1);
                }
                break;
             case 0xf1:
+               break;
             case 0xf2:
+               break;
             case 0xf3:
+               break;
             case 0xf4:
+               break;
             case 0xf5:
+               break;
             case 0xf6:
+               break;
             case 0xf8:
+               break;
             case 0xf9:
+               break;
             case 0xfa:
+               break;
             case 0xfb:
+               break;
             case 0xfc:
+               break;
             case 0xfd:
+               break;
             case 0xfe:
                cerr << "Error command not yet handled" << endl;
                exit(1);
@@ -876,7 +886,7 @@ int Binasc::outputStyleMidi(ostream& out, istream& input) {
 
 int Binasc::processDecimalWord(ostream& out, const char* word, 
       int lineNum) {
-   int length = (int)strlen(word);       // length of ascii binary number
+   int length = (int)strlen(word);  // length of ascii binary number
    int byteCount = -1;              // number of bytes to output
    int quoteIndex = -1;             // index of decimal specifier
    int signIndex = -1;              // index of any sign for number
@@ -1229,7 +1239,7 @@ int Binasc::processAsciiWord(ostream& out, const char* word, int lineNum) {
 
 int Binasc::processBinaryWord(ostream& out, const char* word, 
       int lineNum) {
-   int length = (int)strlen(word);       // length of ascii binary number
+   int length = (int)strlen(word);  // length of ascii binary number
    int commaIndex = -1;             // index location of comma in number
    int leftDigits = -1;             // number of digits to left of comma
    int rightDigits = -1;            // number of digits to right of comma
@@ -1374,6 +1384,44 @@ int Binasc::processVlvWord(ostream& out, const char* word, int lineNum) {
       }
    }
 
+   return 1;
+}
+
+
+
+////////////////////////////
+//
+// Binasc::processMidiTempoWord -- convert a floating point tempo into
+//   a three-byte number of microseconds per beat per minute value.
+//
+
+int Binasc::processMidiTempoWord(ostream& out, const char* word, 
+      int lineNum) {
+   if (strlen(word) < 2) {
+      cerr << "Error on line: " << lineNum
+           << ": 't' needs to be followed immediately by "
+           << "a floating-point number" << endl;
+      return 0;
+   }
+   if (!(isdigit(word[1]) || word[1] == '.' || word[1] == '-'
+         || word[1] == '+')) {
+      cerr << "Error on line: " << lineNum
+           << ": 't' needs to be followed immediately by "
+           << "a floating-point number" << endl;
+      return 0;
+   }
+   double value = strtod(&word[1], NULL);
+
+   if (value < 0.0) {
+      value = -value;
+   }
+
+   int intval = int(60.0 * 1000000.0 / value + 0.5);
+
+   uchar byte0 = intval & 0xff;
+   uchar byte1 = (intval >>  8) & 0xff;
+   uchar byte2 = (intval >> 16) & 0xff;
+   out << byte2 << byte1 << byte0;
    return 1;
 }
 

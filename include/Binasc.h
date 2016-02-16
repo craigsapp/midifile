@@ -80,6 +80,8 @@ class Binasc {
       int      processVlvWord     (ostream& out, const char* word, int lineNum);
       int      processMidiPitchBendWord(ostream& out, const char* word, 
                                    int lineNum);
+      int      processMidiTempoWord(ostream& out, const char* word,
+                                   int lineNum);
 
       // helper functions for reading binary content to convert to ASCII:
       int      outputStyleAscii   (ostream& out, istream& input);

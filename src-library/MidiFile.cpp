@@ -1665,8 +1665,7 @@ double MidiFile::getTimeInSeconds(int tickvalue) {
       // the time in seconds values to figure out the final
       // time in seconds.
       // Since the code is not yet written, kill the program at this point:
-      cerr << "ERROR: tick value " << tickvalue << " was not found " << endl;
-      exit(1);
+      return linearSecondInterpolationAtTick(tickvalue);
    } else {
       return ((_TickTime*)ptr)->seconds;
    }
@@ -1829,6 +1828,78 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
    double y1 = timemap[startindex].tick;
    double y2 = timemap[startindex+1].tick;
    double xi = seconds;
+
+   return (xi-x1) * ((y2-y1)/(x2-x1)) + y1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::linearSecondInterpolationAtTick -- return the time in seconds 
+//    value at the given input tick time. (Ticks input could be made double).
+//
+
+double MidiFile::linearSecondInterpolationAtTick(int ticktime) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         return -1.0;    // something went wrong
+      }
+   }
+
+   int i;
+   double lasttick = timemap[timemap.size()-1].tick;
+   // give an error value of -1 if time is out of range of data.
+   if (ticktime < 0.0) {
+      return -1;
+   }
+   if (ticktime > timemap.back().tick) {
+      return -1;  // don't try to extrapolate
+   }
+
+   // Guess which side of the list is closest to target:
+   // Could do a more efficient algorithm since time values are sorted,
+   // but good enough for now...
+   int startindex = -1;
+   if (ticktime < lasttick / 2) {
+      for (i=0; i<(int)timemap.size(); i++) {
+         if (timemap[i].tick > ticktime) {
+            startindex = i-1;
+            break;
+         } else if (timemap[i].tick == ticktime) {
+            startindex = i;
+            break;
+         }
+      }
+   } else {
+      for (i=(int)timemap.size()-1; i>0; i--) {
+         if (timemap[i].tick < ticktime) {
+            startindex = i;
+            break;
+         } else if (timemap[i].tick == ticktime) {
+            startindex = i;
+            break;
+         }
+      }
+   }
+
+   if (startindex < 0) {
+      return -1;
+   }
+   if (startindex >= (int)timemap.size()-1) {
+      return -1;
+   }
+
+   if (timemap[startindex].tick == ticktime) {
+      return timemap[startindex].seconds;
+   }
+
+   double x1 = timemap[startindex].tick;
+   double x2 = timemap[startindex+1].tick;
+   double y1 = timemap[startindex].seconds;
+   double y2 = timemap[startindex+1].seconds;
+   double xi = ticktime;
 
    return (xi-x1) * ((y2-y1)/(x2-x1)) + y1;
 }

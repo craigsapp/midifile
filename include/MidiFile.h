@@ -190,6 +190,7 @@ class MidiFile {
       static int secondsearch     (const void* A, const void* B);
       void       buildTimeMap     (void);
       int        linearTickInterpolationAtSecond  (double seconds);
+      double     linearSecondInterpolationAtTick  (int ticktime);
 };
 
 
