@@ -416,7 +416,7 @@ MIDI file writing examples
 Here are some examples of MIDI file writing.  MidiFiles can be created 
 in either delta or absolute tick timestamp modes.  For now, see the
 [createmidifile](https://github.com/craigsapp/midifile/blob/master/src-programs/createmidifile.cpp) 
-example program source code.
-
+example program source code, or a higher-level example using convenience functions for creating MIDI events:
+[createmidifile2](https://github.com/craigsapp/midifile/blob/master/src-programs/createmidifile2.cpp). 
 
 
