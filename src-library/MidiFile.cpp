@@ -1316,6 +1316,21 @@ int MidiFile::addLyric(int aTrack, int aTick, const string& text) {
 
 //////////////////////////////
 //
+// MidiFile::addTempo -- Add a tempo meta message.
+//
+
+int MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
+   MidiEvent* me = new MidiEvent;
+   me->makeTempo(aTempo);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
 // MidiFile::makeVLV --
 //
 
@@ -1362,6 +1377,82 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
 }
 
 
+
+//////////////////////////////
+//
+// MidiFile::addNoteOn -- Add a note-on message to the given track at the
+//    given time in the given channel.
+//
+
+int MidiFile::addNoteOn(int aTrack, int aTick, int aChannel, int key, int vel) {
+   MidiEvent* me = new MidiEvent;
+   me->makeNoteOn(aChannel, key, vel);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addNoteOff -- Add a note-off message (using 0x80 messages).
+//
+
+int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key, 
+      int vel) {
+   MidiEvent* me = new MidiEvent;
+   me->makeNoteOff(aChannel, key, vel);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addNoteOff -- Add a note-off message (using 0x90 messages with
+//   zero attack velocity).
+//
+
+int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key) {
+   MidiEvent* me = new MidiEvent;
+   me->makeNoteOff(aChannel, key);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addPatchChange -- Add a patch-change message in the given
+//    track at the given tick time in the given channel.
+//
+
+int MidiFile::addPatchChange(int aTrack, int aTick, int aChannel, 
+      int patchnum) {
+   MidiEvent* me = new MidiEvent;
+   me->makePatchChange(aChannel, patchnum);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addTimbre -- Add a patch-change message in the given
+//    track at the given tick time in the given channel.  Alias for 
+//    MidiFile::addPatchChange().
+//
+
+int MidiFile::addTimbre(int aTrack, int aTick, int aChannel, int patchnum) {
+   return addPatchChange(aTrack, aTick, aChannel, patchnum);
+}
 
 
 

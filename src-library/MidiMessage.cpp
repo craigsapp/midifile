@@ -867,11 +867,11 @@ void MidiMessage::setTempo(double tempo) {
 //
 // default value: channel = 0
 //
-// Note: I will probably change the parameter order to put the 
-//   channel first at some point...
+// Note: The channel parameter used to be last, but makes more sense to
+//   have it first...
 //
 
-void MidiMessage::makeNoteOn(int key, int velocity, int channel) {
+void MidiMessage::makeNoteOn(int channel, int key, int velocity) {
    resize(3);
    (*this)[0] = 0x90 | (0x0f & channel);
    (*this)[1] = key & 0x7f;
@@ -888,16 +888,24 @@ void MidiMessage::makeNoteOn(int key, int velocity, int channel) {
 //
 // default value: channel = 0
 //
-// Note: I will probably change the parameter order to put the 
-//   channel first at some point...
+// Note: The channel parameter used to be last, but makes more sense to
+//   have it first...
 //
 
 
-void MidiMessage::makeNoteOff(int key, int velocity, int channel) {
+void MidiMessage::makeNoteOff(int channel, int key, int velocity) {
    resize(3);
    (*this)[0] = 0x80 | (0x0f & channel);
    (*this)[1] = key & 0x7f;
    (*this)[2] = velocity & 0x7f;
+}
+
+
+void MidiMessage::makeNoteOff(int channel, int key) {
+   resize(3);
+   (*this)[0] = 0x90 | (0x0f & channel);
+   (*this)[1] = key & 0x7f;
+   (*this)[2] = 0x00;
 }
 
 
@@ -910,6 +918,24 @@ void MidiMessage::makeNoteOff(void) {
    } else {
       (*this)[2] = 0;
    }
+}
+
+
+
+/////////////////////////////
+//
+// MidiMessage::makePatchChange -- Create a patch change message.
+//
+
+void MidiMessage::makePatchChange(int channel, int patchnum) {
+   resize(0);
+   push_back(0xc0 | (0x0f & channel));
+   push_back(0x7f & patchnum);
+}
+
+
+void MidiMessage::makeTimbre(int channel, int patchnum) {
+   makePatchChange(channel, patchnum);
 }
 
 

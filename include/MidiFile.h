@@ -93,6 +93,7 @@ class MidiFile {
 
       int       addTrack                  (void);
       int       addTrack                  (int count);
+      int       addTracks(int count) { return addTrack(count); }
       void      deleteTrack               (int aTrack);
       void      mergeTracks               (int aTrack1, int aTrack2);
       int       getTrackCountAsType1      (void);
@@ -138,6 +139,16 @@ class MidiFile {
 
 
       // MIDI message adding convenience functions:
+      int       addNoteOn                 (int aTrack, int aTick,
+                                           int aChannel, int key, int vel);
+      int       addNoteOff                (int aTrack, int aTick,
+                                           int aChannel, int key, int vel);
+      int       addNoteOff                (int aTrack, int aTick,
+                                           int aChannel, int key);
+      int       addPatchChange            (int aTrack, int aTick,
+                                           int aChannel, int patchnum);
+      int       addTimbre                 (int aTrack, int aTick,
+                                           int aChannel, int patchnum);
       int       addPitchBend              (int aTrack, int aTick,
                                            int aChannel, double amount);
 
@@ -154,6 +165,8 @@ class MidiFile {
                                            const string& name);
       int       addLyric                  (int aTrack, int aTick,
                                            const string& text);
+      int       addTempo                  (int aTrack, int aTick,
+                                           double aTempo);
 
       void      erase                     (void);
       void      clear                     (void);
