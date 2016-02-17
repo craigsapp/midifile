@@ -810,7 +810,7 @@ void MidiMessage::setParameters(int p1, int p2) {
 
 void MidiMessage::setMessage(vector<uchar>& message) { 
    this->resize(message.size());
-   for (int i=0; i<this->size(); i++) {
+   for (int i=0; i<(int)this->size(); i++) {
       (*this)[i] = message[i];
    }
 }
@@ -818,7 +818,7 @@ void MidiMessage::setMessage(vector<uchar>& message) {
 
 void MidiMessage::setMessage(vector<char>& message) {
    resize(message.size());
-   for (int i=0; i<size(); i++) {
+   for (int i=0; i<(int)size(); i++) {
       (*this)[i] = (uchar)message[i];
    }
 }
@@ -826,7 +826,7 @@ void MidiMessage::setMessage(vector<char>& message) {
 
 void MidiMessage::setMessage(vector<int>& message) {
    resize(message.size());
-   for (int i=0; i<size(); i++) {
+   for (int i=0; i<(int)size(); i++) {
       (*this)[i] = (uchar)message[i];
    }
 }
