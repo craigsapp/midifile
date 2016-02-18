@@ -1739,8 +1739,7 @@ void MidiFile::setMillisecondTicks(void) {
 //
 
 void MidiFile::sortTrack(MidiEventList& trackData) {
-   qsort(trackData.data(), trackData.size(),
-      sizeof(MidiEvent*), eventcompare);
+   qsort(trackData.data(), trackData.size(), sizeof(MidiEvent*), eventcompare);
 }
 
 
@@ -2366,7 +2365,14 @@ void MidiFile::clear_no_deallocate(void) {
 
 //////////////////////////////
 //
-// eventcompare -- for sorting the tracks
+// eventcompare -- Event comparison function for sorting tracks.
+//
+// Sorting rules:
+//    (1) sort by (absolute) tick value; otherwise, if tick values are the same:
+//    (2) end-of-track meta message is always last.
+//    (3) other meta-messages come before regular MIDI messages.
+//    (4) note-offs come after all other regular MIDI messages except note-ons.
+//    (5) note-ons come after all other regular MIDI messages.
 //
 
 int eventcompare(const void* a, const void* b) {
@@ -2374,30 +2380,38 @@ int eventcompare(const void* a, const void* b) {
    MidiEvent& bevent = **((MidiEvent**)b);
 
    if (aevent.tick > bevent.tick) {
-      return 1;
+      // aevent occurs after bevent
+      return +1;
    } else if (aevent.tick < bevent.tick) {
-      return -1;
-   } else if (aevent[0] == 0xff && bevent[0] != 0xff) {
-      return 1;
-   } else if (bevent[0] == 0xff && aevent[0] != 0xff) {
-      return -1;
-   } else if (bevent[0] == 0xff && bevent[1] == 0x2f) {
+      // aevent occurs before bevent
       return -1;
    } else if (aevent[0] == 0xff && aevent[1] == 0x2f) {
-      return 1;
-   } else if (((aevent[0] & 0xf0) == 0xe0) &&
-              ((bevent[0] & 0xf0) == 0x90)) {
-      // pitch bend placed before note on messages
-      return -1;
-   } else if (((aevent[0] & 0xf0) == 0x90) &&
-              ((bevent[0] & 0xf0) == 0xe0)) {
-      // pitch bend placed before note on messages
+      // end-of-track meta-message should always be last (but won't really
+      // matter since the writing function ignores all end-of-track messages
+      // and writes its own.
       return +1;
-   } else if (((aevent[0] & 0xf0) == 0x90) &&
-              ((bevent[0] & 0xf0) == 0x80)) {
-      return 1;
-   } else if (((aevent[0] & 0xf0) == 0x80) &&
-              ((bevent[0] & 0xf0) == 0x90)) {
+   } else if (bevent[0] == 0xff && bevent[1] == 0x2f) {
+      // end-of-track meta-message should always be last (but won't really
+      // matter since the writing function ignores all end-of-track messages
+      // and writes its own.
+      return -1;
+   } else if (aevent[0] == 0xff && bevent[0] != 0xff) {
+      // other meta-messages are placed before real MIDI messages
+      return -1;
+   } else if (aevent[0] != 0xff && bevent[0] == 0xff) {
+      // other meta-messages are placed before real MIDI messages
+      return +1;
+   } else if (((aevent[0] & 0xf0) == 0x90) && (aevent[2] != 0)) {
+      // note-ons come after all other types of MIDI messages
+      return +1;
+   } else if (((bevent[0] & 0xf0) == 0x90) && (bevent[2] != 0)) {
+      // note-ons come after all other types of MIDI messages
+      return -1;
+   } else if (((aevent[0] & 0xf0) == 0x90) || ((aevent[0] & 0xf0) == 0x80)) {
+      // note-offs come after all other MIDI messages (except note-ons)
+      return +1;
+   } else if (((bevent[0] & 0xf0) == 0x90) || ((bevent[0] & 0xf0) == 0x80)) {
+      // note-offs come after all other MIDI messages (except note-ons)
       return -1;
    } else {
       return 0;
