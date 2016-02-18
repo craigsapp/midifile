@@ -82,6 +82,7 @@ class MidiFile {
       // join/split track functionality:
       void      joinTracks                (void);
       void      splitTracks               (void);
+      void      splitTracksByChannel      (void);
       int       getTrackState             (void);
       int       hasJoinedTracks           (void);
       int       hasSplitTracks            (void);

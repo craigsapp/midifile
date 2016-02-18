@@ -924,6 +924,76 @@ void MidiFile::splitTracks(void) {
 
 //////////////////////////////
 //
+// MidiFile::splitTracksByChannel -- Take the joined tracks and split them
+//   back into their separate track identities.
+//
+
+void MidiFile::splitTracksByChannel(void) {
+   joinTracks();
+   if (getTrackState() == TRACK_STATE_SPLIT) {
+      return;
+   }
+
+   int oldTimeState = getTickState();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      absoluteTicks();
+   }
+
+   int maxTrack = 0;
+   int i;
+   MidiEventList& eventlist = *events[0];
+   MidiEventList* olddata = &eventlist;
+   int length = eventlist.size();
+   for (i=0; i<length; i++) {
+      if (eventlist[i].size() == 0) {
+         continue;
+      }
+      if ((eventlist[i][0] & 0xf0) == 0xf0) {
+         // ignore system and meta messages.
+         continue;
+      }
+      if (maxTrack < (eventlist[i][0] & 0x0f)) {
+         maxTrack = eventlist[i][0] & 0x0f;
+      }
+   }
+   int trackCount = maxTrack + 2; // + 1 for expression track
+
+   if (trackCount <= 1) {
+      // only one channel, so don't do anything (leave as Type-0 file).
+      return;
+   }
+
+   events[0] = NULL;
+   events.resize(trackCount);
+   for (i=0; i<trackCount; i++) {
+      events[i] = new MidiEventList;
+   }
+
+   int trackValue = 0;
+   for (i=0; i<length; i++) {
+      trackValue = 0;
+      if ((eventlist[i][0] & 0xf0) == 0xf0) {
+         trackValue = 0;
+      } else if (eventlist[i].size() > 0) {
+         trackValue = (eventlist[i][0] & 0x0f) + 1;
+      }
+      events[trackValue]->push_back_no_copy(&eventlist[i]);
+   }
+
+   olddata->detach();
+   delete olddata;
+
+   if (oldTimeState == TIME_STATE_DELTA) {
+      deltaTicks();
+   }
+
+   theTrackState = TRACK_STATE_SPLIT;
+}
+
+
+
+//////////////////////////////
+//
 // MidiFile::getTrackState -- returns what type of track method
 //     is being used: either TRACK_STATE_JOINED or TRACK_STATE_SPLIT.
 //
