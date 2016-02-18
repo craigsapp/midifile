@@ -112,7 +112,7 @@ void randomizeNotes(vector<MidiEvent*>& notes) {
    vector<pairing> neworder;
    neworder.resize(notes.size());
    int i;
-   for (i=0; i<neworder.size(); i++) {
+   for (i=0; i<(int)neworder.size(); i++) {
       neworder[i].index = i;
       neworder[i].value = dist(md);
    }

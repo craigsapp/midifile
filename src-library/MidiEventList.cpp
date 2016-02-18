@@ -118,7 +118,7 @@ MidiEvent& MidiEventList::getEvent(int index) {
 //
 
 void MidiEventList::clear(void) {
-   for (int i=0; i<list.size(); i++) {
+   for (int i=0; i<(int)list.size(); i++) {
       if (list[i] != NULL) {
          delete list[i];
          list[i] = NULL;
@@ -147,7 +147,7 @@ MidiEvent** MidiEventList::data(void) {
 //
 
 void MidiEventList::reserve(int rsize) {
-   if (rsize > list.size()) {
+   if (rsize > (int)list.size()) {
       list.reserve(rsize);
    }
 }
@@ -211,7 +211,7 @@ int MidiEventList::linkNotePairs(void) {
    vector<vector<vector<MidiEvent*> > > noteons;
    noteons.resize(16);
    int i;
-   for (i=0; i<noteons.size(); i++) {
+   for (i=0; i<(int)noteons.size(); i++) {
       noteons[i].resize(128);
    }
 
@@ -252,7 +252,7 @@ int MidiEventList::linkNotePairs(void) {
 //
 
 void MidiEventList::clearLinks(void) {
-   for (int i=0; i<getSize(); i++) {
+   for (int i=0; i<(int)getSize(); i++) {
       getEvent(i).unlinkEvent();
    }
 }
