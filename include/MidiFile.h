@@ -71,6 +71,9 @@ class MidiFile {
       int       writeBinasc               (const char* aFile);
       int       writeBinasc               (const string& aFile);
       int       writeBinasc               (ostream& out);
+      int       writeBinascWithComments   (const char* aFile);
+      int       writeBinascWithComments   (const string& aFile);
+      int       writeBinascWithComments   (ostream& out);
       int       status                    (void);
 
       // track-related functions:

@@ -17,6 +17,7 @@
 // Last Modified: Sat Feb 14 23:40:17 PST 2015 Split out subclasses.
 // Last Modified: Wed Feb 18 20:06:39 PST 2015 Added binasc MIDI read/write.
 // Last Modified: Thu Mar 19 13:09:00 PDT 2015 Improve Sysex read/write.
+// Last Modified: Fri Feb 19 00:32:39 PST 2016 Switch to Binasc stdout.
 // Filename:      midifile/src/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -249,7 +250,7 @@ int MidiFile::read(istream& input) {
       binarydata.seekg(0, ios_base::beg);
       if (binarydata.peek() != 'M') {
          cerr << "Bad MIDI data input" << endl;
-	 rwstatus = 0;
+	      rwstatus = 0;
          return rwstatus;
       } else {
          rwstatus = read(binarydata);
@@ -738,8 +739,26 @@ int MidiFile::writeBinasc(const char* aFile) {
 }
 
 
+int MidiFile::writeBinascWithComments(const char* aFile) {
+   fstream output(aFile, ios::out);
+
+   if (!output.is_open()) {
+      cerr << "Error: could not write: " << aFile << endl;
+      return 0;
+   }
+   rwstatus = writeBinascWithComments(output);
+   output.close();
+   return rwstatus;
+}
+
+
 int MidiFile::writeBinasc(const string& aFile) {
    return writeBinasc(aFile.data());
+}
+
+
+int MidiFile::writeBinascWithComments(const string& aFile) {
+   return writeBinascWithComments(aFile.data());
 }
 
 
@@ -752,6 +771,22 @@ int MidiFile::writeBinasc(ostream& output) {
 
    Binasc binasc;
    binasc.setMidiOn();
+   binarydata.seekg(0, ios_base::beg);
+   binasc.readFromBinary(output, binarydata);
+   return 1;
+}
+
+
+int MidiFile::writeBinascWithComments(ostream& output) {
+   stringstream binarydata;
+   rwstatus = write(binarydata);
+   if (rwstatus == 0) {
+      return 0;
+   }
+
+   Binasc binasc;
+   binasc.setMidiOn();
+   binasc.setCommentsOn();
    binarydata.seekg(0, ios_base::beg);
    binasc.readFromBinary(output, binarydata);
    return 1;
@@ -2496,79 +2531,7 @@ int eventcompare(const void* a, const void* b) {
 //
 
 ostream& operator<<(ostream& out, MidiFile& aMidiFile) {
-   int i, j, k;
-   out << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
-   out << "Number of Tracks: " << aMidiFile.getTrackCount() << "\n";
-   out << "Time method: " << aMidiFile.getTickState();
-   if (aMidiFile.getTickState() == TIME_STATE_DELTA) {
-      out << " (Delta timing)";
-   } else if (aMidiFile.getTickState() == TIME_STATE_ABSOLUTE) {
-      out << " (Absolute timing)";
-   } else {
-      out << " (unknown method)";
-   }
-   out << "\n";
-
-   out << "Divisions per Quarter Note: " << dec
-       << aMidiFile.getTicksPerQuarterNote() << "\n";
-   for (i=0; i<aMidiFile.getNumTracks(); i++) {
-      out << "\nTrack " << i
-          << "   +++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
-      for (j=0; j<aMidiFile.getNumEvents(i); j++) {
-         out << dec << aMidiFile.getEvent(i, j).tick << "\t"
-             << "0x" << hex << (int)aMidiFile.getEvent(i, j)[0] << " ";
-         if (aMidiFile.getEvent(i, j)[0] == 0xff) {
-
-            if (aMidiFile.getEvent(i, j)[1] == 0x01) {
-               out << "TEXT [";
-               for (k=3; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-                  out << (char)aMidiFile.getEvent(i, j)[k];
-               }
-               out << "]";
-
-            } else if (aMidiFile.getEvent(i, j)[1] == 0x02) {
-               out << "COPY [";
-               for (k=3; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-                  out << (char)aMidiFile.getEvent(i, j)[k];
-               }
-               out << "]";
-
-            } else if (aMidiFile.getEvent(i, j)[1] == 0x03) {
-               out << "TRACK [";
-               for (k=3; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-                  out << (char)aMidiFile.getEvent(i, j)[k];
-               }
-               out << "]";
-
-            } else if (aMidiFile.getEvent(i, j)[1] == 0x04) {
-               out << "INSTR [";
-               for (k=3; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-                  out << (char)aMidiFile.getEvent(i, j)[k];
-               }
-               out << "]";
-
-            } else if (aMidiFile.getEvent(i, j)[1] == 0x05) {
-               out << "LYRIC [";
-               for (k=3; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-                  out << (char)aMidiFile.getEvent(i, j)[k];
-               }
-               out << "]";
-
-            } else {
-               for (k=1; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-                  out << dec << (int)aMidiFile.getEvent(i, j)[k] << " ";
-               }
-            }
-
-         } else {
-            for (k=1; k<(int)aMidiFile.getEvent(i, j).size(); k++) {
-               out << dec << (int)aMidiFile.getEvent(i, j)[k] << " ";
-            }
-         }
-         out << "\n";
-      }
-   }
-   out << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n";
+   aMidiFile.writeBinascWithComments(out);
    return out;
 }
 
