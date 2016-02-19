@@ -568,7 +568,7 @@ int Binasc::getWord(string& word, const string& input,
             break;
          }
       }
-      if (escape && (i<input.size()-1) && (input[i] == '\\')
+      if (escape && (i<(int)input.size()-1) && (input[i] == '\\')
             && (input[i+1] == '"')) {
          word.push_back(input[i+1]);
          i += 2;
