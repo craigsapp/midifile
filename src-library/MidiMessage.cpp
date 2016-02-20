@@ -952,7 +952,7 @@ void MidiMessage::makeMetaMessage(int mnum, const string& data) {
    resize(0);
    push_back(0xff);
    push_back(mnum & 0x7f); // I think max is 0x7f.
-   int dsize = data.size();
+   int dsize = (int)data.size();
    if (dsize > 127) {
       push_back(127);
       for (int i=0; i<128; i++) {
