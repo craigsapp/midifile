@@ -819,6 +819,10 @@ MidiEventList& MidiFile::operator[](int aTrack) {
    return *events[aTrack];
 }
 
+const MidiEventList& MidiFile::operator[](int aTrack) const {
+   return *events[aTrack];
+}
+
 
 //////////////////////////////
 //
@@ -826,7 +830,7 @@ MidiEventList& MidiFile::operator[](int aTrack) {
 //   the Midi File.
 //
 
-int MidiFile::getTrackCount(void) {
+int MidiFile::getTrackCount(void) const {
    return (int)events.size();
 }
 
@@ -834,7 +838,7 @@ int MidiFile::getTrackCount(void) {
 // Alias for getTrackCount()
 //
 
-int MidiFile::getNumTracks(void) {
+int MidiFile::getNumTracks(void) const {
    return getTrackCount();
 }
 
@@ -842,7 +846,7 @@ int MidiFile::getNumTracks(void) {
 // Alias for getTrackCount()
 //
 
-int MidiFile::size(void) {
+int MidiFile::size(void) const {
    return getTrackCount();
 }
 

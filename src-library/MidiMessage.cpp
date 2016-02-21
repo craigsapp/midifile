@@ -134,7 +134,7 @@ void MidiMessage::setSize(int asize) {
 // MidiMessage::getSize -- Return the size of the MIDI message bytes.
 //
 
-int MidiMessage::getSize(void) {
+int MidiMessage::getSize(void) const {
    return (int)this->size();
 }
 
@@ -143,7 +143,7 @@ int MidiMessage::getSize(void) {
 //////////////////////////////
 //
 // MidiMessage::setSizeToCommand -- Set the number of parameters if the
-//   command byte is set in the range from 0x80 to 0xef.  Any newly 
+//   command byte is set in the range from 0x80 to 0xef.  Any newly
 //   added parameter bytes will be set to 0.
 //
 
@@ -165,7 +165,7 @@ int MidiMessage::setSizeToCommand(void) {
       case 0xC0: bytecount = 1; break;  // Patch Change
       case 0xD0: bytecount = 1; break;  // Channel Pressure
       case 0xE0: bytecount = 2; break;  // Pitch Bend
-      case 0xF0: 
+      case 0xF0:
       default:
          return 0;
    }
@@ -189,11 +189,11 @@ int MidiMessage::resizeToCommand(void) {
 //////////////////////////////
 //
 // MidiMessage::getTempoMicro -- Returns the number of microseconds per
-//      quarter note if the MidiMessage is a tempo meta message.  
+//      quarter note if the MidiMessage is a tempo meta message.
 //      Returns -1 if the MIDI message is not a tempo meta message.
 //
 
-int MidiMessage::getTempoMicro(void) {
+int MidiMessage::getTempoMicro(void) const {
    if (!isTempo()) {
       return -1;
    } else {
@@ -202,7 +202,7 @@ int MidiMessage::getTempoMicro(void) {
 }
 
 
-int MidiMessage::getTempoMicroseconds(void) {
+int MidiMessage::getTempoMicroseconds(void) const {
    return getTempoMicro();
 }
 
@@ -215,7 +215,7 @@ int MidiMessage::getTempoMicroseconds(void) {
 //      tempo meta message.
 //
 
-double MidiMessage::getTempoSeconds(void) {
+double MidiMessage::getTempoSeconds(void) const {
    int microseconds = getTempoMicroseconds();
    if (microseconds < 0) {
       return -1.0;
@@ -232,7 +232,7 @@ double MidiMessage::getTempoSeconds(void) {
 //   Returns -1 if the MidiMessage is note a tempo meta message.
 //
 
-double MidiMessage::getTempoBPM(void) {
+double MidiMessage::getTempoBPM(void) const {
    int microseconds = getTempoMicroseconds();
    if (microseconds < 0) {
       return -1.0;
@@ -247,7 +247,7 @@ double MidiMessage::getTempoBPM(void) {
 // MidiMessage::getTempoTPS -- Returns the tempo in terms of ticks per seconds.
 //
 
-double MidiMessage::getTempoTPS(int tpq) {
+double MidiMessage::getTempoTPS(int tpq) const {
    int microseconds = getTempoMicroseconds();
    if (microseconds < 0) {
       return -1.0;
@@ -263,7 +263,7 @@ double MidiMessage::getTempoTPS(int tpq) {
 // MidiMessage::getTempoSPT -- Returns the tempo in terms of seconds per tick.
 //
 
-double MidiMessage::getTempoSPT(int tpq) {
+double MidiMessage::getTempoSPT(int tpq) const {
    int microseconds = getTempoMicroseconds();
    if (microseconds < 0) {
       return -1.0;
@@ -280,7 +280,7 @@ double MidiMessage::getTempoSPT(int tpq) {
 //      (when the command byte is 0xff).
 //
 
-int MidiMessage::isMeta(void) {
+int MidiMessage::isMeta(void) const {
    if (size() == 0) {
       return 0;
    } else if ((*this)[0] != 0xff) {
@@ -298,7 +298,7 @@ int MidiMessage::isMeta(void) {
 }
 
 
-int MidiMessage::isMetaMessage(void) {
+int MidiMessage::isMetaMessage(void) const {
    return isMeta();
 }
 
@@ -310,7 +310,7 @@ int MidiMessage::isMetaMessage(void) {
 //     or if the command nibble is 0x90 with p2=0 velocity.
 //
 
-int MidiMessage::isNoteOff(void) {
+int MidiMessage::isNoteOff(void) const {
    if (size() != 3) {
       return 0;
    } else if (((*this)[0] & 0xf0) == 0x80) {
@@ -330,7 +330,7 @@ int MidiMessage::isNoteOff(void) {
 //    range and the velocity is non-zero
 //
 
-int MidiMessage::isNoteOn(void) {
+int MidiMessage::isNoteOn(void) const {
    if (size() != 3) {
       return 0;
    } else if (((*this)[0] & 0xf0) != 0x90) {
@@ -350,7 +350,7 @@ int MidiMessage::isNoteOn(void) {
 //     message.
 //
 
-int MidiMessage::isNote(void) {
+int MidiMessage::isNote(void) const {
    return isNoteOn() || isNoteOff();
 }
 
@@ -362,7 +362,7 @@ int MidiMessage::isNote(void) {
 //    range.
 //
 
-int MidiMessage::isAftertouch(void) {
+int MidiMessage::isAftertouch(void) const {
    if (size() != 3) {
       return 0;
    } else if (((*this)[0] & 0xf0) != 0xA0) {
@@ -380,7 +380,7 @@ int MidiMessage::isAftertouch(void) {
 //    range.
 //
 
-int MidiMessage::isController(void) {
+int MidiMessage::isController(void) const {
    if (size() != 3) {
       return 0;
    } else if (((*this)[0] & 0xf0) != 0xB0) {
@@ -398,7 +398,7 @@ int MidiMessage::isController(void) {
 //    (command nibble 0xc0).
 //
 
-int MidiMessage::isTimbre(void) {
+int MidiMessage::isTimbre(void) const {
    if (((*this)[0] & 0xf0) != 0xc0) {
       return 0;
    } else if (size() != 2) {
@@ -409,7 +409,7 @@ int MidiMessage::isTimbre(void) {
 }
 
 
-int MidiMessage::isPatchChange(void) {
+int MidiMessage::isPatchChange(void) const {
    return isTimbre();
 }
 
@@ -421,7 +421,7 @@ int MidiMessage::isPatchChange(void) {
 //    (command nibble 0xd0).
 //
 
-int MidiMessage::isPressure(void) {
+int MidiMessage::isPressure(void) const {
    if (((*this)[0] & 0xf0) != 0xd0) {
       return 0;
    } else if (size() != 2) {
@@ -439,7 +439,7 @@ int MidiMessage::isPressure(void) {
 //    (command nibble 0xe0).
 //
 
-int MidiMessage::isPitchbend(void) {
+int MidiMessage::isPitchbend(void) const {
    if (((*this)[0] & 0xf0) != 0xe0) {
       return 0;
    } else if (size() != 3) {
@@ -458,7 +458,7 @@ int MidiMessage::isPitchbend(void) {
 //     -1.
 //
 
-int MidiMessage::getMetaType(void) {
+int MidiMessage::getMetaType(void) const {
    if (!isMetaMessage()) {
       return -1;
    } else {
@@ -474,7 +474,7 @@ int MidiMessage::getMetaType(void) {
 //      describing tempo (meta message type 0x51).
 //
 
-int MidiMessage::isTempo(void) {
+int MidiMessage::isTempo(void) const {
    if (!isMetaMessage()) {
       return 0;
    } else if ((*this)[1] != 0x51) {
@@ -495,7 +495,7 @@ int MidiMessage::isTempo(void) {
 //      for end-of-track (meta message type 0x2f).
 //
 
-int MidiMessage::isEndOfTrack(void) {
+int MidiMessage::isEndOfTrack(void) const {
    return getMetaType() == 0x2f ? 1 : 0;
 }
 
@@ -506,7 +506,7 @@ int MidiMessage::isEndOfTrack(void) {
 // MidiMessage::getP1 -- Return index 1 byte, or -1 if it doesn't exist.
 //
 
-int MidiMessage::getP1(void) { 
+int MidiMessage::getP1(void) const {
    return size() < 2 ? -1 : (*this)[1];
 }
 
@@ -517,7 +517,7 @@ int MidiMessage::getP1(void) {
 // MidiMessage::getP2 -- Return index 2 byte, or -1 if it doesn't exist.
 //
 
-int MidiMessage::getP2(void) { 
+int MidiMessage::getP2(void) const {
    return size() < 3 ? -1 : (*this)[2];
 }
 
@@ -525,13 +525,13 @@ int MidiMessage::getP2(void) {
 
 //////////////////////////////
 //
-// MidiMessage::getKeyNumber -- Return the key number (such as 60 for 
-//    middle C).  If the message does not have a note parameter, then 
-//    return -1;  if the key is invalid (above 127 in value), then 
+// MidiMessage::getKeyNumber -- Return the key number (such as 60 for
+//    middle C).  If the message does not have a note parameter, then
+//    return -1;  if the key is invalid (above 127 in value), then
 //    limit to the range 0 to 127.
 //
 
-int MidiMessage::getKeyNumber(void) { 
+int MidiMessage::getKeyNumber(void) const {
    if (isNote() || isAftertouch()) {
       int output = getP1();
       if (output < 0) {
@@ -553,7 +553,7 @@ int MidiMessage::getKeyNumber(void) {
 //   out of the range 0-127, then chop off the high-bits.
 //
 
-int MidiMessage::getVelocity(void) { 
+int MidiMessage::getVelocity(void) const {
    if (isNote()) {
       int output = getP2();
       if (output < 0) {
@@ -577,7 +577,7 @@ int MidiMessage::getVelocity(void) {
 //   0 to 127, but this function will not babysit you.
 //
 
-void MidiMessage::setP1(int value) { 
+void MidiMessage::setP1(int value) {
    if (getSize() < 2) {
       resize(2);
    }
@@ -596,7 +596,7 @@ void MidiMessage::setP1(int value) {
 //     from 0 to 127, but this function will not babysit you.
 //
 
-void MidiMessage::setP2(int value) { 
+void MidiMessage::setP2(int value) {
    if (getSize() < 2) {
       resize(2);
    }
@@ -612,7 +612,7 @@ void MidiMessage::setP2(int value) {
 //    Limits the input value to the range from 0 to 127.
 //
 
-void MidiMessage::setKeyNumber(int value) { 
+void MidiMessage::setKeyNumber(int value) {
    if (isNote() || isAftertouch()) {
       setP1(value & 0xff);
    } else {
@@ -625,11 +625,11 @@ void MidiMessage::setKeyNumber(int value) {
 //////////////////////////////
 //
 // MidiMessage::setVelocity -- Set the note on/off velocity; ignore
-//   if note a note message.  Limits the input value to the range 
+//   if note a note message.  Limits the input value to the range
 //   from 0 to 127.
 //
 
-void MidiMessage::setVelocity(int value) { 
+void MidiMessage::setVelocity(int value) {
    if (isNote()) {
       setP2(value & 0xff);
    } else {
@@ -645,7 +645,7 @@ void MidiMessage::setVelocity(int value) {
 //    entry, or -1 if there is not (*this)[0].
 //
 
-int MidiMessage::getCommandNibble(void) {
+int MidiMessage::getCommandNibble(void) const {
    if (size() < 1) {
       return -1;
    } else {
@@ -661,7 +661,7 @@ int MidiMessage::getCommandNibble(void) {
 //    allocated.
 //
 
-int MidiMessage::getCommandByte(void) {
+int MidiMessage::getCommandByte(void) const {
    if (size() < 1) {
       return -1;
    } else {
@@ -673,13 +673,13 @@ int MidiMessage::getCommandByte(void) {
 
 //////////////////////////////
 //
-// MidiMessage::getChannelNibble -- Returns the bottom 4 bites of the 
+// MidiMessage::getChannelNibble -- Returns the bottom 4 bites of the
 //      (*this)[0] entry, or -1 if there is not (*this)[0].  Should be refined
 //      to return -1 if the top nibble is 0xf0, since those commands are
 //      not channel specific.
 //
 
-int MidiMessage::getChannelNibble(void) {
+int MidiMessage::getChannelNibble(void) const {
    if (size() < 1) {
       return -1;
    } else {
@@ -688,7 +688,7 @@ int MidiMessage::getChannelNibble(void) {
 }
 
 
-int MidiMessage::getChannel(void) {
+int MidiMessage::getChannel(void) const {
    return getChannelNibble();
 }
 
@@ -720,7 +720,7 @@ void MidiMessage::setCommand(int value) {
 //   the number of input parameters.
 //
 
-void MidiMessage::setCommand(int value, int p1) { 
+void MidiMessage::setCommand(int value, int p1) {
    this->resize(2);
    (*this)[0] = (uchar)value;
    (*this)[1] = (uchar)p1;
@@ -744,12 +744,12 @@ void MidiMessage::setCommand(int value, int p1, int p2) {
 void MidiMessage::setCommandNibble(int value) {
    if (this->size() < 1) {
       this->resize(1);
-   } 
+   }
    if (value <= 0x0f) {
       (*this)[0] = ((*this)[0] & 0x0f) | ((uchar)((value << 4) & 0xf0));
    } else {
       (*this)[0] = ((*this)[0] & 0x0f) | ((uchar)(value & 0xf0));
-   } 
+   }
 }
 
 
@@ -808,7 +808,7 @@ void MidiMessage::setParameters(int p1, int p2) {
 //   input list of bytes.
 //
 
-void MidiMessage::setMessage(vector<uchar>& message) { 
+void MidiMessage::setMessage(vector<uchar>& message) {
    this->resize(message.size());
    for (int i=0; i<(int)this->size(); i++) {
       (*this)[i] = message[i];
@@ -863,7 +863,7 @@ void MidiMessage::setTempo(double tempo) {
 
 //////////////////////////////
 //
-// MidiMessage::makeNoteOn -- create a note-on message. 
+// MidiMessage::makeNoteOn -- create a note-on message.
 //
 // default value: channel = 0
 //

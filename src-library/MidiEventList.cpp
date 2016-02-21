@@ -81,6 +81,11 @@ MidiEvent&  MidiEventList::operator[](int index) {
 }
 
 
+const MidiEvent&  MidiEventList::operator[](int index) const {
+   return *list[index];
+}
+
+
 
 //////////////////////////////
 //
@@ -155,15 +160,15 @@ void MidiEventList::reserve(int rsize) {
 
 //////////////////////////////
 //
-// MidiEventList::getSize --
+// MidiEventList::getSize -- Return the number of MidiEvents stored in the list.
 //
 
-int MidiEventList::getSize(void) {
+int MidiEventList::getSize(void) const {
    return (int)list.size();
 }
 
 
-int MidiEventList::size(void) {
+int MidiEventList::size(void) const {
    return getSize();
 }
 

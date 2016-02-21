@@ -78,9 +78,10 @@ class MidiFile {
 
       // track-related functions:
       MidiEventList& operator[]           (int aTrack);
-      int       getTrackCount             (void);
-      int       getNumTracks              (void);
-      int       size                      (void);
+      const MidiEventList& operator[]     (int aTrack) const;
+      int       getTrackCount             (void) const;
+      int       getNumTracks              (void) const;
+      int       size                      (void) const;
 
       // join/split track functionality:
       void      joinTracks                (void);

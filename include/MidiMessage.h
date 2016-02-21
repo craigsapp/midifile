@@ -41,43 +41,43 @@ class MidiMessage : public vector<uchar> {
       MidiMessage&   operator=            (vector<char>& bytes);
       MidiMessage&   operator=            (vector<int>& bytes);
       void           setSize              (int asize);
-      int            getSize              (void);
+      int            getSize              (void) const;
       int            setSizeToCommand     (void);
       int            resizeToCommand      (void);
 
-      int            getTempoMicro        (void);
-      int            getTempoMicroseconds (void);
-      double         getTempoSeconds      (void);
-      double         getTempoBPM          (void);
-      double         getTempoTPS          (int tpq);
-      double         getTempoSPT          (int tpq);
+      int            getTempoMicro        (void) const;
+      int            getTempoMicroseconds (void) const;
+      double         getTempoSeconds      (void) const;
+      double         getTempoBPM          (void) const;
+      double         getTempoTPS          (int tpq) const;
+      double         getTempoSPT          (int tpq) const;
 
-      int            isMetaMessage        (void);
-      int            isMeta               (void);
-      int            isNoteOff            (void);
-      int            isNoteOn             (void);
-      int            isNote               (void);
-      int            isAftertouch         (void);
-      int            isController         (void);
-      int            isTimbre             (void);
-      int            isPatchChange        (void);
-      int            isPressure           (void);
-      int            isPitchbend          (void);
+      int            isMetaMessage        (void) const;
+      int            isMeta               (void) const;
+      int            isNoteOff            (void) const;
+      int            isNoteOn             (void) const;
+      int            isNote               (void) const;
+      int            isAftertouch         (void) const;
+      int            isController         (void) const;
+      int            isTimbre             (void) const;
+      int            isPatchChange        (void) const;
+      int            isPressure           (void) const;
+      int            isPitchbend          (void) const;
 
-      int            getP1                (void);
-      int            getP2                (void);
-      int            getKeyNumber         (void);
-      int            getVelocity          (void);
+      int            getP1                (void) const;
+      int            getP2                (void) const;
+      int            getKeyNumber         (void) const;
+      int            getVelocity          (void) const;
 
       void           setP1                (int value);
       void           setP2                (int value);
       void           setKeyNumber         (int value);
       void           setVelocity          (int value);
 
-      int            getCommandNibble     (void);
-      int            getCommandByte       (void);
-      int            getChannelNibble     (void);
-      int            getChannel           (void);
+      int            getCommandNibble     (void) const;
+      int            getCommandByte       (void) const;
+      int            getChannelNibble     (void) const;
+      int            getChannel           (void) const;
 
       void           setCommandByte       (int value);
       void           setCommand           (int value);
@@ -108,12 +108,12 @@ class MidiMessage : public vector<uchar> {
       void           makeCopyright        (const string& text);
 
       // meta-message related functions:
-      int            getMetaType          (void);
-      int            isTempo              (void);
+      int            getMetaType          (void) const;
+      int            isTempo              (void) const;
       void           setTempo             (double tempo);
       void makeTempo(double tempo) { setTempo(tempo); }
       void           setMetaTempo         (double tempo);
-      int            isEndOfTrack         (void);
+      int            isEndOfTrack         (void) const;
 
 };
 
