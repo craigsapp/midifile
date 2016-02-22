@@ -25,6 +25,7 @@ int     darkQ    = 0;       // used with --dark option
 double  Scale    = 1.0;     // used with -s option
 double  Border   = 2.0;     // used with -b option
 double  Opacity  = 0.75;    // used with -o option
+double  drumQ    = 0;       // used with --drum option
 
 // Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
@@ -163,6 +164,11 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
          if (!midifile[i][j].isNoteOn()) {
             continue;
          }
+         if (!drumQ) {
+           if (midifile[i][j].getChannel() == 0x09) {
+              continue;
+           }
+         }
          drawNote(notes, midifile, i, j, 0);
       }
       notes << "\t</g>\n";
@@ -187,6 +193,11 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       for (int j=0; j<midifile[i].size(); j++) {
          if (!midifile[i][j].isNoteOn()) {
             continue;
+         }
+         if (!drumQ) {
+           if (midifile[i][j].getChannel() == 0x09) {
+              continue;
+           }
          }
 
          drawNote(notes, midifile, i, j, dataQ);
@@ -300,7 +311,11 @@ vector<double> getTrackHues(MidiFile& midifile) {
 int hasNotes(MidiEventList& eventlist) {
    for (int i=0; i<eventlist.size(); i++) {
       if (eventlist[i].isNoteOn()) {
-         return 1;
+         if (drumQ) {
+            return 1;
+         } else if (eventlist[i].getChannel() != 0x09) {
+            return 1;
+         }
       }
    }
    return 0;
@@ -366,6 +381,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("stroke-color=s:black", "Stroke color for line around note boxes");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
    opts.define("d|data=b",             "Embed note data in SVG image");
+   opts.define("drum=b",               "Show drum track (channel 10)");
    opts.define("r|round|rounded=b",    "Round edges of note boxes");
    opts.define("b|border=d:1.0",       "Border around piano roll");
    opts.define("dark=b",               "Background is black");
@@ -400,6 +416,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    dataQ    = opts.getBoolean("data");
+   drumQ    = opts.getBoolean("drum");
    darkQ    = opts.getBoolean("dark");
    roundedQ = opts.getBoolean("rounded");
    Scale    = opts.getDouble("scale");
