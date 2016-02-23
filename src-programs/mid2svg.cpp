@@ -139,7 +139,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    vector<double> trackhues = getTrackHues(midifile);
 
 
-   // Draw background for increaing contrast of notes and background
+   // Draw background for increasing contrast of notes and background
    // (needed due to constant opacity filter):
    for (int i=0; i<midifile.size(); i++) {
       if (!hasNotes(midifile[i])) {
