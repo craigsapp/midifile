@@ -128,7 +128,7 @@ class MidiFile {
       int       getAbsoluteTickTime       (double starttime);
 
       // note-analysis functions:
-      int 	linkNotePairs             (void);
+      int 	    linkNotePairs             (void);
       void      clearLinks                (void);
 
       // filename functions:

@@ -1692,6 +1692,8 @@ void MidiFile::clear(void) {
    events[0] = new MidiEventList;
    timemapvalid=0;
    timemap.clear();
+   theTrackState = TRACK_STATE_SPLIT;
+   theTimeState = TIME_STATE_ABSOLUTE;
 }
 
 
