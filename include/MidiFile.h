@@ -128,7 +128,7 @@ class MidiFile {
       int       getAbsoluteTickTime       (double starttime);
 
       // note-analysis functions:
-      int 	    linkNotePairs             (void);
+      int       linkNotePairs             (void);
       void      clearLinks                (void);
 
       // filename functions:
@@ -139,7 +139,7 @@ class MidiFile {
 
 
       int       addEvent                  (int aTrack, int aTick,
-                                             vector<uchar>& midiData);
+                                           vector<uchar>& midiData);
       int       addEvent                  (MidiEvent& mfevent);
 
 
@@ -179,8 +179,6 @@ class MidiFile {
       MidiEvent&  getEvent                (int aTrack, int anIndex);
 
       MidiFile& operator=(MidiFile other);
-
-
 
       // static functions:
       static uchar    readByte                (istream& input);

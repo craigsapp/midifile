@@ -19,13 +19,15 @@ using namespace std;
 
 // User interface variables:
 Options options;
-int     dataQ    = 0;       // used with -d option
-int     roundedQ = 0;       // used with -r option
-int     darkQ    = 0;       // used with --dark option
-double  Scale    = 1.0;     // used with -s option
-double  Border   = 2.0;     // used with -b option
-double  Opacity  = 0.75;    // used with -o option
-double  drumQ    = 0;       // used with --drum option
+int     dataQ        = 0;       // used with -d option
+int     roundedQ     = 0;       // used with -r option
+int     darkQ        = 0;       // used with --dark option
+double  Scale        = 1.0;     // used with -s option
+double  Border       = 2.0;     // used with -b option
+double  Opacity      = 0.75;    // used with -o option
+double  drumQ        = 0;       // used with --drum option
+int     lineQ        = 0;       // used with -l option
+int     transparentQ = 1;       // used with -T option
 
 // Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
@@ -40,6 +42,10 @@ double         getMaxTime            (const MidiFile& midifile);
 vector<double> getTrackHues          (MidiFile& midifile);
 void           drawNote              (ostream& out, MidiFile& midifile,
                                       int i, int j, int dataQ);
+void           drawLines             (ostream& out, MidiFile& midifile,
+                                      vector<double>& hues, Options& options);
+void           printLineToNextNote   (ostream& out, MidiFile& midifile,
+                                      int track, int index, Options& options);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -72,9 +78,9 @@ int main(int argc, char* argv[]) {
         << " xmlns:xlink=\"http://www.w3.org/1999/xlink\""
         << " viewPort=\"" << minx << " " << miny  << " "
                           << width << " " << height << "\""
-        << " viewBox=\"" << -Border * Scale << " " 
+        << " viewBox=\"" << -Border * Scale << " "
                          << -Border * Scale << " "
-                         << (width * aspectRatio + 2 * Border) * Scale << " " 
+                         << (width * aspectRatio + 2 * Border) * Scale << " "
                          << (height + (2 * Border)) * Scale << "\""
         << " width=\"" << (width * aspectRatio + 2 * Border) * Scale << "\""
         << " height=\"" << (height + 2 * Border) * Scale << "\""
@@ -85,13 +91,15 @@ int main(int argc, char* argv[]) {
    }
 
    // Graphics setup:
-   
+
    // This filter is used to show overlap between notes:
-   cout << "<filter id=\"constantOpacity\">\n";
-   cout << "  <feComponentTransfer>\n";
-   cout << "    <feFuncA type=\"table\" tableValues=\"0 .5 .5\" />\n";
-   cout << "  </feComponentTransfer>\n";
-   cout << "</filter>\n";
+   if (transparentQ) {
+      cout << "<filter id=\"constantOpacity\">\n";
+      cout << "  <feComponentTransfer>\n";
+      cout << "    <feFuncA type=\"table\" tableValues=\"0 .5 .5\" />\n";
+      cout << "  </feComponentTransfer>\n";
+      cout << "</filter>\n";
+   }
 
    cout << "<g"
         << " transform=\""
@@ -139,9 +147,14 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    vector<double> trackhues = getTrackHues(midifile);
 
 
+   if (lineQ) {
+      drawLines(notes, midifile, trackhues, options);
+   }
+
+
    // Draw background for increasing contrast of notes and background
    // (needed due to constant opacity filter):
-   for (int i=0; i<midifile.size(); i++) {
+   for (int i=midifile.size()-1; i>=0; i--) {
       if (!hasNotes(midifile[i])) {
          continue;
       }
@@ -175,13 +188,15 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    }
 
    // draw the actual notes:
-   for (int i=0; i<midifile.size(); i++) {
+   for (int i=midifile.size()-1; i>=0; i--) {
       if (!hasNotes(midifile[i])) {
          continue;
       }
       notes << "\t<g"
-            << " class=\"track-" << i << "\""
-            << " filter=\"url(#constantOpacity)\"";
+            << " class=\"track-" << i << "\"";
+      if (transparentQ) {
+         notes << " filter=\"url(#constantOpacity)\"";
+      }
       if (trackhues[i] >= 0.0) {
           notes << " style=\""
                 << "opacity:" << Opacity << ";"
@@ -207,6 +222,92 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    notes << "</g>\n";
 
    output << notes.str();
+}
+
+
+
+//////////////////////////////
+//
+// drawLines -- Draw lines to connect notes.
+//
+
+void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  Options& options) {
+   int counter = -1;
+   int i, j;
+   double linewidth = options.getDouble("line-width");
+   int dashing = options.getBoolean("dash");
+   for (i=0; i<midifile.size(); i++) {
+      if (!hasNotes(midifile[i])) {
+         continue;
+      }
+      counter++;
+      string color = "hsl(" + to_string(hues[i]) + ", 100%, 75%)";
+      out << "<g fill=\"none\" stroke=\"" << color << "\"";
+      // double scale = options.getDouble("scale");
+      if (dashing) {
+         double dwidth = 0.25;
+         out << " stroke-dasharray=\"" << dwidth << "\"";
+      }
+      out << " stroke-width=\""<< linewidth << "\">\n";
+      for (j=0; j<midifile[i].size(); j++) {
+         if (!midifile[i][j].isNoteOn()) {
+            continue;
+         }
+         printLineToNextNote(out, midifile, i, j, options);
+      }
+      out << "</g>\n";
+   }
+
+
+
+}
+
+
+
+//////////////////////////////
+//
+// printLineToNextNote --
+//
+
+void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
+      int index, Options& options) {
+   int p1 = midifile[track][index].getP1();
+   double endtime = midifile[track][index].seconds
+         + midifile[track][index].getDurationInSeconds();
+
+   stringstream path;
+
+   int nextindex = -1;
+   for (int i=index+1; i<midifile[track].size(); i++) {
+      if (!midifile[track][i].isNoteOn()) {
+         continue;
+      }
+      if (midifile[track][i].seconds >= endtime) {
+         nextindex = i;
+         break;
+      }
+   }
+
+   if (nextindex < 0) {
+      return;
+   }
+
+   int p2 = midifile[track][nextindex].getP1();
+   double nextstarttime = midifile[track][nextindex].seconds;
+   double difference = nextstarttime - endtime;
+   if (difference > 0.0) {
+      // there is a rest so extent the line horizontally
+      path << " M" << endtime << " " << p1 + 0.5;
+      path << " L" << nextstarttime << " " << p1 + 0.5;
+      path << " L" << nextstarttime << " " << p2 + 0.5;
+   } else {
+      // vertical line:
+      path << " M" << nextstarttime << " " << p1 + 0.5;
+      path << " L" << nextstarttime << " " << p2 + 0.5;
+   }
+
+
+   out << "<path d=\"" << path.str() << "\" />\n";
 }
 
 
@@ -379,13 +480,17 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("a|aspect-ratio=d:2.5", "Aspect ratio for SVG image");
    opts.define("w|stroke-width=d:0.1", "Stroke width for line around note boxes");
    opts.define("stroke-color=s:black", "Stroke color for line around note boxes");
+   opts.define("lw|line-width=d:0.01",  "Width of note lines");
+   opts.define("dash|dashing=b",       "Dash connecting lines");
+   opts.define("T|no-transparency=b",  "Do not show notes with transparency");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
    opts.define("d|data=b",             "Embed note data in SVG image");
    opts.define("drum=b",               "Show drum track (channel 10)");
    opts.define("r|round|rounded=b",    "Round edges of note boxes");
    opts.define("b|border=d:1.0",       "Border around piano roll");
    opts.define("dark=b",               "Background is black");
-   opts.define("o|opacity=d:1.0",     "Opacity for notes");
+   opts.define("o|opacity=d:1.0",      "Opacity for notes");
+   opts.define("l|line=b",             "Draw lines between the center of notes");
 
    opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
@@ -415,13 +520,15 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(1);
    }
 
-   dataQ    = opts.getBoolean("data");
-   drumQ    = opts.getBoolean("drum");
-   darkQ    = opts.getBoolean("dark");
-   roundedQ = opts.getBoolean("rounded");
-   Scale    = opts.getDouble("scale");
-   Border   = opts.getDouble("border");
-   Opacity  = opts.getDouble("opacity");
+   dataQ        =  opts.getBoolean("data");
+   drumQ        =  opts.getBoolean("drum");
+   darkQ        =  opts.getBoolean("dark");
+   lineQ        =  opts.getBoolean("line");
+   transparentQ = !opts.getBoolean("no-transparency");
+   roundedQ     =  opts.getBoolean("rounded");
+   Scale        =  opts.getDouble("scale");
+   Border       =  opts.getDouble("border");
+   Opacity      =  opts.getDouble("opacity");
 }
 
 
