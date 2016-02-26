@@ -256,23 +256,23 @@ int MidiEventList::linkNotePairs(void) {
    pair<int, int> zero(0, 0);
    fill(contmap.begin(), contmap.end(), zero);
    contmap[64].first  = 1;   contmap[64].second = 0;
-   contmap[65].first  = 1;   contmap[64].second = 1;
-   contmap[66].first  = 1;   contmap[64].second = 2;
-   contmap[67].first  = 1;   contmap[64].second = 3;
-   contmap[68].first  = 1;   contmap[64].second = 4;
-   contmap[69].first  = 1;   contmap[64].second = 5;
-   contmap[80].first  = 1;   contmap[64].second = 6;
-   contmap[81].first  = 1;   contmap[64].second = 7;
-   contmap[82].first  = 1;   contmap[64].second = 8;
-   contmap[83].first  = 1;   contmap[64].second = 9;
-   contmap[84].first  = 1;   contmap[64].second = 10;
-   contmap[85].first  = 1;   contmap[64].second = 11;
-   contmap[86].first  = 1;   contmap[64].second = 12;
-   contmap[87].first  = 1;   contmap[64].second = 13;
-   contmap[88].first  = 1;   contmap[64].second = 14;
-   contmap[89].first  = 1;   contmap[64].second = 15;
-   contmap[90].first  = 1;   contmap[64].second = 16;
-   contmap[122].first = 1;   contmap[64].second = 17;
+   contmap[65].first  = 1;   contmap[65].second = 1;
+   contmap[66].first  = 1;   contmap[66].second = 2;
+   contmap[67].first  = 1;   contmap[67].second = 3;
+   contmap[68].first  = 1;   contmap[68].second = 4;
+   contmap[69].first  = 1;   contmap[69].second = 5;
+   contmap[80].first  = 1;   contmap[80].second = 6;
+   contmap[81].first  = 1;   contmap[81].second = 7;
+   contmap[82].first  = 1;   contmap[82].second = 8;
+   contmap[83].first  = 1;   contmap[83].second = 9;
+   contmap[84].first  = 1;   contmap[84].second = 10;
+   contmap[85].first  = 1;   contmap[85].second = 11;
+   contmap[86].first  = 1;   contmap[86].second = 12;
+   contmap[87].first  = 1;   contmap[87].second = 13;
+   contmap[88].first  = 1;   contmap[88].second = 14;
+   contmap[89].first  = 1;   contmap[89].second = 15;
+   contmap[90].first  = 1;   contmap[90].second = 16;
+   contmap[122].first = 1;   contmap[122].second = 17;
 
    // dimensions:
    // 1: mapped controller (0 to 17)
