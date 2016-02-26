@@ -597,10 +597,10 @@ void MidiMessage::setP1(int value) {
 //
 
 void MidiMessage::setP2(int value) {
-   if (getSize() < 2) {
-      resize(2);
+   if (getSize() < 3) {
+      resize(3);
    }
-   (*this)[1] = value;
+   (*this)[2] = value;
 }
 
 
@@ -829,6 +829,268 @@ void MidiMessage::setMessage(vector<int>& message) {
    for (int i=0; i<(int)size(); i++) {
       (*this)[i] = (uchar)message[i];
    }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setSpelling -- Encode a MidiPlus accidental state for a note.
+//    For example, if a note's key number is 60, the enharmonic pitch name
+//    could be any of these possibilities:
+//        C, B-sharp, D-double-flat
+//    MIDI note 60 is ambiguous as to which of these names are intended,
+//    so MIDIPlus allows these mappings to be preserved for later recovery.
+//    See Chapter 5 (pp. 99-104) of Beyond MIDI (1997).
+//   
+//    The first parameter is the diatonic pitch number (or pitch class
+//    if the octave is set to 0):
+//       octave * 7 + 0 = C pitches
+//       octave * 7 + 1 = D pitches
+//       octave * 7 + 2 = E pitches
+//       octave * 7 + 3 = F pitches
+//       octave * 7 + 4 = G pitches
+//       octave * 7 + 5 = A pitches
+//       octave * 7 + 6 = B pitches
+// 
+//    The second parameter is the semitone alteration (accidental).
+//    0 = natural state, 1 = sharp, 2 = double sharp, -1 = flat, 
+//    -2 = double flat.
+//    
+//    Only note-on messages can be processed (other messages will be
+//    silently ignored).
+//
+
+void MidiMessage::setSpelling(int base7, int accidental) {
+   if (!isNoteOn()) {
+      return;
+   }
+   // The bottom two bits of the attack velocity are used for the
+   // spelling, so need to make sure the velocity will not accidentally
+   // be set to zero (and make the note-on a note-off).
+   if (getVelocity() < 4) {
+      setVelocity(4);
+   }
+   int dpc = base7 % 7;
+   uchar spelling = 0;
+
+   // Table 5.1, page 101 in Beyond MIDI (1997) 
+   // http://beyondmidi.ccarh.org/beyondmidi-600dpi.pdf
+   switch (dpc) {
+
+      case 0:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Cbb
+            case -1: spelling = 1; break; // Cb
+            case  0: spelling = 2; break; // C
+            case +1: spelling = 2; break; // C#
+            case +2: spelling = 3; break; // C##
+        }
+        break;
+
+      case 1:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Dbb
+            case -1: spelling = 1; break; // Db
+            case  0: spelling = 2; break; // D
+            case +1: spelling = 3; break; // D#
+            case +2: spelling = 3; break; // D##
+        }
+        break;
+
+      case 2:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Ebb
+            case -1: spelling = 2; break; // Eb
+            case  0: spelling = 2; break; // E
+            case +1: spelling = 3; break; // E#
+            case +2: spelling = 3; break; // E##
+        }
+        break;
+
+      case 3:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Fbb
+            case -1: spelling = 1; break; // Fb
+            case  0: spelling = 2; break; // F
+            case +1: spelling = 2; break; // F#
+            case +2: spelling = 3; break; // F##
+            case +3: spelling = 3; break; // F###
+        }
+        break;
+
+      case 4:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Gbb
+            case -1: spelling = 1; break; // Gb
+            case  0: spelling = 2; break; // G
+            case +1: spelling = 2; break; // G#
+            case +2: spelling = 3; break; // G##
+        }
+        break;
+
+      case 5:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Abb
+            case -1: spelling = 1; break; // Ab
+            case  0: spelling = 2; break; // A
+            case +1: spelling = 3; break; // A#
+            case +2: spelling = 3; break; // A##
+        }
+        break;
+
+      case 6:
+         switch (accidental) {
+            case -2: spelling = 1; break; // Bbb
+            case -1: spelling = 2; break; // Bb
+            case  0: spelling = 2; break; // B
+            case +1: spelling = 3; break; // B#
+            case +2: spelling = 3; break; // B##
+        }
+        break;
+
+   }
+
+   uchar vel = getVelocity();
+   // suppress any previous content in the first two bits:
+   vel = vel & 0xFC;
+   // insert the spelling code:
+   vel = vel | spelling;
+   setVelocity(vel);
+}
+   
+
+
+//////////////////////////////
+//
+// MidiMessage::getSpelling -- Return the diatonic pitch class and accidental
+//    for a note-on's key number.  The MIDI file must be encoded with MIDIPlus
+//    pitch spelling codes for this function to return valid data; otherwise,
+//    it will return a neutral fixed spelling for each MIDI key.
+// 
+//    The first parameter will be filled in with the base-7 diatonic pitch:
+//        pc + octave * 7
+//     where pc is the numbers 0 through 6 representing the pitch classes 
+//     C through B, the octave is MIDI octave (not the scientific pitch
+//     octave which is one less than the MIDI ocatave, such as C4 = middle C).
+//     The second number is the accidental for the base-7 pitch.
+//   
+
+void MidiMessage::getSpelling(int& base7, int& accidental) {
+   if (!isNoteOn()) {
+      return;
+   }
+   base7 = -123456;
+   accidental = 123456;
+   int base12   = getKeyNumber();
+   int octave   = base12 / 12;
+   int base12pc = base12 - octave * 12;
+   int base7pc  = 0;
+   int spelling = 0x03 & getVelocity();
+
+   // Table 5.1, page 101 in Beyond MIDI (1997) 
+   // http://beyondmidi.ccarh.org/beyondmidi-600dpi.pdf
+   switch (base12pc) {
+
+      case 0:
+         switch (spelling) {
+                    case 1: base7pc = 1; accidental = -2; break;  // Dbb
+            case 0: case 2: base7pc = 0; accidental =  0; break;  // C
+                    case 3: base7pc = 6; accidental = +1; octave--; break;  // B#
+         }
+         break;
+
+      case 1:
+         switch (spelling) {
+                    case 1: base7pc = 1; accidental = -1; break;  // Db
+            case 0: case 2: base7pc = 0; accidental = +1; break;  // C#
+                    case 3: base7pc = 6; accidental = +2; octave--; break;  // B##
+         }
+         break;
+
+      case 2:
+         switch (spelling) {
+                    case 1: base7pc = 2; accidental = -2; break;  // Ebb
+            case 0: case 2: base7pc = 1; accidental =  0; break;  // D
+                    case 3: base7pc = 0; accidental = +2; break;  // C##
+         }
+         break;
+
+      case 3:
+         switch (spelling) {
+                    case 1: base7pc = 3; accidental = -2; break;  // Fbb
+            case 0: case 2: base7pc = 2; accidental = -1; break;  // Eb
+                    case 3: base7pc = 1; accidental = +1; break;  // D#
+         }
+         break;
+
+      case 4:
+         switch (spelling) {
+                    case 1: base7pc = 3; accidental = -1; break;  // Fb
+                    case 2: base7pc = 2; accidental =  0; break;  // E
+                    case 3: base7pc = 1; accidental = +2; break;  // D##
+         }
+         break;
+
+      case 5:
+         switch (spelling) {
+                    case 1: base7pc = 4; accidental = -2; break;  // Gbb
+            case 0: case 2: base7pc = 3; accidental =  0; break;  // F
+                    case 3: base7pc = 2; accidental = +1; break;  // E#
+         }
+         break;
+
+      case 6:
+         switch (spelling) {
+                    case 1: base7pc = 4; accidental = -1; break;  // Gb
+            case 0: case 2: base7pc = 3; accidental = +1; break;  // F#
+                    case 3: base7pc = 2; accidental = +2; break;  // E##
+         }
+         break;
+
+      case 7:
+         switch (spelling) {
+                    case 1: base7pc = 5; accidental = -2; break;  // Abb
+            case 0: case 2: base7pc = 4; accidental =  0; break;  // G
+                    case 3: base7pc = 3; accidental = +2; break;  // F##
+         }
+         break;
+
+      case 8:
+         switch (spelling) {
+                    case 1: base7pc = 5; accidental = -1; break;  // Ab
+            case 0: case 2: base7pc = 4; accidental = +1; break;  // G#
+                    case 3: base7pc = 3; accidental = +3; break;  // F###
+         }
+         break;
+
+      case 9:
+         switch (spelling) {
+                    case 1: base7pc = 6; accidental = -2; break;  // Bbb
+            case 0: case 2: base7pc = 5; accidental =  0; break;  // A
+                    case 3: base7pc = 4; accidental = +2; break;  // G##
+         }
+         break;
+
+      case 10:
+         switch (spelling) {
+                    case 1: base7pc = 0; accidental = -2; octave++; break;  // Cbb
+            case 0: case 2: base7pc = 6; accidental = -1; break;  // Bb
+                    case 3: base7pc = 5; accidental = +1; break;  // A#
+         }
+         break;
+
+      case 11:
+         switch (spelling) {
+                    case 1: base7pc = 0; accidental = -1; octave++; break;  // Cb
+            case 0: case 2: base7pc = 6; accidental =  0; break;  // B
+                    case 3: base7pc = 5; accidental = +2; break;  // A##
+         }
+         break;
+
+   }
+
+   base7 = base7pc + 7 * octave;
 }
 
 

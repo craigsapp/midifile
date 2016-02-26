@@ -92,6 +92,9 @@ class MidiMessage : public vector<uchar> {
       void           setMessage           (vector<char>& message);
       void           setMessage           (vector<int>& message);
 
+      void           setSpelling          (int base7, int accidental);
+      void           getSpelling          (int& base7, int& accidental);
+
       // helper functions to create various MidiMessages
       void           makeNoteOn           (int channel, int key, int velocity);
       void           makeNoteOff          (int channel, int key, int velocity);
