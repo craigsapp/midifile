@@ -97,6 +97,7 @@ class MidiMessage : public vector<uchar> {
       void           makeNoteOff          (int channel, int key, int velocity);
       void           makeNoteOff          (int channel, int key);
       void           makeNoteOff          (void);
+      void           makeController       (int channel, int num, int value);
       void           makePatchChange      (int channel, int patchnum);
       void           makeTimbre           (int channel, int patchnum);
 

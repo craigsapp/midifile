@@ -129,6 +129,7 @@ class MidiFile {
 
       // note-analysis functions:
       int       linkNotePairs             (void);
+      int       linkEventPairs            (void);
       void      clearLinks                (void);
 
       // filename functions:
@@ -150,6 +151,8 @@ class MidiFile {
                                            int aChannel, int key, int vel);
       int       addNoteOff                (int aTrack, int aTick,
                                            int aChannel, int key);
+      int       addController             (int aTrack, int aTick,
+                                           int aChannel, int num, int value);
       int       addPatchChange            (int aTrack, int aTick,
                                            int aChannel, int patchnum);
       int       addTimbre                 (int aTrack, int aTick,

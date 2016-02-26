@@ -1537,6 +1537,23 @@ int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key) {
 
 //////////////////////////////
 //
+// MidiFile::addController -- Add a controller message in the given
+//    track at the given tick time in the given channel.
+//
+
+int MidiFile::addController(int aTrack, int aTick, int aChannel, 
+      int num, int value) {
+   MidiEvent* me = new MidiEvent;
+   me->makeController(aChannel, num, value);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
 // MidiFile::addPatchChange -- Add a patch-change message in the given
 //    track at the given tick time in the given channel.
 //
@@ -2004,6 +2021,10 @@ int MidiFile::linkNotePairs(void) {
    return sum;
 }
 
+
+int MidiFile::linkEventPairs(void) {
+    return linkNotePairs();
+}
 
 
 //////////////////////////////

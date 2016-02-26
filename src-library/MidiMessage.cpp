@@ -924,7 +924,21 @@ void MidiMessage::makeNoteOff(void) {
 
 /////////////////////////////
 //
-// MidiMessage::makePatchChange -- Create a patch change message.
+// MidiMessage::makeController -- Create a controller message.
+//
+
+void MidiMessage::makeController(int channel, int num, int value) {
+   resize(0);
+   push_back(0xb0 | (0x0f & channel));
+   push_back(0x7f & num);
+   push_back(0x7f & value);
+}
+
+
+
+/////////////////////////////
+//
+// MidiMessage::makePatchChange -- Create a patch-change message.
 //
 
 void MidiMessage::makePatchChange(int channel, int patchnum) {
