@@ -127,6 +127,10 @@ class MidiFile {
       double    getTimeInSeconds          (int tickvalue);
       int       getAbsoluteTickTime       (double starttime);
 
+      double    getTotalTimeInSeconds     (void);
+      int       getTotalTimeInTicks       (void);
+      double    getTotalTimeInQuarters    (void);
+
       // note-analysis functions:
       int       linkNotePairs             (void);
       int       linkEventPairs            (void);

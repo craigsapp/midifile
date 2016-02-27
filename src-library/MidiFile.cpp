@@ -1991,6 +1991,75 @@ int MidiFile::getAbsoluteTickTime(double starttime) {
 
 //////////////////////////////
 //
+// MidiFile::getTotalTimeInSeconds -- Returns the duration of the MidiFile
+//    event list in seconds.  If doTimeAnalysis() is not called before this
+//    function is called, it will be called automatically.
+//
+
+double MidiFile::getTotalTimeInSeconds(void) {
+   if (timemapvalid == 0) {
+      buildTimeMap();
+      if (timemapvalid == 0) {
+         return -1.0;    // something went wrong
+      }
+   }
+   double output = 0.0;
+   for (int i=0; i<(int)events.size(); i++) {
+      if (events[i]->last().seconds > output) {
+         output = events[i]->last().seconds;
+      }
+   }
+   return output;
+}
+
+
+
+///////////////////////////////
+//
+// MidiFile::getTotalTimeInTicks -- Returns the absolute tick value for the
+//    latest event in any track.  If the MidiFile is in TIME_STATE_DELTA,
+//    then temporarily got into TIME_STATE_ABSOLUTE to do the calculations.
+//    Note that this is expensive, so you should normally call this function
+//    while in aboslute tick mode.
+//
+
+int MidiFile::getTotalTimeInTicks(void) {
+   int oldTimeState = getTickState();
+   if (oldTimeState == TIME_STATE_DELTA) {
+      absoluteTicks();
+   }
+   if (oldTimeState == TIME_STATE_DELTA) {
+      deltaTicks();
+   }
+   int output = 0.0;
+   for (int i=0; i<(int)events.size(); i++) {
+      if (events[i]->last().tick > output) {
+         output = events[i]->last().tick;
+      }
+   }
+   return output;
+}
+
+
+
+///////////////////////////////
+//
+// MidiFile::getTotalTimeInQuarters -- Returns the Duration of the MidiFile
+//    in units of quarter notes.  If the MidiFile is in TIME_STATE_DELTA,
+//    then temporarily got into TIME_STATE_ABSOLUTE to do the calculations.
+//    Note that this is expensive, so you should normally call this function
+//    while in aboslute tick mode.
+//
+
+double MidiFile::getTotalTimeInQuarters(void) {
+   double totalTicks = getTotalTimeInTicks();
+   return totalTicks / getTicksPerQuarterNote();
+}
+
+
+
+//////////////////////////////
+//
 // MidiFile::doTimeAnalysis -- Identify the real-time position of
 //    all events by monitoring the tempo in relations to the tick
 //    times in the file.

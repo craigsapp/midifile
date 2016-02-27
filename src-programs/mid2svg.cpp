@@ -27,7 +27,9 @@ double  Border       = 2.0;     // used with -b option
 double  Opacity      = 0.75;    // used with -o option
 double  drumQ        = 0;       // used with --drum option
 int     lineQ        = 0;       // used with -l option
+int     staffQ       = 0;       // used with --staff option
 int     transparentQ = 1;       // used with -T option
+double  MaxRest      = 4.0;     // used with --max-rest option
 
 // Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
@@ -46,6 +48,9 @@ void           drawLines             (ostream& out, MidiFile& midifile,
                                       vector<double>& hues, Options& options);
 void           printLineToNextNote   (ostream& out, MidiFile& midifile,
                                       int track, int index, Options& options);
+void           drawStaves            (ostream& out, double staffwidth, 
+                                      const string& staffcolor, 
+                                      double totalduration);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,7 +92,8 @@ int main(int argc, char* argv[]) {
         << ">\n";
 
    if (darkQ) {
-      cout << "<rect x=\"-500%\" y=\"-500%\" width=\"1000%\" height=\"1000%\" style=\"fill:black\" />\n";
+      cout << "<rect x=\"-500%\" y=\"-500%\""
+           << " width=\"1000%\" height=\"1000%\" style=\"fill:black\" />\n";
    }
 
    // Graphics setup:
@@ -146,6 +152,12 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
    vector<double> trackhues = getTrackHues(midifile);
 
+
+   if (staffQ) {
+      drawStaves(notes, options.getDouble("staff-width"),
+           options.getString("staff-color"), midifile.getTotalTimeInSeconds());
+   }
+   
 
    if (lineQ) {
       drawLines(notes, midifile, trackhues, options);
@@ -228,6 +240,30 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
 //////////////////////////////
 //
+// drawStaves --
+//
+
+void drawStaves(ostream& out, double staffwidth, const string& staffcolor, 
+      double totalduration) {
+   vector<double> vpos;
+   vpos.insert(vpos.end(), {64.5, 67.5, 71.5, 74.5, 77.5}); // treble clef
+   vpos.insert(vpos.end(), {43.5, 47.5, 50.5, 53.5, 57.5}); // bass clef
+
+   int i;
+   for (i=0; i<(int)vpos.size(); i++) {
+      out << "<path"
+          << " stroke-width=\"" << staffwidth << "\"" 
+          << " stroke=\"" << staffcolor << "\"" 
+          << " d=\"M" << 0 << " " << vpos[i]
+          << " L" << totalduration << " " << vpos[i] << "\" />\n";
+   }
+
+}
+
+
+
+//////////////////////////////
+//
 // drawLines -- Draw lines to connect notes.
 //
 
@@ -295,6 +331,10 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
    int p2 = midifile[track][nextindex].getP1();
    double nextstarttime = midifile[track][nextindex].seconds;
    double difference = nextstarttime - endtime;
+   if (difference > MaxRest) {
+      // don't connect notes after long rests.
+      return;
+   }
    if (difference > 0.0) {
       // there is a rest so extent the line horizontally
       path << " M" << endtime << " " << p1 + 0.5;
@@ -480,7 +520,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("a|aspect-ratio=d:2.5", "Aspect ratio for SVG image");
    opts.define("w|stroke-width=d:0.1", "Stroke width for line around note boxes");
    opts.define("stroke-color=s:black", "Stroke color for line around note boxes");
-   opts.define("lw|line-width=d:0.01",  "Width of note lines");
+   opts.define("staff=b",              "Draw staff lines.");
+   opts.define("sc|staff-color=s:#222222", "staff line color.");
+   opts.define("sw|st|staff-width|staff-thickness=d:0.1",    "staff line width.");
+   opts.define("lw|lt|line-width|line-thickness=d:0.02",  "Width of note lines");
    opts.define("dash|dashing=b",       "Dash connecting lines");
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
@@ -490,7 +533,9 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("b|border=d:1.0",       "Border around piano roll");
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
-   opts.define("l|line=b",             "Draw lines between the center of notes");
+   opts.define("l|line=b",             "Draw lines between center of notes");
+   opts.define("mr|max-rest=d:4.0 seconds", 
+      "Maximum rest through which to draw lines");
 
    opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
@@ -524,11 +569,13 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    drumQ        =  opts.getBoolean("drum");
    darkQ        =  opts.getBoolean("dark");
    lineQ        =  opts.getBoolean("line");
+   staffQ       =  opts.getBoolean("staff");
    transparentQ = !opts.getBoolean("no-transparency");
    roundedQ     =  opts.getBoolean("rounded");
    Scale        =  opts.getDouble("scale");
    Border       =  opts.getDouble("border");
    Opacity      =  opts.getDouble("opacity");
+   MaxRest      =  opts.getDouble("max-rest");
 }
 
 
