@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Feb 19 22:25:22 PST 2016
-// Last Modified: Sun Feb 21 15:35:35 PST 2016
+// Last Modified: Sat Feb 27 18:16:39 PST 2016
 // Filename:      midifile/src-programs/mid2svg.cpp
 // Web Address:   https://github.com/craigsapp/midifile/blob/master/src-programs/mid2svg.cpp
 // Syntax:        C++; museinfo
@@ -19,17 +19,19 @@ using namespace std;
 
 // User interface variables:
 Options options;
-int     dataQ        = 0;       // used with -d option
-int     roundedQ     = 0;       // used with -r option
-int     darkQ        = 0;       // used with --dark option
-double  Scale        = 1.0;     // used with -s option
-double  Border       = 2.0;     // used with -b option
-double  Opacity      = 0.75;    // used with -o option
-double  drumQ        = 0;       // used with --drum option
-int     lineQ        = 0;       // used with -l option
-int     staffQ       = 0;       // used with --staff option
-int     transparentQ = 1;       // used with -T option
-double  MaxRest      = 4.0;     // used with --max-rest option
+int      dataQ        = 0;      // used with -d option
+int      roundedQ     = 0;      // used with -r option
+int      darkQ        = 0;      // used with --dark option
+double   Scale        = 1.0;    // used with -s option
+double   Border       = 2.0;    // used with -b option
+double   Opacity      = 0.75;   // used with -o option
+double   drumQ        = 0;      // used with --drum option
+int      lineQ        = 0;      // used with -l option
+int      staffQ       = 0;      // used with --staff option
+int      diatonicQ    = 0;      // used with --diatonic option
+int      grandQ       = 0;      // used with --gs option
+int      transparentQ = 1;      // used with -T option
+double   MaxRest      = 4.0;    // used with --max-rest option
 
 // Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
@@ -39,11 +41,14 @@ void           convertMidiFileToSvg  (stringstream& output, MidiFile& midifile,
                                       Options& options);
 int            hasNotes              (MidiEventList& eventlist);
 void           getMinMaxPitch        (const MidiFile& midifile,
-                                      double& minpitch, double &maxpitch);
+                                      int& minpitch, int &maxpitch);
+void           getMinMaxTrackPitch   (const MidiEventList& evl,
+                                      int& minpitch, int &maxpitch);
 double         getMaxTime            (const MidiFile& midifile);
 vector<double> getTrackHues          (MidiFile& midifile);
 void           drawNote              (ostream& out, MidiFile& midifile,
-                                      int i, int j, int dataQ);
+                                      int i, int j, int dataQ, 
+                                      int minpitch, int maxpitch);
 void           drawLines             (ostream& out, MidiFile& midifile,
                                       vector<double>& hues, Options& options);
 void           printLineToNextNote   (ostream& out, MidiFile& midifile,
@@ -51,6 +56,7 @@ void           printLineToNextNote   (ostream& out, MidiFile& midifile,
 void           drawStaves            (ostream& out, double staffwidth, 
                                       const string& staffcolor, 
                                       double totalduration);
+int            base12ToBase7         (int pitch);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -59,9 +65,10 @@ int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile midifile(options.getArg(1));
    stringstream notes;
-   double minpitch = -1.0;
-   double maxpitch = -1.0;
+   int minpitch = -1;
+   int maxpitch = -1;
    getMinMaxPitch(midifile, minpitch, maxpitch);
+
    convertMidiFileToSvg(notes, midifile, options);
    double aspectRatio = options.getDouble("aspect-ratio");
 
@@ -121,7 +128,6 @@ int main(int argc, char* argv[]) {
    cout << "</g>\n";
    cout << "</svg>\n";
    return 0;
-
 }
 
 
@@ -164,15 +170,21 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    }
 
 
+   int minpitch = 0;
+   int maxpitch = 0;
+
    // Draw background for increasing contrast of notes and background
    // (needed due to constant opacity filter):
+   int track = 0;
    for (int i=midifile.size()-1; i>=0; i--) {
       if (!hasNotes(midifile[i])) {
          continue;
       }
+      getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
+      track = i;
       notes << "\t<g"
-            << " opacity=\"0.5\""
-            << " class=\"note-background-" << i << "\"";
+            << " opacity=\"0.5\"";
+      notes << " class=\"note-backdrops " << "track-" << i << "\"";
       if (trackhues[i] >= 0.0) {
           if (darkQ) {
              notes << " style=\""
@@ -194,7 +206,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
               continue;
            }
          }
-         drawNote(notes, midifile, i, j, 0);
+         drawNote(notes, midifile, i, j, 0, minpitch, maxpitch);
       }
       notes << "\t</g>\n";
    }
@@ -204,8 +216,10 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       if (!hasNotes(midifile[i])) {
          continue;
       }
+      track = i;
+      getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
       notes << "\t<g"
-            << " class=\"track-" << i << "\"";
+            << " class=\"track-" << track << "\"";
       if (transparentQ) {
          notes << " filter=\"url(#constantOpacity)\"";
       }
@@ -227,7 +241,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
            }
          }
 
-         drawNote(notes, midifile, i, j, dataQ);
+         drawNote(notes, midifile, i, j, dataQ, minpitch, maxpitch);
       }
       notes << "\t</g>\n";
    }
@@ -246,18 +260,27 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 void drawStaves(ostream& out, double staffwidth, const string& staffcolor, 
       double totalduration) {
    vector<double> vpos;
-   vpos.insert(vpos.end(), {64.5, 67.5, 71.5, 74.5, 77.5}); // treble clef
-   vpos.insert(vpos.end(), {43.5, 47.5, 50.5, 53.5, 57.5}); // bass clef
+   if (diatonicQ) {
+      vpos.insert(vpos.end(), {37.5, 39.5, 41.5, 43.5, 45.5}); // treble clef
+      vpos.insert(vpos.end(), {25.5, 27.5, 29.5, 31.5, 33.5}); // bass clef
+   } else {
+      vpos.insert(vpos.end(), {64.5, 67.5, 71.5, 74.5, 77.5}); // treble clef
+      vpos.insert(vpos.end(), {43.5, 47.5, 50.5, 53.5, 57.5}); // bass clef
+   }
 
-   int i;
-   for (i=0; i<(int)vpos.size(); i++) {
+   out << "<g"
+       << " class=\"staff-lines\""
+       << " stroke-width=\"" << staffwidth << "\"" 
+       << " stroke=\"" << staffcolor << "\"" 
+       << ">\n";
+
+   for (int i=0; i<(int)vpos.size(); i++) {
       out << "<path"
-          << " stroke-width=\"" << staffwidth << "\"" 
-          << " stroke=\"" << staffcolor << "\"" 
           << " d=\"M" << 0 << " " << vpos[i]
           << " L" << totalduration << " " << vpos[i] << "\" />\n";
    }
 
+   out << "</g>\n";
 }
 
 
@@ -272,13 +295,17 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  Options&
    int i, j;
    double linewidth = options.getDouble("line-width");
    int dashing = options.getBoolean("dash");
-   for (i=0; i<midifile.size(); i++) {
+   int track = 0;
+   for (i=midifile.size()-1; i>=0; i--) {
       if (!hasNotes(midifile[i])) {
          continue;
       }
+      track = i;
       counter++;
       string color = "hsl(" + to_string(hues[i]) + ", 100%, 75%)";
-      out << "<g fill=\"none\" stroke=\"" << color << "\"";
+      out << "<g"
+          << " class=\"note-lines track-" << track << "\""
+          << " fill=\"none\" stroke=\"" << color << "\"";
       // double scale = options.getDouble("scale");
       if (dashing) {
          double dwidth = 0.25;
@@ -308,6 +335,9 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  Options&
 void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
       int index, Options& options) {
    int p1 = midifile[track][index].getP1();
+   if (diatonicQ) {
+      p1 = base12ToBase7(p1);
+   }
    double endtime = midifile[track][index].seconds
          + midifile[track][index].getDurationInSeconds();
 
@@ -329,6 +359,9 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
    }
 
    int p2 = midifile[track][nextindex].getP1();
+   if (diatonicQ) {
+      p2 = base12ToBase7(p2);
+   }
    double nextstarttime = midifile[track][nextindex].seconds;
    double difference = nextstarttime - endtime;
    if (difference > MaxRest) {
@@ -357,7 +390,8 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
 // drawNote --
 //
 
-void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ) {
+void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
+      int minpitch, int maxpitch) {
    int tickstart, tickend, tickdur;
    double starttime, endtime, duration;
 
@@ -375,6 +409,9 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ) {
       endtime = starttime;
    }
    int pitch    = midifile[i][j].getP1();
+   if (diatonicQ) {
+      pitch = base12ToBase7(pitch);
+   }
    int velocity = midifile[i][j].getP2();
    int channel  = midifile[i][j].getChannel();  // 0-offset
    int track    = i;                            // 0-offset
@@ -383,6 +420,8 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ) {
       out << "\t\t\t<!-- ==========================================" << endl;
       out << "\t\t\t\t@Track:      " << track                        << endl;
       out << "\t\t\t\t@Pitch:      " << pitch                        << endl;
+      out << "\t\t\t\t@Minpitch:   " << minpitch                     << endl;
+      out << "\t\t\t\t@Maxpitch:   " << maxpitch                     << endl;
       out << "\t\t\t\t@Velocity:   " << velocity                     << endl;
       out << "\t\t\t\t@Channel:    " << channel                      << endl;
       out << "\t\t\t\t@Start-tick: " << tickstart << " ticks"        << endl;
@@ -394,10 +433,18 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ) {
       out << "\t\t\t=========================================== -->" << endl;
    }
 
+
    // note box:
    out     << "\t\t<rect"
             << " vector-effect=\"non-scaling-stroke\""
-            << " class=\"key-" << pitch << "\"";
+            << " class=\"key-" << pitch;
+   if (pitch <= minpitch) {
+      out << " minima";
+   }
+   if (pitch >= maxpitch) {
+      out << " maxima";
+   }
+   out      << "\"";
    if (roundedQ) {
       out << "\trx=\""     << 1          << "\""
           << "\try=\""     << 1          << "\"";
@@ -407,6 +454,34 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ) {
        << "\twidth=\""  << duration   << "\""
        << "\theight=\"" << 1          << "\""
        << " />\n";
+}
+
+
+
+//////////////////////////////
+//
+// base12ToBase7 -- MIDI to diatonic pitch name. Middle C is 5th octave.
+//
+
+int base12ToBase7(int pitch) {
+   int octave = pitch / 12;
+   int chroma = pitch % 12;
+   int output = 0;
+   switch (chroma) {
+      case  0: output = 0; break; // C
+      case  1: output = 0; break; // C#
+      case  2: output = 1; break; // D
+      case  3: output = 2; break; // Eb
+      case  4: output = 2; break; // E
+      case  5: output = 3; break; // F
+      case  6: output = 3; break; // F#
+      case  7: output = 4; break; // G
+      case  8: output = 4; break; // G#
+      case  9: output = 5; break; // A
+      case 10: output = 6; break; // Bb
+      case 11: output = 6; break; // B
+   }
+   return output + 7 * octave;
 }
 
 
@@ -469,8 +544,7 @@ int hasNotes(MidiEventList& eventlist) {
 // getMinMaxPitch -- Determine the minimum and maximum pitch in the file.
 //
 
-void getMinMaxPitch(const MidiFile& midifile, double& minpitch,
-      double &maxpitch) {
+void getMinMaxPitch(const MidiFile& midifile, int& minpitch, int& maxpitch) {
    int key = 0;
    for (int i=0; i<midifile.size(); i++) {
       for (int j=0; j<midifile[i].size(); j++) {
@@ -485,6 +559,51 @@ void getMinMaxPitch(const MidiFile& midifile, double& minpitch,
          }
       }
    }
+
+   if (grandQ) {
+      if (minpitch > 40) {
+         minpitch = 40;
+      }
+      if (maxpitch < 80) {
+         maxpitch = 80;
+      }
+   }
+   if (diatonicQ) {
+      minpitch = base12ToBase7(minpitch);
+      maxpitch = base12ToBase7(maxpitch);
+   }
+}
+
+
+
+//////////////////////////////
+//
+// getMinMaxTrackPitch -- Determine the minimum and maximum pitch in a
+//   particular Track.
+//
+
+void getMinMaxTrackPitch(const MidiEventList& evl, int& minpitch,
+      int &maxpitch) {
+   int key = 0;
+   minpitch = -1.0;
+   maxpitch = -1.0;
+   for (int i=0; i<evl.size(); i++) {
+      if (evl[i].isNoteOn()) {
+         key = evl[i].getP1();
+         if ((minpitch < 0) || (minpitch > key)) {
+            minpitch = key;
+         }
+         if ((maxpitch < 0) || (maxpitch < key)) {
+            maxpitch = key;
+         }
+      }
+   }
+
+   if (diatonicQ) {
+      minpitch = base12ToBase7(minpitch);
+      maxpitch = base12ToBase7(maxpitch);
+   }
+cout << "GOT HERE AAA " << minpitch << " " << maxpitch << endl;
 }
 
 
@@ -521,6 +640,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("w|stroke-width=d:0.1", "Stroke width for line around note boxes");
    opts.define("stroke-color=s:black", "Stroke color for line around note boxes");
    opts.define("staff=b",              "Draw staff lines.");
+   opts.define("gs|grand|grand-staff=b", "show at least all grand staff.");
    opts.define("sc|staff-color=s:#222222", "staff line color.");
    opts.define("sw|st|staff-width|staff-thickness=d:0.1",    "staff line width.");
    opts.define("lw|lt|line-width|line-thickness=d:0.02",  "Width of note lines");
@@ -528,13 +648,14 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
    opts.define("d|data=b",             "Embed note data in SVG image");
+   opts.define("diatonic=b",           "Vertical axis is base-7 pitch");
    opts.define("drum=b",               "Show drum track (channel 10)");
    opts.define("r|round|rounded=b",    "Round edges of note boxes");
    opts.define("b|border=d:1.0",       "Border around piano roll");
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
-   opts.define("mr|max-rest=d:4.0 seconds", 
+   opts.define("mr|rest|max-rest=d:4.0 seconds", 
       "Maximum rest through which to draw lines");
 
    opts.define("author=b",  "author of program");
@@ -570,6 +691,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    darkQ        =  opts.getBoolean("dark");
    lineQ        =  opts.getBoolean("line");
    staffQ       =  opts.getBoolean("staff");
+   grandQ       =  opts.getBoolean("grand-staff");
+   diatonicQ    =  opts.getBoolean("diatonic");
    transparentQ = !opts.getBoolean("no-transparency");
    roundedQ     =  opts.getBoolean("rounded");
    Scale        =  opts.getDouble("scale");
