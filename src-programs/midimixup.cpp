@@ -116,11 +116,11 @@ void randomizeNotes(vector<MidiEvent*>& notes) {
       neworder[i].index = i;
       neworder[i].value = dist(md);
    }
-   sort(neworder.begin(), neworder.end(), 
+   sort(neworder.begin(), neworder.end(),
       [](const pairing& a, const pairing& b) {
          return a.value > b.value;
       });
-   
+
    for (i=0; i<count; i++) {
       swapNotes(notes, i, neworder[i].index);
    }

@@ -842,7 +842,7 @@ void MidiMessage::setMessage(vector<int>& message) {
 //    MIDI note 60 is ambiguous as to which of these names are intended,
 //    so MIDIPlus allows these mappings to be preserved for later recovery.
 //    See Chapter 5 (pp. 99-104) of Beyond MIDI (1997).
-//   
+//
 //    The first parameter is the diatonic pitch number (or pitch class
 //    if the octave is set to 0):
 //       octave * 7 + 0 = C pitches
@@ -852,11 +852,11 @@ void MidiMessage::setMessage(vector<int>& message) {
 //       octave * 7 + 4 = G pitches
 //       octave * 7 + 5 = A pitches
 //       octave * 7 + 6 = B pitches
-// 
+//
 //    The second parameter is the semitone alteration (accidental).
-//    0 = natural state, 1 = sharp, 2 = double sharp, -1 = flat, 
+//    0 = natural state, 1 = sharp, 2 = double sharp, -1 = flat,
 //    -2 = double flat.
-//    
+//
 //    Only note-on messages can be processed (other messages will be
 //    silently ignored).
 //
@@ -874,7 +874,7 @@ void MidiMessage::setSpelling(int base7, int accidental) {
    int dpc = base7 % 7;
    uchar spelling = 0;
 
-   // Table 5.1, page 101 in Beyond MIDI (1997) 
+   // Table 5.1, page 101 in Beyond MIDI (1997)
    // http://beyondmidi.ccarh.org/beyondmidi-600dpi.pdf
    switch (dpc) {
 
@@ -958,7 +958,7 @@ void MidiMessage::setSpelling(int base7, int accidental) {
    vel = vel | spelling;
    setVelocity(vel);
 }
-   
+
 
 
 //////////////////////////////
@@ -967,14 +967,14 @@ void MidiMessage::setSpelling(int base7, int accidental) {
 //    for a note-on's key number.  The MIDI file must be encoded with MIDIPlus
 //    pitch spelling codes for this function to return valid data; otherwise,
 //    it will return a neutral fixed spelling for each MIDI key.
-// 
+//
 //    The first parameter will be filled in with the base-7 diatonic pitch:
 //        pc + octave * 7
-//     where pc is the numbers 0 through 6 representing the pitch classes 
+//     where pc is the numbers 0 through 6 representing the pitch classes
 //     C through B, the octave is MIDI octave (not the scientific pitch
 //     octave which is one less than the MIDI ocatave, such as C4 = middle C).
 //     The second number is the accidental for the base-7 pitch.
-//   
+//
 
 void MidiMessage::getSpelling(int& base7, int& accidental) {
    if (!isNoteOn()) {
@@ -988,7 +988,7 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
    int base7pc  = 0;
    int spelling = 0x03 & getVelocity();
 
-   // Table 5.1, page 101 in Beyond MIDI (1997) 
+   // Table 5.1, page 101 in Beyond MIDI (1997)
    // http://beyondmidi.ccarh.org/beyondmidi-600dpi.pdf
    switch (base12pc) {
 
@@ -1244,6 +1244,19 @@ void MidiMessage::makeMetaMessage(int mnum, const string& data) {
 
 //////////////////////////////
 //
+// MidiMessage::makeCopyright -- Create a metaevent copyright message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeCopyright(const string& text) {
+   makeMetaMessage(0x02, text);
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::makeTrackName -- Create a metaevent track name message.
 //    This is not a real MIDI message, but rather a pretend message for use
 //    within Standard MIDI Files.
@@ -1283,13 +1296,26 @@ void MidiMessage::makeLyric(const string& text) {
 
 //////////////////////////////
 //
-// MidiMessage::makeCopyright -- Create a metaevent copyright message.
+// MidiMessage::makeMarker -- Create a metaevent marker message.
 //    This is not a real MIDI message, but rather a pretend message for use
 //    within Standard MIDI Files.
 //
 
-void MidiMessage::makeCopyright(const string& text) {
-   makeMetaMessage(0x02, text);
+void MidiMessage::makeMarker(const string& text) {
+   makeMetaMessage(0x06, text);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeCue -- Create a metaevent cue-point message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeCue(const string& text) {
+   makeMetaMessage(0x07, text);
 }
 
 

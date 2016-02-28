@@ -47,14 +47,14 @@ void           getMinMaxTrackPitch   (const MidiEventList& evl,
 double         getMaxTime            (const MidiFile& midifile);
 vector<double> getTrackHues          (MidiFile& midifile);
 void           drawNote              (ostream& out, MidiFile& midifile,
-                                      int i, int j, int dataQ, 
+                                      int i, int j, int dataQ,
                                       int minpitch, int maxpitch);
 void           drawLines             (ostream& out, MidiFile& midifile,
                                       vector<double>& hues, Options& options);
 void           printLineToNextNote   (ostream& out, MidiFile& midifile,
                                       int track, int index, Options& options);
-void           drawStaves            (ostream& out, double staffwidth, 
-                                      const string& staffcolor, 
+void           drawStaves            (ostream& out, double staffwidth,
+                                      const string& staffcolor,
                                       double totalduration);
 int            base12ToBase7         (int pitch);
 
@@ -163,7 +163,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       drawStaves(notes, options.getDouble("staff-width"),
            options.getString("staff-color"), midifile.getTotalTimeInSeconds());
    }
-   
+
 
    if (lineQ) {
       drawLines(notes, midifile, trackhues, options);
@@ -257,7 +257,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 // drawStaves --
 //
 
-void drawStaves(ostream& out, double staffwidth, const string& staffcolor, 
+void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
       double totalduration) {
    vector<double> vpos;
    if (diatonicQ) {
@@ -270,8 +270,8 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 
    out << "<g"
        << " class=\"staff-lines\""
-       << " stroke-width=\"" << staffwidth << "\"" 
-       << " stroke=\"" << staffcolor << "\"" 
+       << " stroke-width=\"" << staffwidth << "\""
+       << " stroke=\"" << staffcolor << "\""
        << ">\n";
 
    for (int i=0; i<(int)vpos.size(); i++) {
@@ -655,7 +655,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
-   opts.define("mr|rest|max-rest=d:4.0 seconds", 
+   opts.define("mr|rest|max-rest=d:4.0 seconds",
       "Maximum rest through which to draw lines");
 
    opts.define("author=b",  "author of program");

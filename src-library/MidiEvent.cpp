@@ -37,7 +37,7 @@ MidiEvent::MidiEvent(int command, int p1) : MidiMessage(command, p1) {
 }
 
 
-MidiEvent::MidiEvent(int command, int p1, int p2) 
+MidiEvent::MidiEvent(int command, int p1, int p2)
       : MidiMessage(command, p1, p2) {
    clearVariables();
 }
@@ -155,7 +155,7 @@ MidiEvent& MidiEvent::operator=(vector<int>& bytes) {
 //   Also tell the other event to disassociate from this event.
 //
 
-void MidiEvent::unlinkEvent(void) { 
+void MidiEvent::unlinkEvent(void) {
    if (eventlink == NULL) {
       return;
    }
@@ -168,11 +168,11 @@ void MidiEvent::unlinkEvent(void) {
 
 //////////////////////////////
 //
-// MidiEvent::linkEvent -- Make a link between two messages.  
+// MidiEvent::linkEvent -- Make a link between two messages.
 //   Unlinking
 //
 
-void MidiEvent::linkEvent(MidiEvent* mev) { 
+void MidiEvent::linkEvent(MidiEvent* mev) {
    if (mev->eventlink != NULL) {
       // unlink other event if it is linked to something else;
       mev->unlinkEvent();
@@ -188,7 +188,7 @@ void MidiEvent::linkEvent(MidiEvent* mev) {
 }
 
 
-void MidiEvent::linkEvent(MidiEvent& mev) { 
+void MidiEvent::linkEvent(MidiEvent& mev) {
    linkEvent(&mev);
 }
 
@@ -225,7 +225,7 @@ int MidiEvent::isLinked(void) {
 //    return the absolute tick time difference between the two events.
 //    The tick values are presumed to be in absolute tick mode rather than
 //    delta tick mode.  Returns 0 if not linked.
-// 
+//
 
 int MidiEvent::getTickDuration(void) {
    MidiEvent* mev = getLinkedEvent();
@@ -244,7 +244,7 @@ int MidiEvent::getTickDuration(void) {
 
 //////////////////////////////
 //
-// MidiEvent::getDurationInSeconds -- For linked events (note-ons and 
+// MidiEvent::getDurationInSeconds -- For linked events (note-ons and
 //     note-offs), return the duration of the note in seconds.  The
 //     seconds analysis must be done first; otherwise the duration will be
 //     reported as zero.

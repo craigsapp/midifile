@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 
    for (int i=0; i<options.getArgCount(); i++) {
       if (options.getBoolean("compile")) {
-         binasc.writeToBinary(options.getString("compile").data(), 
+         binasc.writeToBinary(options.getString("compile").data(),
                options.getArg(i+1).data());
       } else  {
          binasc.readFromBinary(cout, options.getArg(i+1).data());
@@ -103,7 +103,7 @@ void checkOptions(Options& opts) {
    }
 
 
-   if (opts.getBoolean("compile") && 
+   if (opts.getBoolean("compile") &&
       strlen(opts.getString("compile").data()) == 0) {
       cerr << "Error: you must specify an output file when using the -c option"
            << endl;

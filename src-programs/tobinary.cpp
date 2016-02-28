@@ -7,8 +7,8 @@
 // Syntax:        C++11
 //
 // Description:   Convert a Standard MIDI file into binary format from
-//                the binasc format (ASCII version of the MIDI file which 
-//                can be converted back into the binary format without 
+//                the binasc format (ASCII version of the MIDI file which
+//                can be converted back into the binary format without
 //                information loss).
 //
 

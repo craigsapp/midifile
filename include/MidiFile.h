@@ -177,6 +177,10 @@ class MidiFile {
                                            const string& name);
       int       addLyric                  (int aTrack, int aTick,
                                            const string& text);
+      int       addMarker                 (int aTrack, int aTick,
+                                           const string& text);
+      int       addCue                    (int aTrack, int aTick,
+                                           const string& text);
       int       addTempo                  (int aTrack, int aTick,
                                            double aTempo);
 

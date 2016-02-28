@@ -107,9 +107,9 @@ MidiEvent& MidiEventList::last(void) {
 
 //////////////////////////////
 //
-// MidiEventList::getEvent -- The same thing as operator[], for 
+// MidiEventList::getEvent -- The same thing as operator[], for
 //      internal use when operator[] would look more messy.
-//   
+//
 
 MidiEvent& MidiEventList::getEvent(int index) {
      return *list[index];
@@ -181,19 +181,19 @@ int MidiEventList::size(void) const {
 //     the index of the appended event.
 //
 
-int MidiEventList::append(MidiEvent& event) { 
+int MidiEventList::append(MidiEvent& event) {
    MidiEvent* ptr = new MidiEvent(event);
    list.push_back(ptr);
    return (int)list.size()-1;
 }
 
 
-int MidiEventList::push(MidiEvent& event) { 
+int MidiEventList::push(MidiEvent& event) {
    return append(event);
 }
 
 
-int MidiEventList::push_back(MidiEvent& event) { 
+int MidiEventList::push_back(MidiEvent& event) {
    return append(event);
 }
 
@@ -203,7 +203,7 @@ int MidiEventList::push_back(MidiEvent& event) {
 // MidiEventList::linkNotePairs -- Match note-ones and note-offs together
 //   There are two models that can be done if two notes are overlapping
 //   on the same pitch: the first note-off affects the last note-on,
-//   or the first note-off affects the first note-on.  Currently  the 
+//   or the first note-off affects the first note-on.  Currently  the
 //   first note-off affects the last note-on, but both methods could
 //   be implemented with user selectability.  The current state of the
 //   track is assumed to be in time-sorted order.  Returns the number
@@ -324,7 +324,7 @@ int MidiEventList::linkNotePairs(void) {
             contval   = mev->getP2();
             contstate = contval < 64 ? 0 : 1;
             if ((oldstates[conti][channel] == -1) && contstate) {
-               // a newly initialized onstate was detected, so store for 
+               // a newly initialized onstate was detected, so store for
                // later linking to an off state.
                contevents[conti][channel] = mev;
                oldstates[conti][channel] = contstate;
@@ -335,7 +335,7 @@ int MidiEventList::linkNotePairs(void) {
                contevents[conti][channel] = mev;
                oldstates[conti][channel] = contstate;
             } else if ((oldstates[conti][channel] == 1) && (contstate == 0)) {
-               // controller has just been turned off, so link to 
+               // controller has just been turned off, so link to
                // stored on-message.
                contevents[conti][channel]->linkEvent(mev);
                oldstates[conti][channel] = contstate;
@@ -383,12 +383,12 @@ void MidiEventList::detach(void) {
 
 //////////////////////////////
 //
-// MidiEventList::push_back_no_copy -- add a MidiEvent at the end of 
-//     the list.  The event is not copied, but memory from the 
+// MidiEventList::push_back_no_copy -- add a MidiEvent at the end of
+//     the list.  The event is not copied, but memory from the
 //     remote location is used.  Returns the index of the appended event.
 //
 
-int MidiEventList::push_back_no_copy(MidiEvent* event) { 
+int MidiEventList::push_back_no_copy(MidiEvent* event) {
    list.push_back(event);
    return (int)list.size()-1;
 }

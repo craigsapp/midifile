@@ -120,7 +120,7 @@ MidiFile::MidiFile(istream& input) {
 MidiFile::MidiFile(const MidiFile& other) {
    events.reserve(other.events.size());
    auto it = other.events.begin();
-   std::generate_n(std::back_inserter(events), other.events.size(), 
+   std::generate_n(std::back_inserter(events), other.events.size(),
          [&]() -> MidiEventList* {
       return new MidiEventList(**it++);
    });
@@ -1072,7 +1072,7 @@ int MidiFile::hasSplitTracks(void) {
 // MidiFile::getSplitTrack --  Return the track index when the MidiFile
 //   is in the split state.  This function returns the original track
 //   when the MidiFile is in the joined state.  The MidiEvent::track
-//   variable is used to store the original track index when the 
+//   variable is used to store the original track index when the
 //   MidiFile is converted to the joined-track state.
 //
 
@@ -1188,7 +1188,7 @@ int MidiFile::getTickState(void) {
 
 //////////////////////////////
 //
-// MidiFile::isDeltaTicks -- Returns true if MidiEvent .tick 
+// MidiFile::isDeltaTicks -- Returns true if MidiEvent .tick
 //    variables are in delta time mode.
 //
 
@@ -1200,7 +1200,7 @@ int MidiFile::isDeltaTicks(void) {
 
 //////////////////////////////
 //
-// MidiFile::isAbsoluteTicks -- Returns true if MidiEvent .tick 
+// MidiFile::isAbsoluteTicks -- Returns true if MidiEvent .tick
 //    variables are in absolute time mode.
 //
 
@@ -1368,7 +1368,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
 // MidiFile::addCopyright --  Add a copyright notice meta-message (#2).
 //
 
-int MidiFile::addCopyright(int aTrack, int aTick, const string& text) { 
+int MidiFile::addCopyright(int aTrack, int aTick, const string& text) {
    MidiEvent* me = new MidiEvent;
    me->makeCopyright(text);
    me->tick = aTick;
@@ -1398,7 +1398,7 @@ int MidiFile::addTrackName(int aTrack, int aTick, const string& name) {
 // MidiFile::addInstrumentName --  Add an instrument name meta-message (#4).
 //
 
-int MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) { 
+int MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) {
    MidiEvent* me = new MidiEvent;
    me->makeInstrumentName(name);
    me->tick = aTick;
@@ -1415,7 +1415,37 @@ int MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) {
 
 int MidiFile::addLyric(int aTrack, int aTick, const string& text) {
    MidiEvent* me = new MidiEvent;
-   me->makeCopyright(text);
+   me->makeLyric(text);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addMarker -- Add a marker meta-message (meta #6).
+//
+
+int MidiFile::addMarker(int aTrack, int aTick, const string& text) {
+   MidiEvent* me = new MidiEvent;
+   me->makeMarker(text);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addCue -- Add a cue-point meta-message (meta #7).
+//
+
+int MidiFile::addCue(int aTrack, int aTick, const string& text) {
+   MidiEvent* me = new MidiEvent;
+   me->makeCue(text);
    me->tick = aTick;
    events[aTrack]->push_back_no_copy(me);
    return events[aTrack]->size() - 1;
@@ -1508,7 +1538,7 @@ int MidiFile::addNoteOn(int aTrack, int aTick, int aChannel, int key, int vel) {
 // MidiFile::addNoteOff -- Add a note-off message (using 0x80 messages).
 //
 
-int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key, 
+int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key,
       int vel) {
    MidiEvent* me = new MidiEvent;
    me->makeNoteOff(aChannel, key, vel);
@@ -1541,7 +1571,7 @@ int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key) {
 //    track at the given tick time in the given channel.
 //
 
-int MidiFile::addController(int aTrack, int aTick, int aChannel, 
+int MidiFile::addController(int aTrack, int aTick, int aChannel,
       int num, int value) {
    MidiEvent* me = new MidiEvent;
    me->makeController(aChannel, num, value);
@@ -1558,7 +1588,7 @@ int MidiFile::addController(int aTrack, int aTick, int aChannel,
 //    track at the given tick time in the given channel.
 //
 
-int MidiFile::addPatchChange(int aTrack, int aTick, int aChannel, 
+int MidiFile::addPatchChange(int aTrack, int aTick, int aChannel,
       int patchnum) {
    MidiEvent* me = new MidiEvent;
    me->makePatchChange(aChannel, patchnum);
@@ -1572,7 +1602,7 @@ int MidiFile::addPatchChange(int aTrack, int aTick, int aChannel,
 //////////////////////////////
 //
 // MidiFile::addTimbre -- Add a patch-change message in the given
-//    track at the given tick time in the given channel.  Alias for 
+//    track at the given tick time in the given channel.  Alias for
 //    MidiFile::addPatchChange().
 //
 
@@ -2187,7 +2217,7 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
 
 //////////////////////////////
 //
-// MidiFile::linearSecondInterpolationAtTick -- return the time in seconds 
+// MidiFile::linearSecondInterpolationAtTick -- return the time in seconds
 //    value at the given input tick time. (Ticks input could be made double).
 //
 
@@ -2420,7 +2450,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                }
                }
                break;
-            // The 0xf0 and 0xf7 meta commands deal with system-exclusive 
+            // The 0xf0 and 0xf7 meta commands deal with system-exclusive
             // messages. 0xf0 is used to either start a message or to store
             // a complete message.  The 0xf0 is part of the outgoing MIDI
             // bytes.  The 0xf7 message is used to send arbitrary bytes,

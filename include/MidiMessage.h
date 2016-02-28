@@ -109,6 +109,8 @@ class MidiMessage : public vector<uchar> {
       void           makeTrackName        (const string& name);
       void           makeInstrumentName   (const string& name);
       void           makeLyric            (const string& text);
+      void           makeMarker           (const string& text);
+      void           makeCue              (const string& text);
       void           makeCopyright        (const string& text);
 
       // meta-message related functions:

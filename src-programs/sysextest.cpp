@@ -7,10 +7,10 @@
 //
 // Description:   Demonstration of how to create a MIDI file with
 //                system exclusive messages.  A complete sysex message is
-//                given in track 1 and the same sysex messages is given 
+//                given in track 1 and the same sysex messages is given
 //                in segmented form in track 2.  MIDI files require the
 //                size of the sysex message to be give after the first
-//                byte of the message (and the count excludes the first 
+//                byte of the message (and the count excludes the first
 //                byte.  F7 continuation messages also require a size
 //                after the initial message byte.  The MidiFile class
 //                transparently handles inserting this size parameter
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
    return 0;
 }
 
-/* 
+/*
  * The expected output from this program when using the writeBinasc()
  * method demonstrates how the length of the system exclusive message
  * is embedded into the MIDI file after the first byte in the message.
@@ -104,13 +104,13 @@ int main(int argc, char** argv) {
  * for example the first message which is 14 bytes long:
  *      f0 43 12 00 43 12 00 42 12 00 43 12 00 f7
  * has an extra byte added for the length of the message after the first
- * byte (0d = 13 bytes): 
+ * byte (0d = 13 bytes):
  *      f0 0d 43 12 00 43 12 00 42 12 00 43 12 00 f7
  * This is a Variable Length Value, so the binasc parsed MIDI file uses
  * this format:
  *      f0 v13 43 12 00 43 12 00 42 12 00 43 12 00 f7
  * where v13 is a VLV value representing the integer 13.
- * 
+ *
 
 +M +T +h +d
 4'6
@@ -147,29 +147,29 @@ output content:
 12 00 64 f7 04 43 12 00 f7 00 ff 2f 00
 
 
-Manual parsing of the hex byte codes to make output similar to the binasc 
+Manual parsing of the hex byte codes to make output similar to the binasc
 format above:
 
-4d 54 68 64 
-00 00 00 06 
-00 01 
-00 03 
-00 64 
+4d 54 68 64
+00 00 00 06
+00 01
+00 03
+00 64
 
-4d 54 72 6b 
-00 00 00 04 
-00 ff 2f 00 
+4d 54 72 6b
+00 00 00 04
+00 ff 2f 00
 
-4d 54 72 6b 
-00 00 00 14 
+4d 54 72 6b
+00 00 00 14
 00 f0 0d 43 12 00 43 12 00 42 12 00 43 12 00 f7
-00 ff 2f 00 
+00 ff 2f 00
 
-4d 54 72 6b 
-00 00 00 1a 
-00 f0 03 43 12 00 
-64 f7 06 43 12 00 42 12 00 
-64 f7 04 43 12 00 f7 
+4d 54 72 6b
+00 00 00 1a
+00 f0 03 43 12 00
+64 f7 06 43 12 00 42 12 00
+64 f7 04 43 12 00 f7
 00 ff 2f 00
 
 
