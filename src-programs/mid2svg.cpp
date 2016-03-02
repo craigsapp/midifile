@@ -14,6 +14,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <stdio.h>
 
 using namespace std;
 
@@ -57,6 +58,7 @@ void           drawStaves            (ostream& out, double staffwidth,
                                       const string& staffcolor,
                                       double totalduration);
 int            base12ToBase7         (int pitch);
+void           printDoubleClass      (ostream& out, double value);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -98,20 +100,20 @@ int main(int argc, char* argv[]) {
         << " height=\"" << (height + 2 * Border) * Scale << "\""
         << ">\n";
 
-   if (darkQ) {
-      cout << "<rect x=\"-500%\" y=\"-500%\""
-           << " width=\"1000%\" height=\"1000%\" style=\"fill:black\" />\n";
-   }
-
    // Graphics setup:
 
    // This filter is used to show overlap between notes:
    if (transparentQ) {
       cout << "<filter id=\"constantOpacity\">\n";
-      cout << "  <feComponentTransfer>\n";
-      cout << "    <feFuncA type=\"table\" tableValues=\"0 .5 .5\" />\n";
-      cout << "  </feComponentTransfer>\n";
+      cout << "\t<feComponentTransfer>\n";
+      cout << "\t\t<feFuncA type=\"table\" tableValues=\"0 .5 .5\" />\n";
+      cout << "\t</feComponentTransfer>\n";
       cout << "</filter>\n";
+   }
+
+   if (darkQ) {
+      cout << "<rect class=\"background\" x=\"-500%\" y=\"-500%\""
+           << " width=\"1000%\" height=\"1000%\" style=\"fill:black\" />\n";
    }
 
    cout << "<g"
@@ -127,6 +129,20 @@ int main(int argc, char* argv[]) {
    // Graphics setup end closing:
    cout << "</g>\n";
    cout << "</svg>\n";
+   cout << "<?mid2svg\n\t";
+   for (int i=1; i<argc; i++) {
+      if (strchr(argv[i], ' ') != NULL) {
+         cout << '"';
+      }
+      cout << argv[i];
+      if (strchr(argv[i], ' ') != NULL) {
+         cout << '"';
+      }
+      if (i<argc-1) {
+         cout << " ";
+      }
+   }
+   cout << "\n?>\n";
    return 0;
 }
 
@@ -147,9 +163,14 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
    stringstream notes;
 
+   if (staffQ) {
+      drawStaves(notes, options.getDouble("staff-width"),
+           options.getString("staff-color"), midifile.getTotalTimeInSeconds());
+   }
+
    string strokecolor = options.getString("stroke-color");
    double strokewidth = options.getDouble("stroke-width") * Scale;
-   notes << "<g"
+   notes << "\t<g"
          << " style=\""
          <<   "stroke-width:" << strokewidth << ";"
          <<   " stroke:" << strokecolor << ";"
@@ -158,17 +179,9 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
    vector<double> trackhues = getTrackHues(midifile);
 
-
-   if (staffQ) {
-      drawStaves(notes, options.getDouble("staff-width"),
-           options.getString("staff-color"), midifile.getTotalTimeInSeconds());
-   }
-
-
    if (lineQ) {
       drawLines(notes, midifile, trackhues, options);
    }
-
 
    int minpitch = 0;
    int maxpitch = 0;
@@ -182,7 +195,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       }
       getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
       track = i;
-      notes << "\t<g"
+      notes << "\t\t<g"
             << " opacity=\"0.5\"";
       notes << " class=\"note-backdrops " << "track-" << i << "\"";
       if (trackhues[i] >= 0.0) {
@@ -208,7 +221,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
          }
          drawNote(notes, midifile, i, j, 0, minpitch, maxpitch);
       }
-      notes << "\t</g>\n";
+      notes << "\t\t</g>\n";
    }
 
    // draw the actual notes:
@@ -218,7 +231,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       }
       track = i;
       getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
-      notes << "\t<g"
+      notes << "\t\t<g"
             << " class=\"track-" << track << "\"";
       if (transparentQ) {
          notes << " filter=\"url(#constantOpacity)\"";
@@ -243,9 +256,9 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
          drawNote(notes, midifile, i, j, dataQ, minpitch, maxpitch);
       }
-      notes << "\t</g>\n";
+      notes << "\t\t</g>\n";
    }
-   notes << "</g>\n";
+   notes << "\t</g>\n";
 
    output << notes.str();
 }
@@ -268,19 +281,19 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
       vpos.insert(vpos.end(), {43.5, 47.5, 50.5, 53.5, 57.5}); // bass clef
    }
 
-   out << "<g"
+   out << "\t<g"
        << " class=\"staff-lines\""
        << " stroke-width=\"" << staffwidth << "\""
        << " stroke=\"" << staffcolor << "\""
        << ">\n";
 
    for (int i=0; i<(int)vpos.size(); i++) {
-      out << "<path"
+      out << "\t\t<path"
           << " d=\"M" << 0 << " " << vpos[i]
           << " L" << totalduration << " " << vpos[i] << "\" />\n";
    }
 
-   out << "</g>\n";
+   out << "\t</g>\n";
 }
 
 
@@ -290,7 +303,8 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 // drawLines -- Draw lines to connect notes.
 //
 
-void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  Options& options) {
+void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  
+      Options& options) {
    int counter = -1;
    int i, j;
    double linewidth = options.getDouble("line-width");
@@ -303,7 +317,7 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  Options&
       track = i;
       counter++;
       string color = "hsl(" + to_string(hues[i]) + ", 100%, 75%)";
-      out << "<g"
+      out << "\t\t<g"
           << " class=\"note-lines track-" << track << "\""
           << " fill=\"none\" stroke=\"" << color << "\"";
       // double scale = options.getDouble("scale");
@@ -318,7 +332,7 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  Options&
          }
          printLineToNextNote(out, midifile, i, j, options);
       }
-      out << "</g>\n";
+      out << "\t\t</g>\n";
    }
 
 
@@ -380,7 +394,7 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
    }
 
 
-   out << "<path d=\"" << path.str() << "\" />\n";
+   out << "\t\t\t<path d=\"" << path.str() << "\" />\n";
 }
 
 
@@ -409,6 +423,7 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
       endtime = starttime;
    }
    int pitch    = midifile[i][j].getP1();
+   int pitch12  = pitch;
    if (diatonicQ) {
       pitch = base12ToBase7(pitch);
    }
@@ -435,9 +450,16 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
 
 
    // note box:
-   out     << "\t\t<rect"
+   out     << "\t\t\t<rect"
             << " vector-effect=\"non-scaling-stroke\""
-            << " class=\"key-" << pitch;
+            << " class=\"note key-" << pitch12;
+
+   out << " ont-";
+   printDoubleClass(out, starttime);
+
+   out << " offt-";
+   printDoubleClass(out, starttime + duration);
+
    if (pitch <= minpitch) {
       out << " minima";
    }
@@ -482,6 +504,25 @@ int base12ToBase7(int pitch) {
       case 11: output = 6; break; // B
    }
    return output + 7 * octave;
+}
+
+
+
+//////////////////////////////
+//
+// printDoubleClass -- print a double note with a "d" instead of 
+//     decimal point.
+//
+
+void printDoubleClass(ostream& out, double value) {
+   value = int(value * 1000.0 + 0.5)/1000.0;
+   char buffer[32] = {0};
+   sprintf(buffer, "%.3lf", value);
+   char* decimal = strchr(buffer, '.');
+   if (decimal != NULL) {
+      decimal[0] = 'd';
+   }
+   out << buffer;
 }
 
 
@@ -603,7 +644,6 @@ void getMinMaxTrackPitch(const MidiEventList& evl, int& minpitch,
       minpitch = base12ToBase7(minpitch);
       maxpitch = base12ToBase7(maxpitch);
    }
-cout << "GOT HERE AAA " << minpitch << " " << maxpitch << endl;
 }
 
 
@@ -641,7 +681,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("stroke-color=s:black", "Stroke color for line around note boxes");
    opts.define("staff=b",              "Draw staff lines.");
    opts.define("gs|grand|grand-staff=b", "show at least all grand staff.");
-   opts.define("sc|staff-color=s:#222222", "staff line color.");
+   opts.define("sc|staff-color=s:#555555", "staff line color.");
    opts.define("sw|st|staff-width|staff-thickness=d:0.1",    "staff line width.");
    opts.define("lw|lt|line-width|line-thickness=d:0.02",  "Width of note lines");
    opts.define("dash|dashing=b",       "Dash connecting lines");
