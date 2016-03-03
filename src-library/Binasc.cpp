@@ -761,7 +761,7 @@ int Binasc::readMidiEvent(ostream& out, istream& infile, int& trackbytes,
                break;
             case 0xfe:
                cerr << "Error command not yet handled" << endl;
-               exit(1);
+               return 0;
                break;
             case 0xff:  // meta message
                {
@@ -955,7 +955,7 @@ string Binasc::keyToPitchName(int key) {
 //////////////////////////////
 //
 // Binasc::outputStyleMidi -- Read an input file and output bytes parsed
-//     as a MIDI file (exit with error if not a MIDI file).
+//     as a MIDI file (return false if not a MIDI file).
 //
 
 int Binasc::outputStyleMidi(ostream& out, istream& input) {
@@ -965,6 +965,7 @@ int Binasc::outputStyleMidi(ostream& out, istream& input) {
 
    if (input.eof()) {
       cerr << "End of the file right away!" << endl;
+      return 0;
    }
 
    // Read the MIDI file header:

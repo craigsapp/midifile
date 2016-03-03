@@ -57,6 +57,7 @@ class MidiEvent : public MidiMessage {
       int       tick;
       int       track;
       double    seconds;
+      int       seq;
 
    private:
       MidiEvent* eventlink;      // used to match note-ons and note-offs

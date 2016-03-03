@@ -520,6 +520,7 @@ int MidiFile::read(istream& input) {
    }
 
    theTimeState = TIME_STATE_ABSOLUTE;
+   markSequence();
    return 1;
 }
 
@@ -849,6 +850,49 @@ int MidiFile::getNumTracks(void) const {
 int MidiFile::size(void) const {
    return getTrackCount();
 }
+
+
+
+//////////////////////////////
+//
+// MidiFile::markSequence -- Assign a sequence serial number to
+//   every MidiEvent in every track in the MIDI file.  This is
+//   useful if you want to preseve the order of MIDI messages in
+//   a track when they occur at the same tick time.  Particularly
+//   for use with joinTracks() or sortTracks().  markSequence will
+//   be done automatically when a MIDI file is read, in case the
+//   ordering of events occuring at the same time is important.
+//   Use clearSequence() to use the default sorting behavior of
+//   sortTracks().
+//
+
+void MidiFile::markSequence(void) {
+   int sequence = 1;
+   for (int i=0; i<size(); i++) {
+      for (int j=0; j<events[i]->size(); j++) {
+         (*events[i])[j].seq = sequence++;
+      }
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::clearSequence -- Remove any seqence serial numbers from
+//   MidiEvents in the MidiFile.  This will cause the default ordering by
+//   sortTracks() to be used, in which case the ordering of MidiEvents
+//   occurding at the same tick may switch their ordering.
+//
+
+void MidiFile::clearSequence(void) {
+   for (int i=0; i<size(); i++) {
+      for (int j=0; j<events[i]->size(); j++) {
+         (*events[i])[j].seq = 0;
+      }
+   }
+}
+
 
 
 
@@ -1478,8 +1522,9 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
    unsigned long value = (unsigned long)number;
 
    if (value >= (1 << 28)) {
-      cout << "Error: number too large to handle" << endl;
-      exit(1);
+      cerr << "Error: number too large to handle" << endl;
+      buffer[0] = 0;
+      return 1;
    }
 
    buffer[0] = (value >> 21) & 0x7f;
@@ -2515,7 +2560,7 @@ ulong MidiFile::readVLValue(istream& input) {
 ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
    if (e > 0x7f) {
       cerr << "Error: VLV value was too long" << endl;
-      exit(1);
+      return 0;
    }
 
    uchar bytes[5] = {a, b, c, d, e};
@@ -2615,6 +2660,14 @@ int eventcompare(const void* a, const void* b) {
       return +1;
    } else if (aevent.tick < bevent.tick) {
       // aevent occurs before bevent
+      return -1;
+   } else if (aevent.seq > bevent.seq) {
+      // aevent sequencing state occurs after bevent
+      // see MidiFile::markSequence()
+      return +1;
+   } else if (aevent.seq < bevent.seq) {
+      // aevent sequencing state occurs before bevent
+      // see MidiFile::markSequence()
       return -1;
    } else if (aevent[0] == 0xff && aevent[1] == 0x2f) {
       // end-of-track meta-message should always be last (but won't really
@@ -2718,7 +2771,7 @@ ulong MidiFile::readLittleEndian4Bytes(istream& input) {
    input.read((char*)buffer, 4);
    if (input.eof()) {
       cerr << "Error: unexpected end of file." << endl;
-      exit(1);
+      return 0;
    }
    return buffer[3] | (buffer[2] << 8) | (buffer[1] << 16) | (buffer[0] << 24);
 }
@@ -2737,7 +2790,7 @@ ushort MidiFile::readLittleEndian2Bytes(istream& input) {
    input.read((char*)buffer, 2);
    if (input.eof()) {
       cerr << "Error: unexpected end of file." << endl;
-      exit(1);
+      return 0;
    }
    return buffer[1] | (buffer[0] << 8);
 }
@@ -2755,7 +2808,7 @@ uchar MidiFile::readByte(istream& input) {
    input.read((char*)buffer, 1);
    if (input.eof()) {
       cerr << "Error: unexpected end of file." << endl;
-      exit(1);
+      return 0;
    }
    return buffer[0];
 }

@@ -84,6 +84,8 @@ class MidiFile {
       int       size                      (void) const;
 
       // join/split track functionality:
+      void      markSequence              (void);
+      void      clearSequence             (void);
       void      joinTracks                (void);
       void      splitTracks               (void);
       void      splitTracksByChannel      (void);
@@ -141,12 +143,9 @@ class MidiFile {
       void      setFilename               (const string& aname);
       const char* getFilename             (void);
 
-
-
       int       addEvent                  (int aTrack, int aTick,
                                            vector<uchar>& midiData);
       int       addEvent                  (MidiEvent& mfevent);
-
 
       // MIDI message adding convenience functions:
       int       addNoteOn                 (int aTrack, int aTick,

@@ -45,16 +45,17 @@ MidiEvent::MidiEvent(int command, int p1, int p2)
 
 MidiEvent::MidiEvent(int aTime, int aTrack, vector<uchar>& message)
       : MidiMessage(message) {
-   tick  = aTime;
-   track = aTrack;
+   tick      = aTime;
+   track     = aTrack;
    eventlink = NULL;
 }
 
 
 MidiEvent::MidiEvent(const MidiEvent& mfevent) {
-   tick  = mfevent.tick;
-   track = mfevent.track;
+   tick    = mfevent.tick;
+   track   = mfevent.track;
    seconds = mfevent.seconds;
+   seq     = mfevent.seq;
    eventlink = NULL;
    this->resize(mfevent.size());
    for (int i=0; i<(int)this->size(); i++) {
@@ -83,9 +84,10 @@ MidiEvent::~MidiEvent() {
 //
 
 void MidiEvent::clearVariables(void) {
-   tick  = 0;
-   track = 0;
-   seconds = 0.0;
+   tick      = 0;
+   track     = 0;
+   seconds   = 0.0;
+   seq       = 0;
    eventlink = NULL;
 }
 
@@ -99,9 +101,10 @@ MidiEvent& MidiEvent::operator=(MidiEvent& mfevent) {
    if (this == &mfevent) {
       return *this;
    }
-   tick  = mfevent.tick;
-   track = mfevent.track;
+   tick    = mfevent.tick;
+   track   = mfevent.track;
    seconds = mfevent.seconds;
+   seq     = mfevent.seq;
    eventlink = NULL;
    this->resize(mfevent.size());
    for (int i=0; i<(int)this->size(); i++) {
