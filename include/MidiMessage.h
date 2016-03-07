@@ -29,17 +29,17 @@ class MidiMessage : public vector<uchar> {
 		               MidiMessage          (int command);
 		               MidiMessage          (int command, int p1);
 		               MidiMessage          (int command, int p1, int p2);
-                     MidiMessage          (MidiMessage& message);
-                     MidiMessage          (vector<uchar>& message);
-                     MidiMessage          (vector<char>& message);
-                     MidiMessage          (vector<int>& message);
+                     MidiMessage          (const MidiMessage& message);
+                     MidiMessage          (const vector<uchar>& message);
+                     MidiMessage          (const vector<char>& message);
+                     MidiMessage          (const vector<int>& message);
 
                     ~MidiMessage         ();
 
-      MidiMessage&   operator=            (MidiMessage& message);
-      MidiMessage&   operator=            (vector<uchar>& bytes);
-      MidiMessage&   operator=            (vector<char>& bytes);
-      MidiMessage&   operator=            (vector<int>& bytes);
+      MidiMessage&   operator=            (const MidiMessage& message);
+      MidiMessage&   operator=            (const vector<uchar>& bytes);
+      MidiMessage&   operator=            (const vector<char>& bytes);
+      MidiMessage&   operator=            (const vector<int>& bytes);
       void           setSize              (int asize);
       int            getSize              (void) const;
       int            setSizeToCommand     (void);
@@ -88,9 +88,9 @@ class MidiMessage : public vector<uchar> {
       void           setChannel           (int value);
       void           setParameters        (int p1, int p2);
       void           setParameters        (int p1);
-      void           setMessage           (vector<uchar>& message);
-      void           setMessage           (vector<char>& message);
-      void           setMessage           (vector<int>& message);
+      void           setMessage           (const vector<uchar>& message);
+      void           setMessage           (const vector<char>& message);
+      void           setMessage           (const vector<int>& message);
 
       void           setSpelling          (int base7, int accidental);
       void           getSpelling          (int& base7, int& accidental);

@@ -50,22 +50,22 @@ MidiMessage::MidiMessage(int command, int p1, int p2) {
 }
 
 
-MidiMessage::MidiMessage(MidiMessage& message) {
+MidiMessage::MidiMessage(const MidiMessage& message) {
    (*this) = message;
 }
 
 
-MidiMessage::MidiMessage(vector<uchar>& message) {
+MidiMessage::MidiMessage(const vector<uchar>& message) {
    setMessage(message);
 }
 
 
-MidiMessage::MidiMessage(vector<char>& message) {
+MidiMessage::MidiMessage(const vector<char>& message) {
    setMessage(message);
 }
 
 
-MidiMessage::MidiMessage(vector<int>& message) {
+MidiMessage::MidiMessage(const vector<int>& message) {
    setMessage(message);
 }
 
@@ -87,7 +87,7 @@ MidiMessage::~MidiMessage() {
 // MidiMessage::operator= --
 //
 
-MidiMessage& MidiMessage::operator=(MidiMessage& message) {
+MidiMessage& MidiMessage::operator=(const MidiMessage& message) {
    if (this == &message) {
       return *this;
    }
@@ -96,7 +96,7 @@ MidiMessage& MidiMessage::operator=(MidiMessage& message) {
 }
 
 
-MidiMessage& MidiMessage::operator=(vector<uchar>& bytes) {
+MidiMessage& MidiMessage::operator=(const vector<uchar>& bytes) {
    if (this == &bytes) {
       return *this;
    }
@@ -105,13 +105,13 @@ MidiMessage& MidiMessage::operator=(vector<uchar>& bytes) {
 }
 
 
-MidiMessage& MidiMessage::operator=(vector<char>& bytes) {
+MidiMessage& MidiMessage::operator=(const vector<char>& bytes) {
    setMessage(bytes);
    return *this;
 }
 
 
-MidiMessage& MidiMessage::operator=(vector<int>& bytes) {
+MidiMessage& MidiMessage::operator=(const vector<int>& bytes) {
    setMessage(bytes);
    return *this;
 }
@@ -808,7 +808,7 @@ void MidiMessage::setParameters(int p1, int p2) {
 //   input list of bytes.
 //
 
-void MidiMessage::setMessage(vector<uchar>& message) {
+void MidiMessage::setMessage(const vector<uchar>& message) {
    this->resize(message.size());
    for (int i=0; i<(int)this->size(); i++) {
       (*this)[i] = message[i];
@@ -816,7 +816,7 @@ void MidiMessage::setMessage(vector<uchar>& message) {
 }
 
 
-void MidiMessage::setMessage(vector<char>& message) {
+void MidiMessage::setMessage(const vector<char>& message) {
    resize(message.size());
    for (int i=0; i<(int)size(); i++) {
       (*this)[i] = (uchar)message[i];
@@ -824,7 +824,7 @@ void MidiMessage::setMessage(vector<char>& message) {
 }
 
 
-void MidiMessage::setMessage(vector<int>& message) {
+void MidiMessage::setMessage(const vector<int>& message) {
    resize(message.size());
    for (int i=0; i<(int)size(); i++) {
       (*this)[i] = (uchar)message[i];

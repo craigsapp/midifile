@@ -97,7 +97,7 @@ void MidiEvent::clearVariables(void) {
 // MidiEvent::operator= -- Copy the contents of another MidiEvent.
 //
 
-MidiEvent& MidiEvent::operator=(MidiEvent& mfevent) {
+MidiEvent& MidiEvent::operator=(const MidiEvent& mfevent) {
    if (this == &mfevent) {
       return *this;
    }
@@ -114,7 +114,7 @@ MidiEvent& MidiEvent::operator=(MidiEvent& mfevent) {
 }
 
 
-MidiEvent& MidiEvent::operator=(MidiMessage& message) {
+MidiEvent& MidiEvent::operator=(const MidiMessage& message) {
    if (this == &message) {
       return *this;
    }
@@ -127,7 +127,7 @@ MidiEvent& MidiEvent::operator=(MidiMessage& message) {
 }
 
 
-MidiEvent& MidiEvent::operator=(vector<uchar>& bytes) {
+MidiEvent& MidiEvent::operator=(const vector<uchar>& bytes) {
    clearVariables();
    this->resize(bytes.size());
    for (int i=0; i<(int)this->size(); i++) {
@@ -137,14 +137,14 @@ MidiEvent& MidiEvent::operator=(vector<uchar>& bytes) {
 }
 
 
-MidiEvent& MidiEvent::operator=(vector<char>& bytes) {
+MidiEvent& MidiEvent::operator=(const vector<char>& bytes) {
    clearVariables();
    setMessage(bytes);
    return *this;
 }
 
 
-MidiEvent& MidiEvent::operator=(vector<int>& bytes) {
+MidiEvent& MidiEvent::operator=(const vector<int>& bytes) {
    clearVariables();
    setMessage(bytes);
    return *this;
