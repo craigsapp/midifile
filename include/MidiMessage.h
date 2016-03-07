@@ -64,13 +64,17 @@ class MidiMessage : public vector<uchar> {
       int            isPressure           (void) const;
       int            isPitchbend          (void) const;
 
+      int            getP0                (void) const;
       int            getP1                (void) const;
       int            getP2                (void) const;
+      int            getP3                (void) const;
       int            getKeyNumber         (void) const;
       int            getVelocity          (void) const;
 
+      void           setP0                (int value);
       void           setP1                (int value);
       void           setP2                (int value);
+      void           setP3                (int value);
       void           setKeyNumber         (int value);
       void           setVelocity          (int value);
 

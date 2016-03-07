@@ -503,6 +503,17 @@ int MidiMessage::isEndOfTrack(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::getP0 -- Return index 1 byte, or -1 if it doesn't exist.
+//
+
+int MidiMessage::getP0(void) const {
+   return size() < 1 ? -1 : (*this)[0];
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::getP1 -- Return index 1 byte, or -1 if it doesn't exist.
 //
 
@@ -519,6 +530,17 @@ int MidiMessage::getP1(void) const {
 
 int MidiMessage::getP2(void) const {
    return size() < 3 ? -1 : (*this)[2];
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getP3 -- Return index 3 byte, or -1 if it doesn't exist.
+//
+
+int MidiMessage::getP3(void) const {
+   return size() < 4 ? -1 : (*this)[3];
 }
 
 
@@ -570,6 +592,23 @@ int MidiMessage::getVelocity(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::setP0 -- Set the command byte.
+//   If the MidiMessage is too short, add extra spaces to
+//   allow for P0.  The value should be in the range from
+//   128 to 255, but this function will not babysit you.
+//
+
+void MidiMessage::setP0(int value) {
+   if (getSize() < 1) {
+      resize(1);
+   }
+   (*this)[0] = value;
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::setP1 -- Set the first parameter value.
 //   If the MidiMessage is too short, add extra spaces to
 //   allow for P1.  The command byte will be undefined if
@@ -601,6 +640,25 @@ void MidiMessage::setP2(int value) {
       resize(3);
    }
    (*this)[2] = value;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setP3 -- Set the third paramter value.
+//     If the MidiMessage is too short, add extra spaces
+//     to allow for P3.  The command byte and/or the P1/P2 values
+//     will be undefined if extra space needs to be added and
+//     those slots are created.  The value should be in the range
+//     from 0 to 127, but this function will not babysit you.
+//
+
+void MidiMessage::setP3(int value) {
+   if (getSize() < 4) {
+      resize(4);
+   }
+   (*this)[3] = value;
 }
 
 
