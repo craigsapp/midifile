@@ -24,6 +24,7 @@ Options options;
 int      dataQ        = 0;      // used with -d option
 int      roundedQ     = 0;      // used with -r option
 int      darkQ        = 0;      // used with --dark option
+int      bwQ          = 0;      // used with --bw option
 double   Scale        = 1.0;    // used with -s option
 double   Border       = 2.0;    // used with -b option
 double   Opacity      = 0.75;   // used with -o option
@@ -34,6 +35,8 @@ int      diatonicQ    = 0;      // used with --diatonic option
 int      grandQ       = 0;      // used with --gs option
 int      transparentQ = 1;      // used with -T option
 double   MaxRest      = 4.0;    // used with --max-rest option
+int      percmapQ     = 0;      // used with --perc option
+vector<int> PercussionMap;      // used with --perc option
 
 // Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
@@ -60,6 +63,7 @@ void           drawStaves            (ostream& out, double staffwidth,
                                       double totalduration);
 int            base12ToBase7         (int pitch);
 void           printDoubleClass      (ostream& out, double value);
+void           makeMappings          (vector<int>& mapping, const string& mapstring);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -104,7 +108,7 @@ int main(int argc, char* argv[]) {
    // Graphics setup:
 
    // This filter is used to show overlap between notes:
-   if (transparentQ) {
+   if (transparentQ && !bwQ) {
       cout << "<filter id=\"constantOpacity\">\n";
       cout << "\t<feComponentTransfer>\n";
       cout << "\t\t<feFuncA type=\"table\" tableValues=\"0 .5 .5\" />\n";
@@ -112,7 +116,7 @@ int main(int argc, char* argv[]) {
       cout << "</filter>\n";
    }
 
-   if (darkQ) {
+   if (darkQ && !bwQ) {
       cout << "<rect class=\"background\" x=\"-500%\" y=\"-500%\""
            << " width=\"1000%\" height=\"1000%\" style=\"fill:black\" />\n";
    }
@@ -190,39 +194,45 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    // Draw background for increasing contrast of notes and background
    // (needed due to constant opacity filter):
    int track = 0;
-   for (int i=midifile.size()-1; i>=0; i--) {
-      if (!hasNotes(midifile[i])) {
-         continue;
-      }
-      getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
-      track = i;
-      notes << "\t\t<g"
-            << " opacity=\"0.5\"";
-      notes << " class=\"note-backdrops " << "track-" << i << "\"";
-      if (trackhues[i] >= 0.0) {
-          if (darkQ) {
-             notes << " style=\""
-                   << "fill:white;"
-                   << "\"";
-          } else {
-             notes << " style=\""
-                   << "fill:black;"
-                   << "\"";
-          }
-      }
-      notes << " >\n";
-      for (int j=0; j<midifile[i].size(); j++) {
-         if (!midifile[i][j].isNoteOn()) {
+   if (!bwQ) {
+      for (int i=midifile.size()-1; i>=0; i--) {
+         if (!hasNotes(midifile[i])) {
             continue;
          }
-         if (!drumQ) {
-           if (midifile[i][j].getChannel() == 0x09) {
-              continue;
-           }
+         getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
+         track = i;
+         notes << "\t\t<g"
+               << " opacity=\"0.5\"";
+         notes << " class=\"note-backdrops " << "track-" << i << "\"";
+         if (trackhues[i] >= 0.0) {
+             if (bwQ) {
+                notes << " style=\""
+                      << "fill:none;"
+                      << "\"";
+             } else if (darkQ) {
+                notes << " style=\""
+                      << "fill:white;"
+                      << "\"";
+             } else {
+                notes << " style=\""
+                      << "fill:black;"
+                      << "\"";
+             }
          }
-         drawNote(notes, midifile, i, j, 0, minpitch, maxpitch);
+         notes << " >\n";
+         for (int j=0; j<midifile[i].size(); j++) {
+            if (!midifile[i][j].isNoteOn()) {
+               continue;
+            }
+            if (!drumQ) {
+              if (midifile[i][j].getChannel() == 0x09) {
+                 continue;
+              }
+            }
+            drawNote(notes, midifile, i, j, 0, minpitch, maxpitch);
+         }
+         notes << "\t\t</g>\n";
       }
-      notes << "\t\t</g>\n";
    }
 
    // draw the actual notes:
@@ -234,14 +244,20 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       getMinMaxTrackPitch(midifile[i], minpitch, maxpitch);
       notes << "\t\t<g"
             << " class=\"track-" << track << "\"";
-      if (transparentQ) {
+      if (transparentQ && !bwQ) {
          notes << " filter=\"url(#constantOpacity)\"";
       }
       if (trackhues[i] >= 0.0) {
-          notes << " style=\""
-                << "opacity:" << Opacity << ";"
-                << " fill:hsl(" << trackhues[i] << ", 100%, 75%);"
-                << "\"";
+          if (bwQ) {
+             notes << " style=\""
+                   << " fill:white;"
+                   << "\"";
+          } else {
+             notes << " style=\""
+                   << "opacity:" << Opacity << ";"
+                   << " fill:hsl(" << trackhues[i] << ", 100%, 75%);"
+                   << "\"";
+          }
       }
       notes << " >\n";
 
@@ -304,7 +320,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 // drawLines -- Draw lines to connect notes.
 //
 
-void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,  
+void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       Options& options) {
    int counter = -1;
    int i, j;
@@ -318,9 +334,13 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       track = i;
       counter++;
       string color = "hsl(" + to_string(hues[i]) + ", 100%, 75%)";
+      if (bwQ) {
+         color = "black";
+      }
       out << "\t\t<g"
           << " class=\"note-lines track-" << track << "\""
           << " fill=\"none\" stroke=\"" << color << "\"";
+
       // double scale = options.getDouble("scale");
       if (dashing) {
          double dwidth = 0.25;
@@ -350,6 +370,9 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
 void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
       int index, Options& options) {
    int p1 = midifile[track][index].getP1();
+   if (midifile[track][index].getChannel() == 9) {
+      p1 = PercussionMap[p1];
+   }
    if (diatonicQ) {
       p1 = base12ToBase7(p1);
    }
@@ -374,6 +397,9 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
    }
 
    int p2 = midifile[track][nextindex].getP1();
+   if (midifile[track][nextindex].getChannel() == 9) {
+      p2 = PercussionMap[p2];
+   }
    if (diatonicQ) {
       p2 = base12ToBase7(p2);
    }
@@ -424,6 +450,9 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
       endtime = starttime;
    }
    int pitch    = midifile[i][j].getP1();
+   if (midifile[i][j].getChannel() == 9) {
+      pitch = PercussionMap[pitch];
+   }
    int pitch12  = pitch;
    if (diatonicQ) {
       pitch = base12ToBase7(pitch);
@@ -511,7 +540,7 @@ int base12ToBase7(int pitch) {
 
 //////////////////////////////
 //
-// printDoubleClass -- print a double note with a "d" instead of 
+// printDoubleClass -- print a double note with a "d" instead of
 //     decimal point.
 //
 
@@ -689,8 +718,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
    opts.define("d|data=b",             "Embed note data in SVG image");
+   opts.define("bw|black-and-white=b", "Display as black and white (outlines only)");
    opts.define("diatonic=b",           "Vertical axis is base-7 pitch");
    opts.define("drum=b",               "Show drum track (channel 10)");
+   opts.define("pm|perc|percussion-map=s", "Map percussion notes to different pitch");
    opts.define("r|round|rounded=b",    "Round edges of note boxes");
    opts.define("b|border=d:1.0",       "Border around piano roll");
    opts.define("dark=b",               "Background is black");
@@ -733,6 +764,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    lineQ        =  opts.getBoolean("line");
    staffQ       =  opts.getBoolean("staff");
    grandQ       =  opts.getBoolean("grand-staff");
+   bwQ          =  opts.getBoolean("black-and-white");
    diatonicQ    =  opts.getBoolean("diatonic");
    transparentQ = !opts.getBoolean("no-transparency");
    roundedQ     =  opts.getBoolean("rounded");
@@ -740,6 +772,68 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    Border       =  opts.getDouble("border");
    Opacity      =  opts.getDouble("opacity");
    MaxRest      =  opts.getDouble("max-rest");
+
+   PercussionMap.resize(128);
+   for (int i=0; i<(int)PercussionMap.size(); i++) {
+      PercussionMap[i] = i;
+   }
+   percmapQ     =  opts.getBoolean("percussion-map");
+   if (percmapQ) {
+      makeMappings(PercussionMap, opts.getString("percussion-map"));
+   }
+
+
+
+}
+
+
+
+//////////////////////////////
+//
+// makeMappings -- Manually move percussion notes to other locations in pitch range.
+//     Maybe add separate coloring of percussion instruments.
+//     Maybe need to add automatic note offs for persussion instruments (as they
+//     do not always have note-offs.
+//
+//   --perc "60>40, 61>51,62>44"
+//
+
+void makeMappings(vector<int>& mapping, const string& mapstring) {
+   string newmap = mapstring + ' ';
+   int ltx = 0;
+   int d = 1;
+   int digit1 = 0;
+   int digit2 = 0;
+   int ii;
+   for (ii=0; ii<(int)newmap.size(); ii++) {
+      if (isdigit(newmap[ii])) {
+         break;
+      }
+   }
+   for (int i=ii; i<(int)newmap.size(); i++) {
+      if (isdigit(newmap[i])) {
+        if (d) {
+          digit1 = digit1 * 10 + (newmap[i] - '0');
+        } else {
+          digit2 = digit2 * 10 + (newmap[i] - '0');
+        }
+        ltx = 0;
+      } else {
+         if (!ltx) {
+            d = !d;
+         }
+         ltx = 1;
+         if (d) {
+            digit1 = digit1 > 127 ? 127 : digit1;
+            digit1 = digit1 <   0 ?   0 : digit1;
+            digit2 = digit2 > 127 ? 127 : digit2;
+            digit2 = digit2 <   0 ?   0 : digit2;
+            mapping[digit1] = digit2;
+            digit1 = 0;
+            digit2 = 0;
+         }
+      }
+   }
 }
 
 
