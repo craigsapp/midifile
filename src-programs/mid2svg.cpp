@@ -780,6 +780,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    percmapQ     =  opts.getBoolean("percussion-map");
    if (percmapQ) {
       makeMappings(PercussionMap, opts.getString("percussion-map"));
+      drumQ = 1;
    }
 
 
