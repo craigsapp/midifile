@@ -908,7 +908,15 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    char* ptr = strtok(buffer, spacers);
    while (ptr != NULL) {
       current = ptr;
-      Shapes.push_back(current);
+      if (current == "r") {
+         Shapes.push_back("rectangle");
+      } else if (current == "e") {
+         Shapes.push_back("eyelid");
+      } else if (current == "d") {
+         Shapes.push_back("diamond");
+      } else {
+         Shapes.push_back(current);
+      }
       ptr = strtok(NULL, spacers);
    }
 }
