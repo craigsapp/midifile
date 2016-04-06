@@ -37,6 +37,7 @@ int      transparentQ = 1;      // used with -T option
 double   MaxRest      = 4.0;    // used with --max-rest option
 int      percmapQ     = 0;      // used with --perc option
 vector<int> PercussionMap;      // used with --perc option
+vector<string> Shapes;
 
 // Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
@@ -63,7 +64,17 @@ void           drawStaves            (ostream& out, double staffwidth,
                                       double totalduration);
 int            base12ToBase7         (int pitch);
 void           printDoubleClass      (ostream& out, double value);
-void           makeMappings          (vector<int>& mapping, const string& mapstring);
+void           makeMappings          (vector<int>& mapping,
+                                      const string& mapstring);
+void           drawNoteShape         (ostream& out, string& shape, double x, 
+                                      double y, double width, double height);
+void           drawRectangle         (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawDiamond           (ostream& out, double x, double y, 
+                                      double width, double height);
+void           drawEyelid            (ostream& out, double x, double y, 
+                                      double width, double height);
+string         getTrackShape         (int track);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -435,9 +446,9 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
       int minpitch, int maxpitch) {
    int tickstart, tickend, tickdur;
    double starttime, endtime, duration;
-
-   tickstart = midifile[i][j].tick;
-   starttime = midifile[i][j].seconds;
+   int height = 1;
+   tickstart  = midifile[i][j].tick;
+   starttime  = midifile[i][j].seconds;
    if (midifile[i][j].isLinked()) {
       tickdur  = midifile[i][j].getTickDuration();
       tickend  = tickstart + tickdur;
@@ -480,8 +491,7 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
 
 
    // note box:
-   out     << "\t\t\t<rect"
-            << " vector-effect=\"non-scaling-stroke\""
+   out     << "\t\t\t<g"
             << " class=\"note key-" << pitch12;
 
    out << " ont-";
@@ -496,15 +506,121 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
    if (pitch >= maxpitch) {
       out << " maxima";
    }
-   out      << "\"";
-   if (roundedQ) {
-      out << "\trx=\""     << 1          << "\""
-          << "\try=\""     << 1          << "\"";
+   out << "\"";
+   out << ">\n";
+
+   // string shape = "diamond";
+   // string shape = "rectangle";
+   // string shape = "eyelid";
+   string shape = getTrackShape(track);
+   drawNoteShape(out, shape, starttime, pitch, duration, height);
+
+   out << "\t\t\t</g>\n";
+}
+
+
+
+//////////////////////////////
+//
+// getTrackShape --
+//
+
+string getTrackShape(int track) {
+   if (track < 0) {
+      track = 0;
+   } 
+   if (track > 0) {
+      track = track - 1;
    }
-   out << "\tx=\""      << starttime  << "\""
-       << "\ty=\""      << pitch      << "\""
-       << "\twidth=\""  << duration   << "\""
-       << "\theight=\"" << 1          << "\""
+   if (track < Shapes.size()) {
+      return Shapes[track];
+   } else {
+      return "rectangle";
+   }
+}
+
+
+
+//////////////////////////////
+//
+// drawNoteShape -- Draw the desired note shape.
+//
+
+void drawNoteShape(ostream& out, string& shape, double x, double y,
+      double width, double height) {
+   if (shape == "rectangle") {
+      drawRectangle(out, x, y, width, height);
+   } else if (shape == "diamond") {
+      drawDiamond(out, x, y, width, height);
+   } else if (shape == "eyelid") {
+      drawEyelid(out, x, y, width, height);
+   } else {
+      drawRectangle(out, x, y, width, height);
+   }
+}
+
+
+
+//////////////////////////////
+//
+// drawDiamond --
+//
+
+void drawDiamond(ostream& out, double x, double y, double width,
+      double height) {
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+
+   out << "M "  << x           << " " << y+height/2.0;
+   out << " L " << x+width/2.0 << " " << y;
+   out << " L " << x+width     << " " << y+height/2.0;
+   out << " L " << x+width/2.0 << " " << y+height;
+   out << " z";
+   out << "\"";
+   out << "/>\n";
+
+   //if (roundedQ) {
+   //   out << "\trx=\""  << 1      << "\""
+   //       << "\try=\""  << 1      << "\"";
+   //}
+}
+
+
+
+//////////////////////////////
+//
+// drawEyelid --
+//
+
+void drawEyelid(ostream& out, double x, double y, double width,
+      double height) {
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M "  << x           << " " << y+height/2.0;
+   out << " Q " << x+width/2.0 << " " << y+height;
+   out << " "   << x+width     << " " << y+height/2.0;
+   out << " Q " << x+width/2.0 << " " << y;
+   out << " "   << x           << " " << y+height/2.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawRectangle --
+//
+
+void drawRectangle(ostream& out, double x, double y, double width,
+      double height) {
+   out << "\t\t\t\t<rect vector-effect=\"non-scaling-stroke\"";
+   if (roundedQ) {
+      out << "\trx=\""  << 1      << "\""
+          << "\try=\""  << 1      << "\"";
+   }
+   out << "\tx=\""      << x      << "\""
+       << "\ty=\""      << y      << "\""
+       << "\twidth=\""  << width  << "\""
+       << "\theight=\"" << height << "\""
        << " />\n";
 }
 
@@ -727,6 +843,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
+   opts.define("S|shapes=s:rectangle,rectangle", "shape of notes for each track");
    opts.define("mr|rest|max-rest=d:4.0 seconds",
       "Maximum rest through which to draw lines");
 
@@ -783,8 +900,17 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       drumQ = 1;
    }
 
-
-
+   char buffer[12345] = {0};
+   strcpy(buffer, opts.getString("shapes").c_str());
+   Shapes.resize(0);
+   string current;
+   const char* spacers = "\t :,;|\n";
+   char* ptr = strtok(buffer, spacers);
+   while (ptr != NULL) {
+      current = ptr;
+      Shapes.push_back(current);
+      ptr = strtok(NULL, spacers);
+   }
 }
 
 
