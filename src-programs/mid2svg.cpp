@@ -31,6 +31,7 @@ double   Opacity      = 0.75;   // used with -o option
 double   drumQ        = 0;      // used with --drum option
 int      lineQ        = 0;      // used with -l option
 int      staffQ       = 0;      // used with --staff option
+int      clefQ        = 0;      // used with --clef option
 int      diatonicQ    = 0;      // used with --diatonic option
 int      grandQ       = 0;      // used with --gs option
 int      transparentQ = 1;      // used with -T option
@@ -75,6 +76,7 @@ void           drawDiamond           (ostream& out, double x, double y,
 void           drawEyelid            (ostream& out, double x, double y, 
                                       double width, double height);
 string         getTrackShape         (int track);
+void           drawClefs             (ostream& out);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -95,6 +97,11 @@ int main(int argc, char* argv[]) {
    double width = getMaxTime(midifile);
    double height = maxpitch - minpitch + 1;
 
+   double clefwidth = 0;
+   if (clefQ) {
+      clefwidth = 180 / 12;
+   }
+
    cout << "<?xml version=\"1.0\""
         << " encoding=\"UTF-8\""
         << " standalone=\"no\""
@@ -108,11 +115,11 @@ int main(int argc, char* argv[]) {
         << " xmlns:xlink=\"http://www.w3.org/1999/xlink\""
         << " viewPort=\"" << minx << " " << miny  << " "
                           << width << " " << height << "\""
-        << " viewBox=\"" << -Border * Scale << " "
+        << " viewBox=\"" << (-Border - clefwidth) * Scale << " "
                          << -Border * Scale << " "
-                         << (width * aspectRatio + 2 * Border) * Scale << " "
+                         << (width * aspectRatio + 2 * Border + clefwidth) * Scale << " "
                          << (height + (2 * Border)) * Scale << "\""
-        << " width=\"" << (width * aspectRatio + 2 * Border) * Scale << "\""
+        << " width=\"" << (width * aspectRatio + 2 * Border + clefwidth) * Scale << "\""
         << " height=\"" << (height + 2 * Border) * Scale << "\""
         << ">\n";
 
@@ -182,6 +189,9 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    if (staffQ) {
       drawStaves(notes, options.getDouble("staff-width"),
            options.getString("staff-color"), midifile.getTotalTimeInSeconds());
+      if (clefQ) {
+         drawClefs(notes);
+      }
    }
 
    string strokecolor = options.getString("stroke-color");
@@ -295,6 +305,73 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
 //////////////////////////////
 //
+// drawClefs --
+//
+
+void drawClefs(ostream& out) {
+   string fill = "#555555";
+   if (bwQ) {
+      fill = "transparent";
+   }
+
+	out  <<
+"	<g class=\"treble-clef\" stroke=\"#555555\" stroke-width=\"0.2\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
+"		<path d=\"M250.026,1080.111c-2.375-5.813-4.501-12.037-5.616-19.656c-1.07-7.32-1.387-15.609-1.62-23.113\n"
+"			c-0.426-13.713,0.409-28.548,1.296-41.038c0.132-1.861,0.517-3.882,0.432-5.183c-0.118-1.794-1.622-3.834-2.484-5.401\n"
+"			c-4.551-8.266-9.023-16.291-13.176-25.488c-3.56-7.883-6.46-16.235-8.316-27.648c-1.087-6.682-1.406-14.26-2.053-21.816"
+"			c0-3.313,0-6.623,0-9.936c0.817-17.854,4.099-30.916,9.396-39.743c1.084-1.808,2.228-3.951,3.24-5.186\n"
+"			c6.218-7.579,16.081-9.873,25.812-7.343c0.598-8.887,1.858-19.53,2.376-28.944c0.193-3.49,0.54-7.194,0.54-10.368\n"
+"			c-0.003-13.193-3.44-20.603-7.452-26.135c-3.645-2.613-9.925-3.099-13.176,0.43c4.904-0.174,8.174,5.425,9.612,12.744\n"
+"			c2.427,12.351-1.738,24.386-7.344,25.918c-8.458,2.316-13.738-12.691-11.556-28.295c1.622-11.598,6.603-18.42,13.176-19.655\n"
+"			c5.073-0.956,10.149,0.426,13.608,5.399c1.988,2.858,4.009,7.685,4.968,11.879c1.246,5.448,2.18,12.212,2.16,18.792\n"
+"			c-0.01,3.246-0.453,6.761-0.648,10.152c-0.614,10.689-1.579,19.729-2.376,29.812c6.095,5.437,10.941,13.432,13.392,25.704\n"
+"			c1.302,6.52,2.035,15.517,1.727,23.111c-0.375,9.302-2.565,17.712-5.183,23.975c-3.863,9.248-9.852,13.985-17.604,14.257\n"
+"			c-0.849,9.749-1.633,19.633-2.593,29.159c2.376,4.619,4.55,9.643,6.805,14.906c2.185,5.095,3.892,11.286,5.508,17.712\n"
+"			c2.98,11.855,5.576,29.004,5.4,46.44c-0.102,10.157-1.538,19.319-3.24,27.215c-1.691,7.847-3.557,15.81-6.912,20.089\n"
+"			c-0.36,0-0.72,0-1.08,0C254.113,1090.306,252.068,1085.104,250.026,1080.111z M248.19,997.6\n"
+"			c-1.362,15.429-0.295,36.475,2.7,48.384c1.367,5.441,2.426,10.329,4.428,15.122c0.854,2.04,3.006,5.909,4.104,5.83\n"
+"			c2.104-0.153,3.064-9.245,3.24-13.824c0.542-14.092-2.623-28.387-5.832-37.366C254.247,1008.515,250.911,1002.572,248.19,997.6z\n"
+"			 M249.27,935.823c-6.565-5.809-13.02-17.569-13.716-34.776c-0.425-10.517,1.463-18.693,3.888-24.624\n"
+"			c1.422-3.478,3.789-6.692,6.156-9.072c1.287-1.293,4.09-3.666,3.996,1.296c-0.048,2.584-2.504,4.06-3.888,6.263\n"
+"			c-2.557,4.079-4.489,12.399-3.348,21.385c0.481,3.784,1.636,7.983,2.808,10.153c1.458,2.697,3.725,4.34,6.048,5.615\n"
+"			c1.987-19.137,3.451-39.323,5.292-58.753c-4.493-1.347-9.224-1.49-13.068-0.213c-6.922,2.298-11.753,12.045-14.256,23.111\n"
+"			c-1.838,8.128-2.944,20.546-1.837,31.752c0.529,5.353,1.939,11.271,3.348,15.984c4.113,13.751,11.055,26.606,16.308,36.289\n"
+"			C247.971,952.523,248.466,943.862,249.27,935.823z M260.286,855.473c-1.479,19.361-3.545,38.701-4.86,57.671\n"
+"			c5.07-0.638,9.023-3.541,11.556-9.718c4.25-10.369,3.378-29.217-0.648-39.53C264.924,860.283,262.694,856.868,260.286,855.473z\"/>\n"
+"	</g>\n";
+
+	out << 
+"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"#555555\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"0.0632\">\n"
+"		<g transform=\"matrix(0.1835537,0,0,0.1830159,-98.297967,-1128.8415)\">\n"
+"			<path d=\"M514.308,6407.837c3.419,4.086,5.655,9.64,7.124,12.803\n"
+"				c2.204,4.648,4.046,10.097,5.538,16.384c1.492,6.287,2.238,13.068,2.238,20.385c0,4.115-0.338,7.925-0.991,11.507\n"
+"				c-0.653,3.543-1.527,6.4-2.647,8.459c-1.108,2.095-2.297,3.125-3.545,3.125c-1.142,0-2.262-0.687-3.369-2.135\n"
+"				c-1.119-1.41-2.029-3.505-2.752-6.325c-0.711-2.819-1.073-6.135-1.073-9.982c0-3.011,0.326-5.411,0.968-7.317\n"
+"				c0.653-1.867,1.446-2.78,2.379-2.78c0.513,0,0.991,0.342,1.422,1.104c0.431,0.724,0.769,1.753,1.014,3.011\n"
+"				c0.245,1.257,0.373,2.628,0.373,4.077c0,2.019-0.245,3.733-0.735,5.144c-0.501,1.41-1.049,2.132-1.667,2.132\n"
+"				c-0.21,0-0.466-0.152-0.781-0.38c-0.303-0.229-0.501-0.342-0.571-0.342c-0.14,0-0.292,0.152-0.466,0.495\n"
+"				c-0.175,0.342-0.268,0.799-0.292,1.41c0.07,0.495,0.117,0.838,0.117,1.104c0.338,2.896,0.944,4.953,1.796,6.249\n"
+"				c0.863,1.258,1.784,1.905,2.763,1.905c1.014,0,1.83-0.953,2.46-2.858c0.63-1.943,1.073-4.344,1.329-7.277\n"
+"				c0.268-2.896,0.396-5.981,0.396-9.22c-0.035-3.468-0.221-7.125-0.583-10.897c-0.361-3.81-0.804-7.163-1.317-10.059\n"
+"				c-0.653-3.925-1.458-7.468-2.414-10.593c-0.956-3.124-1.889-5.752-2.775-7.849c-0.886-2.133-2.731-5.973-4.104-9.297\n"
+"				C514,6409.468,514.126,6407.62,514.308,6407.837z\"/>\n"
+"			<path d=\"M531.259,6465.557c0.313-0.979,0.705-1.415,1.189-1.415\n"
+"				c0.457,0,0.862,0.436,1.228,1.306c0.339,0.908,0.522,2.032,0.522,3.339c0,1.233-0.17,2.358-0.522,3.302\n"
+"				c-0.353,0.979-0.745,1.488-1.163,1.488c-0.483,0-0.888-0.436-1.215-1.343c-0.34-0.871-0.509-1.958-0.509-3.266\n"
+"				C530.789,6467.626,530.945,6466.5,531.259,6465.557z\"/>\n"
+"			<path d=\"M531.272,6447.847c0.327-0.871,0.732-1.342,1.241-1.342\n"
+"				c0.457,0,0.849,0.471,1.189,1.378c0.327,0.908,0.497,2.033,0.497,3.447c0,1.162-0.183,2.214-0.522,3.193\n"
+"				c-0.366,0.98-0.745,1.452-1.163,1.452c-0.509,0-0.914-0.436-1.241-1.343c-0.313-0.87-0.483-1.996-0.483-3.301\n"
+"				C530.789,6449.879,530.958,6448.717,531.272,6447.847z\"/>\n"
+"		</g>\n"
+"	</g>\n";
+
+}
+
+
+
+//////////////////////////////
+//
 // drawStaves --
 //
 
@@ -315,9 +392,13 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
        << " stroke=\"" << staffcolor << "\""
        << ">\n";
 
+   double start = 0.0;
+   if (clefQ) {
+      start = -4.65;
+   }
    for (int i=0; i<(int)vpos.size(); i++) {
       out << "\t\t<path"
-          << " d=\"M" << 0 << " " << vpos[i]
+          << " d=\"M" << start << " " << vpos[i]
           << " L" << totalduration << " " << vpos[i] << "\" />\n";
    }
 
@@ -828,7 +909,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("staff=b",              "Draw staff lines.");
    opts.define("gs|grand|grand-staff=b", "show at least all grand staff.");
    opts.define("sc|staff-color=s:#555555", "staff line color.");
-   opts.define("sw|st|staff-width|staff-thickness=d:0.1",    "staff line width.");
+   opts.define("sw|st|staff-width|staff-thickness=d:0.01",    "staff line width.");
    opts.define("lw|lt|line-width|line-thickness=d:0.02",  "Width of note lines");
    opts.define("dash|dashing=b",       "Dash connecting lines");
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
@@ -843,6 +924,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
+   opts.define("c|clef|clefs=b",       "Draw clefs");
    opts.define("S|shapes=s:rectangle,rectangle", "shape of notes for each track");
    opts.define("mr|rest|max-rest=d:4.0 seconds",
       "Maximum rest through which to draw lines");
@@ -879,6 +961,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    drumQ        =  opts.getBoolean("drum");
    darkQ        =  opts.getBoolean("dark");
    lineQ        =  opts.getBoolean("line");
+   clefQ        =  opts.getBoolean("clefs");
    staffQ       =  opts.getBoolean("staff");
    grandQ       =  opts.getBoolean("grand-staff");
    bwQ          =  opts.getBoolean("black-and-white");
@@ -889,6 +972,9 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    Border       =  opts.getDouble("border");
    Opacity      =  opts.getDouble("opacity");
    MaxRest      =  opts.getDouble("max-rest");
+   if (clefQ) {
+      staffQ = 1;
+   }
 
    PercussionMap.resize(128);
    for (int i=0; i<(int)PercussionMap.size(); i++) {
