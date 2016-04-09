@@ -386,6 +386,10 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
       vpos.insert(vpos.end(), {43.5, 47.5, 50.5, 53.5, 57.5}); // bass clef
    }
 
+   if (bwQ) {
+      staffwidth = staffwidth / 10.0;
+   }
+
    out << "\t<g"
        << " class=\"staff-lines\""
        << " stroke-width=\"" << staffwidth << "\""
@@ -909,7 +913,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("staff=b",              "Draw staff lines.");
    opts.define("gs|grand|grand-staff=b", "show at least all grand staff.");
    opts.define("sc|staff-color=s:#555555", "staff line color.");
-   opts.define("sw|st|staff-width|staff-thickness=d:0.01",    "staff line width.");
+   opts.define("sw|st|staff-width|staff-thickness=d:0.1",    "staff line width.");
    opts.define("lw|lt|line-width|line-thickness=d:0.02",  "Width of note lines");
    opts.define("dash|dashing=b",       "Dash connecting lines");
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
