@@ -34,8 +34,10 @@ int      staffQ       = 0;      // used with --staff option
 int      clefQ        = 0;      // used with --clef option
 int      diatonicQ    = 0;      // used with --diatonic option
 int      grandQ       = 0;      // used with --gs option
+int      finalQ       = 0;      // used with -f option
 int      transparentQ = 1;      // used with -T option
 double   MaxRest      = 4.0;    // used with --max-rest option
+double   EndSpace     = 0.0;    // used with -e option
 int      percmapQ     = 0;      // used with --perc option
 vector<int> PercussionMap;      // used with --perc option
 vector<string> Shapes;
@@ -117,9 +119,11 @@ int main(int argc, char* argv[]) {
                           << width << " " << height << "\""
         << " viewBox=\"" << (-Border - clefwidth) * Scale << " "
                          << -Border * Scale << " "
-                         << (width * aspectRatio + 2 * Border + clefwidth) * Scale << " "
+                         << ((width + EndSpace) * aspectRatio + 2 * Border + 
+                             clefwidth) * Scale << " "
                          << (height + (2 * Border)) * Scale << "\""
-        << " width=\"" << (width * aspectRatio + 2 * Border + clefwidth) * Scale << "\""
+        << " width=\"" << ((width + EndSpace) * aspectRatio + 2 * Border + 
+                            clefwidth) * Scale << "\""
         << " height=\"" << (height + 2 * Border) * Scale << "\""
         << ">\n";
 
@@ -310,12 +314,14 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
 void drawClefs(ostream& out) {
    string fill = "#555555";
+   string stroke = "#555555";
    if (bwQ) {
       fill = "transparent";
+      stroke = "#000000";
    }
 
 	out  <<
-"	<g class=\"treble-clef\" stroke=\"#555555\" stroke-width=\"0.2\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
+"	<g class=\"treble-clef\" stroke=\"#555555\" stroke-width=\"0.3\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
 "		<path d=\"M250.026,1080.111c-2.375-5.813-4.501-12.037-5.616-19.656c-1.07-7.32-1.387-15.609-1.62-23.113\n"
 "			c-0.426-13.713,0.409-28.548,1.296-41.038c0.132-1.861,0.517-3.882,0.432-5.183c-0.118-1.794-1.622-3.834-2.484-5.401\n"
 "			c-4.551-8.266-9.023-16.291-13.176-25.488c-3.56-7.883-6.46-16.235-8.316-27.648c-1.087-6.682-1.406-14.26-2.053-21.816"
@@ -341,7 +347,7 @@ void drawClefs(ostream& out) {
 "	</g>\n";
 
 	out << 
-"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"#555555\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"0.0632\">\n"
+"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"#555555\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"0.09\">\n"
 "		<g transform=\"matrix(0.1835537,0,0,0.1830159,-98.297967,-1128.8415)\">\n"
 "			<path d=\"M514.308,6407.837c3.419,4.086,5.655,9.64,7.124,12.803\n"
 "				c2.204,4.648,4.046,10.097,5.538,16.384c1.492,6.287,2.238,13.068,2.238,20.385c0,4.115-0.338,7.925-0.991,11.507\n"
@@ -400,10 +406,28 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
    if (clefQ) {
       start = -4.65;
    }
+   double endx = totalduration + EndSpace;
    for (int i=0; i<(int)vpos.size(); i++) {
       out << "\t\t<path"
           << " d=\"M" << start << " " << vpos[i]
-          << " L" << totalduration << " " << vpos[i] << "\" />\n";
+          << " L" << endx << " " << vpos[i] << "\" />\n";
+   }
+
+   if (finalQ) {
+      double thickness = 0.5;
+      double maxy = *max_element(vpos.begin(), vpos.end());
+      double miny = *min_element(vpos.begin(), vpos.end());
+      out << "\t\t<path stroke=\"#cccccc\" fill=\"#cccccc\""
+          << " d=\"M" << endx << "," << miny
+          << " L"  << endx << "," << maxy
+          << " L"  << endx - thickness << "," << maxy
+          << " L"  << endx - thickness << "," << miny
+          << " z"
+          << "\"/>\n";
+      out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
+          << " d=\"M" << endx-thickness-thickness/2.0 << "," << miny
+          << " L" << endx-thickness-thickness/2.0 << "," << maxy
+          << "\"/>\n";
    }
 
    out << "\t</g>\n";
@@ -919,6 +943,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
    opts.define("d|data=b",             "Embed note data in SVG image");
+   opts.define("f|final|final-barline=b", "draw final barline");
    opts.define("bw|black-and-white=b", "Display as black and white (outlines only)");
    opts.define("diatonic=b",           "Vertical axis is base-7 pitch");
    opts.define("drum=b",               "Show drum track (channel 10)");
@@ -928,6 +953,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
+   opts.define("e|end-space=d:0.0",    "extra horiz. space at end of piece");
    opts.define("c|clef|clefs=b",       "Draw clefs");
    opts.define("S|shapes=s:rectangle,rectangle", "shape of notes for each track");
    opts.define("mr|rest|max-rest=d:4.0 seconds",
@@ -988,6 +1014,12 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    if (percmapQ) {
       makeMappings(PercussionMap, opts.getString("percussion-map"));
       drumQ = 1;
+   }
+
+   finalQ   = opts.getBoolean("final-barline");
+   EndSpace = opts.getDouble("end-space");
+   if (finalQ) {
+      EndSpace += 2.0;
    }
 
    char buffer[12345] = {0};
