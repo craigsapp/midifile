@@ -21,25 +21,29 @@ using namespace std;
 
 // User interface variables:
 Options options;
-int      dataQ        = 0;      // used with -d option
-int      roundedQ     = 0;      // used with -r option
-int      darkQ        = 0;      // used with --dark option
-int      bwQ          = 0;      // used with --bw option
-double   Scale        = 1.0;    // used with -s option
-double   Border       = 2.0;    // used with -b option
-double   Opacity      = 0.75;   // used with -o option
-double   drumQ        = 0;      // used with --drum option
-int      lineQ        = 0;      // used with -l option
-int      staffQ       = 0;      // used with --staff option
-int      clefQ        = 0;      // used with --clef option
-int      diatonicQ    = 0;      // used with --diatonic option
-int      grandQ       = 0;      // used with --gs option
-int      finalQ       = 0;      // used with -f option
-int      transparentQ = 1;      // used with -T option
-double   MaxRest      = 4.0;    // used with --max-rest option
-double   EndSpace     = 0.0;    // used with -e option
-int      percmapQ     = 0;      // used with --perc option
-vector<int> PercussionMap;      // used with --perc option
+int      dataQ        = 0;         // used with -d option
+int      roundedQ     = 0;         // used with -r option
+int      darkQ        = 0;         // used with --dark option
+int      bwQ          = 0;         // used with --bw option
+double   Scale        = 1.0;       // used with -s option
+double   Border       = 2.0;       // used with -b option
+double   Opacity      = 0.75;      // used with -o option
+double   drumQ        = 0;         // used with --drum option
+int      lineQ        = 0;         // used with -l option
+int      staffQ       = 0;         // used with --staff option
+int      clefQ        = 0;         // used with --clef option
+int      diatonicQ    = 0;         // used with --diatonic option
+int      grandQ       = 0;         // used with --gs option
+int      finalQ       = 0;         // used with -f option
+int      doubleQ      = 0;         // used with --double option
+int      transparentQ = 1;         // used with -T option
+double   StaffThickness = 0.05;    // used with --staff-width
+double   LineThickness  = 0.05;    // used with --line-width
+string   StaffColor   = "#555555"; // used with  -staff-color
+double   MaxRest      = 4.0;       // used with --max-rest option
+double   EndSpace     = 0.0;       // used with -e option
+int      percmapQ     = 0;         // used with --perc option
+vector<int> PercussionMap;         // used with --perc option
 vector<string> Shapes;
 
 // Function declarations:
@@ -191,8 +195,8 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
    stringstream notes;
 
    if (staffQ) {
-      drawStaves(notes, options.getDouble("staff-width"),
-           options.getString("staff-color"), midifile.getTotalTimeInSeconds());
+      drawStaves(notes, StaffThickness, StaffColor,
+          midifile.getTotalTimeInSeconds());
       if (clefQ) {
          drawClefs(notes);
       }
@@ -392,10 +396,6 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
       vpos.insert(vpos.end(), {43.5, 47.5, 50.5, 53.5, 57.5}); // bass clef
    }
 
-   if (bwQ) {
-      staffwidth = staffwidth / 10.0;
-   }
-
    out << "\t<g"
        << " class=\"staff-lines\""
        << " stroke-width=\"" << staffwidth << "\""
@@ -428,6 +428,18 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
           << " d=\"M" << endx-thickness-thickness/2.0 << "," << miny
           << " L" << endx-thickness-thickness/2.0 << "," << maxy
           << "\"/>\n";
+   } else if (doubleQ) {
+      double thickness = 0.5;
+      double maxy = *max_element(vpos.begin(), vpos.end());
+      double miny = *min_element(vpos.begin(), vpos.end());
+      out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
+          << " d=\"M" << endx-thickness << "," << miny
+          << " L" << endx-thickness << "," << maxy
+          << "\"/>\n";
+      out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
+          << " d=\"M" << endx << "," << miny
+          << " L" << endx << "," << maxy
+          << "\"/>\n";
    }
 
    out << "\t</g>\n";
@@ -444,7 +456,6 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       Options& options) {
    int counter = -1;
    int i, j;
-   double linewidth = options.getDouble("line-width");
    int dashing = options.getBoolean("dash");
    int track = 0;
    for (i=midifile.size()-1; i>=0; i--) {
@@ -466,7 +477,7 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
          double dwidth = 0.25;
          out << " stroke-dasharray=\"" << dwidth << "\"";
       }
-      out << " stroke-width=\""<< linewidth << "\">\n";
+      out << " stroke-width=\""<< LineThickness << "\">\n";
       for (j=0; j<midifile[i].size(); j++) {
          if (!midifile[i][j].isNoteOn()) {
             continue;
@@ -944,6 +955,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
    opts.define("d|data=b",             "Embed note data in SVG image");
    opts.define("f|final|final-barline=b", "draw final barline");
+   opts.define("double|double-barline=b", "draw final double barline");
    opts.define("bw|black-and-white=b", "Display as black and white (outlines only)");
    opts.define("diatonic=b",           "Vertical axis is base-7 pitch");
    opts.define("drum=b",               "Show drum track (channel 10)");
@@ -1017,9 +1029,18 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    finalQ   = opts.getBoolean("final-barline");
+   doubleQ = opts.getBoolean("double-barline");
    EndSpace = opts.getDouble("end-space");
-   if (finalQ) {
+   if (finalQ || doubleQ) {
       EndSpace += 2.0;
+   }
+   StaffThickness = opts.getDouble("staff-width");
+   if (bwQ) {
+      StaffThickness = StaffThickness / 10.0;
+   }
+   StaffColor = opts.getString("staff-color");
+   if (!opts.getBoolean("line-width")) {
+      LineThickness = StaffThickness;
    }
 
    char buffer[12345] = {0};
