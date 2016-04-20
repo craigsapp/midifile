@@ -32,6 +32,7 @@ double   drumQ        = 0;         // used with --drum option
 int      lineQ        = 0;         // used with -l option
 int      staffQ       = 0;         // used with --staff option
 int      clefQ        = 0;         // used with --clef option
+int      braceQ       = 0;         // used with --clef option
 int      diatonicQ    = 0;         // used with --diatonic option
 int      grandQ       = 0;         // used with --gs option
 int      finalQ       = 0;         // used with -f option
@@ -83,6 +84,7 @@ void           drawEyelid            (ostream& out, double x, double y,
                                       double width, double height);
 string         getTrackShape         (int track);
 void           drawClefs             (ostream& out);
+void           drawBrace             (ostream& out);
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -200,6 +202,9 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
       if (clefQ) {
          drawClefs(notes);
       }
+      if (braceQ) {
+         drawBrace(notes);
+      }
    }
 
    string strokecolor = options.getString("stroke-color");
@@ -313,6 +318,37 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
 //////////////////////////////
 //
+// drawBrace -- Draw curley brace
+//
+
+void drawBrace(ostream& out) {
+out << "<!-- BRACE -->" << endl;
+   string fill = "#555555";
+   string stroke = "#555555";
+   if (bwQ) {
+      fill   = "transparent";
+      stroke = "#000000";
+   }
+   int xpos = 31;
+   int ypos = -324;
+
+	out  <<
+"	<g transform=\"rotate(0.2) translate(" << xpos << "," << ypos << ") scale(1,-1) scale(.0175)\">\n"
+"		<path stroke=\"" << stroke << "\" fill=\"" << fill << "\" stroke-width=\"0.2562\" stroke-linejoin=\"round\" d=\"M-2031.812-22924.453\n"
+"			c-24.919,88.91-36.494,171.418-39.024,279.09c-2.379,101.156,9.877,207.264,16.991,305.533\n"
+"			c6.605,91.162,10.955,191.51-0.048,282.248c-2.757,22.732-8.614,43.227-13.597,63.254c-8.261,33.207-2.886,38.68,5.136,72.111\n"
+"			c10.485,43.689,11.808,90.887,13.172,140.795c3.604,132-16.215,270.613-24.675,400.074\n"
+"			c-8.818,134.883,3.651,255.861,34.113,366.164c-17.906-92.289-29.886-179.082-25.068-283.635\n"
+"			c4.572-99.275,18.379-195.207,24.078-294.23c5.11-88.826,9.914-203.154-8.344-284.342c-4.91-21.82-10.217-42.227-15.835-62.98\n"
+"			c-9.146-33.812-7.235-31.322,2.353-65.664c11.021-39.504,20.774-80.965,24.589-128.662c10.5-131.361-2.347-271.072-13.816-398.416\n"
+"			c-5.957-66.148-10.878-134.006-7.34-202.238C-2055.575-22803.877-2044.086-22863.117-2031.812-22924.453L-2031.812-22924.453z\"/>\n"
+"	</g>\n";
+}
+
+
+
+//////////////////////////////
+//
 // drawClefs --
 //
 
@@ -325,7 +361,7 @@ void drawClefs(ostream& out) {
    }
 
 	out  <<
-"	<g class=\"treble-clef\" stroke=\"#555555\" stroke-width=\"0.3\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
+"	<g class=\"treble-clef\" stroke=\"" << stroke << "\" stroke-width=\"0.3\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
 "		<path d=\"M250.026,1080.111c-2.375-5.813-4.501-12.037-5.616-19.656c-1.07-7.32-1.387-15.609-1.62-23.113\n"
 "			c-0.426-13.713,0.409-28.548,1.296-41.038c0.132-1.861,0.517-3.882,0.432-5.183c-0.118-1.794-1.622-3.834-2.484-5.401\n"
 "			c-4.551-8.266-9.023-16.291-13.176-25.488c-3.56-7.883-6.46-16.235-8.316-27.648c-1.087-6.682-1.406-14.26-2.053-21.816"
@@ -351,7 +387,7 @@ void drawClefs(ostream& out) {
 "	</g>\n";
 
 	out << 
-"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"#555555\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"0.09\">\n"
+"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"" << stroke << "\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"0.09\">\n"
 "		<g transform=\"matrix(0.1835537,0,0,0.1830159,-98.297967,-1128.8415)\">\n"
 "			<path d=\"M514.308,6407.837c3.419,4.086,5.655,9.64,7.124,12.803\n"
 "				c2.204,4.648,4.046,10.097,5.538,16.384c1.492,6.287,2.238,13.068,2.238,20.385c0,4.115-0.338,7.925-0.991,11.507\n"
@@ -413,10 +449,10 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
           << " L" << endx << " " << vpos[i] << "\" />\n";
    }
 
+   double maxy = *max_element(vpos.begin(), vpos.end());
+   double miny = *min_element(vpos.begin(), vpos.end());
+   double thickness = 0.5;
    if (finalQ) {
-      double thickness = 0.5;
-      double maxy = *max_element(vpos.begin(), vpos.end());
-      double miny = *min_element(vpos.begin(), vpos.end());
       out << "\t\t<path stroke=\"#cccccc\" fill=\"#cccccc\""
           << " d=\"M" << endx << "," << miny
           << " L"  << endx << "," << maxy
@@ -424,14 +460,12 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
           << " L"  << endx - thickness << "," << miny
           << " z"
           << "\"/>\n";
+
       out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
           << " d=\"M" << endx-thickness-thickness/2.0 << "," << miny
           << " L" << endx-thickness-thickness/2.0 << "," << maxy
           << "\"/>\n";
    } else if (doubleQ) {
-      double thickness = 0.5;
-      double maxy = *max_element(vpos.begin(), vpos.end());
-      double miny = *min_element(vpos.begin(), vpos.end());
       out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
           << " d=\"M" << endx-thickness << "," << miny
           << " L" << endx-thickness << "," << maxy
@@ -439,6 +473,16 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
       out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
           << " d=\"M" << endx << "," << miny
           << " L" << endx << "," << maxy
+          << "\"/>\n";
+   }
+
+   if (braceQ) {
+      staffwidth = 5 * staffwidth;
+      out << "\t\t<path vector-effect=\"non-scaling-stroke\" stroke-width=\"" 
+          << staffwidth << "\" stroke=\"" << staffcolor << "\""
+          << " d=\"M" << start << "," << miny 
+          << " L"  << start << "," << maxy
+          << " z"
           << "\"/>\n";
    }
 
@@ -1016,6 +1060,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    MaxRest      =  opts.getDouble("max-rest");
    if (clefQ) {
       staffQ = 1;
+      braceQ = 1;
    }
 
    PercussionMap.resize(128);
