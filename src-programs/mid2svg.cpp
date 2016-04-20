@@ -696,7 +696,7 @@ string getTrackShape(int track) {
    if (track > 0) {
       track = track - 1;
    }
-   if (track < Shapes.size()) {
+   if (track < (int)Shapes.size()) {
       return Shapes[track];
    } else {
       return "rectangle";
