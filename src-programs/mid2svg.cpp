@@ -44,6 +44,7 @@ string   StaffColor   = "#555555"; // used with  -staff-color
 double   MaxRest      = 4.0;       // used with --max-rest option
 double   EndSpace     = 0.0;       // used with -e option
 int      percmapQ     = 0;         // used with --perc option
+double   AspectRatio  = 2.5;       // used with -a option
 vector<int> PercussionMap;         // used with --perc option
 vector<string> Shapes;
 
@@ -98,7 +99,6 @@ int main(int argc, char* argv[]) {
    getMinMaxPitch(midifile, minpitch, maxpitch);
 
    convertMidiFileToSvg(notes, midifile, options);
-   double aspectRatio = options.getDouble("aspect-ratio");
 
    double minx = 0;
    double miny = minpitch;
@@ -125,10 +125,10 @@ int main(int argc, char* argv[]) {
                           << width << " " << height << "\""
         << " viewBox=\"" << (-Border - clefwidth) * Scale << " "
                          << -Border * Scale << " "
-                         << ((width + EndSpace) * aspectRatio + 2 * Border + 
+                         << ((width + EndSpace) * AspectRatio + 2 * Border + 
                              clefwidth) * Scale << " "
                          << (height + (2 * Border)) * Scale << "\""
-        << " width=\"" << ((width + EndSpace) * aspectRatio + 2 * Border + 
+        << " width=\"" << ((width + EndSpace) * AspectRatio + 2 * Border + 
                             clefwidth) * Scale << "\""
         << " height=\"" << (height + 2 * Border) * Scale << "\""
         << ">\n";
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
 
    cout << "<g"
         << " transform=\""
-        << "scale(" << 1 * Scale * aspectRatio << ", " << -Scale << ")"
+        << "scale(" << 1 * Scale * AspectRatio << ", " << -Scale << ")"
         << " translate(0, " << -(maxpitch+1) << ")"
         << "\" >\n";
 
@@ -322,19 +322,21 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 //
 
 void drawBrace(ostream& out) {
-out << "<!-- BRACE -->" << endl;
-   string fill = "#555555";
-   string stroke = "#555555";
+   double unscale = 2.5 / AspectRatio;
+   string fill = StaffColor;
+   string stroke = StaffColor;
    if (bwQ) {
       fill   = "transparent";
-      stroke = "#000000";
    }
-   int xpos = 31;
-   int ypos = -324;
+   double strokewidth = StaffThickness / 0.1;
+   double xpos = 30.85 - strokewidth;
+   double ypos = -324;
+
+   out << "<g transform=\"scale(" << unscale << ", 1)\">\n";
 
 	out  <<
 "	<g transform=\"rotate(0.2) translate(" << xpos << "," << ypos << ") scale(1,-1) scale(.0175)\">\n"
-"		<path stroke=\"" << stroke << "\" fill=\"" << fill << "\" stroke-width=\"0.2562\" stroke-linejoin=\"round\" d=\"M-2031.812-22924.453\n"
+"		<path vector-effect=\"non-scaling-stroke\" stroke=\"" << stroke << "\" fill=\"" << fill << "\" stroke-width=\"" << strokewidth << "\" stroke-linejoin=\"round\" d=\"M-2031.812-22924.453\n"
 "			c-24.919,88.91-36.494,171.418-39.024,279.09c-2.379,101.156,9.877,207.264,16.991,305.533\n"
 "			c6.605,91.162,10.955,191.51-0.048,282.248c-2.757,22.732-8.614,43.227-13.597,63.254c-8.261,33.207-2.886,38.68,5.136,72.111\n"
 "			c10.485,43.689,11.808,90.887,13.172,140.795c3.604,132-16.215,270.613-24.675,400.074\n"
@@ -343,6 +345,8 @@ out << "<!-- BRACE -->" << endl;
 "			c-9.146-33.812-7.235-31.322,2.353-65.664c11.021-39.504,20.774-80.965,24.589-128.662c10.5-131.361-2.347-271.072-13.816-398.416\n"
 "			c-5.957-66.148-10.878-134.006-7.34-202.238C-2055.575-22803.877-2044.086-22863.117-2031.812-22924.453L-2031.812-22924.453z\"/>\n"
 "	</g>\n";
+
+   out << "</g>\n";
 }
 
 
@@ -353,16 +357,19 @@ out << "<!-- BRACE -->" << endl;
 //
 
 void drawClefs(ostream& out) {
-   string fill = "#555555";
-   string stroke = "#555555";
+   string fill        = StaffColor;
+   string stroke      = StaffColor;
+   double unscale = 2.5 / AspectRatio;
+   double strokewidth = StaffThickness / 0.10;
    if (bwQ) {
       fill = "transparent";
-      stroke = "#000000";
    }
+   
+   out << "<g transform=\"scale(" << unscale << ", 1)\">\n";
 
 	out  <<
-"	<g class=\"treble-clef\" stroke=\"" << stroke << "\" stroke-width=\"0.3\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
-"		<path d=\"M250.026,1080.111c-2.375-5.813-4.501-12.037-5.616-19.656c-1.07-7.32-1.387-15.609-1.62-23.113\n"
+"	<g class=\"treble-clef\" stroke=\"" << stroke << "\" stroke-width=\"" << strokewidth << "\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
+"		<path vector-effect=\"non-scaling-stroke\" d=\"M250.026,1080.111c-2.375-5.813-4.501-12.037-5.616-19.656c-1.07-7.32-1.387-15.609-1.62-23.113\n"
 "			c-0.426-13.713,0.409-28.548,1.296-41.038c0.132-1.861,0.517-3.882,0.432-5.183c-0.118-1.794-1.622-3.834-2.484-5.401\n"
 "			c-4.551-8.266-9.023-16.291-13.176-25.488c-3.56-7.883-6.46-16.235-8.316-27.648c-1.087-6.682-1.406-14.26-2.053-21.816"
 "			c0-3.313,0-6.623,0-9.936c0.817-17.854,4.099-30.916,9.396-39.743c1.084-1.808,2.228-3.951,3.24-5.186\n"
@@ -386,10 +393,12 @@ void drawClefs(ostream& out) {
 "			c5.07-0.638,9.023-3.541,11.556-9.718c4.25-10.369,3.378-29.217-0.648-39.53C264.924,860.283,262.694,856.868,260.286,855.473z\"/>\n"
 "	</g>\n";
 
+    strokewidth = StaffThickness / 0.1;
+
 	out << 
-"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"" << stroke << "\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"0.09\">\n"
+"	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"" << stroke << "\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"" << strokewidth << "\">\n"
 "		<g transform=\"matrix(0.1835537,0,0,0.1830159,-98.297967,-1128.8415)\">\n"
-"			<path d=\"M514.308,6407.837c3.419,4.086,5.655,9.64,7.124,12.803\n"
+"			<path vector-effect=\"non-scaling-stroke\" d=\"M514.308,6407.837c3.419,4.086,5.655,9.64,7.124,12.803\n"
 "				c2.204,4.648,4.046,10.097,5.538,16.384c1.492,6.287,2.238,13.068,2.238,20.385c0,4.115-0.338,7.925-0.991,11.507\n"
 "				c-0.653,3.543-1.527,6.4-2.647,8.459c-1.108,2.095-2.297,3.125-3.545,3.125c-1.142,0-2.262-0.687-3.369-2.135\n"
 "				c-1.119-1.41-2.029-3.505-2.752-6.325c-0.711-2.819-1.073-6.135-1.073-9.982c0-3.011,0.326-5.411,0.968-7.317\n"
@@ -401,16 +410,18 @@ void drawClefs(ostream& out) {
 "				c0.268-2.896,0.396-5.981,0.396-9.22c-0.035-3.468-0.221-7.125-0.583-10.897c-0.361-3.81-0.804-7.163-1.317-10.059\n"
 "				c-0.653-3.925-1.458-7.468-2.414-10.593c-0.956-3.124-1.889-5.752-2.775-7.849c-0.886-2.133-2.731-5.973-4.104-9.297\n"
 "				C514,6409.468,514.126,6407.62,514.308,6407.837z\"/>\n"
-"			<path d=\"M531.259,6465.557c0.313-0.979,0.705-1.415,1.189-1.415\n"
+"			<path vector-effect=\"non-scaling-stroke\" d=\"M531.259,6465.557c0.313-0.979,0.705-1.415,1.189-1.415\n"
 "				c0.457,0,0.862,0.436,1.228,1.306c0.339,0.908,0.522,2.032,0.522,3.339c0,1.233-0.17,2.358-0.522,3.302\n"
 "				c-0.353,0.979-0.745,1.488-1.163,1.488c-0.483,0-0.888-0.436-1.215-1.343c-0.34-0.871-0.509-1.958-0.509-3.266\n"
 "				C530.789,6467.626,530.945,6466.5,531.259,6465.557z\"/>\n"
-"			<path d=\"M531.272,6447.847c0.327-0.871,0.732-1.342,1.241-1.342\n"
+"			<path vector-effect=\"non-scaling-stroke\" d=\"M531.272,6447.847c0.327-0.871,0.732-1.342,1.241-1.342\n"
 "				c0.457,0,0.849,0.471,1.189,1.378c0.327,0.908,0.497,2.033,0.497,3.447c0,1.162-0.183,2.214-0.522,3.193\n"
 "				c-0.366,0.98-0.745,1.452-1.163,1.452c-0.509,0-0.914-0.436-1.241-1.343c-0.313-0.87-0.483-1.996-0.483-3.301\n"
 "				C530.789,6449.879,530.958,6448.717,531.272,6447.847z\"/>\n"
 "		</g>\n"
 "	</g>\n";
+
+   out << "</g>\n";
 
 }
 
@@ -424,6 +435,7 @@ void drawClefs(ostream& out) {
 void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
       double totalduration) {
    vector<double> vpos;
+   double unscale = 2.5 / AspectRatio;
    if (diatonicQ) {
       vpos.insert(vpos.end(), {37.5, 39.5, 41.5, 43.5, 45.5}); // treble clef
       vpos.insert(vpos.end(), {25.5, 27.5, 29.5, 31.5, 33.5}); // bass clef
@@ -440,7 +452,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 
    double start = 0.0;
    if (clefQ) {
-      start = -4.65;
+      start = -4.65 * unscale;
    }
    double endx = totalduration + EndSpace;
    for (int i=0; i<(int)vpos.size(); i++) {
@@ -451,7 +463,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 
    double maxy = *max_element(vpos.begin(), vpos.end());
    double miny = *min_element(vpos.begin(), vpos.end());
-   double thickness = 0.5;
+   double thickness = 0.5 * unscale;
    if (finalQ) {
       out << "\t\t<path stroke=\"#cccccc\" fill=\"#cccccc\""
           << " d=\"M" << endx << "," << miny
@@ -461,16 +473,16 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
           << " z"
           << "\"/>\n";
 
-      out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
+      out << "\t\t<path stroke=\"" << StaffColor << "\" fill=\"" << StaffColor << "\""
           << " d=\"M" << endx-thickness-thickness/2.0 << "," << miny
           << " L" << endx-thickness-thickness/2.0 << "," << maxy
           << "\"/>\n";
    } else if (doubleQ) {
-      out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
+      out << "\t\t<path stroke-width=\"" << Scale* 2.5 * staffwidth << "\" vector-effect=\"non-scaling-stroke\" stroke=\"" << StaffColor << "\" fill=\"" << StaffColor << "\""
           << " d=\"M" << endx-thickness << "," << miny
           << " L" << endx-thickness << "," << maxy
           << "\"/>\n";
-      out << "\t\t<path stroke=\"#555555\" fill=\"#555555\""
+      out << "\t\t<path stroke-width=\"" << Scale* 2.5 * staffwidth << "\" vector-effect=\"non-scaling-stroke\" stroke=\"" << StaffColor << "\" fill=\"" << StaffColor << "\""
           << " d=\"M" << endx << "," << miny
           << " L" << endx << "," << maxy
           << "\"/>\n";
@@ -510,7 +522,7 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       counter++;
       string color = "hsl(" + to_string(hues[i]) + ", 100%, 75%)";
       if (bwQ) {
-         color = "black";
+         color = StaffColor;
       }
       out << "\t\t<g"
           << " class=\"note-lines track-" << track << "\""
@@ -518,10 +530,10 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
 
       // double scale = options.getDouble("scale");
       if (dashing) {
-         double dwidth = 0.25;
+         double dwidth = 2.25;
          out << " stroke-dasharray=\"" << dwidth << "\"";
       }
-      out << " stroke-width=\""<< LineThickness << "\">\n";
+      out << " stroke-width=\""<< LineThickness * Scale << "\">\n";
       for (j=0; j<midifile[i].size(); j++) {
          if (!midifile[i][j].isNoteOn()) {
             continue;
@@ -596,7 +608,9 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
    }
 
 
-   out << "\t\t\t<path d=\"" << path.str() << "\" />\n";
+   out << "\t\t\t<path ";
+   out << " vector-effect=\"non-scaling-stroke\"";
+   out << " d=\"" << path.str() << "\" />\n";
 }
 
 
@@ -1056,6 +1070,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    roundedQ     =  opts.getBoolean("rounded");
    Scale        =  opts.getDouble("scale");
    Border       =  opts.getDouble("border");
+   AspectRatio  =  opts.getDouble("aspect-ratio");
    Opacity      =  opts.getDouble("opacity");
    MaxRest      =  opts.getDouble("max-rest");
    if (clefQ) {
