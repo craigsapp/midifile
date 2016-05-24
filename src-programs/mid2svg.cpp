@@ -38,9 +38,11 @@ int      grandQ       = 0;         // used with --gs option
 int      finalQ       = 0;         // used with -f option
 int      doubleQ      = 0;         // used with --double option
 int      transparentQ = 1;         // used with -T option
-double   StaffThickness = 0.05;    // used with --staff-width
-double   LineThickness  = 0.05;    // used with --line-width
-string   StaffColor   = "#555555"; // used with  -staff-color
+double   ClefFactor   = 6;         
+double   StaffThickness = 2.0;     // used with --staff-width
+double   LineThickness  = 2.0;     // used with --line-width
+string   StaffColor   = "#555555"; // used with -staff-color
+string   ClefColor    = "#555555"; // used with -clef-color
 double   MaxRest      = 4.0;       // used with --max-rest option
 double   EndSpace     = 0.0;       // used with -e option
 int      percmapQ     = 0;         // used with --perc option
@@ -328,8 +330,8 @@ void drawBrace(ostream& out) {
    if (bwQ) {
       fill   = "transparent";
    }
-   double strokewidth = StaffThickness / 0.1;
-   double xpos = 30.85 - strokewidth;
+   double strokewidth = StaffThickness;
+   double xpos = 30.5;
    double ypos = -324;
 
    out << "<g transform=\"scale(" << unscale << ", 1)\">\n";
@@ -357,18 +359,17 @@ void drawBrace(ostream& out) {
 //
 
 void drawClefs(ostream& out) {
-   string fill        = StaffColor;
-   string stroke      = StaffColor;
+   string fill        = ClefColor;
+   string stroke      = ClefColor;
    double unscale = 2.5 / AspectRatio;
-   double strokewidth = StaffThickness / 0.10;
+   double strokewidth = StaffThickness * ClefFactor;
    if (bwQ) {
       fill = "transparent";
    }
    
    out << "<g transform=\"scale(" << unscale << ", 1)\">\n";
-
 	out  <<
-"	<g class=\"treble-clef\" stroke=\"" << stroke << "\" stroke-width=\"" << strokewidth << "\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
+"	<g vector-effect=\"non-scaling-stroke\" class=\"treble-clef\" stroke=\"" << stroke << "\" stroke-width=\"" << strokewidth << "\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
 "		<path vector-effect=\"non-scaling-stroke\" d=\"M250.026,1080.111c-2.375-5.813-4.501-12.037-5.616-19.656c-1.07-7.32-1.387-15.609-1.62-23.113\n"
 "			c-0.426-13.713,0.409-28.548,1.296-41.038c0.132-1.861,0.517-3.882,0.432-5.183c-0.118-1.794-1.622-3.834-2.484-5.401\n"
 "			c-4.551-8.266-9.023-16.291-13.176-25.488c-3.56-7.883-6.46-16.235-8.316-27.648c-1.087-6.682-1.406-14.26-2.053-21.816"
@@ -392,8 +393,6 @@ void drawClefs(ostream& out) {
 "			C247.971,952.523,248.466,943.862,249.27,935.823z M260.286,855.473c-1.479,19.361-3.545,38.701-4.86,57.671\n"
 "			c5.07-0.638,9.023-3.541,11.556-9.718c4.25-10.369,3.378-29.217-0.648-39.53C264.924,860.283,262.694,856.868,260.286,855.473z\"/>\n"
 "	</g>\n";
-
-    strokewidth = StaffThickness / 0.1;
 
 	out << 
 "	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"" << stroke << "\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"" << strokewidth << "\">\n"
@@ -456,7 +455,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
    }
    double endx = totalduration + EndSpace;
    for (int i=0; i<(int)vpos.size(); i++) {
-      out << "\t\t<path"
+      out << "\t\t<path vector-effect=\"non-scaling-stroke\""
           << " d=\"M" << start << " " << vpos[i]
           << " L" << endx << " " << vpos[i] << "\" />\n";
    }
@@ -478,11 +477,11 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
           << " L" << endx-thickness-thickness/2.0 << "," << maxy
           << "\"/>\n";
    } else if (doubleQ) {
-      out << "\t\t<path stroke-width=\"" << Scale* 2.5 * staffwidth << "\" vector-effect=\"non-scaling-stroke\" stroke=\"" << StaffColor << "\" fill=\"" << StaffColor << "\""
+      out << "\t\t<path vector-effect=\"non-scaling-stroke\""
           << " d=\"M" << endx-thickness << "," << miny
           << " L" << endx-thickness << "," << maxy
           << "\"/>\n";
-      out << "\t\t<path stroke-width=\"" << Scale* 2.5 * staffwidth << "\" vector-effect=\"non-scaling-stroke\" stroke=\"" << StaffColor << "\" fill=\"" << StaffColor << "\""
+      out << "\t\t<path vector-effect=\"non-scaling-stroke\""
           << " d=\"M" << endx << "," << miny
           << " L" << endx << "," << maxy
           << "\"/>\n";
@@ -490,8 +489,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 
    if (braceQ) {
       staffwidth = 5 * staffwidth;
-      out << "\t\t<path vector-effect=\"non-scaling-stroke\" stroke-width=\"" 
-          << staffwidth << "\" stroke=\"" << staffcolor << "\""
+      out << "\t\t<path vector-effect=\"non-scaling-stroke\""
           << " d=\"M" << start << "," << miny 
           << " L"  << start << "," << maxy
           << " z"
@@ -532,8 +530,9 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       if (dashing) {
          double dwidth = 2.25;
          out << " stroke-dasharray=\"" << dwidth << "\"";
+         out << " vector-effect=\"non-scaling-stroke\"";
       }
-      out << " stroke-width=\""<< LineThickness * Scale << "\">\n";
+      out << " stroke-width=\""<< LineThickness << "\">\n";
       for (j=0; j<midifile[i].size(); j++) {
          if (!midifile[i][j].isNoteOn()) {
             continue;
@@ -1006,8 +1005,9 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("staff=b",              "Draw staff lines.");
    opts.define("gs|grand|grand-staff=b", "show at least all grand staff.");
    opts.define("sc|staff-color=s:#555555", "staff line color.");
-   opts.define("sw|st|staff-width|staff-thickness=d:0.1",    "staff line width.");
-   opts.define("lw|lt|line-width|line-thickness=d:0.02",  "Width of note lines");
+   opts.define("cc|clef-color=s:#cdcdcd", "cleff fill/stroke color.");
+   opts.define("sw|st|staff-width|staff-thickness=d:0.5",    "staff line width.");
+   opts.define("lw|lt|line-width|line-thickness=d:0.5",  "Width of note lines");
    opts.define("dash|dashing=b",       "Dash connecting lines");
    opts.define("T|no-transparency=b",  "Do not show notes with transparency");
    opts.define("s|scale=d:1.0",        "Scaling factor for SVG image");
@@ -1096,9 +1096,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
    StaffThickness = opts.getDouble("staff-width");
    if (bwQ) {
-      StaffThickness = StaffThickness / 10.0;
+       StaffThickness = StaffThickness * 0.25;
    }
    StaffColor = opts.getString("staff-color");
+   ClefColor = opts.getString("clef-color");
    if (!opts.getBoolean("line-width")) {
       LineThickness = StaffThickness;
    }

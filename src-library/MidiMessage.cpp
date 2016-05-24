@@ -1156,7 +1156,8 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
 
 //////////////////////////////
 //
-// MidiMessage::setMetaTempo -- Input tempo is in quarter notes per minute.
+// MidiMessage::setMetaTempo -- Input tempo is in quarter notes per minute
+//   (meta message #0x51).
 //
 
 void MidiMessage::setMetaTempo(double tempo) {
@@ -1174,6 +1175,47 @@ void MidiMessage::setMetaTempo(double tempo) {
 void MidiMessage::setTempo(double tempo) {
    setMetaTempo(tempo);
 }
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTimeSignature -- create a time signature meta message
+//      (meta #0x58).  The "bottom" parameter should be a power of two;
+//      otherwise, it will be forced to be the next highest power of two,
+//      as MIDI time signatures must have a power of two in the denominator.
+//
+// Default values:
+//     clocksPerClick     == 24 (quarter note)
+//     num32ndsPerQuarter ==  8 (8 32nds per quarter note)
+//
+// Time signature of 4/4 would be:
+//    top    = 4
+//    bottom = 4 (converted to 2 in the MIDI file for 2nd power of 2).
+//    clocksPerClick = 24 (2 eighth notes based on num32ndsPerQuarter)
+//    num32ndsPerQuarter = 8
+//
+// Time signature of 6/8 would be:
+//    top    = 6
+//    bottom = 8 (converted to 3 in the MIDI file for 3rd power of 2).
+//    clocksPerClick = 36 (3 eighth notes based on num32ndsPerQuarter)
+//    num32ndsPerQuarter = 8
+//
+
+void MidiMessage::makeTimeSignature(int top, int bottom, int clocksPerClick,
+      int num32ndsPerQuarter) {
+   int base2 = 0;
+   while (bottom >>= 1) base2++;
+   resize(7);
+   (*this)[0] = 0xff;
+   (*this)[1] = 0x58;
+   (*this)[2] = 4;
+   (*this)[3] = 0xff & top;
+   (*this)[4] = 0xff & base2;
+   (*this)[5] = 0xff & clocksPerClick;
+   (*this)[6] = 0xff & num32ndsPerQuarter;
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////

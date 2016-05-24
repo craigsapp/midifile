@@ -250,7 +250,7 @@ int MidiFile::read(istream& input) {
       binarydata.seekg(0, ios_base::beg);
       if (binarydata.peek() != 'M') {
          cerr << "Bad MIDI data input" << endl;
-	      rwstatus = 0;
+         rwstatus = 0;
          return rwstatus;
       } else {
          rwstatus = read(binarydata);
@@ -1499,7 +1499,7 @@ int MidiFile::addCue(int aTrack, int aTick, const string& text) {
 
 //////////////////////////////
 //
-// MidiFile::addTempo -- Add a tempo meta message.
+// MidiFile::addTempo -- Add a tempo meta message (meta #0x51).
 //
 
 int MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
@@ -1508,6 +1508,60 @@ int MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
    me->tick = aTick;
    events[aTrack]->push_back_no_copy(me);
    return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addTimeSignature -- Add a time signature meta message
+//      (meta #0x58).  The "bottom" parameter must be a power of two;
+//      otherwise, it will be set to the next highest power of two.
+//
+// Default values:
+//     clocksPerClick     == 24 (quarter note)
+//     num32ndsPerQuarter ==  8 (8 32nds per quarter note)
+//
+// Time signature of 4/4 would be:
+//    top    = 4
+//    bottom = 4 (converted to 2 in the MIDI file for 2nd power of 2).
+//    clocksPerClick = 24 (2 eighth notes based on num32ndsPerQuarter)
+//    num32ndsPerQuarter = 8
+//
+// Time signature of 6/8 would be:
+//    top    = 6
+//    bottom = 8 (converted to 3 in the MIDI file for 3rd power of 2).
+//    clocksPerClick = 36 (3 eighth notes based on num32ndsPerQuarter)
+//    num32ndsPerQuarter = 8
+//
+
+int MidiFile::addTimeSignature(int aTrack, int aTick, int top, int bottom,
+      int clocksPerClick, int num32ndsPerQuarter) {
+   MidiEvent* me = new MidiEvent;
+   me->makeTimeSignature(top, bottom, clocksPerClick, num32ndsPerQuarter);
+   me->tick = aTick;
+   events[aTrack]->push_back_no_copy(me);
+   return events[aTrack]->size() - 1;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addCompoundTimeSignature -- Add a time signature meta message
+//      (meta #0x58), where the clocksPerClick parameter is set to three
+//      eighth notes for compount meters such as 6/8 which represents
+//      two beats per measure.
+//
+// Default values:
+//     clocksPerClick     == 36 (quarter note)
+//     num32ndsPerQuarter ==  8 (8 32nds per quarter note)
+//
+
+int MidiFile::addCompoundTimeSignature(int aTrack, int aTick, int top,
+      int bottom, int clocksPerClick, int num32ndsPerQuarter) {
+   return addTimeSignature(aTrack, aTick, top, bottom, clocksPerClick,
+      num32ndsPerQuarter);
 }
 
 

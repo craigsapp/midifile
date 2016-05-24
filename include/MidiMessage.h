@@ -116,12 +116,15 @@ class MidiMessage : public vector<uchar> {
       void           makeMarker           (const string& text);
       void           makeCue              (const string& text);
       void           makeCopyright        (const string& text);
+      void           makeTempo            (double tempo) { setTempo(tempo); }
+      void           makeTimeSignature    (int top, int bottom,
+	                                        int clocksPerClick = 24,
+                                           int num32dsPerQuarter = 8);
 
       // meta-message related functions:
       int            getMetaType          (void) const;
       int            isTempo              (void) const;
       void           setTempo             (double tempo);
-      void makeTempo(double tempo) { setTempo(tempo); }
       void           setMetaTempo         (double tempo);
       int            isEndOfTrack         (void) const;
 
