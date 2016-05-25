@@ -85,6 +85,10 @@ void           drawDiamond           (ostream& out, double x, double y,
                                       double width, double height);
 void           drawEyelid            (ostream& out, double x, double y, 
                                       double width, double height);
+void           drawHexThick          (ostream& out, double x, double y, 
+                                      double width, double height);
+void           drawHexThin           (ostream& out, double x, double y, 
+                                      double width, double height);
 string         getTrackShape         (int track);
 void           drawClefs             (ostream& out);
 void           drawBrace             (ostream& out);
@@ -689,6 +693,8 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
    // string shape = "diamond";
    // string shape = "rectangle";
    // string shape = "eyelid";
+   // string shape = "hexthin";
+   // string shape = "hexthick";
    string shape = getTrackShape(track);
    drawNoteShape(out, shape, starttime, pitch, duration, height);
 
@@ -731,6 +737,10 @@ void drawNoteShape(ostream& out, string& shape, double x, double y,
       drawDiamond(out, x, y, width, height);
    } else if (shape == "eyelid") {
       drawEyelid(out, x, y, width, height);
+   } else if (shape == "hexthin") {
+      drawHexThin(out, x, y, width, height);
+   } else if (shape == "hexthick") {
+      drawHexThick(out, x, y, width, height);
    } else {
       drawRectangle(out, x, y, width, height);
    }
@@ -776,6 +786,55 @@ void drawEyelid(ostream& out, double x, double y, double width,
    out << " "   << x+width     << " " << y+height/2.0;
    out << " Q " << x+width/2.0 << " " << y;
    out << " "   << x           << " " << y+height/2.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawHexThin --
+//
+
+void drawHexThin(ostream& out, double x, double y, double width,
+      double height) {
+   double& h = height;
+   double& w = width;
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M "  << x           << " " << y+h/3.0;
+   out << " L " << x           << " " << y+h*2.0/3.0;
+   out << " L " << x+w/2.0     << " " << y+h;
+   out << " L " << x+w         << " " << y+h*2.0/3.0;
+   out << " L " << x+w         << " " << y+h/3.0;
+   out << " L " << x+w/2.0     << " " << y;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawHexThick --
+//
+
+void drawHexThick(ostream& out, double x, double y, double width,
+      double height) {
+   double& h = height;
+   double& w = width;
+   double maxbevel = h/2.0/AspectRatio;
+   if (width*AspectRatio < height) {
+      maxbevel = w/2.0/AspectRatio;
+   }
+   double& b = maxbevel;
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M "  << x           << " " << y+h/2.0;
+   out << " L " << x+b         << " " << y+h;
+   out << " L " << x+w-b       << " " << y+h;
+   out << " L " << x+w         << " " << y+h/2.0;
+   out << " L " << x+w-b       << " " << y;
+   out << " L " << x+b         << " " << y;
    out << " z\"";
    out << "/>\n";
 }
@@ -1118,6 +1177,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
          Shapes.push_back("eyelid");
       } else if (current == "d") {
          Shapes.push_back("diamond");
+      } else if (current == "h") {
+         Shapes.push_back("hexthin");
+      } else if (current == "H") {
+         Shapes.push_back("hexthick");
       } else {
          Shapes.push_back(current);
       }
