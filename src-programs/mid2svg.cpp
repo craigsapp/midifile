@@ -334,7 +334,7 @@ void drawBrace(ostream& out) {
    if (bwQ) {
       fill   = "transparent";
    }
-   double strokewidth = StaffThickness;
+   double strokewidth = StaffThickness * ClefFactor;
    double xpos = 30.5;
    double ypos = -324;
 
