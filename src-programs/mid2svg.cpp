@@ -329,8 +329,8 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
 void drawBrace(ostream& out) {
    double unscale = 2.5 / AspectRatio;
-   string fill = StaffColor;
-   string stroke = StaffColor;
+   string fill   = ClefColor;
+   string stroke = ClefColor;
    if (bwQ) {
       fill   = "transparent";
    }
@@ -341,7 +341,7 @@ void drawBrace(ostream& out) {
    out << "<g transform=\"scale(" << unscale << ", 1)\">\n";
 
 	out  <<
-"	<g transform=\"rotate(0.2) translate(" << xpos << "," << ypos << ") scale(1,-1) scale(.0175)\">\n"
+"	<g class=\"brace\" transform=\"rotate(0.2) translate(" << xpos << "," << ypos << ") scale(1,-1) scale(.0175)\">\n"
 "		<path vector-effect=\"non-scaling-stroke\" stroke=\"" << stroke << "\" fill=\"" << fill << "\" stroke-width=\"" << strokewidth << "\" stroke-linejoin=\"round\" d=\"M-2031.812-22924.453\n"
 "			c-24.919,88.91-36.494,171.418-39.024,279.09c-2.379,101.156,9.877,207.264,16.991,305.533\n"
 "			c6.605,91.162,10.955,191.51-0.048,282.248c-2.757,22.732-8.614,43.227-13.597,63.254c-8.261,33.207-2.886,38.68,5.136,72.111\n"
