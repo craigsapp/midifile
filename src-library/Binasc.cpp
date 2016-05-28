@@ -701,6 +701,7 @@ int Binasc::readMidiEvent(ostream& out, istream& infile, int& trackbytes,
       case 0xC0:    // patch change: 1 bytes
          output << " '" << dec << (int)byte1;
          if (commentsQ) {
+            output << "\t";
             comment += "patch-change";
          }
          break;
