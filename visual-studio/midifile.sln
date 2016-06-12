@@ -1,0 +1,13 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "midifile", "midifile.vcxproj", "{70028D4B-8E0D-4FF2-BD05-D7AB19B66F30}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stretch", "stretch.vcxproj", "{1CD9D03A-63D6-46BA-80E2-93AAECD2754B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "binasc", "binasc.vcxproj", "{5230AA11-C456-48E6-B19F-23703EC38D80}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "createmidifile", "createmidifile.vcxproj", "{52724792-CD79-4152-984C-DFD7DA570855}"
+EndProject

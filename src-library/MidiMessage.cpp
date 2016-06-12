@@ -1163,6 +1163,10 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
 void MidiMessage::setMetaTempo(double tempo) {
    int microseconds = (int)(60.0 / tempo * 1000000.0 + 0.5);
    resize(6);
+   setTempoMicroseconds( microseconds );
+}
+
+void MidiMessage::setTempoMicroseconds( int microseconds ) {
    (*this)[0] = 0xff;
    (*this)[1] = 0x51;
    (*this)[2] = 3;

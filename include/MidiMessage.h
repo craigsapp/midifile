@@ -125,6 +125,7 @@ class MidiMessage : public vector<uchar> {
       int            getMetaType          (void) const;
       int            isTempo              (void) const;
       void           setTempo             (double tempo);
+      void           setTempoMicroseconds (int microseconds);
       void           setMetaTempo         (double tempo);
       int            isEndOfTrack         (void) const;
 
