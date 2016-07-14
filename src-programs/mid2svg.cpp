@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 using namespace std;
 
@@ -30,6 +31,9 @@ double   Border       = 2.0;       // used with -b option
 double   Opacity      = 0.75;      // used with -o option
 double   drumQ        = 0;         // used with --drum option
 int      lineQ        = 0;         // used with -l option
+int      curveQ       = 0;         // used with --cl option
+int      radiusQ      = 0;         // used with --rl option
+double   radius       = 1.0;       // used with --rl option
 int      staffQ       = 0;         // used with --staff option
 int      clefQ        = 0;         // used with --clef option
 int      braceQ       = 0;         // used with --clef option
@@ -599,20 +603,73 @@ void printLineToNextNote(ostream& out, MidiFile& midifile, int track,
       // don't connect notes after long rests.
       return;
    }
-   if (difference > 0.0) {
-      // there is a rest so extent the line horizontally
-      path << " M" << endtime << " " << p1 + 0.5;
-      path << " L" << nextstarttime << " " << p1 + 0.5;
-      path << " L" << nextstarttime << " " << p2 + 0.5;
+
+   double Ax = endtime;
+   double Ay = p1 + 0.5;
+   double Bx = nextstarttime;
+   double By = p2 + 0.5;
+   double Cx = nextstarttime;
+   double Cy = p1 + 0.5;
+
+   double tradius = radius;
+   if (tradius > fabs(Cx - Ax)) {
+      tradius = fabs(Cx - Ax);
+   }
+   if (tradius > fabs(By - Cy)) {
+      tradius = fabs(By - Cy);
+   }
+
+   double Rx = tradius / AspectRatio;
+   double Ry = tradius;
+
+   double Dx = Cx;
+   double Dy = Cy + Ry;
+   double Dxn = Cx;
+   double Dyn = Cy - Ry;
+   double Ex = Cx - Rx;
+   double Ey = Cy;
+
+   if (radiusQ && (radius > 0)) {
+	if (Ay < By) {
+            path << " M" << Ax << " " << Ay;
+            path << " L" << Ex << " " << Ey;
+            path << " A" << Rx << " " << Ry << " 0 0 1 ";
+            path << Dx << " " << Dy;
+            path << " L" << Bx << " " << By;
+	} else {
+            path << " M" << Ax << " " << Ay;
+            path << " L" << Ex << " " << Ey;
+            path << " A" << Rx << " " << Ry << " 0 0 0 ";
+            path << Dxn << " " << Dyn;
+            path << " L" << Bx << " " << By;
+	}
+   } else if (curveQ) {
+      if (difference > 0.0) {
+         path << " M" << Ax << "," << Ay;
+         path << " Q" << Cx << "," << Cy;
+         path << " " << Bx << " " << By;
+      } else {
+         // vertical line:
+         path << " M" << Cx << " " << Cy;
+         path << " L" << Bx << " " << By;
+      }
    } else {
-      // vertical line:
-      path << " M" << nextstarttime << " " << p1 + 0.5;
-      path << " L" << nextstarttime << " " << p2 + 0.5;
+      if (difference > 0.0) {
+         // there is a rest so extent the line horizontally
+         path << " M" << Ax << " " << Ay;
+         path << " L" << Cx << " " << Cy;
+         path << " L" << Bx << " " << By;
+      } else {
+         // vertical line:
+         path << " M" << Cx << " " << Cy;
+         path << " L" << Bx << " " << By;
+      }
    }
 
 
    out << "\t\t\t<path ";
    out << " vector-effect=\"non-scaling-stroke\"";
+   out << " stroke-linejoin=\"round\"";
    out << " d=\"" << path.str() << "\" />\n";
 }
 
@@ -1064,7 +1121,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("staff=b",              "Draw staff lines.");
    opts.define("gs|grand|grand-staff=b", "show at least all grand staff.");
    opts.define("sc|staff-color=s:#555555", "staff line color.");
-   opts.define("cc|clef-color=s:#cdcdcd", "cleff fill/stroke color.");
+   opts.define("cc|clef-color=s:#cdcdcd", "clef fill/stroke color.");
    opts.define("sw|st|staff-width|staff-thickness=d:0.5",    "staff line width.");
    opts.define("lw|lt|line-width|line-thickness=d:0.5",  "Width of note lines");
    opts.define("dash|dashing=b",       "Dash connecting lines");
@@ -1082,6 +1139,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("dark=b",               "Background is black");
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
+   opts.define("cl|cline=b",           "Draw curved lines between notes");
+   opts.define("rl|rline=d:0.25",           "Draw lines with curved radius between notes");
    opts.define("e|end-space=d:0.0",    "extra horiz. space at end of piece");
    opts.define("c|clef|clefs=b",       "Draw clefs");
    opts.define("S|shapes=s:rectangle,rectangle", "shape of notes for each track");
@@ -1120,6 +1179,16 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    drumQ        =  opts.getBoolean("drum");
    darkQ        =  opts.getBoolean("dark");
    lineQ        =  opts.getBoolean("line");
+   curveQ       =  opts.getBoolean("cline");
+   if (curveQ) {
+      lineQ = 1;
+   }
+   radiusQ      =  opts.getBoolean("rline");
+   if (radiusQ) {
+      lineQ = 1;
+      curveQ = 1;
+      radius = opts.getDouble("rline");
+   }
    clefQ        =  opts.getBoolean("clefs");
    staffQ       =  opts.getBoolean("staff");
    grandQ       =  opts.getBoolean("grand-staff");
