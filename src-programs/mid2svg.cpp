@@ -95,15 +95,23 @@ void           drawOval              (ostream& out, double x, double y,
                                       double width, double height);
 void           drawAntiOval          (ostream& out, double x, double y,
                                       double width, double height);
-void           drawMoon1             (ostream& out, double x, double y,
+void           drawRound1            (ostream& out, double x, double y,
                                       double width, double height);
-void           drawMoon2             (ostream& out, double x, double y,
+void           drawRound2            (ostream& out, double x, double y,
                                       double width, double height);
-void           drawMoon3             (ostream& out, double x, double y,
+void           drawRound3            (ostream& out, double x, double y,
                                       double width, double height);
-void           drawMoon4             (ostream& out, double x, double y,
+void           drawRound4            (ostream& out, double x, double y,
                                       double width, double height);
 void           drawAntiRound         (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawAntiRound1        (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawAntiRound2        (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawAntiRound3        (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawAntiRound4        (ostream& out, double x, double y,
                                       double width, double height);
 void           drawCurvedInner       (ostream& out, double x, double y,
                                       double width, double height);
@@ -128,6 +136,10 @@ void           drawCurvedOuter4      (ostream& out, double x, double y,
 void           drawTriangleUp        (ostream& out, double x, double y,
                                       double width, double height);
 void           drawTriangleDown      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawTriangleLeft      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawTriangleRight     (ostream& out, double x, double y,
                                       double width, double height);
 void           drawHexThick          (ostream& out, double x, double y,
                                       double width, double height);
@@ -793,15 +805,21 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
    // string shape = "hexthin";
    // string shape = "hexthick";
    // string shape = "plus";
-   // string shape = "moon1";
-   // string shape = "moon2";
-   // string shape = "moon3";
-   // string shape = "moon4";
+   // string shape = "round1";
+   // string shape = "round2";
+   // string shape = "round3";
+   // string shape = "round4";
    // string shape = "oval";
    // string shape = "antioval";
    // string shape = "antiround";
+   // string shape = "antiround1";
+   // string shape = "antiround2";
+   // string shape = "antiround3";
+   // string shape = "antiround4";
    // string shape = "triangleup";
    // string shape = "triangledown";
+   // string shape = "triangleleft";
+   // string shape = "triangleright";
    // string shape = "curvedinner";
    // string shape = "curvedinner1";
    // string shape = "curvedinner2";
@@ -860,20 +878,28 @@ void drawNoteShape(ostream& out, string& shape, double x, double y,
       drawHexThick(out, x, y, width, height);
    } else if (shape == "plus") {
       drawPlus(out, x, y, width, height);
-   } else if (shape == "moon1") {
-      drawMoon1(out, x, y, width, height);
-   } else if (shape == "moon2") {
-      drawMoon2(out, x, y, width, height);
-   } else if (shape == "moon3") {
-      drawMoon3(out, x, y, width, height);
-   } else if (shape == "moon4") {
-      drawMoon4(out, x, y, width, height);
+   } else if (shape == "round1") {
+      drawRound1(out, x, y, width, height);
+   } else if (shape == "round2") {
+      drawRound2(out, x, y, width, height);
+   } else if (shape == "round3") {
+      drawRound3(out, x, y, width, height);
+   } else if (shape == "round4") {
+      drawRound4(out, x, y, width, height);
    } else if (shape == "oval") {
       drawOval(out, x, y, width, height);
    } else if (shape == "antioval") {
       drawAntiOval(out, x, y, width, height);
    } else if (shape == "antiround") {
       drawAntiRound(out, x, y, width, height);
+   } else if (shape == "antiround1") {
+      drawAntiRound1(out, x, y, width, height);
+   } else if (shape == "antiround2") {
+      drawAntiRound2(out, x, y, width, height);
+   } else if (shape == "antiround3") {
+      drawAntiRound3(out, x, y, width, height);
+   } else if (shape == "antiround4") {
+      drawAntiRound4(out, x, y, width, height);
    } else if (shape == "curvedinner") {
       drawCurvedInner(out, x, y, width, height);
    } else if (shape == "curvedinner1") {
@@ -898,6 +924,10 @@ void drawNoteShape(ostream& out, string& shape, double x, double y,
       drawTriangleUp(out, x, y, width, height);
    } else if (shape == "triangledown") {
       drawTriangleDown(out, x, y, width, height);
+   } else if (shape == "triangleleft") {
+      drawTriangleLeft(out, x, y, width, height);
+   } else if (shape == "triangleright") {
+      drawTriangleRight(out, x, y, width, height);
    } else {
       drawRectangle(out, x, y, width, height);
    }
@@ -1055,6 +1085,48 @@ void drawTriangleDown(ostream& out, double x, double y, double width, double hei
    out << "M " << x << " " << y2;
    out << " L " << x+w/2 << " " << y;
    out << " L " << x2 << " " << y2;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawTriangleLeft --
+//
+
+void drawTriangleLeft(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M " << x << " " << y+h/2;
+   out << " L " << x2 << " " << y2;
+   out << " L " << x2 << " " << y;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawTriangleRight --
+//
+
+void drawTriangleRight(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M " << x2 << " " << y+h/2;
+   out << " L " << x << " " << y2;
+   out << " L " << x << " " << y;
    out << " z\"";
    out << "/>\n";
 }
@@ -1550,13 +1622,144 @@ void drawAntiRound(ostream& out, double x, double y, double width, double height
 
 
 
+//////////////////////////////
+//
+// drawAntiRound1 --
+//
+
+void drawAntiRound1(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
 
 //////////////////////////////
 //
-// drawMoon1 --
+// drawAntiRound2 --
 //
 
-void drawMoon1(ostream& out, double x, double y, double width, double height) {
+void drawAntiRound2(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawAntiRound3 --
+//
+
+void drawAntiRound3(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawAntiRound4 --
+//
+
+void drawAntiRound4(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawRound1 --
+//
+
+void drawRound1(ostream& out, double x, double y, double width, double height) {
    double& h = height;
    double& w = width;
    double x2 = x+w;
@@ -1586,10 +1789,10 @@ void drawMoon1(ostream& out, double x, double y, double width, double height) {
 
 //////////////////////////////
 //
-// drawMoon2 --
+// drawRound2 --
 //
 
-void drawMoon2(ostream& out, double x, double y, double width, double height) {
+void drawRound2(ostream& out, double x, double y, double width, double height) {
    double& h = height;
    double& w = width;
    double x2 = x+w;
@@ -1619,10 +1822,10 @@ void drawMoon2(ostream& out, double x, double y, double width, double height) {
 
 //////////////////////////////
 //
-// drawMoon3 --
+// drawRound3 --
 //
 
-void drawMoon3(ostream& out, double x, double y, double width, double height) {
+void drawRound3(ostream& out, double x, double y, double width, double height) {
    double& h = height;
    double& w = width;
    double x2 = x+w;
@@ -1652,10 +1855,10 @@ void drawMoon3(ostream& out, double x, double y, double width, double height) {
 
 //////////////////////////////
 //
-// drawdrawMoon4 --
+// drawRound4 --
 //
 
-void drawMoon4(ostream& out, double x, double y, double width, double height) {
+void drawRound4(ostream& out, double x, double y, double width, double height) {
    double& h = height;
    double& w = width;
    double x2 = x+w;
@@ -2016,20 +2219,28 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
          Shapes.push_back("hexthick");
       } else if (current == "p") {
          Shapes.push_back("plus");
-      } else if (current == "m1") {
-         Shapes.push_back("moon1");
-      } else if (current == "m2") {
-         Shapes.push_back("moon2");
-      } else if (current == "m3") {
-         Shapes.push_back("moon3");
-      } else if (current == "m4") {
-         Shapes.push_back("moon4");
+      } else if (current == "r1") {
+         Shapes.push_back("round1");
+      } else if (current == "r2") {
+         Shapes.push_back("round2");
+      } else if (current == "r3") {
+         Shapes.push_back("round3");
+      } else if (current == "r4") {
+         Shapes.push_back("round4");
       } else if (current == "o") {
          Shapes.push_back("oval");
       } else if (current == "O") {
          Shapes.push_back("antioval");
       } else if (current == "R") {
          Shapes.push_back("antiround");
+      } else if (current == "R1") {
+         Shapes.push_back("antiround1");
+      } else if (current == "R2") {
+         Shapes.push_back("antiround2");
+      } else if (current == "R3") {
+         Shapes.push_back("antiround3");
+      } else if (current == "R4") {
+         Shapes.push_back("antiround4");
       } else if (current == "c") {
          Shapes.push_back("curvedinner");
       } else if (current == "c1") {
@@ -2050,10 +2261,14 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
          Shapes.push_back("curvedouter3");
       } else if (current == "C4") {
          Shapes.push_back("curvedouter4");
-      } else if (current == "t") {
+      } else if (current == "tu") {
          Shapes.push_back("triangleup");
-      } else if (current == "T") {
+      } else if (current == "td") {
          Shapes.push_back("triangledown");
+      } else if (current == "tl") {
+         Shapes.push_back("triangleleft");
+      } else if (current == "tr") {
+         Shapes.push_back("triangleright");
       } else {
          Shapes.push_back(current);
       }
