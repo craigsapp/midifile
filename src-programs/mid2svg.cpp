@@ -42,7 +42,7 @@ int      grandQ       = 0;         // used with --gs option
 int      finalQ       = 0;         // used with -f option
 int      doubleQ      = 0;         // used with --double option
 int      transparentQ = 1;         // used with -T option
-double   ClefFactor   = 6;         
+double   ClefFactor   = 6;
 double   StaffThickness = 2.0;     // used with --staff-width
 double   LineThickness  = 2.0;     // used with --line-width
 string   StaffColor   = "#555555"; // used with -staff-color
@@ -81,17 +81,57 @@ int            base12ToBase7         (int pitch);
 void           printDoubleClass      (ostream& out, double value);
 void           makeMappings          (vector<int>& mapping,
                                       const string& mapstring);
-void           drawNoteShape         (ostream& out, string& shape, double x, 
+void           drawNoteShape         (ostream& out, string& shape, double x,
                                       double y, double width, double height);
 void           drawRectangle         (ostream& out, double x, double y,
                                       double width, double height);
-void           drawDiamond           (ostream& out, double x, double y, 
+void           drawDiamond           (ostream& out, double x, double y,
                                       double width, double height);
-void           drawEyelid            (ostream& out, double x, double y, 
+void           drawEyelid            (ostream& out, double x, double y,
                                       double width, double height);
-void           drawHexThick          (ostream& out, double x, double y, 
+void           drawPlus              (ostream& out, double x, double y,
                                       double width, double height);
-void           drawHexThin           (ostream& out, double x, double y, 
+void           drawOval              (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawAntiOval          (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawMoon1             (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawMoon2             (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawMoon3             (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawMoon4             (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawAntiRound         (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedInner       (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedInner1      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedInner2      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedInner3      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedInner4      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedOuter       (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedOuter1      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedOuter2      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedOuter3      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawCurvedOuter4      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawTriangleUp        (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawTriangleDown      (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawHexThick          (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawHexThin           (ostream& out, double x, double y,
                                       double width, double height);
 string         getTrackShape         (int track);
 void           drawClefs             (ostream& out);
@@ -135,10 +175,10 @@ int main(int argc, char* argv[]) {
                           << width << " " << height << "\""
         << " viewBox=\"" << (-Border - clefwidth) * Scale << " "
                          << -Border * Scale << " "
-                         << ((width + EndSpace) * AspectRatio + 2 * Border + 
+                         << ((width + EndSpace) * AspectRatio + 2 * Border +
                              clefwidth) * Scale << " "
                          << (height + (2 * Border)) * Scale << "\""
-        << " width=\"" << ((width + EndSpace) * AspectRatio + 2 * Border + 
+        << " width=\"" << ((width + EndSpace) * AspectRatio + 2 * Border +
                             clefwidth) * Scale << "\""
         << " height=\"" << (height + 2 * Border) * Scale << "\""
         << ">\n";
@@ -374,7 +414,7 @@ void drawClefs(ostream& out) {
    if (bwQ) {
       fill = "transparent";
    }
-   
+
    out << "<g transform=\"scale(" << unscale << ", 1)\">\n";
 	out  <<
 "	<g vector-effect=\"non-scaling-stroke\" class=\"treble-clef\" stroke=\"" << stroke << "\" stroke-width=\"" << strokewidth << "\" fill=\"" << fill << "\" transform=\"translate(-17.25, 5.15) scale(0.06, 0.07)\">\n"
@@ -402,7 +442,7 @@ void drawClefs(ostream& out) {
 "			c5.07-0.638,9.023-3.541,11.556-9.718c4.25-10.369,3.378-29.217-0.648-39.53C264.924,860.283,262.694,856.868,260.286,855.473z\"/>\n"
 "	</g>\n";
 
-	out << 
+	out <<
 "	<g class=\"bass-clef\" fill=\"" << fill << "\" stroke=\"" << stroke << "\" transform=\"scale(1.02, 1) translate(-0.25, 0.25)\" stroke-width=\"" << strokewidth << "\">\n"
 "		<g transform=\"matrix(0.1835537,0,0,0.1830159,-98.297967,-1128.8415)\">\n"
 "			<path vector-effect=\"non-scaling-stroke\" d=\"M514.308,6407.837c3.419,4.086,5.655,9.64,7.124,12.803\n"
@@ -498,7 +538,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
    if (braceQ) {
       staffwidth = 5 * staffwidth;
       out << "\t\t<path vector-effect=\"non-scaling-stroke\""
-          << " d=\"M" << start << "," << miny 
+          << " d=\"M" << start << "," << miny
           << " L"  << start << "," << maxy
           << " z"
           << "\"/>\n";
@@ -752,6 +792,26 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
    // string shape = "eyelid";
    // string shape = "hexthin";
    // string shape = "hexthick";
+   // string shape = "plus";
+   // string shape = "moon1";
+   // string shape = "moon2";
+   // string shape = "moon3";
+   // string shape = "moon4";
+   // string shape = "oval";
+   // string shape = "antioval";
+   // string shape = "antiround";
+   // string shape = "triangleup";
+   // string shape = "triangledown";
+   // string shape = "curvedinner";
+   // string shape = "curvedinner1";
+   // string shape = "curvedinner2";
+   // string shape = "curvedinner3";
+   // string shape = "curvedinner4";
+   // string shape = "curvedouter";
+   // string shape = "curvedouter1";
+   // string shape = "curvedouter2";
+   // string shape = "curvedouter3";
+   // string shape = "curvedouter4";
    string shape = getTrackShape(track);
    drawNoteShape(out, shape, starttime, pitch, duration, height);
 
@@ -768,7 +828,7 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
 string getTrackShape(int track) {
    if (track < 0) {
       track = 0;
-   } 
+   }
    if (track > 0) {
       track = track - 1;
    }
@@ -798,6 +858,46 @@ void drawNoteShape(ostream& out, string& shape, double x, double y,
       drawHexThin(out, x, y, width, height);
    } else if (shape == "hexthick") {
       drawHexThick(out, x, y, width, height);
+   } else if (shape == "plus") {
+      drawPlus(out, x, y, width, height);
+   } else if (shape == "moon1") {
+      drawMoon1(out, x, y, width, height);
+   } else if (shape == "moon2") {
+      drawMoon2(out, x, y, width, height);
+   } else if (shape == "moon3") {
+      drawMoon3(out, x, y, width, height);
+   } else if (shape == "moon4") {
+      drawMoon4(out, x, y, width, height);
+   } else if (shape == "oval") {
+      drawOval(out, x, y, width, height);
+   } else if (shape == "antioval") {
+      drawAntiOval(out, x, y, width, height);
+   } else if (shape == "antiround") {
+      drawAntiRound(out, x, y, width, height);
+   } else if (shape == "curvedinner") {
+      drawCurvedInner(out, x, y, width, height);
+   } else if (shape == "curvedinner1") {
+      drawCurvedInner1(out, x, y, width, height);
+   } else if (shape == "curvedinner2") {
+      drawCurvedInner2(out, x, y, width, height);
+   } else if (shape == "curvedinner3") {
+      drawCurvedInner3(out, x, y, width, height);
+   } else if (shape == "curvedinner4") {
+      drawCurvedInner4(out, x, y, width, height);
+   } else if (shape == "curvedouter") {
+      drawCurvedOuter(out, x, y, width, height);
+   } else if (shape == "curvedouter1") {
+      drawCurvedOuter1(out, x, y, width, height);
+   } else if (shape == "curvedouter2") {
+      drawCurvedOuter2(out, x, y, width, height);
+   } else if (shape == "curvedouter3") {
+      drawCurvedOuter3(out, x, y, width, height);
+   } else if (shape == "curvedouter4") {
+      drawCurvedOuter4(out, x, y, width, height);
+   } else if (shape == "triangleup") {
+      drawTriangleUp(out, x, y, width, height);
+   } else if (shape == "triangledown") {
+      drawTriangleDown(out, x, y, width, height);
    } else {
       drawRectangle(out, x, y, width, height);
    }
@@ -915,6 +1015,670 @@ void drawRectangle(ostream& out, double x, double y, double width,
        << "\twidth=\""  << width  << "\""
        << "\theight=\"" << height << "\""
        << " />\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawTriangleUp --
+//
+
+void drawTriangleUp(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M " << x << " " << y;
+   out << " L " << x+w/2 << " " << y2;
+   out << " L " << x2 << " " << y;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawTriangleDown --
+//
+
+void drawTriangleDown(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M " << x << " " << y2;
+   out << " L " << x+w/2 << " " << y;
+   out << " L " << x2 << " " << y2;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawPlus --
+//
+
+void drawPlus(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " L " << x+d         << " " << y+h*3.0/4.0;
+   out << " L " << x+d         << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " L " << x2-d        << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " L " << x2-d        << " " << y+h/4.0;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " L " << x+d         << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedInner --
+//
+
+void drawCurvedInner(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedInner1 --
+//
+
+void drawCurvedInner1(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedInner2 --
+//
+
+void drawCurvedInner2(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedInner3 --
+//
+
+void drawCurvedInner3(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedInner4 --
+//
+
+void drawCurvedInner4(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedOuter --
+//
+
+void drawCurvedOuter(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedOuter1 --
+//
+
+void drawCurvedOuter1(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x           << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedOuter2 --
+//
+
+void drawCurvedOuter2(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedOuter3 --
+//
+
+void drawCurvedOuter3(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawCurvedOuter4 --
+//
+
+void drawCurvedOuter4(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/4;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+h/4.0;
+   out << " L " << x           << " " << y+h*3.0/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h*3.0/4.0;
+   out << " L " << x2          << " " << y+h/4.0;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+h/4.0;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawOval --
+//
+
+void drawOval(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M "  << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawAntiOval --
+//
+
+void drawAntiOval(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = 2.0;
+   if (d > w / 3) {
+      d = w/3;
+   }
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawAntiRound --
+//
+
+void drawAntiRound(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+
+//////////////////////////////
+//
+// drawMoon1 --
+//
+
+void drawMoon1(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawMoon2 --
+//
+
+void drawMoon2(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawMoon3 --
+//
+
+void drawMoon3(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawdrawMoon4 --
+//
+
+void drawMoon4(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+   double m  = h/2.0;
+   double d  = w/2.0;
+   double Rx  = d;
+   double Ry  = h/2;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << " M " << x          << " " << y+m;
+   out << " L " << x           << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x+d << " " << y2;
+   out << " L " << x2-d        << " " << y2;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2 << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " L " << x2          << " " << y+m;
+   out << " A " << Rx << " " << Ry << " 0 0 0 " << x2-d << " " << y;
+   out << " L " << x2-d        << " " << y;
+   out << " L " << x+d         << " " << y;
+   out << " A " << Rx << " " << Ry << " 0 0 1 " << x << " " << y+m;
+   out << " z\"";
+   out << "/>\n";
 }
 
 
@@ -1250,6 +2014,46 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
          Shapes.push_back("hexthin");
       } else if (current == "H") {
          Shapes.push_back("hexthick");
+      } else if (current == "p") {
+         Shapes.push_back("plus");
+      } else if (current == "m1") {
+         Shapes.push_back("moon1");
+      } else if (current == "m2") {
+         Shapes.push_back("moon2");
+      } else if (current == "m3") {
+         Shapes.push_back("moon3");
+      } else if (current == "m4") {
+         Shapes.push_back("moon4");
+      } else if (current == "o") {
+         Shapes.push_back("oval");
+      } else if (current == "O") {
+         Shapes.push_back("antioval");
+      } else if (current == "R") {
+         Shapes.push_back("antiround");
+      } else if (current == "c") {
+         Shapes.push_back("curvedinner");
+      } else if (current == "c1") {
+         Shapes.push_back("curvedinner1");
+      } else if (current == "c2") {
+         Shapes.push_back("curvedinner2");
+      } else if (current == "c3") {
+         Shapes.push_back("curvedinner3");
+      } else if (current == "c4") {
+         Shapes.push_back("curvedinner4");
+      } else if (current == "C") {
+         Shapes.push_back("curvedouter");
+      } else if (current == "C1") {
+         Shapes.push_back("curvedouter1");
+      } else if (current == "C2") {
+         Shapes.push_back("curvedouter2");
+      } else if (current == "C3") {
+         Shapes.push_back("curvedouter3");
+      } else if (current == "C4") {
+         Shapes.push_back("curvedouter4");
+      } else if (current == "t") {
+         Shapes.push_back("triangleup");
+      } else if (current == "T") {
+         Shapes.push_back("triangledown");
       } else {
          Shapes.push_back(current);
       }
