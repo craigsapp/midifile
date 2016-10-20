@@ -1162,22 +1162,36 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
 
 void MidiMessage::setMetaTempo(double tempo) {
    int microseconds = (int)(60.0 / tempo * 1000000.0 + 0.5);
-   resize(6);
-   setTempoMicroseconds( microseconds );
+   setTempoMicroseconds(microseconds);
 }
 
-void MidiMessage::setTempoMicroseconds( int microseconds ) {
+
+
+//////////////////////////////
+//
+// MidiMessage::setTempo -- Alias for MidiMessage::setMetaTempo().
+//
+
+void MidiMessage::setTempo(double tempo) {
+   setMetaTempo(tempo);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::setTempoMicroseconds -- Set the tempo in terms
+//   of microseconds per quarter note.
+//
+
+void MidiMessage::setTempoMicroseconds(int microseconds) {
+   resize(6);
    (*this)[0] = 0xff;
    (*this)[1] = 0x51;
    (*this)[2] = 3;
    (*this)[3] = (microseconds >> 16) & 0xff;
    (*this)[4] = (microseconds >>  8) & 0xff;
    (*this)[5] = (microseconds >>  0) & 0xff;
-}
-
-
-void MidiMessage::setTempo(double tempo) {
-   setMetaTempo(tempo);
 }
 
 
