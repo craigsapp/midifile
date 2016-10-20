@@ -1,16 +1,16 @@
 Compiling for Visual Studio
 ============================
 
-See the commentary on compiling for Visual Studio 2010 in midifile issue #10:
-     https://github.com/craigsapp/midifile/issues/10
+The solution file (midifile.sln) contains the project for the static 
+library in /src-library (midifile.vcxproj) as well as projects for
+individual projects for client programs in /src-programs.
 
-The file [midifile.vcxproj](midifile.vcxproj) created by 
-[kirbyfan64](https://github.com/kirbyfan64) can be 
-used to compile the static library for the midifile library. 
-Run `set PLATFORM=` and `msbuild`.
+The projects are configured for the v140 (Visual Studio 2015) toolset
+by default, but this can be changed.
 
-How to add a static library to a Visual Studio project:
-   http://stackoverflow.com/questions/10049640/linking-a-static-library-to-my-project-on-visual-studio-2010
-
-
+As new programs are added to /src-programs, corresponding project
+files should be created for them in this directory, and then added
+to midifile.sln. The easiest was of creating a new project file
+is to copy an existing project file and then rename all occurrences
+of the old name with the new one.
 
