@@ -79,11 +79,10 @@ MidiFile::MidiFile(const char* filename) {
 
 
 MidiFile::MidiFile(const string& filename) {
-
    ticksPerQuarterNote = 120;            // TQP time base of file
    trackCount = 1;                       // # of tracks in file
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
-   theTimeState = TIME_STATE_DELTA;      // absolute or delta
+   theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
    readFileName.resize(1);
@@ -99,7 +98,7 @@ MidiFile::MidiFile(istream& input) {
    ticksPerQuarterNote = 120;            // TQP time base of file
    trackCount = 1;                       // # of tracks in file
    theTrackState = TRACK_STATE_SPLIT;    // joined or split
-   theTimeState = TIME_STATE_DELTA;      // absolute or delta
+   theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
    readFileName.resize(1);
@@ -1376,7 +1375,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
    int length = (int)metaData.size();
    vector<uchar> fulldata;
    uchar size[23] = {0};
-   int lengthsize =  makeVLV(size, length);
+   int lengthsize = makeVLV(size, length);
 
    fulldata.resize(2+lengthsize+length);
    fulldata[0] = 0xff;
@@ -1568,7 +1567,10 @@ int MidiFile::addCompoundTimeSignature(int aTrack, int aTick, int top,
 
 //////////////////////////////
 //
-// MidiFile::makeVLV --
+// MidiFile::makeVLV --  This function is used to create
+//   size byte(s) for meta-messages.  If the size of the data
+//   in the meta-message is greater than 127, then the size
+//   should (?) be specified as a VLV.
 //
 
 int MidiFile::makeVLV(uchar *buffer, int number) {
@@ -1576,8 +1578,11 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
    unsigned long value = (unsigned long)number;
 
    if (value >= (1 << 28)) {
-      cerr << "Error: number too large to handle" << endl;
+      cerr << "Error: Meta-message size too large to handle" << endl;
       buffer[0] = 0;
+      buffer[1] = 0;
+      buffer[2] = 0;
+      buffer[3] = 0;
       return 1;
    }
 
@@ -1996,7 +2001,9 @@ void MidiFile::setMillisecondTicks(void) {
 //
 
 void MidiFile::sortTrack(MidiEventList& trackData) {
-   qsort(trackData.data(), trackData.size(), sizeof(MidiEvent*), eventcompare);
+   if (theTimeState == TIME_STATE_ABSOLUTE) {
+      qsort(trackData.data(), trackData.size(), sizeof(MidiEvent*), eventcompare);
+   }
 }
 
 
@@ -2007,8 +2014,10 @@ void MidiFile::sortTrack(MidiEventList& trackData) {
 //
 
 void MidiFile::sortTracks(void) {
-   for (int i=0; i<getTrackCount(); i++) {
-      sortTrack(*events[i]);
+   if (theTimeState == TIME_STATE_ABSOLUTE) {
+      for (int i=0; i<getTrackCount(); i++) {
+         sortTrack(*events[i]);
+      }
    }
 }
 
@@ -2587,20 +2596,24 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 //////////////////////////////
 //
 // MidiFile::readVLValue -- The VLV value is expected to be unpacked into
-//   a 4-byte integer, so only up to 5 bytes will be considered.
+//   a 4-byte integer no greater than 0x0fffFFFF, so a VLV value up to
+//   4-bytes in size (FF FF FF 7F) will only be considered.  Longer
+//   VLV values are not allowed in standard MIDI files, so the extract
+//   delta time would be truncated and the extra byte(s) will be parsed
+//   incorrectly as a MIDI command.
 //
 
 ulong MidiFile::readVLValue(istream& input) {
-   uchar b[5] = {0};
+   uchar b[4] = {0};
 
-   for (int i=0; i<5; i++) {
+   for (int i=0; i<4; i++) {
       b[i] = MidiFile::readByte(input);
       if (b[i] < 0x80) {
          break;
       }
    }
 
-   return unpackVLV(b[0], b[1], b[2], b[3], b[4]);
+   return unpackVLV(b[0], b[1], b[2], b[3]);
 }
 
 
@@ -2608,18 +2621,20 @@ ulong MidiFile::readVLValue(istream& input) {
 //////////////////////////////
 //
 // MidiFile::unpackVLV -- converts a VLV value to an unsigned long value.
-// default values: a = b = c = d = e = 0;
+//     The bytes a, b, c, d are in big-endian order (the order they would
+//     be read out of the MIDI file).
+// default values: a = b = c = d = 0;
 //
 
-ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
-   if (e > 0x7f) {
+ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d) {
+   if (d > 0x7f) {
       cerr << "Error: VLV value was too long" << endl;
       return 0;
    }
 
-   uchar bytes[5] = {a, b, c, d, e};
+   uchar bytes[4] = {a, b, c, d};
    int count = 0;
-   while (bytes[count] > 0x7f && count < 5) {
+   while (bytes[count] > 0x7f && count < 4) {
       count++;
    }
    count++;
@@ -2639,25 +2654,31 @@ ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
 //
 // MidiFile::writeVLValue -- write a number to the midifile
 //    as a variable length value which segments a file into 7-bit
-//    values.  Maximum size of aValue is 0x7fffffff
+//    values and adds a contination bit to each.  Maximum size of input 
+//    aValue is 0x0FFFffff.
 //
 
 void MidiFile::writeVLValue(long aValue, vector<uchar>& outdata) {
-   uchar bytes[5] = {0};
-   bytes[0] = (uchar)(((ulong)aValue >> 28) & 0x7f);  // most significant 5 bits
-   bytes[1] = (uchar)(((ulong)aValue >> 21) & 0x7f);  // next largest 7 bits
-   bytes[2] = (uchar)(((ulong)aValue >> 14) & 0x7f);
-   bytes[3] = (uchar)(((ulong)aValue >> 7)  & 0x7f);
-   bytes[4] = (uchar)(((ulong)aValue)       & 0x7f);  // least significant 7 bits
+   uchar bytes[4] = {0};
+
+   if ((unsigned long)aValue >= (1 << 28)) {
+      cerr << "Error: number too large to convert to VLV" << endl;
+      aValue = 0x0FFFffff;
+   }
+
+   bytes[0] = (uchar)(((ulong)aValue >> 21) & 0x7f);  // most significant 7 bits
+   bytes[1] = (uchar)(((ulong)aValue >> 14) & 0x7f);
+   bytes[2] = (uchar)(((ulong)aValue >> 7)  & 0x7f);
+   bytes[3] = (uchar)(((ulong)aValue)       & 0x7f);  // least significant 7 bits
 
    int start = 0;
-   while (start<5 && bytes[start] == 0)  start++;
+   while ((start<4) && (bytes[start] == 0))  start++;
 
-   for (int i=start; i<4; i++) {
+   for (int i=start; i<3; i++) {
       bytes[i] = bytes[i] | 0x80;
       outdata.push_back(bytes[i]);
    }
-   outdata.push_back(bytes[4]);
+   outdata.push_back(bytes[3]);
 }
 
 

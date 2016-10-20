@@ -141,6 +141,10 @@ void           drawTriangleLeft      (ostream& out, double x, double y,
                                       double width, double height);
 void           drawTriangleRight     (ostream& out, double x, double y,
                                       double width, double height);
+void           drawTriangleRoundLeft (ostream& out, double x, double y,
+                                      double width, double height);
+void           drawTriangleRoundRight(ostream& out, double x, double y,
+                                      double width, double height);
 void           drawHexThick          (ostream& out, double x, double y,
                                       double width, double height);
 void           drawHexThin           (ostream& out, double x, double y,
@@ -820,6 +824,8 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
    // string shape = "triangledown";
    // string shape = "triangleleft";
    // string shape = "triangleright";
+   // string shape = "triangleroundleft";
+   // string shape = "triangleroundright";
    // string shape = "curvedinner";
    // string shape = "curvedinner1";
    // string shape = "curvedinner2";
@@ -928,6 +934,10 @@ void drawNoteShape(ostream& out, string& shape, double x, double y,
       drawTriangleLeft(out, x, y, width, height);
    } else if (shape == "triangleright") {
       drawTriangleRight(out, x, y, width, height);
+   } else if (shape == "triangleroundleft") {
+      drawTriangleRoundLeft(out, x, y, width, height);
+   } else if (shape == "triangleroundright") {
+      drawTriangleRoundRight(out, x, y, width, height);
    } else {
       drawRectangle(out, x, y, width, height);
    }
@@ -1127,6 +1137,59 @@ void drawTriangleRight(ostream& out, double x, double y, double width, double he
    out << "M " << x2 << " " << y+h/2;
    out << " L " << x << " " << y2;
    out << " L " << x << " " << y;
+   out << " z\"";
+   out << "/>\n";
+}
+
+
+
+//////////////////////////////
+//
+// drawTriangleRoundLeft --
+//
+
+void drawTriangleRoundLeft(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double  a = AspectRatio;
+   double wa = w * a;
+   double x2 = x+w;
+   double  r = h/2.0;
+   double  q = sqrt(wa*wa+r*r);
+   double ww = (w*a*q-w*a*r)/q;
+   double rr = (r*q-r*r)/q;
+   double xa = x + ww/a;
+   double ya = y + r + rr;
+   double xb = xa;
+   double yb = y + r - rr;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M " << x << " " << y+r;
+   out << " L " << xa << " " << ya;
+   out << " A " << r << " " << r << " 0 0 0 " << x2 << " " << y+r;
+   out << " A " << r << " " << r << " 0 0 0 " << xb << " " << yb;
+   out << " z\"";
+   out << "/>\n";
+
+}
+
+
+
+//////////////////////////////
+//
+// drawTriangleRoundRight --
+//
+
+void drawTriangleRoundRight(ostream& out, double x, double y, double width, double height) {
+   double& h = height;
+   double& w = width;
+   double x2 = x+w;
+   double y2 = y+h;
+
+   out << "\t\t\t\t<path vector-effect=\"non-scaling-stroke\" d=\"";
+   out << "M " << x << " " << y+h/2;
+   out << " L " << x2 << " " << y2;
+   out << " L " << x2 << " " << y;
    out << " z\"";
    out << "/>\n";
 }
@@ -2269,6 +2332,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
          Shapes.push_back("triangleleft");
       } else if (current == "tr") {
          Shapes.push_back("triangleright");
+      } else if (current == "trl") {
+         Shapes.push_back("triangleroundleft");
+      } else if (current == "trr") {
+         Shapes.push_back("triangleroundright");
       } else {
          Shapes.push_back(current);
       }

@@ -139,7 +139,6 @@ void checkOptions(Options& opts) {
    // process the input numbers:
    int inCount = opts.getArgCount();
    if (inCount > 4) {
-      // Technically 5 as long as they unpack into a four-byte value:
       cout << "Error: VLV values cannot have more than four bytes" << endl;
       exit(1);
    }
