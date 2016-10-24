@@ -1172,7 +1172,13 @@ void MidiFile::deltaTicks(void) {
       }
       for (j=1; j<(int)events[i]->size(); j++) {
          temp = (*events[i])[j].tick;
-         (*events[i])[j].tick = temp - timedata[i];
+         int deltatick = temp - timedata[i];
+         if (deltatick < 0) {
+            cerr << "Error: negative delta tick value: " << deltatick << endl
+                 << "Timestamps must be sorted first"
+                 << " (use MidiFile::sortTracks() before writing)." << endl;
+         }
+         (*events[i])[j].tick = deltatick;
          timedata[i] = temp;
       }
    }
