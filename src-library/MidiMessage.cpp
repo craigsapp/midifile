@@ -1086,7 +1086,7 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
       case 4:
          switch (spelling) {
                     case 1: base7pc = 3; accidental = -1; break;  // Fb
-                    case 2: base7pc = 2; accidental =  0; break;  // E
+            case 0: case 2: base7pc = 2; accidental =  0; break;  // E
                     case 3: base7pc = 1; accidental = +2; break;  // D##
          }
          break;
