@@ -488,6 +488,44 @@ int MidiMessage::isTempo(void) const {
    }
 }
 
+//////////////////////////////
+//
+// MidiMessage::isTimeSignature -- Returns true if message is a meta message
+//      describing Time Signature (meta message type 0x58).
+//
+
+int MidiMessage::isTimeSignature(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x58) {
+      return 0;
+   } else if (size() != 7) {
+      // Meta time signature message can only be 7 bytes long.
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+//////////////////////////////
+//
+// MidiMessage::isKeySignature -- Returns true if message is a meta message
+//      describing Key Signature (meta message type 0x59).
+//
+
+int MidiMessage::isKeySignature(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x59) {
+      return 0;
+   } else if (size() != 5) {
+      // Meta key signature message can only be 5 bytes long.
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
 
 
 //////////////////////////////
