@@ -3,7 +3,7 @@
 ##
 ## Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 ## Creation Date: Sun Apr  3 15:34:28 PDT 2005
-## Last Modified: Mon Feb  9 13:42:32 PST 2015
+## Last Modified: Tue Feb 14 10:03:13 PST 2017
 ## Filename:      midifile/Makefile.programs
 ## Website:       http://midifile.sapp.org
 ## Syntax:        GNU Makefile
@@ -106,7 +106,11 @@ vpath %.cpp   $(SRCDIR)
 
 # generating a list of the programs to compile with "make all"
 PROGS1=$(notdir $(patsubst %.cpp,%,$(wildcard $(SRCDIR)/*.cpp)))
-PROGS=$(PROGS1)
+ifeq ($(shell uname),Darwin)
+	PROGS := $(filter-out midi2beep,$(PROGS1))
+else
+	PROGS := $(PROGS1)
+endif
 
 
 ##############################
@@ -133,11 +137,11 @@ endif
 
 
 $(TARGDIR)/henonfile:
-	-echo Skipping henonfile.cpp since it needs external library.
+	@echo Skipping henonfile.cpp since it needs external library.
 $(TARGDIR)/mid2hum:
-	-echo Skipping mid2hum.cpp since it needs external library.
+	@echo Skipping mid2hum.cpp since it needs external library.
 $(TARGDIR)/peep2midi:
-	-echo Skipping peep2midi.cpp since it needs external library.
+	@echo Skipping peep2midi.cpp since it needs external library.
 $(TARGDIR)/midiexcerpt:
 	@echo Skipping $@ until PerlRegularExpressions class is added.
 
