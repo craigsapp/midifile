@@ -25,6 +25,7 @@ void   processMidiFile     (MidiFile& midifile);
 // user interface variables:
 double starttime = 0.0;    // used with -s option
 double endtime   = 0.0;    // used with -e option
+int    onsetQ    = 0;      // used with -o option
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -61,11 +62,22 @@ void processMidiFile(MidiFile& midifile) {
    int timeinticks;
    double timeinsecs;
    MidiEvent *ptr;
+   int attack;
    for (i=0; i<eventcount; i++) {
       ptr = &(midifile[0][i]);
       track       = ptr->track;
       timeinticks = ptr->tick;
       timeinsecs  = midifile.getTimeInSeconds(0, i);
+      attack = ((*ptr)[0] & 0xf0) == 0x90;
+      if (onsetQ && !attack) {
+         continue;
+      }
+      if (onsetQ && attack) {
+         if ((*ptr)[2] == 0) {
+            continue;
+         }
+      }
+      
       cout << timeinticks << "\t";
       cout << timeinsecs << "\t";
       cout << track << "\t";
@@ -94,6 +106,7 @@ void checkOptions(Options& opts) {
    opts.define("version=b");
    opts.define("example=b");
    opts.define("help=b");
+   opts.define("o|on|onset=b");
    opts.process();
 
    if (opts.getBoolean("author")) {
@@ -114,6 +127,7 @@ void checkOptions(Options& opts) {
       exit(0);
    }
 
+   onsetQ = opts.getBoolean("onset");
 }
 
 
