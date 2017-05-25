@@ -70,6 +70,8 @@ class MidiMessage : public vector<uchar> {
       int            getP3                (void) const;
       int            getKeyNumber         (void) const;
       int            getVelocity          (void) const;
+      int            getControllerNumber  (void) const;
+      int            getControllerValue   (void) const;
 
       void           setP0                (int value);
       void           setP1                (int value);
