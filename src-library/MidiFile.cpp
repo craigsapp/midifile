@@ -1229,7 +1229,7 @@ void MidiFile::absoluteTicks(void) {
 //   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
 //
 
-int MidiFile::getTickState(void) {
+int MidiFile::getTickState(void) const {
    return theTimeState;
 }
 
@@ -1241,7 +1241,7 @@ int MidiFile::getTickState(void) {
 //    variables are in delta time mode.
 //
 
-int MidiFile::isDeltaTicks(void) {
+int MidiFile::isDeltaTicks(void) const {
    return theTimeState == TIME_STATE_DELTA ? 1 : 0;
 }
 
@@ -1253,7 +1253,7 @@ int MidiFile::isDeltaTicks(void) {
 //    variables are in absolute time mode.
 //
 
-int MidiFile::isAbsoluteTicks(void) {
+int MidiFile::isAbsoluteTicks(void) const {
    return theTimeState == TIME_STATE_ABSOLUTE ? 1 : 0;
 }
 
@@ -1311,7 +1311,7 @@ void MidiFile::setFilename(const string& aname) {
 //    structure (if the data was read from a file).
 //
 
-const char* MidiFile::getFilename(void) {
+const char* MidiFile::getFilename(void) const {
    return readFileName.data();
 }
 
@@ -1878,7 +1878,7 @@ MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
 //   time units that are supposed to occur during a quarternote.
 //
 
-int MidiFile::getTicksPerQuarterNote(void) {
+int MidiFile::getTicksPerQuarterNote(void) const {
    if (ticksPerQuarterNote == 0xE728) {
       // this is a special case which is the SMPTE time code
       // setting for 25 frames a second with 40 subframes
@@ -1894,7 +1894,7 @@ int MidiFile::getTicksPerQuarterNote(void) {
 // Alias for getTicksPerQuarterNote:
 //
 
-int MidiFile::getTPQ(void) {
+int MidiFile::getTPQ(void) const {
    return getTicksPerQuarterNote();
 }
 
@@ -1906,12 +1906,12 @@ int MidiFile::getTPQ(void) {
 //   in a given track.
 //
 
-int MidiFile::getEventCount(int aTrack) {
+int MidiFile::getEventCount(int aTrack) const {
    return events[aTrack]->size();
 }
 
 
-int MidiFile::getNumEvents(int aTrack) {
+int MidiFile::getNumEvents(int aTrack) const {
    return events[aTrack]->size();
 }
 
@@ -2660,7 +2660,7 @@ ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d) {
 //
 // MidiFile::writeVLValue -- write a number to the midifile
 //    as a variable length value which segments a file into 7-bit
-//    values and adds a contination bit to each.  Maximum size of input 
+//    values and adds a contination bit to each.  Maximum size of input
 //    aValue is 0x0FFFffff.
 //
 

@@ -103,21 +103,21 @@ class MidiFile {
       void      mergeTracks               (int aTrack1, int aTrack2);
       int       getTrackCountAsType1      (void);
 
-      int       getEventCount             (int aTrack);
+      int       getEventCount             (int aTrack) const;
       void      allocateEvents            (int track, int aSize);
-      int       getNumEvents              (int aTrack);
+      int       getNumEvents              (int aTrack) const;
 
       // tick-related functions:
       void      deltaTicks                (void);
       void      absoluteTicks             (void);
-      int       getTickState              (void);
-      int       isDeltaTicks              (void);
-      int       isAbsoluteTicks           (void);
+      int       getTickState              (void) const;
+      int       isDeltaTicks              (void) const;
+      int       isAbsoluteTicks           (void) const;
 
       // ticks-per-quarter related functions:
       void      setMillisecondTicks       (void);
-      int       getTicksPerQuarterNote    (void);
-      int       getTPQ                    (void);
+      int       getTicksPerQuarterNote    (void) const;
+      int       getTPQ                    (void) const;
       void      setTicksPerQuarterNote    (int ticks);
       void      setTPQ                    (int ticks);
 
@@ -139,7 +139,7 @@ class MidiFile {
       // filename functions:
       void      setFilename               (const char* aname);
       void      setFilename               (const std::string& aname);
-      const char* getFilename             (void);
+      const char* getFilename             (void) const;
 
       int       addEvent                  (int aTrack, int aTick,
                                            std::vector<uchar>& midiData);
