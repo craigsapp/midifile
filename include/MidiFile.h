@@ -33,8 +33,6 @@
 #include <istream>
 #include <fstream>
 
-using namespace std;
-
 #define TIME_STATE_DELTA       0
 #define TIME_STATE_ABSOLUTE    1
 
@@ -52,28 +50,28 @@ class MidiFile {
    public:
                 MidiFile                  (void);
                 MidiFile                  (const char* aFile);
-                MidiFile                  (const string& aFile);
-                MidiFile                  (istream& input);
+                MidiFile                  (const std::string& aFile);
+                MidiFile                  (std::istream& input);
                 MidiFile                  (const MidiFile& other);
                 MidiFile                  (MidiFile&& other);
                ~MidiFile                  ();
 
       // reading/writing functions:
       int       read                      (const char* aFile);
-      int       read                      (const string& aFile);
-      int       read                      (istream& istream);
+      int       read                      (const std::string& aFile);
+      int       read                      (std::istream& istream);
       int       write                     (const char* aFile);
-      int       write                     (const string& aFile);
-      int       write                     (ostream& out);
+      int       write                     (const std::string& aFile);
+      int       write                     (std::ostream& out);
       int       writeHex                  (const char* aFile,   int width = 25);
-      int       writeHex                  (const string& aFile, int width = 25);
-      int       writeHex                  (ostream& out,        int width = 25);
+      int       writeHex                  (const std::string& aFile, int width = 25);
+      int       writeHex                  (std::ostream& out,        int width = 25);
       int       writeBinasc               (const char* aFile);
-      int       writeBinasc               (const string& aFile);
-      int       writeBinasc               (ostream& out);
+      int       writeBinasc               (const std::string& aFile);
+      int       writeBinasc               (std::ostream& out);
       int       writeBinascWithComments   (const char* aFile);
-      int       writeBinascWithComments   (const string& aFile);
-      int       writeBinascWithComments   (ostream& out);
+      int       writeBinascWithComments   (const std::string& aFile);
+      int       writeBinascWithComments   (std::ostream& out);
       int       status                    (void);
 
       // track-related functions:
@@ -140,11 +138,11 @@ class MidiFile {
 
       // filename functions:
       void      setFilename               (const char* aname);
-      void      setFilename               (const string& aname);
+      void      setFilename               (const std::string& aname);
       const char* getFilename             (void);
 
       int       addEvent                  (int aTrack, int aTick,
-                                           vector<uchar>& midiData);
+                                           std::vector<uchar>& midiData);
       int       addEvent                  (MidiEvent& mfevent);
 
       // MIDI message adding convenience functions:
@@ -165,21 +163,21 @@ class MidiFile {
 
       // Meta-event adding convenience functions:
       int       addMetaEvent              (int aTrack, int aTick, int aType,
-                                             vector<uchar>& metaData);
+                                             std::vector<uchar>& metaData);
       int       addMetaEvent              (int aTrack, int aTick, int aType,
                                            const char* metaData);
       int       addCopyright              (int aTrack, int aTick,
-                                           const string& text);
+                                           const std::string& text);
       int       addTrackName              (int aTrack, int aTick,
-                                           const string& name);
+                                           const std::string& name);
       int       addInstrumentName         (int aTrack, int aTick,
-                                           const string& name);
+                                           const std::string& name);
       int       addLyric                  (int aTrack, int aTick,
-                                           const string& text);
+                                           const std::string& text);
       int       addMarker                 (int aTrack, int aTick,
-                                           const string& text);
+                                           const std::string& text);
       int       addCue                    (int aTrack, int aTick,
-                                           const string& text);
+                                           const std::string& text);
       int       addTempo                  (int aTrack, int aTick,
                                            double aTempo);
       int       addTimeSignature          (int aTrack, int aTick,
@@ -199,41 +197,41 @@ class MidiFile {
       MidiFile& operator=(MidiFile other);
 
       // static functions:
-      static uchar    readByte                (istream& input);
-      static ushort   readLittleEndian2Bytes  (istream& input);
-      static ulong    readLittleEndian4Bytes  (istream& input);
-      static ostream& writeLittleEndianUShort (ostream& out, ushort value);
-      static ostream& writeBigEndianUShort    (ostream& out, ushort value);
-      static ostream& writeLittleEndianShort  (ostream& out, short  value);
-      static ostream& writeBigEndianShort     (ostream& out, short  value);
-      static ostream& writeLittleEndianULong  (ostream& out, ulong  value);
-      static ostream& writeBigEndianULong     (ostream& out, ulong  value);
-      static ostream& writeLittleEndianLong   (ostream& out, long   value);
-      static ostream& writeBigEndianLong      (ostream& out, long   value);
-      static ostream& writeLittleEndianFloat  (ostream& out, float  value);
-      static ostream& writeBigEndianFloat     (ostream& out, float  value);
-      static ostream& writeLittleEndianDouble (ostream& out, double value);
-      static ostream& writeBigEndianDouble    (ostream& out, double value);
+      static uchar    readByte                (std::istream& input);
+      static ushort   readLittleEndian2Bytes  (std::istream& input);
+      static ulong    readLittleEndian4Bytes  (std::istream& input);
+      static std::ostream& writeLittleEndianUShort (std::ostream& out, ushort value);
+      static std::ostream& writeBigEndianUShort    (std::ostream& out, ushort value);
+      static std::ostream& writeLittleEndianShort  (std::ostream& out, short  value);
+      static std::ostream& writeBigEndianShort     (std::ostream& out, short  value);
+      static std::ostream& writeLittleEndianULong  (std::ostream& out, ulong  value);
+      static std::ostream& writeBigEndianULong     (std::ostream& out, ulong  value);
+      static std::ostream& writeLittleEndianLong   (std::ostream& out, long   value);
+      static std::ostream& writeBigEndianLong      (std::ostream& out, long   value);
+      static std::ostream& writeLittleEndianFloat  (std::ostream& out, float  value);
+      static std::ostream& writeBigEndianFloat     (std::ostream& out, float  value);
+      static std::ostream& writeLittleEndianDouble (std::ostream& out, double value);
+      static std::ostream& writeBigEndianDouble    (std::ostream& out, double value);
 
    protected:
-      vector<MidiEventList*> events;             // MIDI file events
+      std::vector<MidiEventList*> events;             // MIDI file events
       int              ticksPerQuarterNote;      // time base of file
       int              trackCount;               // # of tracks in file
       int              theTrackState;            // joined or split
       int              theTimeState;             // absolute or delta
-      vector<char>     readFileName;             // read file name
+      std::vector<char>     readFileName;             // read file name
 
       int               timemapvalid;
-      vector<_TickTime> timemap;
+      std::vector<_TickTime> timemap;
       int               rwstatus;                // read/write success flag
 
    private:
-      int        extractMidiData  (istream& inputfile, vector<uchar>& array,
+      int        extractMidiData  (std::istream& inputfile, std::vector<uchar>& array,
                                        uchar& runningCommand);
-      ulong      readVLValue      (istream& inputfile);
+      ulong      readVLValue      (std::istream& inputfile);
       ulong      unpackVLV        (uchar a = 0, uchar b = 0, uchar c = 0,
                                    uchar d = 0);
-      void       writeVLValue     (long aValue, vector<uchar>& data);
+      void       writeVLValue     (long aValue, std::vector<uchar>& data);
       int        makeVLV          (uchar *buffer, int number);
       static int ticksearch       (const void* A, const void* B);
       static int secondsearch     (const void* A, const void* B);
@@ -244,7 +242,7 @@ class MidiFile {
 
 
 int eventcompare(const void* a, const void* b);
-ostream& operator<<(ostream& out, MidiFile& aMidiFile);
+std::ostream& operator<<(std::ostream& out, MidiFile& aMidiFile);
 
 #endif /* _MIDIFILE_H_INCLUDED */
 

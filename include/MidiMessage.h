@@ -109,13 +109,13 @@ class MidiMessage : public vector<uchar> {
       void           makeTimbre           (int channel, int patchnum);
 
       // meta-message creation helper functions:
-      void           makeMetaMessage      (int mnum, const string& data);
-      void           makeTrackName        (const string& name);
-      void           makeInstrumentName   (const string& name);
-      void           makeLyric            (const string& text);
-      void           makeMarker           (const string& text);
-      void           makeCue              (const string& text);
-      void           makeCopyright        (const string& text);
+      void           makeMetaMessage      (int mnum, const std::string& data);
+      void           makeTrackName        (const std::string& name);
+      void           makeInstrumentName   (const std::string& name);
+      void           makeLyric            (const std::string& text);
+      void           makeMarker           (const std::string& text);
+      void           makeCue              (const std::string& text);
+      void           makeCopyright        (const std::string& text);
       void           makeTempo            (double tempo) { setTempo(tempo); }
       void           makeTimeSignature    (int top, int bottom,
 	                                        int clocksPerClick = 24,

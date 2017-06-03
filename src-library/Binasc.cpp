@@ -13,6 +13,8 @@
 #include <sstream>
 #include <string.h>
 
+using namespace std;
+
 //////////////////////////////
 //
 // Binasc::Binasc -- Constructor: set the default option values.
