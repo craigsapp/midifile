@@ -208,6 +208,10 @@ MidiEvent* MidiEvent::getLinkedEvent(void) {
    return eventlink;
 }
 
+const MidiEvent* MidiEvent::getLinkedEvent(void) const {
+   return eventlink;
+}
+
 
 
 //////////////////////////////
@@ -230,8 +234,8 @@ int MidiEvent::isLinked(void) {
 //    delta tick mode.  Returns 0 if not linked.
 //
 
-int MidiEvent::getTickDuration(void) {
-   MidiEvent* mev = getLinkedEvent();
+int MidiEvent::getTickDuration(void) const {
+   const MidiEvent* mev = getLinkedEvent();
    if (mev == NULL) {
       return 0;
    }
@@ -253,8 +257,8 @@ int MidiEvent::getTickDuration(void) {
 //     reported as zero.
 //
 
-double MidiEvent::getDurationInSeconds(void) {
-   MidiEvent* mev = getLinkedEvent();
+double MidiEvent::getDurationInSeconds(void) const {
+   const MidiEvent* mev = getLinkedEvent();
    if (mev == NULL) {
       return 0;
    }

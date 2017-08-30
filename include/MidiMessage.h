@@ -123,6 +123,7 @@ class MidiMessage : public vector<uchar> {
 
       // meta-message related functions:
       int            getMetaType          (void) const;
+	  std::string    getMetaData          (void) const;
       int            isTempo              (void) const;
       void           setTempo             (double tempo);
       void           setTempoMicroseconds (int microseconds);
