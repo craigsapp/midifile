@@ -17,13 +17,11 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
 typedef unsigned long  ulong;
 
-class MidiMessage : public vector<uchar> {
+class MidiMessage : public std::vector<uchar> {
 	public:
 		               MidiMessage          (void);
 		               MidiMessage          (int command);
