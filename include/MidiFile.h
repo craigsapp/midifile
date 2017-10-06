@@ -87,7 +87,7 @@ class MidiFile {
       void      joinTracks                (void);
       void      splitTracks               (void);
       void      splitTracksByChannel      (void);
-      int       getTrackState             (void);
+      int       getTrackState             (void) const;
       int       hasJoinedTracks           (void);
       int       hasSplitTracks            (void);
       int       getSplitTrack             (int track, int index);
@@ -193,6 +193,7 @@ class MidiFile {
       void      clear                     (void);
       void      clear_no_deallocate       (void);
       MidiEvent&  getEvent                (int aTrack, int anIndex);
+      const MidiEvent&  getEvent          (int aTrack, int anIndex) const;
 
       MidiFile& operator=(MidiFile other);
 

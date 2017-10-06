@@ -1080,7 +1080,7 @@ void MidiFile::splitTracksByChannel(void) {
 //     is being used: either TRACK_STATE_JOINED or TRACK_STATE_SPLIT.
 //
 
-int MidiFile::getTrackState(void) {
+int MidiFile::getTrackState(void) const {
    return theTrackState;
 }
 
@@ -1866,10 +1866,13 @@ void MidiFile::erase(void) {
 //    specified track.
 //
 
-MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
+const MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) const {
    return (*events[aTrack])[anIndex];
 }
 
+MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
+   return (*events[aTrack])[anIndex];
+}
 
 
 //////////////////////////////
