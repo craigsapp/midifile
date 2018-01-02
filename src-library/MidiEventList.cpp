@@ -204,7 +204,7 @@ int MidiEventList::push_back(MidiEvent& event) {
 //   There are two models that can be done if two notes are overlapping
 //   on the same pitch: the first note-off affects the last note-on,
 //   or the first note-off affects the first note-on.  Currently  the
-//   first note-off affects the last note-on, but both methods could
+//   first note-off affects the first note-on, but both methods could
 //   be implemented with user selectability.  The current state of the
 //   track is assumed to be in time-sorted order.  Returns the number
 //   of linked notes (note-on/note-off pairs).
@@ -311,8 +311,8 @@ int MidiEventList::linkNotePairs(void) {
          key = mev->getKeyNumber();
          channel = mev->getChannel();
          if (noteons[channel][key].size() > 0) {
-            noteon = noteons[channel][key].back();
-            noteons[channel][key].pop_back();
+            noteon = noteons[channel][key].front();
+            noteons[channel][key].erase(noteons[channel][key].begin());
             noteon->linkEvent(mev);
             counter++;
          }
