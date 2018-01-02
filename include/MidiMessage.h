@@ -17,13 +17,11 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
 typedef unsigned long  ulong;
 
-class MidiMessage : public vector<uchar> {
+class MidiMessage : public std::vector<uchar> {
 	public:
 		               MidiMessage          (void);
 		               MidiMessage          (int command);
@@ -70,6 +68,8 @@ class MidiMessage : public vector<uchar> {
       int            getP3                (void) const;
       int            getKeyNumber         (void) const;
       int            getVelocity          (void) const;
+      int            getControllerNumber  (void) const;
+      int            getControllerValue   (void) const;
 
       void           setP0                (int value);
       void           setP1                (int value);
@@ -109,13 +109,13 @@ class MidiMessage : public vector<uchar> {
       void           makeTimbre           (int channel, int patchnum);
 
       // meta-message creation helper functions:
-      void           makeMetaMessage      (int mnum, const string& data);
-      void           makeTrackName        (const string& name);
-      void           makeInstrumentName   (const string& name);
-      void           makeLyric            (const string& text);
-      void           makeMarker           (const string& text);
-      void           makeCue              (const string& text);
-      void           makeCopyright        (const string& text);
+      void           makeMetaMessage      (int mnum, const std::string& data);
+      void           makeTrackName        (const std::string& name);
+      void           makeInstrumentName   (const std::string& name);
+      void           makeLyric            (const std::string& text);
+      void           makeMarker           (const std::string& text);
+      void           makeCue              (const std::string& text);
+      void           makeCopyright        (const std::string& text);
       void           makeTempo            (double tempo) { setTempo(tempo); }
       void           makeTimeSignature    (int top, int bottom,
 	                                        int clocksPerClick = 24,
@@ -123,6 +123,7 @@ class MidiMessage : public vector<uchar> {
 
       // meta-message related functions:
       int            getMetaType          (void) const;
+	  std::string    getMetaData          (void) const;
       int            isTempo              (void) const;
       void           setTempo             (double tempo);
       void           setTempoMicroseconds (int microseconds);

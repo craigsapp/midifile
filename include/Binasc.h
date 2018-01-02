@@ -16,8 +16,6 @@
 #include <fstream>
 #include <string>
 
-using namespace std;
-
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned long ulong;
@@ -46,66 +44,66 @@ class Binasc {
       int      getMidi        (void);
 
       // functions for converting into a binary file:
-      int      writeToBinary  (const string& outfile, const string& infile);
-      int      writeToBinary  (const string& outfile, istream& input);
-      int      writeToBinary  (ostream& out, const string& infile);
-      int      writeToBinary  (ostream& out, istream& input);
+      int      writeToBinary  (const std::string& outfile, const std::string& infile);
+      int      writeToBinary  (const std::string& outfile, std::istream& input);
+      int      writeToBinary  (std::ostream& out, const std::string& infile);
+      int      writeToBinary  (std::ostream& out, std::istream& input);
 
       // functions for converting into an ASCII file with hex bytes:
-      int      readFromBinary (const string& outfile, const string& infile);
-      int      readFromBinary (const string& outfile, istream& input);
-      int      readFromBinary (ostream& out, const string& infile);
-      int      readFromBinary (ostream& out, istream& input);
+      int      readFromBinary (const std::string& outfile, const std::string& infile);
+      int      readFromBinary (const std::string& outfile, std::istream& input);
+      int      readFromBinary (std::ostream& out, const std::string& infile);
+      int      readFromBinary (std::ostream& out, std::istream& input);
 
       // static functions for writing ordered bytes:
-      static ostream& writeLittleEndianUShort (ostream& out, ushort value);
-      static ostream& writeBigEndianUShort    (ostream& out, ushort value);
-      static ostream& writeLittleEndianShort  (ostream& out, short  value);
-      static ostream& writeBigEndianShort     (ostream& out, short  value);
-      static ostream& writeLittleEndianULong  (ostream& out, ulong  value);
-      static ostream& writeBigEndianULong     (ostream& out, ulong  value);
-      static ostream& writeLittleEndianLong   (ostream& out, long   value);
-      static ostream& writeBigEndianLong      (ostream& out, long   value);
-      static ostream& writeLittleEndianFloat  (ostream& out, float  value);
-      static ostream& writeBigEndianFloat     (ostream& out, float  value);
-      static ostream& writeLittleEndianDouble (ostream& out, double value);
-      static ostream& writeBigEndianDouble    (ostream& out, double value);
+      static std::ostream& writeLittleEndianUShort (std::ostream& out, ushort value);
+      static std::ostream& writeBigEndianUShort    (std::ostream& out, ushort value);
+      static std::ostream& writeLittleEndianShort  (std::ostream& out, short  value);
+      static std::ostream& writeBigEndianShort     (std::ostream& out, short  value);
+      static std::ostream& writeLittleEndianULong  (std::ostream& out, ulong  value);
+      static std::ostream& writeBigEndianULong     (std::ostream& out, ulong  value);
+      static std::ostream& writeLittleEndianLong   (std::ostream& out, long   value);
+      static std::ostream& writeBigEndianLong      (std::ostream& out, long   value);
+      static std::ostream& writeLittleEndianFloat  (std::ostream& out, float  value);
+      static std::ostream& writeBigEndianFloat     (std::ostream& out, float  value);
+      static std::ostream& writeLittleEndianDouble (std::ostream& out, double value);
+      static std::ostream& writeBigEndianDouble    (std::ostream& out, double value);
 
-      static string   keyToPitchName          (int key);
+      static std::string   keyToPitchName          (int key);
 
    protected:
       // helper functions for reading ASCII content to conver to binary:
-      int      processLine        (ostream& out, const string& input,
+      int      processLine        (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processAsciiWord   (ostream& out, const string& input,
+      int      processAsciiWord   (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processStringWord  (ostream& out, const string& input,
+      int      processStringWord  (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processBinaryWord  (ostream& out, const string& input,
+      int      processBinaryWord  (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processDecimalWord (ostream& out, const string& input,
+      int      processDecimalWord (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processHexWord     (ostream& out, const string& input,
+      int      processHexWord     (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processVlvWord     (ostream& out, const string& input,
+      int      processVlvWord     (std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processMidiPitchBendWord(ostream& out, const string& input,
+      int      processMidiPitchBendWord(std::ostream& out, const std::string& input,
                                    int lineNum);
-      int      processMidiTempoWord(ostream& out, const string& input,
+      int      processMidiTempoWord(std::ostream& out, const std::string& input,
                                    int lineNum);
 
       // helper functions for reading binary content to convert to ASCII:
-      int      outputStyleAscii   (ostream& out, istream& input);
-      int      outputStyleBinary  (ostream& out, istream& input);
-      int      outputStyleBoth    (ostream& out, istream& input);
-      int      outputStyleMidi    (ostream& out, istream& input);
+      int      outputStyleAscii   (std::ostream& out, std::istream& input);
+      int      outputStyleBinary  (std::ostream& out, std::istream& input);
+      int      outputStyleBoth    (std::ostream& out, std::istream& input);
+      int      outputStyleMidi    (std::ostream& out, std::istream& input);
 
       // MIDI parsing helper functions:
-      int      readMidiEvent  (ostream& out, istream& infile, int& trackbytes,
+      int      readMidiEvent  (std::ostream& out, std::istream& infile, int& trackbytes,
                                int& command);
-      int      getVLV         (istream& infile, int& trackbytes);
-      int      getWord        (string& word, const string& input,
-                               const string& terminators, int index);
+      int      getVLV         (std::istream& infile, int& trackbytes);
+      int      getWord        (std::string& word, const std::string& input,
+                               const std::string& terminators, int index);
 
 
    private:

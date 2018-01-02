@@ -467,6 +467,22 @@ int MidiMessage::getMetaType(void) const {
    }
 }
 
+///////////////////////////////
+//
+// MidiMessage::getMetaData -- returns the meta-message data for the
+//     MidiMessage.  If the message is not a meta message, then returns
+//     an empty string
+//
+
+string MidiMessage::getMetaData() const
+{
+   if (!isMetaMessage() || size() < 4) {
+	 return string();
+   } else {
+	  return std::string(begin() + 3, end());
+   }
+}
+
 
 
 //////////////////////////////
@@ -578,6 +594,51 @@ int MidiMessage::getKeyNumber(void) const {
 
 int MidiMessage::getVelocity(void) const {
    if (isNote()) {
+      int output = getP2();
+      if (output < 0) {
+         return output;
+      } else {
+         return 0xff & output;
+      }
+   } else {
+      return -1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getControllerNumber -- Return the controller number (such as 1
+//   for modulation wheel).  If the message does not have a controller number
+//   parameter, then return -1.  If the controller number is invalid (above 127
+//   in value), then limit the range to to 0-127.
+//
+
+int MidiMessage::getControllerNumber(void) const {
+  if (isController()) {
+      int output = getP1();
+      if (output < 0) {
+         return output;
+      } else {
+         return 0xff & output;
+      }
+   } else {
+      return -1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getControllervalue -- Return the controller value.  If the
+//   message is not a control change message, then return -1.  If the value is
+//   out of the range 0-127, then chop off the high-bits.
+//
+
+int MidiMessage::getControllerValue(void) const {
+   if (isController()) {
       int output = getP2();
       if (output < 0) {
          return output;
@@ -1086,7 +1147,7 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
       case 4:
          switch (spelling) {
                     case 1: base7pc = 3; accidental = -1; break;  // Fb
-                    case 2: base7pc = 2; accidental =  0; break;  // E
+            case 0: case 2: base7pc = 2; accidental =  0; break;  // E
                     case 3: base7pc = 1; accidental = +2; break;  // D##
          }
          break;
