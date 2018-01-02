@@ -14,6 +14,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+using namespace std;
+
 //////////////////////////////
 //
 // Binasc::Binasc -- Constructor: set the default option values.

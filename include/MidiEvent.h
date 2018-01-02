@@ -17,8 +17,6 @@
 #include "MidiMessage.h"
 #include <vector>
 
-using namespace std;
-
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
 typedef unsigned long  ulong;
@@ -29,7 +27,7 @@ class MidiEvent : public MidiMessage {
                  MidiEvent     (int command);
                  MidiEvent     (int command, int param1);
                  MidiEvent     (int command, int param1, int param2);
-                 MidiEvent     (int aTime, int aTrack, vector<uchar>& message);
+                 MidiEvent     (int aTime, int aTrack, std::vector<uchar>& message);
                  MidiEvent     (const MidiMessage& message);
                  MidiEvent     (const MidiEvent& mfevent);
 
@@ -37,9 +35,9 @@ class MidiEvent : public MidiMessage {
 
       MidiEvent& operator=     (const MidiEvent& mfevent);
       MidiEvent& operator=     (const MidiMessage& message);
-      MidiEvent& operator=     (const vector<uchar>& bytes);
-      MidiEvent& operator=     (const vector<char>& bytes);
-      MidiEvent& operator=     (const vector<int>& bytes);
+      MidiEvent& operator=     (const std::vector<uchar>& bytes);
+      MidiEvent& operator=     (const std::vector<char>& bytes);
+      MidiEvent& operator=     (const std::vector<int>& bytes);
       void       clearVariables(void);
 
       // functions related to event linking (note-ons to note-offs).
@@ -51,8 +49,9 @@ class MidiEvent : public MidiMessage {
       void       linkEvents    (MidiEvent& mev);
       int        isLinked      (void);
       MidiEvent* getLinkedEvent(void);
-      int        getTickDuration(void);
-      double     getDurationInSeconds(void);
+	  const MidiEvent* getLinkedEvent(void) const;
+	  int        getTickDuration(void) const;
+	  double     getDurationInSeconds(void) const;
 
       int       tick;
       int       track;

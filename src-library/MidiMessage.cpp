@@ -467,6 +467,22 @@ int MidiMessage::getMetaType(void) const {
    }
 }
 
+///////////////////////////////
+//
+// MidiMessage::getMetaData -- returns the meta-message data for the
+//     MidiMessage.  If the message is not a meta message, then returns
+//     an empty string
+//
+
+string MidiMessage::getMetaData() const
+{
+   if (!isMetaMessage() || size() < 4) {
+	 return string();
+   } else {
+	  return std::string(begin() + 3, end());
+   }
+}
+
 
 
 //////////////////////////////
