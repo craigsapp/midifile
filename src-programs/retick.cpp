@@ -23,7 +23,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 	Options options;
-	options.define("t|tpq=i:120", "Set TQP to this value and adjust timestamps");
+	options.define("t|tpq=i:120", "Set TPQ to this value and adjust timestamps");
 	options.process(argc, argv);
 
 	int status;
@@ -48,6 +48,8 @@ int main(int argc, char* argv[]) {
 			ev.tick = int(ev.tick * factor + 0.5);
 		}
 	}
+
+	midifile.setTPQ(newtpq);
 
 	if (options.getArgCount() > 1) {
 		midifile.write(options.getArg(2));
