@@ -1,0 +1,7 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppClean.targets(76,5): warning : The process cannot access the file 'd:\github\midifile\visual-studio\releaseexe\stretch.pdb' because it is being used by another process.
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (ReleaseExe\) contains files shared from another project (binasc.vcxproj, stretch.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  createmidifile.cpp
+  Generating code
+  All 475 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  createmidifile.vcxproj -> D:\github\midifile\visual-studio\ReleaseExe\createmidifile.exe

@@ -11,3 +11,30 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "binasc", "binasc.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "createmidifile", "createmidifile.vcxproj", "{52724792-CD79-4152-984C-DFD7DA570855}"
 EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70028D4B-8E0D-4FF2-BD05-D7AB19B66F30}.Debug|x86.ActiveCfg = Debug|Win32
+		{70028D4B-8E0D-4FF2-BD05-D7AB19B66F30}.Debug|x86.Build.0 = Debug|Win32
+		{70028D4B-8E0D-4FF2-BD05-D7AB19B66F30}.Release|x86.ActiveCfg = Release|Win32
+		{70028D4B-8E0D-4FF2-BD05-D7AB19B66F30}.Release|x86.Build.0 = Release|Win32
+		{1CD9D03A-63D6-46BA-80E2-93AAECD2754B}.Debug|x86.ActiveCfg = Debug|Win32
+		{1CD9D03A-63D6-46BA-80E2-93AAECD2754B}.Debug|x86.Build.0 = Debug|Win32
+		{1CD9D03A-63D6-46BA-80E2-93AAECD2754B}.Release|x86.ActiveCfg = Release|Win32
+		{1CD9D03A-63D6-46BA-80E2-93AAECD2754B}.Release|x86.Build.0 = Release|Win32
+		{5230AA11-C456-48E6-B19F-23703EC38D80}.Debug|x86.ActiveCfg = Debug|Win32
+		{5230AA11-C456-48E6-B19F-23703EC38D80}.Debug|x86.Build.0 = Debug|Win32
+		{5230AA11-C456-48E6-B19F-23703EC38D80}.Release|x86.ActiveCfg = Release|Win32
+		{5230AA11-C456-48E6-B19F-23703EC38D80}.Release|x86.Build.0 = Release|Win32
+		{52724792-CD79-4152-984C-DFD7DA570855}.Debug|x86.ActiveCfg = Debug|Win32
+		{52724792-CD79-4152-984C-DFD7DA570855}.Debug|x86.Build.0 = Debug|Win32
+		{52724792-CD79-4152-984C-DFD7DA570855}.Release|x86.ActiveCfg = Release|Win32
+		{52724792-CD79-4152-984C-DFD7DA570855}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
