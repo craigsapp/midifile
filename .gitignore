@@ -5,7 +5,17 @@
 _site
 temp
 
-bin
-obj
-lib
-err
+*.bin
+*.obj
+*.lib
+*.err
+*.exe
+*.pdb
+*.log
+*.tlog
+*.lastbuildstate
+*.user
+*.filters
+.vs/
+*.VC.db
+*.cache

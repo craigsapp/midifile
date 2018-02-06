@@ -1,8 +1,0 @@
-﻿  stretch.cpp
-..\src-programs\stretch.cpp(89): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-..\src-programs\stretch.cpp(92): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-..\src-programs\stretch.cpp(93): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-  Generating code
-  All 956 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  stretch.vcxproj -> D:\github\midifile\visual-studio\ReleaseExe\stretch.exe
