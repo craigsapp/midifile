@@ -19,3 +19,6 @@ temp
 .vs/
 *.VC.db
 *.cache
+*.opendb
+*.idb
+*.ilk

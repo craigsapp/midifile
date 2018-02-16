@@ -32,6 +32,7 @@
 #include "Binasc.h"
 
 #include <string.h>
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -44,7 +45,7 @@ using namespace std;
 
 //////////////////////////////
 //
-// MidiFile::MidiFile -- Constuctor.
+// MidiFile::MidiFile -- Constructor.
 //
 
 MidiFile::MidiFile(void) {
@@ -300,7 +301,7 @@ int MidiFile::read(istream& input) {
    } else if (character != 'h') {
       cerr << "File " << filename << " is not a MIDI file" << endl;
       cerr << "Expecting 'h' at first byte but got '"
-           << character << "'" << endl;
+           << character << "'." << endl;
       rwstatus = 0; return rwstatus;
    }
 
@@ -312,7 +313,7 @@ int MidiFile::read(istream& input) {
    } else if (character != 'd') {
       cerr << "File " << filename << " is not a MIDI file" << endl;
       cerr << "Expecting 'd' at first byte but got '"
-           << character << "'" << endl;
+           << character << "'." << endl;
       rwstatus = 0; return rwstatus;
    }
 
@@ -321,7 +322,7 @@ int MidiFile::read(istream& input) {
    if (longdata != 6) {
       cerr << "File " << filename
            << " is not a MIDI 1.0 Standard MIDI file." << endl;
-      cerr << "The header size is " << longdata << " bytes." << endl;
+      cerr << "The header size is " << longdata << " instead of 6 bytes." << endl;
       rwstatus = 0; return rwstatus;
    }
 
@@ -532,7 +533,7 @@ int MidiFile::read(istream& input) {
 //
 
 int MidiFile::write(const char* filename) {
-   fstream output(filename, ios::binary | ios::out);
+   fstream output(filename, ios::binary | ios::out | ios::trunc);
 
    if (!output.is_open()) {
       cerr << "Error: could not write: " << filename << endl;
@@ -1316,24 +1317,6 @@ const char* MidiFile::getFilename(void) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////////////////////
 //
 // MidiFile::addEvent --
@@ -1515,6 +1498,20 @@ int MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
    return events[aTrack]->size() - 1;
 }
 
+//////////////////////////////
+//
+// MidiFile::addTempoMicroseconds -- Add a tempo meta message (meta #0x51).
+//
+
+int MidiFile::addTempoMicroseconds(int aTrack, int aTick, int tempo) {
+	MidiEvent* me = new MidiEvent;
+	me->setTempoMicroseconds(tempo);
+	me->tick = aTick;
+	events[aTrack]->push_back_no_copy(me);
+	return events[aTrack]->size() - 1;
+}
+
+
 
 
 //////////////////////////////
@@ -1623,6 +1620,13 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
    }
 
    return length;
+}
+
+
+int MidiFile::timeToTicks(double seconds) const {
+	double beats = seconds / 60.0 * DEFAULT_BPM;
+	int ticks = (int)(ticksPerQuarterNote * beats);
+	return ticks;
 }
 
 
@@ -1871,6 +1875,17 @@ MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
 }
 
 
+//////////////////////////////
+//
+// MidiFile::getEventPtr -- return the pointer to event at the given
+// index in the specified track.  If anIndex is negative, the
+// last (most recent) event in the track is returned.
+//
+
+MidiEvent*  MidiFile::getEventPtr(int aTrack, int anIndex) {
+	return (*events[aTrack]).getEventPtr(anIndex);
+}
+
 
 //////////////////////////////
 //
@@ -2107,7 +2122,7 @@ int MidiFile::getAbsoluteTickTime(double starttime) {
       buildTimeMap();
       if (timemapvalid == 0) {
          if (timemapvalid == 0) {
-            return -1.0;    // something went wrong
+            return -1;    // something went wrong
          }
       }
    }
@@ -2175,7 +2190,7 @@ int MidiFile::getTotalTimeInTicks(void) {
    if (oldTimeState == TIME_STATE_DELTA) {
       deltaTicks();
    }
-   int output = 0.0;
+   int output = 0;
    for (int i=0; i<(int)events.size(); i++) {
       if (events[i]->last().tick > output) {
          output = events[i]->last().tick;
@@ -2271,7 +2286,7 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
    if (timemapvalid == 0) {
       buildTimeMap();
       if (timemapvalid == 0) {
-         return -1.0;    // something went wrong
+         return -1;    // something went wrong
       }
    }
 
@@ -2324,7 +2339,7 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
    double y2 = timemap[startindex+1].tick;
    double xi = seconds;
 
-   return (xi-x1) * ((y2-y1)/(x2-x1)) + y1;
+   return (int)((xi-x1) * ((y2-y1)/(x2-x1)) + y1);
 }
 
 
@@ -3098,7 +3113,6 @@ ostream& MidiFile::writeLittleEndianDouble(ostream& out, double value) {
    out << data.bytes[7];
    return out;
 }
-
 
 
 //////////////////////////////

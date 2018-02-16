@@ -32,7 +32,8 @@ class MidiEventList {
       MidiEvent&  back             (void);
       MidiEvent&  last             (void);
       MidiEvent&  getEvent         (int index);
-      void        clear            (void);
+	  MidiEvent*  getEventPtr      (int index = -1);
+	  void        clear            (void);
       void        reserve          (int rsize);
       int         getSize          (void) const;
       int         size             (void) const;

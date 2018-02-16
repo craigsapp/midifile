@@ -1166,7 +1166,7 @@ int Options::storeOption(int gargp, int& position, int& running) {
          oargv[gargp][position+1] != '\0') {
       running = 1;
    } else if (optionType == OPTION_BOOLEAN_TYPE &&
-         oargv[gargp][position+1] == '\0') {
+         oargv[gargp][position] == '\0') {
       running = 0;
    }
 
