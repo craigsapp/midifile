@@ -182,19 +182,22 @@ class MidiFile {
                                            const string& text);
       int       addTempo                  (int aTrack, int aTick,
                                            double aTempo);
+	  int       addTempoMicroseconds(int aTrack, int aTick, int tempo);
       int       addTimeSignature          (int aTrack, int aTick,
                                            int top, int bottom,
-	                                   int clocksPerClick = 24,
+	                                       int clocksPerClick = 24,
                                            int num32dsPerQuarter = 8);
       int       addCompoundTimeSignature  (int aTrack, int aTick,
                                            int top, int bottom,
-	                                   int clocksPerClick = 36,
+	                                       int clocksPerClick = 36,
                                            int num32dsPerQuarter = 8);
+	  int       timeToTicks               (double seconds) const;
 
       void      erase                     (void);
       void      clear                     (void);
       void      clear_no_deallocate       (void);
       MidiEvent&  getEvent                (int aTrack, int anIndex);
+	  MidiEvent*  getEventPtr             (int aTrack, int anIndex = -1);
 
       MidiFile& operator=(MidiFile other);
 
@@ -214,6 +217,13 @@ class MidiFile {
       static ostream& writeBigEndianFloat     (ostream& out, float  value);
       static ostream& writeLittleEndianDouble (ostream& out, double value);
       static ostream& writeBigEndianDouble    (ostream& out, double value);
+
+
+	  /* MIDI constants */
+	  static constexpr float DEFAULT_BPM = 120.0f; // beat == quarter note
+	  static constexpr float DEFAULT_TEMPO = 60000000.0f / DEFAULT_BPM;  // microseconds per beat
+	  static constexpr int DEFAULT_TPQN = 10000;  // ticks per quarter note (beat)
+	  static constexpr int DEFAULT_SIGNATURE = 4;  // top and bottom
 
    protected:
       vector<MidiEventList*> events;             // MIDI file events

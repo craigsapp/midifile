@@ -115,6 +115,16 @@ MidiEvent& MidiEventList::getEvent(int index) {
      return *list[index];
 }
 
+//////////////////////////////
+//
+// MidiFile::getEventPtr -- return the pointer to event at the given
+// index in the specified track.  If anIndex is negative, the
+// last (most recent) event in the track is returned.
+//
+
+MidiEvent*  MidiEventList::getEventPtr(int index) {
+	return index >= 0 ? list[index] : list.back();
+}
 
 
 //////////////////////////////

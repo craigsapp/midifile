@@ -1354,7 +1354,7 @@ void MidiMessage::makeMetaMessage(int mnum, const string& data) {
          push_back(data[i]);
       }
    } else {
-      push_back(data.size());
+      push_back((uchar)data.size());
       std::copy(data.begin(), data.end(), std::back_inserter(*this));
    }
 }

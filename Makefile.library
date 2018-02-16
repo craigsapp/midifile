@@ -18,6 +18,9 @@
 ## file.
 ##
 
+## NB: To build on Windows, use visual-studio/midifile.sln
+##     Do not use this Makefile
+
 ##############################
 ##
 ## Operating-system specific settings:
@@ -162,6 +165,12 @@ makedirs:
 
 Binasc.o: Binasc.cpp Binasc.h
 
+FileIO.cpp: FileIO.h SigConfiguration.h
+
+Kernel.cpp: Kernel.h
+
+MidiData.cpp: MidiData.h
+
 MidiEvent.o: MidiEvent.cpp MidiEvent.h MidiMessage.h
 
 MidiEventList.o: MidiEventList.cpp MidiEventList.h \
@@ -174,5 +183,13 @@ MidiMessage.o: MidiMessage.cpp MidiMessage.h
 
 Options.o: Options.cpp Options.h
 
+SoundFileHelpers.cpp: SoundFileHelpers.h FileIO.h 
 
+SoundFileRead.cpp: SoundFileRead.h SoundHeader.h Array.h \
+  FileIO.h
 
+SoundFileWrite.cpp: SoundFileWrite.h SoundFileHelpers.h \
+  FileIO.h
+
+SoundHeader.cpp: SoundHeader.h FileIO.h
+ 

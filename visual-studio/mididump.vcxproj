@@ -10,19 +10,27 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="midifile.vcxproj">
+      <Project>{70028d4b-8e0d-4ff2-bd05-d7ab19b66f30}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src-programs\mididump.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{70028D4B-8E0D-4FF2-BD05-D7AB19B66F30}</ProjectGuid>
+    <ProjectGuid>{11FC46BC-E6BA-4D8F-8290-7D869618430B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -48,11 +56,10 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -64,61 +71,15 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\include\Array.h" />
-    <ClInclude Include="..\include\Binasc.h" />
-    <ClInclude Include="..\include\FileIO.h" />
-    <ClInclude Include="..\include\Kernel.h" />
-    <ClInclude Include="..\include\MidiData.h" />
-    <ClInclude Include="..\include\MidiEvent.h" />
-    <ClInclude Include="..\include\MidiEventList.h" />
-    <ClInclude Include="..\include\MidiFile.h" />
-    <ClInclude Include="..\include\MidiMessage.h" />
-    <ClInclude Include="..\include\Options.h" />
-    <ClInclude Include="..\include\SigCollection.h" />
-    <ClInclude Include="..\include\SigConfiguration.h" />
-    <ClInclude Include="..\include\SoundFile.h" />
-    <ClInclude Include="..\include\SoundFileHelpers.h" />
-    <ClInclude Include="..\include\SoundFileRead.h" />
-    <ClInclude Include="..\include\SoundFileWrite.h" />
-    <ClInclude Include="..\include\SoundHeader.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src-library\Array.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src-library\Binasc.cpp" />
-    <ClCompile Include="..\src-library\FileIO.cpp" />
-    <ClCompile Include="..\src-library\Kernel.cpp" />
-    <ClCompile Include="..\src-library\MidiData.cpp" />
-    <ClCompile Include="..\src-library\MidiEvent.cpp" />
-    <ClCompile Include="..\src-library\MidiEventList.cpp" />
-    <ClCompile Include="..\src-library\MidiFile.cpp" />
-    <ClCompile Include="..\src-library\MidiMessage.cpp" />
-    <ClCompile Include="..\src-library\Options.cpp" />
-    <ClCompile Include="..\src-library\SigCollection.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src-library\SoundFileHelpers.cpp" />
-    <ClCompile Include="..\src-library\SoundFileRead.cpp" />
-    <ClCompile Include="..\src-library\SoundFileWrite.cpp" />
-    <ClCompile Include="..\src-library\SoundHeader.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
