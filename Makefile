@@ -19,7 +19,8 @@
 ## to compile both the library and the programs at the same time.
 ##
 
-
+## NB: To build on Windows, use visual-studio/midifile.sln
+##     Do not use this Makefile
 
 ##############################
 ##

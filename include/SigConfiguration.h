@@ -64,7 +64,7 @@
 #endif
 
 
-#if defined(VIRTUAL) || defined(_WIN32)
+#if defined(_WIN32)
    #define INTEL
 #endif
 

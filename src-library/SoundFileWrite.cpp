@@ -9,7 +9,7 @@
 //
 
 #include "SoundFileWrite.h"
-#include "soundfilehelpers.h"
+#include "SoundfileHelpers.h"
 
 #include <stdlib.h>
 #include <string.h>
