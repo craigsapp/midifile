@@ -1939,9 +1939,9 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
    for (i=0; i<(int)events[aTrack1]->size(); i++) {
       mergedTrack->push_back((*events[aTrack1])[i]);
    }
-   for (j=0; j<(int)events[aTrack2]->size(); i++) {
-      (*events[aTrack2])[i].track = aTrack1;
-      mergedTrack->push_back((*events[aTrack2])[i]);
+   for (j=0; j<(int)events[aTrack2]->size(); j++) {
+      (*events[aTrack2])[j].track = aTrack1;
+      mergedTrack->push_back((*events[aTrack2])[j]);
    }
 
    sortTrack(*mergedTrack);
