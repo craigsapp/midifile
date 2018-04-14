@@ -2028,6 +2028,13 @@ void MidiFile::sortTrack(MidiEventList& trackData) {
 }
 
 
+void MidiFile::sortTrack(int track) {
+   if ((track >= 0) && (track < getTrackCount())) {
+      sortTrack(operator[](track));
+   }
+}
+
+
 
 //////////////////////////////
 //

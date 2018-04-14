@@ -96,6 +96,7 @@ class MidiFile {
       int       getSplitTrack             (int index);
 
       void      sortTrack                 (MidiEventList& trackData);
+      void      sortTrack                 (int track);
       void      sortTracks                (void);
 
       int       addTrack                  (void);
