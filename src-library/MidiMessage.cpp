@@ -1531,24 +1531,60 @@ void MidiMessage::makeTimbre(int channel, int patchnum) {
 //
 // MidiMessage::makeMetaMessage -- Create a Meta event with the
 //   given text string as the parameter.  The length of the string should
-//   not be longer than 127 characters at the moment (will have to check
-//   if VLV sizes are allowed).
+//   is a VLV.  If the length is larger than 127 byte, then the length
+//   will contain more than one byte.
 //
 
 void MidiMessage::makeMetaMessage(int mnum, const string& data) {
    resize(0);
    push_back(0xff);
-   push_back(mnum & 0x7f); // I think max is 0x7f.
+   push_back(mnum & 0x7f); // max meta-message number is 0x7f.
+
+   // add the size of the meta message data (VLV)
    int dsize = (int)data.size();
-   if (dsize > 127) {
-      push_back(127);
-      for (int i=0; i<128; i++) {
-         push_back(data[i]);
-      }
+   if (dsize < 128) {
+      push_back((uchar)dsize);
    } else {
-      push_back(data.size());
-      std::copy(data.begin(), data.end(), std::back_inserter(*this));
+      // calculate VLV bytes and insert into message
+      uchar byte1 = dsize & 0x7f;
+      uchar byte2 = (dsize >>  7) & 0x7f;
+      uchar byte3 = (dsize >> 14) & 0x7f;
+      uchar byte4 = (dsize >> 21) & 0x7f;
+      uchar byte5 = (dsize >> 28) & 0x7f;
+      if (byte5) {
+         byte4 |= 0x80;
+      }
+      if (byte4) {
+         byte4 |= 0x80;
+         byte3 |= 0x80;
+      }
+      if (byte3) {
+         byte3 |= 0x80;
+         byte2 |= 0x80;
+      }
+      if (byte2) {
+         byte2 |= 0x80;
+      }
+      if (byte5) { push_back(byte5); }
+      if (byte4) { push_back(byte4); }
+      if (byte3) { push_back(byte3); }
+      if (byte2) { push_back(byte2); }
+      push_back(byte1);
    }
+   std::copy(data.begin(), data.end(), std::back_inserter(*this));
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeText -- Create a metaevent text message.
+//    This is not a real MIDI message, but rather a pretend message for use
+//    within Standard MIDI Files.
+//
+
+void MidiMessage::makeText(const string& text) {
+   makeMetaMessage(0x01, text);
 }
 
 
