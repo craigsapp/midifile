@@ -471,6 +471,119 @@ int MidiMessage::getMetaType(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::isText -- Returns true if message is a meta
+//      message describing some text (meta message type 0x01).
+//
+
+int MidiMessage::isText(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x01) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isCopyright -- Returns true if message is a meta
+//      message describing a copyright notice (meta message type 0x02).
+//      Copyright messages should be at absolute tick position 0
+//      (and be the first event in the track chunk as well), but this
+//      function does not check for those requirements.
+//
+
+int MidiMessage::isCopyright(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x02) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isTrackName -- Returns true if message is a meta
+//      message describing a track name (meta message type 0x03).
+//
+
+int MidiMessage::isTrackName(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x03) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isInstrumentName -- Returns true if message is a 
+//      meta message describing an instrument name (for the track)
+//      (meta message type 0x04).
+//
+
+int MidiMessage::isInstrumentName(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x04) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isLyricText -- Returns true if message is a meta message
+//      describing some lyric text (for karakoke MIDI files)
+//      (meta message type 0x05).
+//
+
+int MidiMessage::isLyricText(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x05) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isMarkerText -- Returns true if message is a meta message
+//      describing a marker text (meta message type 0x06).
+//
+
+int MidiMessage::isMarkerText(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x06) {
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::isTempo -- Returns true if message is a meta message
 //      describing tempo (meta message type 0x51).
 //
@@ -488,6 +601,51 @@ int MidiMessage::isTempo(void) const {
    }
 }
 
+
+
+//////////////////////////////
+//
+// MidiMessage::isTimeSignature -- Returns true if message is 
+//      a meta message describing a time signature (meta message
+//      type 0x58).
+//
+
+int MidiMessage::isTimeSignature(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x58) {
+      return 0;
+   } else if (size() != 7) {
+      // Meta time signature message can only be 7 bytes long:
+      // FF 58 <size> <top> <bot-log-2> <clocks-per-beat> <32nds>
+      return 0;
+   } else {
+      return 1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isKeySignature -- Returns true if message is 
+//      a meta message describing a key signature (meta message
+//      type 0x59).
+//
+
+int MidiMessage::isKeySignature(void) const {
+   if (!isMetaMessage()) {
+      return 0;
+   } else if ((*this)[1] != 0x59) {
+      return 0;
+   } else if (size() != 5) {
+      // Meta key signature message can only be 5 bytes long:
+      // FF 59 <size> <accid> <mode>
+      return 0;
+   } else {
+      return 1;
+   }
+}
 
 
 //////////////////////////////
@@ -1150,6 +1308,40 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
    }
 
    base7 = base7pc + 7 * octave;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getMetaContent -- Returns the bytes of the meta
+//   message after the length (which is a variable-length-value).
+//
+
+string MidiMessage::getMetaContent(void) {
+   string output;
+   if (!isMetaMessage()) {
+      return output;
+   }
+   int start = 3;
+   if (operator[](2) > 0x7f) {
+      start++;
+      if (operator[](3) > 0x7f) {
+         start++;
+         if (operator[](4) > 0x7f) {
+            start++;
+            if (operator[](5) > 0x7f) {
+               start++;
+               // maximum of 5 bytes in VLV, so last must be < 0x80
+            }
+         }
+      }
+   }
+   output.reserve(this->size());
+   for (int i=start; i<this->size(); i++) {
+      output.push_back(operator[](i));
+   }
+   return output;
 }
 
 

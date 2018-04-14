@@ -123,11 +123,21 @@ class MidiMessage : public vector<uchar> {
 
       // meta-message related functions:
       int            getMetaType          (void) const;
+      int            isText               (void) const;
+      int            isCopyright          (void) const;
+      int            isTrackName          (void) const;
+      int            isInstrumentName     (void) const;
+      int            isLyricText          (void) const;
+      int            isMarkerText         (void) const;
       int            isTempo              (void) const;
+      int            isTimeSignature      (void) const;
+      int            isKeySignature       (void) const;
+      int            isEndOfTrack         (void) const;
+
+      string         getMetaContent       (void);
       void           setTempo             (double tempo);
       void           setTempoMicroseconds (int microseconds);
       void           setMetaTempo         (double tempo);
-      int            isEndOfTrack         (void) const;
 
 };
 
