@@ -168,6 +168,8 @@ class MidiFile {
                                              vector<uchar>& metaData);
       int       addMetaEvent              (int aTrack, int aTick, int aType,
                                            const char* metaData);
+      int       addText                   (int aTrack, int aTick,
+                                           const string& text);
       int       addCopyright              (int aTrack, int aTick,
                                            const string& text);
       int       addTrackName              (int aTrack, int aTick,
