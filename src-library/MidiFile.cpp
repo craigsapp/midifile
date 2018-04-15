@@ -2550,10 +2550,18 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       case 0xE0:        // pitch wheel (2 more bytes)
          byte = MidiFile::readByte(input);
          if (!status()) { return rwstatus; }
+         if (byte > 0x7f) {
+            cerr << "MIDI data byte too large: " << (int)byte << endl;
+            rwstatus = 0; return rwstatus;
+         }
          array.push_back(byte);
          if (!runningQ) {
             byte = MidiFile::readByte(input);
             if (!status()) { return rwstatus; }
+            if (byte > 0x7f) {
+               cerr << "MIDI data byte too large: " << (int)byte << endl;
+               rwstatus = 0; return rwstatus;
+            }
             array.push_back(byte);
          }
          break;
@@ -2562,6 +2570,10 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
          if (!runningQ) {
             byte = MidiFile::readByte(input);
             if (!status()) { return rwstatus; }
+            if (byte > 0x7f) {
+               cerr << "MIDI data byte too large: " << (int)byte << endl;
+               rwstatus = 0; return rwstatus;
+            }
             array.push_back(byte);
          }
          break;
