@@ -82,6 +82,7 @@ class MidiFile {
       int       getTrackCount             (void) const;
       int       getNumTracks              (void) const;
       int       size                      (void) const;
+      void      removeEmpties             (void);
 
       // join/split track functionality:
       void      markSequence              (void);

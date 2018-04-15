@@ -18,6 +18,7 @@
 // Last Modified: Wed Feb 18 20:06:39 PST 2015 Added binasc MIDI read/write.
 // Last Modified: Thu Mar 19 13:09:00 PDT 2015 Improve Sysex read/write.
 // Last Modified: Fri Feb 19 00:32:39 PST 2016 Switch to Binasc stdout.
+// Last Modified: Sun Apr 15 11:11:05 PDT 2018 Added event removal system.
 // Filename:      midifile/src/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -593,8 +594,12 @@ int MidiFile::write(ostream& out) {
                                    // expected data input
       trackdata.clear();
       for (j=0; j<(int)events[i]->size(); j++) {
+         if ((*events[i])[j].empty()) {
+            // Don't write empty events (probably a delete message).
+            continue;
+         }
          if ((*events[i])[j].isEndOfTrack()) {
-            // suppress end-of-track meta messages (one will be added
+            // Suppress end-of-track meta messages (one will be added
             // automatically after all track data has been written).
             continue;
          }
@@ -854,6 +859,20 @@ int MidiFile::size(void) const {
 
 //////////////////////////////
 //
+// MidiFile::removeEmpties -- Remove any MIDI message that
+//     contains no bytes.
+//
+
+void MidiFile::removeEmpties(void) {
+   for (int i=0; i<(int)events.size(); i++) {
+      events[i]->removeEmpties();
+   }
+}
+
+
+
+//////////////////////////////
+//
 // MidiFile::markSequence -- Assign a sequence serial number to
 //   every MidiEvent in every track in the MIDI file.  This is
 //   useful if you want to preseve the order of MIDI messages in
@@ -891,7 +910,6 @@ void MidiFile::clearSequence(void) {
       }
    }
 }
-
 
 
 
@@ -2682,7 +2700,7 @@ ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d) {
 //
 // MidiFile::writeVLValue -- write a number to the midifile
 //    as a variable length value which segments a file into 7-bit
-//    values and adds a contination bit to each.  Maximum size of input 
+//    values and adds a contination bit to each.  Maximum size of input
 //    aValue is 0x0FFFffff.
 //
 

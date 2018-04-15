@@ -36,6 +36,7 @@ class MidiEventList {
       void        reserve          (int rsize);
       int         getSize          (void) const;
       int         size             (void) const;
+      void        removeEmpties    (void);
       int         linkNotePairs    (void);
       int         linkEventPairs   (void);
       void        clearLinks       (void);

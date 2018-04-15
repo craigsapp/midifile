@@ -161,13 +161,17 @@ void MidiEventList::reserve(int rsize) {
 
 //////////////////////////////
 //
-// MidiEventList::getSize -- Return the number of MidiEvents stored in the list.
+// MidiEventList::getSize -- Return the number of MidiEvents stored
+//     in the list.
 //
 
 int MidiEventList::getSize(void) const {
    return (int)list.size();
 }
 
+//
+// MidiEventList::size -- Alias for MidiEventList::getSize().
+//
 
 int MidiEventList::size(void) const {
    return getSize();
@@ -187,15 +191,54 @@ int MidiEventList::append(MidiEvent& event) {
    return (int)list.size()-1;
 }
 
+//
+// MidiEventList::push -- Alias for MidiEventList::append().
+//
 
 int MidiEventList::push(MidiEvent& event) {
    return append(event);
 }
 
+//
+// MidiEventList::push_back -- Alias for MidiEventList::append().
+//
 
 int MidiEventList::push_back(MidiEvent& event) {
    return append(event);
 }
+
+
+
+//////////////////////////////
+//
+// MidiEventList::removeEmpties -- Remove any MIDI message which contain no
+//    bytes.  This function first deallocates any empty MIDI events, and then
+//    removes them from the list of events.
+//
+
+void MidiEventList::removeEmpties(void) {
+   int count = 0;
+   for (int i=0; i<(int)list.size(); i++) {
+      if (list[i]->empty()) {
+         delete list[i];
+         list[i] = NULL;
+         count++;
+      }
+      vector<MidiEvent*>     list;
+   }
+   if (count == 0) {
+      return;
+   }
+   vector<MidiEvent*> newlist;
+   newlist.reserve(list.size() - count);
+   for (int i=0; i<(int)list.size(); i++) {
+      if (list[i]) {
+         newlist.push_back(list[i]);
+      }
+   }
+   list.swap(newlist);
+}
+
 
 
 //////////////////////////////
