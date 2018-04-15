@@ -225,7 +225,7 @@ class MidiFile {
       int              trackCount;               // # of tracks in file
       int              theTrackState;            // joined or split
       int              theTimeState;             // absolute or delta
-      vector<char>     readFileName;             // read file name
+      string           readFileName;             // read file name
 
       int               timemapvalid;
       vector<_TickTime> timemap;

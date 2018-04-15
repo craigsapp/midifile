@@ -55,8 +55,6 @@ MidiFile::MidiFile(void) {
    theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
-   readFileName.resize(1);
-   readFileName[0] = '\0';
    timemap.clear();
    timemapvalid = 0;
    rwstatus = 1;
@@ -70,8 +68,6 @@ MidiFile::MidiFile(const char* filename) {
    theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
-   readFileName.resize(1);
-   readFileName[0] = '\0';
    read(filename);
    timemap.clear();
    timemapvalid = 0;
@@ -86,8 +82,6 @@ MidiFile::MidiFile(const string& filename) {
    theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
-   readFileName.resize(1);
-   readFileName[0] = '\0';
    read(filename);
    timemap.clear();
    timemapvalid = 0;
@@ -102,8 +96,6 @@ MidiFile::MidiFile(istream& input) {
    theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
    events.resize(1);
    events[0] = new MidiEventList;
-   readFileName.resize(1);
-   readFileName[0] = '\0';
    read(input);
    timemap.clear();
    timemapvalid = 0;
@@ -167,8 +159,7 @@ MidiFile::MidiFile(MidiFile&& other) {
 //
 
 MidiFile::~MidiFile() {
-   readFileName.resize(1);
-   readFileName[0] = '\0';
+   readFileName.clear();
    clear();
    if (events[0] != NULL) {
       delete events[0];
@@ -222,7 +213,7 @@ int MidiFile::read(const string& filename) {
    rwstatus = 1;
 
    fstream input;
-   input.open(filename.data(), ios::binary | ios::in);
+   input.open(filename.c_str(), ios::binary | ios::in);
 
    if (!input.is_open()) {
       return 0;
@@ -546,7 +537,7 @@ int MidiFile::write(const char* filename) {
 
 
 int MidiFile::write(const string& filename) {
-   return MidiFile::write(filename.data());
+   return MidiFile::write(filename.c_str());
 }
 
 
@@ -687,7 +678,7 @@ int MidiFile::writeHex(const char* aFile, int width) {
 //
 
 int MidiFile::writeHex(const string& aFile, int width) {
-   return MidiFile::writeHex(aFile.data(), width);
+   return MidiFile::writeHex(aFile.c_str(), width);
 }
 
 
@@ -758,12 +749,12 @@ int MidiFile::writeBinascWithComments(const char* aFile) {
 
 
 int MidiFile::writeBinasc(const string& aFile) {
-   return writeBinasc(aFile.data());
+   return writeBinasc(aFile.c_str());
 }
 
 
 int MidiFile::writeBinascWithComments(const string& aFile) {
-   return writeBinascWithComments(aFile.data());
+   return writeBinascWithComments(aFile.c_str());
 }
 
 
@@ -1302,23 +1293,19 @@ int MidiFile::isAbsoluteTicks(void) {
 //      Currently removed any directory path.
 //
 
-void MidiFile::setFilename(const char* aname) {
-   const char* ptr = strrchr(aname, '/');
-   int len;
-   if (ptr != NULL) {
-     len = (int)strlen(ptr+1);
-     readFileName.resize(len+1);
-     strncpy(readFileName.data(), ptr+1, len);
+void MidiFile::setFilename(const string& aname) {
+   auto loc = aname.rfind('/');
+   if (loc != string::npos) {
+     readFileName = aname.substr(loc+1);
    } else {
-      len = (int)strlen(aname);
-      readFileName.resize(len+1);
-      strncpy(readFileName.data(), aname, len);
+      readFileName = aname;
    }
 }
 
 
-void MidiFile::setFilename(const string& aname) {
-   MidiFile::setFilename(aname.data());
+void MidiFile::setFilename(const char* aname) {
+   string newname = aname;
+   MidiFile::setFilename(newname);
 }
 
 
@@ -1330,25 +1317,8 @@ void MidiFile::setFilename(const string& aname) {
 //
 
 const char* MidiFile::getFilename(void) {
-   return readFileName.data();
+   return readFileName.c_str();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -495,7 +495,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -508,7 +508,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    numQ     = opts.getBoolean("num");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 
@@ -516,7 +516,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    secQ  = opts.getBoolean("seconds");
    msecQ = opts.getBoolean("milliseconds");
    beatQ = opts.getBoolean("beats");
-   strcpy(arrayname, opts.getString("name").data());
+   strcpy(arrayname, opts.getString("name").c_str());
 
    if (tickQ) {
       timetype = TICK;

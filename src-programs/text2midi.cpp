@@ -44,10 +44,10 @@ void      usage                 (const char* command);
 int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
 
-   fstream textfile(options.getArg(1).data(), ios::in);
+   fstream textfile(options.getArg(1).c_str(), ios::in);
    if (!textfile.is_open()) {
       cout << "Error: cannot read input text file." << endl;
-      usage(options.getCommand().data());
+      usage(options.getCommand().c_str());
       exit(1);
    }
    MidiFile midifile;
@@ -249,7 +249,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -266,7 +266,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    if (opts.getArgCount() != 2) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 
