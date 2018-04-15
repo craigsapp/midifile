@@ -2609,7 +2609,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                } else {
                   length = byte1;
                }
-               for (int j=0; j<length; j++) {
+               for (int j=0; j<(int)length; j++) {
                   byte = MidiFile::readByte(input); // meta type
                   if (!status()) { return rwstatus; }
                   array.push_back(byte);
