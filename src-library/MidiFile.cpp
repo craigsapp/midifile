@@ -2528,6 +2528,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       if (runningCommand >= 0xf0) {
          cerr << "Error: running status not permitted with meta and sysex"
               << " event." << endl;
+         cerr << "Byte is 0x" << hex << (int)byte << dec << endl;
          return 0;
       }
    } else {
@@ -2541,7 +2542,6 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
    }
 
    int i;
-   uchar metai;
    switch (runningCommand & 0xf0) {
       case 0x80:        // note off (2 more bytes)
       case 0x90:        // note on (2 more bytes)
@@ -2549,9 +2549,11 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       case 0xB0:        // cont. controller (2 more bytes)
       case 0xE0:        // pitch wheel (2 more bytes)
          byte = MidiFile::readByte(input);
+         if (!status()) { return rwstatus; }
          array.push_back(byte);
          if (!runningQ) {
             byte = MidiFile::readByte(input);
+            if (!status()) { return rwstatus; }
             array.push_back(byte);
          }
          break;
@@ -2559,6 +2561,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
       case 0xD0:        // channel pressure (1 more byte)
          if (!runningQ) {
             byte = MidiFile::readByte(input);
+            if (!status()) { return rwstatus; }
             array.push_back(byte);
          }
          break;
@@ -2568,12 +2571,47 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                {
                if (!runningQ) {
                   byte = MidiFile::readByte(input); // meta type
-               array.push_back(byte);
+                  if (!status()) { return rwstatus; }
+                  array.push_back(byte);
                }
-               metai = MidiFile::readByte(input); // meta type
-               array.push_back(metai);
-               for (uchar j=0; j<metai; j++) {
+               ulong length = 0;
+               uchar byte1 = 0;
+               uchar byte2 = 0;
+               uchar byte3 = 0;
+               uchar byte4 = 0;
+               byte1 = MidiFile::readByte(input);
+               if (!status()) { return rwstatus; }
+               array.push_back(byte1);
+               if (byte1 >= 0x80) {
+                  byte2 = MidiFile::readByte(input);
+                  if (!status()) { return rwstatus; }
+                  array.push_back(byte2);
+                  if (byte2 > 0x80) {
+                     byte3 = MidiFile::readByte(input);
+                     if (!status()) { return rwstatus; }
+                     array.push_back(byte3);
+                     if (byte3 >= 0x80) {
+                        byte4 = MidiFile::readByte(input);
+                        if (!status()) { return rwstatus; }
+                        array.push_back(byte4);
+                        if (byte4 >= 0x80) {
+                           cerr << "Error: cannot handle large VLVs" << endl;
+                           rwstatus = 0; return rwstatus;
+                        } else {
+                           length = unpackVLV(byte1, byte2, byte3, byte4);
+                        }
+                     } else {
+                        length = unpackVLV(byte1, byte2, byte3, 0);
+                     }
+                  } else {
+                     length = unpackVLV(byte1, byte2, 0, 0);
+                  }
+               } else {
+                  length = byte1;
+               }
+               for (int j=0; j<length; j++) {
                   byte = MidiFile::readByte(input); // meta type
+                  if (!status()) { return rwstatus; }
                   array.push_back(byte);
                }
                }
@@ -2595,6 +2633,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                int length = (int)readVLValue(input);
                for (i=0; i<length; i++) {
                   byte = MidiFile::readByte(input);
+                  if (!status()) { return rwstatus; }
                   array.push_back(byte);
                }
                }
@@ -2628,6 +2667,7 @@ ulong MidiFile::readVLValue(istream& input) {
 
    for (int i=0; i<4; i++) {
       b[i] = MidiFile::readByte(input);
+      if (!status()) { return rwstatus; }
       if (b[i] < 0x80) {
          break;
       }
@@ -2894,8 +2934,9 @@ ushort MidiFile::readLittleEndian2Bytes(istream& input) {
 
 //////////////////////////////
 //
-// MidiFile::readByte -- Read one byte from input stream.  Exit if there
-//     was an error.
+// MidiFile::readByte -- Read one byte from input stream.  Set
+//     fail status error if there was a problem (calling function
+//     has to check this status for an error after reading).
 //
 
 uchar MidiFile::readByte(istream& input) {
@@ -2903,6 +2944,7 @@ uchar MidiFile::readByte(istream& input) {
    input.read((char*)buffer, 1);
    if (input.eof()) {
       cerr << "Error: unexpected end of file." << endl;
+      rwstatus = 0;
       return 0;
    }
    return buffer[0];

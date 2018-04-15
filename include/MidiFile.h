@@ -202,8 +202,9 @@ class MidiFile {
 
       MidiFile& operator=(MidiFile other);
 
+      uchar    readByte                (istream& input);
+
       // static functions:
-      static uchar    readByte                (istream& input);
       static ushort   readLittleEndian2Bytes  (istream& input);
       static ulong    readLittleEndian4Bytes  (istream& input);
       static ostream& writeLittleEndianUShort (ostream& out, ushort value);
