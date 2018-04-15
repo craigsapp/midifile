@@ -2420,7 +2420,7 @@ double MidiFile::linearSecondInterpolationAtTick(int ticktime) {
 // MidiFile::buildTimeMap -- build an index of the absolute tick values
 //      found in a MIDI file, and their corresponding time values in
 //      seconds, taking into consideration tempo change messages.  If no
-//      tempo messages are given (or until they are given, then the
+//      tempo messages are given (or untill they are given, then the
 //      tempo is set to 120 beats per minute).  If SMPTE time code is
 //      used, then ticks are actually time values.  So don't build
 //      a time map for SMPTE ticks, and just calculate the time in
@@ -2611,12 +2611,15 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
                            rwstatus = 0; return rwstatus;
                         } else {
                            length = unpackVLV(byte1, byte2, byte3, byte4);
+                           if (!rwstatus) { return rwstatus; }
                         }
                      } else {
-                        length = unpackVLV(byte1, byte2, byte3, 0);
+                        length = unpackVLV(byte1, byte2, byte3);
+                        if (!rwstatus) { return rwstatus; }
                      }
                   } else {
-                     length = unpackVLV(byte1, byte2, 0, 0);
+                     length = unpackVLV(byte1, byte2);
+                     if (!rwstatus) { return rwstatus; }
                   }
                } else {
                   length = byte1;
@@ -2675,9 +2678,9 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 //
 
 ulong MidiFile::readVLValue(istream& input) {
-   uchar b[4] = {0};
+   uchar b[5] = {0};
 
-   for (int i=0; i<4; i++) {
+   for (int i=0; i<5; i++) {
       b[i] = MidiFile::readByte(input);
       if (!status()) { return rwstatus; }
       if (b[i] < 0x80) {
@@ -2685,7 +2688,7 @@ ulong MidiFile::readVLValue(istream& input) {
       }
    }
 
-   return unpackVLV(b[0], b[1], b[2], b[3]);
+   return unpackVLV(b[0], b[1], b[2], b[3], b[4]);
 }
 
 
@@ -2693,23 +2696,23 @@ ulong MidiFile::readVLValue(istream& input) {
 //////////////////////////////
 //
 // MidiFile::unpackVLV -- converts a VLV value to an unsigned long value.
-//     The bytes a, b, c, d are in big-endian order (the order they would
+//     The bytes a, b, c, d, e are in big-endian order (the order they would
 //     be read out of the MIDI file).
 // default values: a = b = c = d = 0;
 //
 
-ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d) {
-   if (d > 0x7f) {
-      cerr << "Error: VLV value was too long" << endl;
-      return 0;
-   }
-
-   uchar bytes[4] = {a, b, c, d};
+ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
+   uchar bytes[5] = {a, b, c, d, e};
    int count = 0;
-   while (bytes[count] > 0x7f && count < 4) {
+   while (bytes[count] > 0x7f && count < 5) {
       count++;
    }
    count++;
+   if (count >= 6) {
+      cerr << "VLV number is too large" << endl;
+      rwstatus = 0;
+      return 0;
+   }
 
    ulong output = 0;
    for (int i=0; i<count; i++) {

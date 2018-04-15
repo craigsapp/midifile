@@ -237,7 +237,7 @@ class MidiFile {
                                        uchar& runningCommand);
       ulong      readVLValue      (istream& inputfile);
       ulong      unpackVLV        (uchar a = 0, uchar b = 0, uchar c = 0,
-                                   uchar d = 0);
+                                   uchar d = 0, uchar e = 0);
       void       writeVLValue     (long aValue, vector<uchar>& data);
       int        makeVLV          (uchar *buffer, int number);
       static int ticksearch       (const void* A, const void* B);
