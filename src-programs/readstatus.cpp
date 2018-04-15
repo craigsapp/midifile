@@ -20,18 +20,24 @@ void printResult(const string& filename, int status, int status2);
 
 int main(int argc, char** argv) {
    Options options;
+   options.define("p|print=b", "Display parsed MIDI data in ASCII format");
    options.process(argc, argv);
    MidiFile midifile;
    int status;
    if (options.getArgCount() == 0) {
       status = midifile.read(cin);
       printResult("[standard input]", status, midifile.status());
-
+      if (options.getBoolean("print")) {
+         cout << midifile;
+      }
    } else {
       for (int i=0; i<options.getArgCount(); i++) {
          string filename = options.getArg(i+1);
          status = midifile.read(filename);
          printResult(filename, status, midifile.status());
+         if (options.getBoolean("print")) {
+            cout << midifile;
+         }
       }
    }
    
