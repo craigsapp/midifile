@@ -259,7 +259,10 @@ int Binasc::writeToBinary(ostream& out, istream& input) {
    input.getline(inputLine, 1024, '\n');
    lineNum++;
    while (!input.eof()) {
-      processLine(out, inputLine, lineNum);
+      int status = processLine(out, inputLine, lineNum);
+      if (!status) {
+         return 0;
+      }
       input.getline(inputLine, 1024, '\n');
       lineNum++;
    }
