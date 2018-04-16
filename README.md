@@ -2,7 +2,7 @@ Midifile: C++ MIDI file parsing library
 =======================================
 
 
-[![Travis Build Status](https://travis-ci.org/craigsapp/midifile.svg?branch=cmake-ci)](https://travis-ci.org/craigsapp/midifile) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/lm25obnwnp67645e/branch/cmake-ci?svg=true)](https://ci.appveyor.com/project/craigsapp/midifile)
+[![Travis Build Status](https://travis-ci.org/craigsapp/midifile.svg?branch=master)](https://travis-ci.org/craigsapp/midifile) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/lm25obnwnp67645e/branch/cmake-ci?svg=true)](https://ci.appveyor.com/project/craigsapp/midifile)
 
 Midifile is a library of C++ classes for reading/writing Standard
 MIDI files.  The library consists of 6 classes:
