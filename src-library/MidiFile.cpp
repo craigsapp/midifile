@@ -699,7 +699,7 @@ int MidiFile::writeHex(ostream& out, int width) {
    int linewidth = width >= 0 ? width : 25;
    for (int i=0; i<len; i++) {
       value = (unsigned char)tempstream.str()[i];
-      printf("%02x", value);
+      out << hex << setw(2) << setfill('0') << value;
       if (linewidth) {
          if (i < len - 1) {
             out << (wordcount % linewidth ? ' ' : '\n');
