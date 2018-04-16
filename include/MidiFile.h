@@ -117,6 +117,7 @@ class MidiFile {
       int       getTickState              (void);
       int       isDeltaTicks              (void);
       int       isAbsoluteTicks           (void);
+      int       getMaxTick                (void);
 
       // ticks-per-quarter related functions:
       void      setMillisecondTicks       (void);

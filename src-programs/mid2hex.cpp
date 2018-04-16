@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
    if (options.getArgCount() == 0) {
       midifile.read(cin);
    } else if (options.getArgCount() == 1) {
+      midifile.read(options.getArg(1));
    } else {
       cerr << "Only one file input allowed" << endl;
       exit(1);

@@ -1272,6 +1272,27 @@ int MidiFile::isAbsoluteTicks(void) {
 
 
 
+//////////////////////////////
+//
+// MidiFile::getMaxTick -- Returns the largest tick value
+//    in any track.  Note that the tick values must be in
+//    absolute states not delta states.  And the tracks
+//    must be sorted before calling this function.
+//
+
+int MidiFile::getMaxTick(void) {
+   MidiFile& mf = *this;
+   int output = 0;
+   for (int i=0; i<mf.getTrackCount(); i++) {
+      if (mf[i].back().tick > output) {
+         output = mf[i].back().tick;
+      }
+   }
+   return output;
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // physical-time analysis functions --
