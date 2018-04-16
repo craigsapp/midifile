@@ -19,7 +19,7 @@
 // Last Modified: Thu Mar 19 13:09:00 PDT 2015 Improve Sysex read/write.
 // Last Modified: Fri Feb 19 00:32:39 PST 2016 Switch to Binasc stdout.
 // Last Modified: Sun Apr 15 11:11:05 PDT 2018 Added event removal system.
-// Filename:      midifile/src/MidiFile.cpp
+// Filename:      midifile/src-library/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 // vim:           ts=3 expandtab hlsearch
