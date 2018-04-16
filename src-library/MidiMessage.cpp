@@ -378,7 +378,7 @@ int MidiMessage::isAftertouch(void) const {
 //////////////////////////////
 //
 // MidiMessage::isController -- Returns true if the command byte is in the 0xB0
-//    range.
+//    range and there are two additional data bytes.
 //
 
 int MidiMessage::isController(void) const {
@@ -761,9 +761,10 @@ int MidiMessage::getControllerNumber(void) const {
   if (isController()) {
       int output = getP1();
       if (output < 0) {
+         // -1 means no P1, although isController() will be false in such a case.
          return output;
       } else {
-         return 0xff & output;
+         return 0x7f & output;
       }
    } else {
       return -1;
@@ -774,7 +775,7 @@ int MidiMessage::getControllerNumber(void) const {
 
 //////////////////////////////
 //
-// MidiMessage::getControllervalue -- Return the controller value.  If the
+// MidiMessage::getControllerValue -- Return the controller value.  If the
 //   message is not a control change message, then return -1.  If the value is
 //   out of the range 0-127, then chop off the high-bits.
 //
@@ -783,9 +784,10 @@ int MidiMessage::getControllerValue(void) const {
    if (isController()) {
       int output = getP2();
       if (output < 0) {
+         // -1 means no P2, although isController() will be false in such a case.
          return output;
       } else {
-         return 0xff & output;
+         return 0x7f & output;
       }
    } else {
       return -1;
