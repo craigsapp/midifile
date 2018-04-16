@@ -751,6 +751,51 @@ int MidiMessage::getVelocity(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::getControllerNumber -- Return the controller number (such as 1
+//   for modulation wheel).  If the message does not have a controller number
+//   parameter, then return -1.  If the controller number is invalid (above 127
+//   in value), then limit the range to to 0-127.
+//
+
+int MidiMessage::getControllerNumber(void) const {
+  if (isController()) {
+      int output = getP1();
+      if (output < 0) {
+         return output;
+      } else {
+         return 0xff & output;
+      }
+   } else {
+      return -1;
+   }
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::getControllervalue -- Return the controller value.  If the
+//   message is not a control change message, then return -1.  If the value is
+//   out of the range 0-127, then chop off the high-bits.
+//
+
+int MidiMessage::getControllerValue(void) const {
+   if (isController()) {
+      int output = getP2();
+      if (output < 0) {
+         return output;
+      } else {
+         return 0xff & output;
+      }
+   } else {
+      return -1;
+   }
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::setP0 -- Set the command byte.
 //   If the MidiMessage is too short, add extra spaces to
 //   allow for P0.  The value should be in the range from
