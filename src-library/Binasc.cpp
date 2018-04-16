@@ -1042,12 +1042,12 @@ int Binasc::outputStyleMidi(ostream& out, istream& input) {
    input.read((char*)&byte2, 1);
    if (byte1 & 0x80) {
       // SMPTE divisions
-      tempout << "1'-" << 0xff - (ulong)byte1 + 1;
+      tempout << "'-" << 0xff - (ulong)byte1 + 1;
       if (commentsQ) {
          tempout << "\t\t\t; SMPTE frames/second";
       }
       tempout << endl;
-      tempout << "1'" << dec << (long)byte2;
+      tempout << "'" << dec << (long)byte2;
       if (commentsQ) {
          tempout << "\t\t\t; subframes per frame";
       }

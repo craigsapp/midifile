@@ -362,24 +362,22 @@ int MidiFile::read(istream& input) {
    // Header parameter #3: Ticks per quarter note
    shortdata = MidiFile::readLittleEndian2Bytes(input);
    if (shortdata >= 0x8000) {
-      int framespersecond = ((!(shortdata >> 8))+1) & 0x00ff;
-      int resolution      = shortdata & 0x00ff;
+      int framespersecond = 255 - ((shortdata >> 8) & 0x00ff) + 1;
+      int subframes       = shortdata & 0x00ff;
       switch (framespersecond) {
-         case 232:  framespersecond = 24; break;
-         case 231:  framespersecond = 25; break;
-         case 227:  framespersecond = 29; break;
-         case 226:  framespersecond = 30; break;
+         case 25:  framespersecond = 25; break;
+         case 24:  framespersecond = 24; break;
+         case 29:  framespersecond = 29; break;  // really 29.97 for color television
+         case 30:  framespersecond = 30; break;
          default:
                cerr << "Warning: unknown FPS: " << framespersecond << endl;
-               framespersecond = 255 - framespersecond + 1;
-               cerr << "Setting FPS to " << framespersecond << endl;
+               cerr << "Using non-standard FPS: " << framespersecond << endl;
       }
-      // actually ticks per second (except for frame=29 (drop frame)):
-      ticksPerQuarterNote = shortdata;
+      ticksPerQuarterNote = framespersecond * subframes;
 
-      cerr << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
-      cerr << "SMPTE frames per second: " << framespersecond << endl;
-      cerr << "SMPTE frame resolution per frame: " << resolution << endl;
+      // cerr << "SMPTE ticks: " << ticksPerQuarterNote << " ticks/sec" << endl;
+      // cerr << "SMPTE frames per second: " << framespersecond << endl;
+      // cerr << "SMPTE subframes per frame: " << subframes << endl;
    }  else {
       ticksPerQuarterNote = shortdata;
    }
