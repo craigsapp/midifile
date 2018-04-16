@@ -177,6 +177,14 @@ int MidiEventList::size(void) const {
    return getSize();
 }
 
+//
+// MidiEventList::getEventCount -- Alias for MidiEventList::getSize().
+//
+
+int MidiEventList::getEventCount(void) const {
+   return getSize();
+}
+
 
 
 //////////////////////////////
