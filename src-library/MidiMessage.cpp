@@ -1385,7 +1385,7 @@ string MidiMessage::getMetaContent(void) {
       }
    }
    output.reserve(this->size());
-   for (int i=start; i<this->size(); i++) {
+   for (int i=start; i<(int)this->size(); i++) {
       output.push_back(operator[](i));
    }
    return output;
