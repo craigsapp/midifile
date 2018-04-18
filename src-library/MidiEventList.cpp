@@ -554,34 +554,50 @@ int eventcompare(const void* a, const void* b) {
 		// aevent sequencing state occurs before bevent
 		// see MidiEventList::markSequence()
 		return -1;
-	} else if (aevent[0] == 0xff && aevent[1] == 0x2f) {
+	} else if (aevent.getP0() == 0xff && aevent.getP1() == 0x2f) {
 		// end-of-track meta-message should always be last (but won't really
 		// matter since the writing function ignores all end-of-track messages
 		// and writes its own.
 		return +1;
-	} else if (bevent[0] == 0xff && bevent[1] == 0x2f) {
+	} else if (bevent.getP0() == 0xff && bevent.getP1() == 0x2f) {
 		// end-of-track meta-message should always be last (but won't really
 		// matter since the writing function ignores all end-of-track messages
 		// and writes its own.
 		return -1;
-	} else if (aevent[0] == 0xff && bevent[0] != 0xff) {
+	} else if (aevent.getP0() == 0xff && bevent.getP0() != 0xff) {
 		// other meta-messages are placed before real MIDI messages
 		return -1;
-	} else if (aevent[0] != 0xff && bevent[0] == 0xff) {
+	} else if (aevent.getP0() != 0xff && bevent.getP0() == 0xff) {
 		// other meta-messages are placed before real MIDI messages
 		return +1;
-	} else if (((aevent[0] & 0xf0) == 0x90) && (aevent[2] != 0)) {
+	} else if (((aevent.getP0() & 0xf0) == 0x90) && (aevent.getP2() != 0)) {
 		// note-ons come after all other types of MIDI messages
 		return +1;
-	} else if (((bevent[0] & 0xf0) == 0x90) && (bevent[2] != 0)) {
+	} else if (((bevent.getP0() & 0xf0) == 0x90) && (bevent.getP2() != 0)) {
 		// note-ons come after all other types of MIDI messages
 		return -1;
-	} else if (((aevent[0] & 0xf0) == 0x90) || ((aevent[0] & 0xf0) == 0x80)) {
+	} else if (((aevent.getP0() & 0xf0) == 0x90) || ((aevent.getP0() & 0xf0) == 0x80)) {
 		// note-offs come after all other MIDI messages (except note-ons)
 		return +1;
-	} else if (((bevent[0] & 0xf0) == 0x90) || ((bevent[0] & 0xf0) == 0x80)) {
+	} else if (((bevent.getP0() & 0xf0) == 0x90) || ((bevent.getP0() & 0xf0) == 0x80)) {
 		// note-offs come after all other MIDI messages (except note-ons)
 		return -1;
+	} else if (((aevent.getP0() & 0xf0) == 0xb0) && ((bevent.getP0() & 0xf0) == 0xb0)) {
+		// both events are continuous controllers.  Sort them by controller number
+		if (aevent.getP1() > bevent.getP1()) {
+			return +1;
+		} if (aevent.getP1() < bevent.getP1()) {
+			return -1;
+		} else {
+			// same controller number, so sort by data value
+			if (aevent.getP2() > bevent.getP2()) {
+				return +1;
+			} if (aevent.getP2() < bevent.getP2()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
 	} else {
 		return 0;
 	}
