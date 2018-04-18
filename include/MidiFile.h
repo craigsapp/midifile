@@ -135,9 +135,9 @@ class MidiFile {
 		const char* getFilename             (void);
 
 		// event functionality:
-		int        addEvent                  (int aTrack, int aTick,
+		MidiEvent* addEvent                  (int aTrack, int aTick,
 		                                     vector<uchar>& midiData);
-		int        addEvent                  (MidiEvent& mfevent);
+		MidiEvent* addEvent                  (MidiEvent& mfevent);
 		MidiEvent& getEvent                  (int aTrack, int anIndex);
 		int        getEventCount             (int aTrack);
 		int        getNumEvents              (int aTrack);
@@ -147,64 +147,64 @@ class MidiFile {
 		void       clear_no_deallocate       (void);
 
 		// MIDI message adding convenience functions:
-		int       addNoteOn                 (int aTrack, int aTick,
-		                                     int aChannel, int key, int vel);
-		int       addNoteOff                (int aTrack, int aTick,
-		                                     int aChannel, int key, int vel);
-		int       addNoteOff                (int aTrack, int aTick,
-		                                     int aChannel, int key);
-		int       addController             (int aTrack, int aTick,
-		                                     int aChannel, int num, int value);
-		int       addPatchChange            (int aTrack, int aTick,
-		                                     int aChannel, int patchnum);
-		int       addTimbre                 (int aTrack, int aTick,
-		                                     int aChannel, int patchnum);
-		int       addPitchBend              (int aTrack, int aTick,
-		                                     int aChannel, double amount);
+		MidiEvent* addNoteOn                 (int aTrack, int aTick,
+		                                      int aChannel, int key, int vel);
+		MidiEvent* addNoteOff                (int aTrack, int aTick,
+		                                      int aChannel, int key, int vel);
+		MidiEvent* addNoteOff                (int aTrack, int aTick,
+		                                      int aChannel, int key);
+		MidiEvent* addController             (int aTrack, int aTick,
+		                                      int aChannel, int num, int value);
+		MidiEvent* addPatchChange            (int aTrack, int aTick,
+		                                      int aChannel, int patchnum);
+		MidiEvent* addTimbre                 (int aTrack, int aTick,
+		                                      int aChannel, int patchnum);
+		MidiEvent* addPitchBend              (int aTrack, int aTick,
+		                                      int aChannel, double amount);
 
 		// Controller message adding convenience functions:
-		int       addSustain                (int aTrack, int aTick,
-		                                     int aChannel, int value);
-		int       addSustainPedal           (int aTrack, int aTick,
-		                                     int aChannel, int value);
-		int       addSustainOn              (int aTrack, int aTick,
-		                                     int aChannel);
-		int       addSustainPedalOn         (int aTrack, int aTick,
-		                                     int aChannel);
-		int       addSustainOff             (int aTrack, int aTick,
-		                                     int aChannel);
-		int       addSustainPedalOff        (int aTrack, int aTick,
-		                                     int aChannel);
+		MidiEvent* addSustain                (int aTrack, int aTick,
+		                                      int aChannel, int value);
+		MidiEvent* addSustainPedal           (int aTrack, int aTick,
+		                                      int aChannel, int value);
+		MidiEvent* addSustainOn              (int aTrack, int aTick,
+		                                      int aChannel);
+		MidiEvent* addSustainPedalOn         (int aTrack, int aTick,
+		                                      int aChannel);
+		MidiEvent* addSustainOff             (int aTrack, int aTick,
+		                                      int aChannel);
+		MidiEvent* addSustainPedalOff        (int aTrack, int aTick,
+		                                      int aChannel);
 
 		// Meta-event adding convenience functions:
-		int       addMetaEvent              (int aTrack, int aTick, int aType,
-		                                       vector<uchar>& metaData);
-		int       addMetaEvent              (int aTrack, int aTick, int aType,
-		                                     const char* metaData);
-		int       addText                   (int aTrack, int aTick,
-		                                     const string& text);
-		int       addCopyright              (int aTrack, int aTick,
-		                                     const string& text);
-		int       addTrackName              (int aTrack, int aTick,
-		                                     const string& name);
-		int       addInstrumentName         (int aTrack, int aTick,
-		                                     const string& name);
-		int       addLyric                  (int aTrack, int aTick,
-		                                     const string& text);
-		int       addMarker                 (int aTrack, int aTick,
-		                                     const string& text);
-		int       addCue                    (int aTrack, int aTick,
-		                                     const string& text);
-		int       addTempo                  (int aTrack, int aTick,
-		                                     double aTempo);
-		int       addTimeSignature          (int aTrack, int aTick,
-		                                     int top, int bottom,
-		                                     int clocksPerClick = 24,
-		                                     int num32dsPerQuarter = 8);
-		int       addCompoundTimeSignature  (int aTrack, int aTick,
-		                                     int top, int bottom,
-		                                     int clocksPerClick = 36,
-		                                     int num32dsPerQuarter = 8);
+		MidiEvent* addMetaEvent              (int aTrack, int aTick, int aType,
+		                                        vector<uchar>& metaData);
+		MidiEvent* addMetaEvent              (int aTrack, int aTick, int aType,
+		                                      const char* metaData);
+		MidiEvent* addText                   (int aTrack, int aTick,
+		                                      const string& text);
+		MidiEvent* addCopyright              (int aTrack, int aTick,
+		                                      const string& text);
+		MidiEvent* addTrackName              (int aTrack, int aTick,
+		                                      const string& name);
+		MidiEvent* addInstrumentName         (int aTrack, int aTick,
+		                                      const string& name);
+		MidiEvent* addLyric                  (int aTrack, int aTick,
+		                                      const string& text);
+		MidiEvent* addMarker                 (int aTrack, int aTick,
+		                                      const string& text);
+		MidiEvent* addCue                    (int aTrack, int aTick,
+		                                      const string& text);
+		MidiEvent* addTempo                  (int aTrack, int aTick,
+		                                      double aTempo);
+		MidiEvent* addTimeSignature          (int aTrack, int aTick,
+		                                      int top, int bottom,
+		                                      int clocksPerClick = 24,
+		                                      int num32dsPerQuarter = 8);
+		MidiEvent* addCompoundTimeSignature  (int aTrack, int aTick,
+		                                      int top, int bottom,
+		                                      int clocksPerClick = 36,
+		                                      int num32dsPerQuarter = 8);
 
 		uchar     readByte                  (istream& input);
 

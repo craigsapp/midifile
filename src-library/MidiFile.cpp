@@ -1532,15 +1532,14 @@ const char* MidiFile::getFilename(void) {
 // MidiFile::addEvent --
 //
 
-int MidiFile::addEvent(int aTrack, int aTick, vector<uchar>& midiData) {
+MidiEvent* MidiFile::addEvent(int aTrack, int aTick, vector<uchar>& midiData) {
 	timemapvalid = 0;
-	MidiEvent anEvent;
-	anEvent.tick = aTick;
-	anEvent.track = aTrack;
-	anEvent.setMessage(midiData);
-
-	events[aTrack]->push_back(anEvent);
-	return events[aTrack]->size() - 1;
+	MidiEvent* me = new MidiEvent;
+	me->tick = aTick;
+	me->track = aTrack;
+	me->setMessage(midiData);
+	events[aTrack]->push_back_no_copy(me);
+	return me;
 }
 
 
@@ -1550,13 +1549,13 @@ int MidiFile::addEvent(int aTrack, int aTick, vector<uchar>& midiData) {
 // MidiFile::addEvent -- Some bug here when joinedTracks(), but track==1...
 //
 
-int MidiFile::addEvent(MidiEvent& mfevent) {
+MidiEvent* MidiFile::addEvent(MidiEvent& mfevent) {
 	if (getTrackState() == TRACK_STATE_JOINED) {
 		events[0]->push_back(mfevent);
-		return events[0]->size()-1;
+		return &events[0]->back();
 	} else {
 		events[mfevent.track]->push_back(mfevent);
-		return events[mfevent.track]->size()-1;
+		return &events[mfevent.track]->back();
 	}
 }
 
@@ -1567,7 +1566,7 @@ int MidiFile::addEvent(MidiEvent& mfevent) {
 // MidiFile::addMetaEvent --
 //
 
-int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
+MidiEvent* MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
 		vector<uchar>& metaData) {
 	timemapvalid = 0;
 	int i;
@@ -1590,7 +1589,7 @@ int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
 }
 
 
-int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
+MidiEvent* MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
 		const char* metaData) {
 	int length = (int)strlen(metaData);
 	vector<uchar> buffer;
@@ -1609,12 +1608,12 @@ int MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
 // MidiFile::addText --  Add a text meta-message (#1).
 //
 
-int MidiFile::addText(int aTrack, int aTick, const string& text) {
+MidiEvent* MidiFile::addText(int aTrack, int aTick, const string& text) {
 	MidiEvent* me = new MidiEvent;
 	me->makeText(text);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1624,12 +1623,12 @@ int MidiFile::addText(int aTrack, int aTick, const string& text) {
 // MidiFile::addCopyright --  Add a copyright notice meta-message (#2).
 //
 
-int MidiFile::addCopyright(int aTrack, int aTick, const string& text) {
+MidiEvent* MidiFile::addCopyright(int aTrack, int aTick, const string& text) {
 	MidiEvent* me = new MidiEvent;
 	me->makeCopyright(text);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1639,12 +1638,12 @@ int MidiFile::addCopyright(int aTrack, int aTick, const string& text) {
 // MidiFile::addTrackName --  Add an track name meta-message (#3).
 //
 
-int MidiFile::addTrackName(int aTrack, int aTick, const string& name) {
+MidiEvent* MidiFile::addTrackName(int aTrack, int aTick, const string& name) {
 	MidiEvent* me = new MidiEvent;
 	me->makeTrackName(name);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1654,12 +1653,12 @@ int MidiFile::addTrackName(int aTrack, int aTick, const string& name) {
 // MidiFile::addInstrumentName --  Add an instrument name meta-message (#4).
 //
 
-int MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) {
+MidiEvent* MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) {
 	MidiEvent* me = new MidiEvent;
 	me->makeInstrumentName(name);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1669,12 +1668,12 @@ int MidiFile::addInstrumentName(int aTrack, int aTick, const string& name) {
 // MidiFile::addLyric -- Add a lyric meta-message (meta #5).
 //
 
-int MidiFile::addLyric(int aTrack, int aTick, const string& text) {
+MidiEvent* MidiFile::addLyric(int aTrack, int aTick, const string& text) {
 	MidiEvent* me = new MidiEvent;
 	me->makeLyric(text);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1684,12 +1683,12 @@ int MidiFile::addLyric(int aTrack, int aTick, const string& text) {
 // MidiFile::addMarker -- Add a marker meta-message (meta #6).
 //
 
-int MidiFile::addMarker(int aTrack, int aTick, const string& text) {
+MidiEvent* MidiFile::addMarker(int aTrack, int aTick, const string& text) {
 	MidiEvent* me = new MidiEvent;
 	me->makeMarker(text);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1699,12 +1698,12 @@ int MidiFile::addMarker(int aTrack, int aTick, const string& text) {
 // MidiFile::addCue -- Add a cue-point meta-message (meta #7).
 //
 
-int MidiFile::addCue(int aTrack, int aTick, const string& text) {
+MidiEvent* MidiFile::addCue(int aTrack, int aTick, const string& text) {
 	MidiEvent* me = new MidiEvent;
 	me->makeCue(text);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1714,12 +1713,12 @@ int MidiFile::addCue(int aTrack, int aTick, const string& text) {
 // MidiFile::addTempo -- Add a tempo meta message (meta #0x51).
 //
 
-int MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
+MidiEvent* MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
 	MidiEvent* me = new MidiEvent;
 	me->makeTempo(aTempo);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1747,13 +1746,13 @@ int MidiFile::addTempo(int aTrack, int aTick, double aTempo) {
 //    num32ndsPerQuarter = 8
 //
 
-int MidiFile::addTimeSignature(int aTrack, int aTick, int top, int bottom,
+MidiEvent* MidiFile::addTimeSignature(int aTrack, int aTick, int top, int bottom,
 		int clocksPerClick, int num32ndsPerQuarter) {
 	MidiEvent* me = new MidiEvent;
 	me->makeTimeSignature(top, bottom, clocksPerClick, num32ndsPerQuarter);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1770,7 +1769,7 @@ int MidiFile::addTimeSignature(int aTrack, int aTick, int top, int bottom,
 //     num32ndsPerQuarter ==  8 (8 32nds per quarter note)
 //
 
-int MidiFile::addCompoundTimeSignature(int aTrack, int aTick, int top,
+MidiEvent* MidiFile::addCompoundTimeSignature(int aTrack, int aTick, int top,
 		int bottom, int clocksPerClick, int num32ndsPerQuarter) {
 	return addTimeSignature(aTrack, aTick, top, bottom, clocksPerClick,
 		num32ndsPerQuarter);
@@ -1840,12 +1839,12 @@ int MidiFile::makeVLV(uchar *buffer, int number) {
 //    given time in the given channel.
 //
 
-int MidiFile::addNoteOn(int aTrack, int aTick, int aChannel, int key, int vel) {
+MidiEvent* MidiFile::addNoteOn(int aTrack, int aTick, int aChannel, int key, int vel) {
 	MidiEvent* me = new MidiEvent;
 	me->makeNoteOn(aChannel, key, vel);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1855,13 +1854,13 @@ int MidiFile::addNoteOn(int aTrack, int aTick, int aChannel, int key, int vel) {
 // MidiFile::addNoteOff -- Add a note-off message (using 0x80 messages).
 //
 
-int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key,
+MidiEvent* MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key,
 		int vel) {
 	MidiEvent* me = new MidiEvent;
 	me->makeNoteOff(aChannel, key, vel);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1872,12 +1871,12 @@ int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key,
 //   zero attack velocity).
 //
 
-int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key) {
+MidiEvent* MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key) {
 	MidiEvent* me = new MidiEvent;
 	me->makeNoteOff(aChannel, key);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1888,13 +1887,13 @@ int MidiFile::addNoteOff(int aTrack, int aTick, int aChannel, int key) {
 //    track at the given tick time in the given channel.
 //
 
-int MidiFile::addController(int aTrack, int aTick, int aChannel,
+MidiEvent* MidiFile::addController(int aTrack, int aTick, int aChannel,
 		int num, int value) {
 	MidiEvent* me = new MidiEvent;
 	me->makeController(aChannel, num, value);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1905,13 +1904,13 @@ int MidiFile::addController(int aTrack, int aTick, int aChannel,
 //    track at the given tick time in the given channel.
 //
 
-int MidiFile::addPatchChange(int aTrack, int aTick, int aChannel,
+MidiEvent* MidiFile::addPatchChange(int aTrack, int aTick, int aChannel,
 		int patchnum) {
 	MidiEvent* me = new MidiEvent;
 	me->makePatchChange(aChannel, patchnum);
 	me->tick = aTick;
 	events[aTrack]->push_back_no_copy(me);
-	return events[aTrack]->size() - 1;
+	return me;
 }
 
 
@@ -1923,7 +1922,7 @@ int MidiFile::addPatchChange(int aTrack, int aTick, int aChannel,
 //    MidiFile::addPatchChange().
 //
 
-int MidiFile::addTimbre(int aTrack, int aTick, int aChannel, int patchnum) {
+MidiEvent* MidiFile::addTimbre(int aTrack, int aTick, int aChannel, int patchnum) {
 	return addPatchChange(aTrack, aTick, aChannel, patchnum);
 }
 
@@ -1939,7 +1938,7 @@ int MidiFile::addTimbre(int aTrack, int aTick, int aChannel, int patchnum) {
 //   +1.0 maps to 16383 (0x3FFF --> 0x7F 0x7F)
 //
 
-int MidiFile::addPitchBend(int aTrack, int aTick, int aChannel, double amount) {
+MidiEvent* MidiFile::addPitchBend(int aTrack, int aTick, int aChannel, double amount) {
 	timemapvalid = 0;
 	amount += 1.0;
 	int value = int(amount * 8192 + 0.5);
@@ -1980,7 +1979,7 @@ int MidiFile::addPitchBend(int aTrack, int aTick, int aChannel, double amount) {
 // MidiFile::addSustain -- Add a continuous controller message for the sustain pedal.
 //
 
-int MidiFile::addSustain(int aTrack, int aTick, int aChannel, int value) {
+MidiEvent* MidiFile::addSustain(int aTrack, int aTick, int aChannel, int value) {
 	return addController(aTrack, aTick, aChannel, 64, value);
 }
 
@@ -1988,7 +1987,7 @@ int MidiFile::addSustain(int aTrack, int aTick, int aChannel, int value) {
 // MidiFile::addSustainPedal -- Alias for MidiFile::addSustain().
 //
 
-int MidiFile::addSustainPedal(int aTrack, int aTick, int aChannel, int value) {
+MidiEvent* MidiFile::addSustainPedal(int aTrack, int aTick, int aChannel, int value) {
 	return addSustain(aTrack, aTick, aChannel, value);
 }
 
@@ -1999,7 +1998,7 @@ int MidiFile::addSustainPedal(int aTrack, int aTick, int aChannel, int value) {
 // MidiFile::addSustainOn -- Add a continuous controller message for the sustain pedal on.
 //
 
-int MidiFile::addSustainOn(int aTrack, int aTick, int aChannel) {
+MidiEvent* MidiFile::addSustainOn(int aTrack, int aTick, int aChannel) {
 	return addSustain(aTrack, aTick, aChannel, 127);
 }
 
@@ -2007,7 +2006,7 @@ int MidiFile::addSustainOn(int aTrack, int aTick, int aChannel) {
 // MidiFile::addSustainPedalOn -- Alias for MidiFile::addSustainOn().
 //
 
-int MidiFile::addSustainPedalOn(int aTrack, int aTick, int aChannel) {
+MidiEvent* MidiFile::addSustainPedalOn(int aTrack, int aTick, int aChannel) {
 	return addSustainOn(aTrack, aTick, aChannel);
 }
 
@@ -2018,7 +2017,7 @@ int MidiFile::addSustainPedalOn(int aTrack, int aTick, int aChannel) {
 // MidiFile::addSustainOff -- Add a continuous controller message for the sustain pedal off.
 //
 
-int MidiFile::addSustainOff(int aTrack, int aTick, int aChannel) {
+MidiEvent* MidiFile::addSustainOff(int aTrack, int aTick, int aChannel) {
 	return addSustain(aTrack, aTick, aChannel, 0);
 }
 
@@ -2026,7 +2025,7 @@ int MidiFile::addSustainOff(int aTrack, int aTick, int aChannel) {
 // MidiFile::addSustainPedalOff -- Alias for MidiFile::addSustainOff().
 //
 
-int MidiFile::addSustainPedalOff(int aTrack, int aTick, int aChannel) {
+MidiEvent* MidiFile::addSustainPedalOff(int aTrack, int aTick, int aChannel) {
 	return addSustainOff(aTrack, aTick, aChannel);
 }
 
