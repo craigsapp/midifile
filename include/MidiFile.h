@@ -162,6 +162,20 @@ class MidiFile {
 		int       addPitchBend              (int aTrack, int aTick,
 		                                     int aChannel, double amount);
 
+		// Controller message adding convenience functions:
+		int       addSustain                (int aTrack, int aTick,
+		                                     int aChannel, int value);
+		int       addSustainPedal           (int aTrack, int aTick,
+		                                     int aChannel, int value);
+		int       addSustainOn              (int aTrack, int aTick,
+		                                     int aChannel);
+		int       addSustainPedalOn         (int aTrack, int aTick,
+		                                     int aChannel);
+		int       addSustainOff             (int aTrack, int aTick,
+		                                     int aChannel);
+		int       addSustainPedalOff        (int aTrack, int aTick,
+		                                     int aChannel);
+
 		// Meta-event adding convenience functions:
 		int       addMetaEvent              (int aTrack, int aTick, int aType,
 		                                       vector<uchar>& metaData);

@@ -1619,20 +1619,6 @@ void MidiMessage::makeNoteOff(void) {
 
 /////////////////////////////
 //
-// MidiMessage::makeController -- Create a controller message.
-//
-
-void MidiMessage::makeController(int channel, int num, int value) {
-	resize(0);
-	push_back(0xb0 | (0x0f & channel));
-	push_back(0x7f & num);
-	push_back(0x7f & value);
-}
-
-
-
-/////////////////////////////
-//
 // MidiMessage::makePatchChange -- Create a patch-change message.
 //
 
@@ -1648,6 +1634,78 @@ void MidiMessage::makePatchChange(int channel, int patchnum) {
 
 void MidiMessage::makeTimbre(int channel, int patchnum) {
 	makePatchChange(channel, patchnum);
+}
+
+
+/////////////////////////////
+//
+// MidiMessage::makeController -- Create a controller message.
+//
+
+void MidiMessage::makeController(int channel, int num, int value) {
+	resize(0);
+	push_back(0xb0 | (0x0f & channel));
+	push_back(0x7f & num);
+	push_back(0x7f & value);
+}
+
+
+
+/////////////////////////////
+//
+// MidiMessage::makeSustain -- Create a sustain pedal message.
+//   Value in 0-63 range is a sustain off.  Value in the
+//   64-127 value is a sustain on.
+//
+
+void MidiMessage::makeSustain(int channel, int value) {
+	makeController(channel, 64, value);
+}
+
+//
+// MidiMessage::makeSustain -- Alias for MidiMessage::makeSustain().
+//
+
+void MidiMessage::makeSustainPedal(int channel, int value) {
+	makeSustain(channel, value);
+}
+
+
+
+/////////////////////////////
+//
+// MidiMessage::makeSustainOn -- Create sustain-on controller message.
+//
+
+void MidiMessage::makeSustainOn(int channel) {
+	makeController(channel, 64, 127);
+}
+
+//
+// MidiMessage::makeSustainPedalOn -- Alias for MidiMessage::makeSustainOn().
+//
+
+void MidiMessage::makeSustainPedalOn(int channel) {
+	makeSustainOn(channel);
+}
+
+
+
+/////////////////////////////
+//
+// MidiMessage::makeSustainOff -- Create a sustain-off controller message.
+//
+
+void MidiMessage::makeSustainOff(int channel) {
+	makeController(channel, 64, 0);
+}
+
+//
+// MidiMessage::makeSustainPedalOff -- Alias for MidiMessage::makeSustainOff().
+//
+
+void MidiMessage::makeSustainPedalOff(int channel) {
+	makeSustainOff(channel);
 }
 
 

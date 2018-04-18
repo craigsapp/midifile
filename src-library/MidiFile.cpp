@@ -1970,6 +1970,67 @@ int MidiFile::addPitchBend(int aTrack, int aTick, int aChannel, double amount) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
+//
+// Controller message adding convenience functions:
+//
+
+//////////////////////////////
+//
+// MidiFile::addSustain -- Add a continuous controller message for the sustain pedal.
+//
+
+int MidiFile::addSustain(int aTrack, int aTick, int aChannel, int value) {
+	return addController(aTrack, aTick, aChannel, 64, value);
+}
+
+//
+// MidiFile::addSustainPedal -- Alias for MidiFile::addSustain().
+//
+
+int MidiFile::addSustainPedal(int aTrack, int aTick, int aChannel, int value) {
+	return addSustain(aTrack, aTick, aChannel, value);
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addSustainOn -- Add a continuous controller message for the sustain pedal on.
+//
+
+int MidiFile::addSustainOn(int aTrack, int aTick, int aChannel) {
+	return addSustain(aTrack, aTick, aChannel, 127);
+}
+
+//
+// MidiFile::addSustainPedalOn -- Alias for MidiFile::addSustainOn().
+//
+
+int MidiFile::addSustainPedalOn(int aTrack, int aTick, int aChannel) {
+	return addSustainOn(aTrack, aTick, aChannel);
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::addSustainOff -- Add a continuous controller message for the sustain pedal off.
+//
+
+int MidiFile::addSustainOff(int aTrack, int aTick, int aChannel) {
+	return addSustain(aTrack, aTick, aChannel, 0);
+}
+
+//
+// MidiFile::addSustainPedalOff -- Alias for MidiFile::addSustainOff().
+//
+
+int MidiFile::addSustainPedalOff(int aTrack, int aTick, int aChannel) {
+	return addSustainOff(aTrack, aTick, aChannel);
+}
+
+
 
 //////////////////////////////
 //

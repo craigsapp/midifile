@@ -103,14 +103,22 @@ class MidiMessage : public vector<uchar> {
 		bool           isPitchbend          (void) const;
 		bool           isEmpty              (void) const;
 
-		// helper functions to create various MidiMessages
+		// helper functions to create various MidiMessages:
 		void           makeNoteOn           (int channel, int key, int velocity);
 		void           makeNoteOff          (int channel, int key, int velocity);
 		void           makeNoteOff          (int channel, int key);
 		void           makeNoteOff          (void);
-		void           makeController       (int channel, int num, int value);
 		void           makePatchChange      (int channel, int patchnum);
 		void           makeTimbre           (int channel, int patchnum);
+		void           makeController       (int channel, int num, int value);
+
+		// helper functions to create various continuous controller messages:
+		void           makeSustain          (int channel, int value);
+		void           makeSustainPedal     (int channel, int value);
+		void           makeSustainOn        (int channel);
+		void           makeSustainPedalOn   (int channel);
+		void           makeSustainOff       (int channel);
+		void           makeSustainPedalOff  (int channel);
 
 		// meta-message creation and helper functions:
 		void           makeMetaMessage      (int mnum, const string& data);
