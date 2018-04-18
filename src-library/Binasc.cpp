@@ -4,7 +4,7 @@
 // Last Modified: Thu Feb 18 21:03:54 PST 2016 Added quoted string literals.
 // Filename:      midifile/src-library/Binasc.cpp
 // Syntax:        C++11
-// vim:           ts=3 expandtab
+// vim:           ts=3 noexpandtab
 //
 // description:   Interface to convert bytes between binary and ASCII forms.
 //

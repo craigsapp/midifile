@@ -5,7 +5,7 @@
 // Filename:      midifile/include/Binasc.h
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
-// vim:           ts=3 expandtab
+// vim:           ts=3 noexpandtab
 //
 // description:   Interface to convert bytes between binary and ASCII forms.
 //

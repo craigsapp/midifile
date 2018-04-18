@@ -5,7 +5,7 @@
 // Filename:      midifile/include/MidiEventList.h
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
-// vim:           ts=3 expandtab
+// vim:           ts=3 noexpandtab
 //
 // Description:   A class which stores a MidiEvents for a MidiFile track.
 //
@@ -19,42 +19,41 @@
 using namespace std;
 
 class MidiEventList {
-   public:
-                  MidiEventList    (void);
+	public:
+		                 MidiEventList    (void);
+		                 MidiEventList    (const MidiEventList& other);
+		                 MidiEventList    (MidiEventList&& other);
 
-                 ~MidiEventList    ();
+		                ~MidiEventList    ();
 
-                 MidiEventList     (const MidiEventList& other);
-                 MidiEventList     (MidiEventList&& other);
+		MidiEvent&       operator[]       (int index);
+		const MidiEvent& operator[]       (int index) const;
+		MidiEvent&       back             (void);
+		MidiEvent&       last             (void);
+		MidiEvent&       getEvent         (int index);
+		void             clear            (void);
+		void             reserve          (int rsize);
+		int              getSize          (void) const;
+		int              getEventCount    (void) const;
+		int              size             (void) const;
+		void             removeEmpties    (void);
+		int              linkNotePairs    (void);
+		int              linkEventPairs   (void);
+		void             clearLinks       (void);
+		MidiEvent**      data             (void);
 
-      MidiEvent&  operator[]       (int index);
-      const MidiEvent&  operator[] (int index) const;
-      MidiEvent&  back             (void);
-      MidiEvent&  last             (void);
-      MidiEvent&  getEvent         (int index);
-      void        clear            (void);
-      void        reserve          (int rsize);
-      int         getSize          (void) const;
-      int         getEventCount    (void) const;
-      int         size             (void) const;
-      void        removeEmpties    (void);
-      int         linkNotePairs    (void);
-      int         linkEventPairs   (void);
-      void        clearLinks       (void);
-      MidiEvent** data             (void);
+		int              push             (MidiEvent& event);
+		int              push_back        (MidiEvent& event);
+		int              append           (MidiEvent& event);
 
-      int         push             (MidiEvent& event);
-      int         push_back        (MidiEvent& event);
-      int         append           (MidiEvent& event);
+		// careful when using these, intended for internal use in MidiFile class:
+		void             detach              (void);
+		int              push_back_no_copy   (MidiEvent* event);
 
-      // careful when using these, intended for internal use in MidiFile class:
-      void        detach              (void);
-      int         push_back_no_copy   (MidiEvent* event);
+		MidiEventList& operator=(MidiEventList other);
 
-      MidiEventList& operator=(MidiEventList other);
-
-   private:
-      vector<MidiEvent*>     list;
+	private:
+		vector<MidiEvent*> list;
 
 };
 

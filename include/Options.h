@@ -7,6 +7,7 @@
 // Web Address:   https://github.com/craigsapp/optionlib/blob/master/include/Options.h
 // Documentation: http://sig.sapp.org/doc/classes/Options
 // Syntax:        C++11
+// vim:           ts=3 noexpandtab
 //
 // Description:   Interface to command-line options.
 //
