@@ -41,6 +41,8 @@ class MidiEventList {
 		int              linkEventPairs   (void);
 		void             clearLinks       (void);
 		MidiEvent**      data             (void);
+		void             clearSequence    (void);
+		int              markSequence     (int sequence = 1);
 
 		int              push             (MidiEvent& event);
 		int              push_back        (MidiEvent& event);
@@ -52,11 +54,19 @@ class MidiEventList {
 
 		MidiEventList& operator=(MidiEventList other);
 
-	private:
+	protected:
 		vector<MidiEvent*> list;
+
+	private:
+		void             sort                 (void);
+		void             sortKeepSequence     (void);
+
+	friend class MidiFile;
 
 };
 
+
+int eventcompare(const void* a, const void* b);
 
 #endif /* _MIDIEVENTLIST_H_INCLUDED */
 

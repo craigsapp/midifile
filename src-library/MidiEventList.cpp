@@ -139,7 +139,9 @@ void MidiEventList::clear(void) {
 
 //////////////////////////////
 //
-// MidiEventList::data -- Return the low-level array of MidiMessage pointers.
+// MidiEventList::data -- Return the low-level array of MidiMessage
+//     pointers.  This is useful for applying your own sorting
+//     function to the list.
 //
 
 MidiEvent** MidiEventList::data(void) {
@@ -415,6 +417,46 @@ void MidiEventList::clearLinks(void) {
 }
 
 
+
+//////////////////////////////
+//
+// MidiEventList::clearSequence -- Remove any seqence serial numbers from
+//   MidiEvents in the list.  This will cause the default ordering by
+//   sortTracks() to be used, in which case the ordering of MidiEvents
+//   occurring at the same tick may switch their ordering.
+//
+
+void MidiEventList::clearSequence(void) {
+	for (int i=0; i<getEventCount(); i++) {
+		getEvent(i).seq = 0;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// MidiEventList::markSequence -- Assign a sequence serial number to
+//   every MidiEvent in the event list.  This is useful if you want
+//   to preseve the order of MIDI messages in a track when they occur
+//   at the same tick time.  Particularly for use with joinTracks()
+//   or sortTracks().  markSequence will be done automatically when 
+//   a MIDI file is read, in case the ordering of events occuring at
+//   the same time is important.  Use clearSequence() to use the 
+//   default sorting behavior of sortTracks() when events occur at the
+//   same time.  Returns the next serial number that has not yet been
+//   used.
+//   default value: sequence = 1.
+//
+
+int MidiEventList::markSequence(int sequence) {
+	for (int i=0; i<getEventCount(); i++) {
+		getEvent(i).seq = sequence++;
+	}
+	return sequence;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // protected functions --
@@ -456,6 +498,93 @@ int MidiEventList::push_back_no_copy(MidiEvent* event) {
 MidiEventList& MidiEventList::operator=(MidiEventList other) {
 	list.swap(other.list);
 	return *this;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// private functions
+//
+
+//////////////////////////////
+//
+// MidiEventList::sort -- Private because the MidiFile class keeps
+//    track of delta versus absolute tick states of the MidiEventList,
+//    and sorting is only allowed in absolute tick state.
+//
+
+void MidiEventList::sort(void) {
+	qsort(data(), getEventCount(), sizeof(MidiEvent*), eventcompare);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// external functions
+//
+
+//////////////////////////////
+//
+// eventcompare -- Event comparison function for sorting tracks.
+//
+// Sorting rules:
+//    (1) sort by (absolute) tick value; otherwise, if tick values are the same:
+//    (2) end-of-track meta message is always last.
+//    (3) other meta-messages come before regular MIDI messages.
+//    (4) note-offs come after all other regular MIDI messages except note-ons.
+//    (5) note-ons come after all other regular MIDI messages.
+//
+
+int eventcompare(const void* a, const void* b) {
+	MidiEvent& aevent = **((MidiEvent**)a);
+	MidiEvent& bevent = **((MidiEvent**)b);
+
+	if (aevent.tick > bevent.tick) {
+		// aevent occurs after bevent
+		return +1;
+	} else if (aevent.tick < bevent.tick) {
+		// aevent occurs before bevent
+		return -1;
+	} else if (aevent.seq > bevent.seq) {
+		// aevent sequencing state occurs after bevent
+		// see MidiEventList::markSequence()
+		return +1;
+	} else if (aevent.seq < bevent.seq) {
+		// aevent sequencing state occurs before bevent
+		// see MidiEventList::markSequence()
+		return -1;
+	} else if (aevent[0] == 0xff && aevent[1] == 0x2f) {
+		// end-of-track meta-message should always be last (but won't really
+		// matter since the writing function ignores all end-of-track messages
+		// and writes its own.
+		return +1;
+	} else if (bevent[0] == 0xff && bevent[1] == 0x2f) {
+		// end-of-track meta-message should always be last (but won't really
+		// matter since the writing function ignores all end-of-track messages
+		// and writes its own.
+		return -1;
+	} else if (aevent[0] == 0xff && bevent[0] != 0xff) {
+		// other meta-messages are placed before real MIDI messages
+		return -1;
+	} else if (aevent[0] != 0xff && bevent[0] == 0xff) {
+		// other meta-messages are placed before real MIDI messages
+		return +1;
+	} else if (((aevent[0] & 0xf0) == 0x90) && (aevent[2] != 0)) {
+		// note-ons come after all other types of MIDI messages
+		return +1;
+	} else if (((bevent[0] & 0xf0) == 0x90) && (bevent[2] != 0)) {
+		// note-ons come after all other types of MIDI messages
+		return -1;
+	} else if (((aevent[0] & 0xf0) == 0x90) || ((aevent[0] & 0xf0) == 0x80)) {
+		// note-offs come after all other MIDI messages (except note-ons)
+		return +1;
+	} else if (((bevent[0] & 0xf0) == 0x90) || ((bevent[0] & 0xf0) == 0x80)) {
+		// note-offs come after all other MIDI messages (except note-ons)
+		return -1;
+	} else {
+		return 0;
+	}
 }
 
 

@@ -19,9 +19,6 @@
 
 using namespace std;
 
-typedef unsigned char  uchar;
-typedef unsigned short ushort;
-typedef unsigned long  ulong;
 
 class MidiEvent : public MidiMessage {
 	public:
@@ -35,32 +32,32 @@ class MidiEvent : public MidiMessage {
 
 		          ~MidiEvent     ();
 
-		MidiEvent& operator=     (const MidiEvent& mfevent);
-		MidiEvent& operator=     (const MidiMessage& message);
-		MidiEvent& operator=     (const vector<uchar>& bytes);
-		MidiEvent& operator=     (const vector<char>& bytes);
-		MidiEvent& operator=     (const vector<int>& bytes);
-		void       clearVariables(void);
+		MidiEvent& operator=             (const MidiEvent& mfevent);
+		MidiEvent& operator=             (const MidiMessage& message);
+		MidiEvent& operator=             (const vector<uchar>& bytes);
+		MidiEvent& operator=             (const vector<char>& bytes);
+		MidiEvent& operator=             (const vector<int>& bytes);
+		void       clearVariables        (void);
 
 		// functions related to event linking (note-ons to note-offs).
-		void       unlinkEvent   (void);
-		void       unlinkEvents  (void);
-		void       linkEvent     (MidiEvent* mev);
-		void       linkEvents    (MidiEvent* mev);
-		void       linkEvent     (MidiEvent& mev);
-		void       linkEvents    (MidiEvent& mev);
-		int        isLinked      (void);
-		MidiEvent* getLinkedEvent(void);
-		int        getTickDuration(void);
-		double     getDurationInSeconds(void);
+		void       unlinkEvent           (void);
+		void       unlinkEvents          (void);
+		void       linkEvent             (MidiEvent* mev);
+		void       linkEvents            (MidiEvent* mev);
+		void       linkEvent             (MidiEvent& mev);
+		void       linkEvents            (MidiEvent& mev);
+		int        isLinked              (void);
+		MidiEvent* getLinkedEvent        (void);
+		int        getTickDuration       (void);
+		double     getDurationInSeconds  (void);
 
-		int       tick;
-		int       track;
-		double    seconds;
-		int       seq;
+	 	int       tick;     // delta or absolute MIDI ticks
+		int       track;    // [original] track number of event in MIDI file
+		double    seconds;  // calculated time in sec. (doTimeAnalysis())
+		int       seq;      // sorting sequence number of event
 
 	private:
-		MidiEvent* eventlink;      // used to match note-ons and note-offs
+		MidiEvent* eventlink;  // used to match note-ons and note-offs
 
 };
 

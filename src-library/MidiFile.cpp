@@ -181,7 +181,7 @@ int MidiFile::read(const char* filename) {
 		return rwstatus;
 	}
 
-	rwstatus = MidiFile::read(input);
+	rwstatus = read(input);
 	return rwstatus;
 }
 
@@ -204,7 +204,7 @@ int MidiFile::read(const string& filename) {
 		return rwstatus;
 	}
 
-	rwstatus = MidiFile::read(input);
+	rwstatus = read(input);
 	return rwstatus;
 }
 
@@ -294,7 +294,7 @@ int MidiFile::read(istream& input) {
 	}
 
 	// read header size (allow larger header size?)
-	longdata = MidiFile::readLittleEndian4Bytes(input);
+	longdata = readLittleEndian4Bytes(input);
 	if (longdata != 6) {
 		cerr << "File " << filename
 		     << " is not a MIDI 1.0 Standard MIDI file." << endl;
@@ -304,7 +304,7 @@ int MidiFile::read(istream& input) {
 
 	// Header parameter #1: format type
 	int type;
-	shortdata = MidiFile::readLittleEndian2Bytes(input);
+	shortdata = readLittleEndian2Bytes(input);
 	switch (shortdata) {
 		case 0:
 			type = 0;
@@ -323,7 +323,7 @@ int MidiFile::read(istream& input) {
 
 	// Header parameter #2: track count
 	int tracks;
-	shortdata = MidiFile::readLittleEndian2Bytes(input);
+	shortdata = readLittleEndian2Bytes(input);
 	if (type == 0 && shortdata != 1) {
 		cerr << "Error: Type 0 MIDI file can only contain one track" << endl;
 		cerr << "Instead track count is: " << shortdata << endl;
@@ -343,7 +343,7 @@ int MidiFile::read(istream& input) {
 	}
 
 	// Header parameter #3: Ticks per quarter note
-	shortdata = MidiFile::readLittleEndian2Bytes(input);
+	shortdata = readLittleEndian2Bytes(input);
 	if (shortdata >= 0x8000) {
 		int framespersecond = 255 - ((shortdata >> 8) & 0x00ff) + 1;
 		int subframes       = shortdata & 0x00ff;
@@ -441,7 +441,7 @@ int MidiFile::read(istream& input) {
 		// not really necessary since the track MUST end with an
 		// end of track meta event, and many MIDI files found in the wild
 		// do not correctly give the track size.
-		longdata = MidiFile::readLittleEndian4Bytes(input);
+		longdata = readLittleEndian4Bytes(input);
 
 		// set the size of the track allocation so that it might
 		// approximately fit the data.
@@ -861,10 +861,20 @@ void MidiFile::removeEmpties(void) {
 
 void MidiFile::markSequence(void) {
 	int sequence = 1;
-	for (int i=0; i<size(); i++) {
-		for (int j=0; j<events[i]->size(); j++) {
-			(*events[i])[j].seq = sequence++;
-		}
+	for (int i=0; i<getTrackCount(); i++) {
+		sequence = operator[](i).markSequence(sequence);
+	}
+}
+
+//
+// MidiFile::markSequence -- default value: sequence = 1.
+//
+
+void MidiFile::markSequence(int track, int sequence) {
+	if ((track >= 0) && (track < getTrackCount())) {
+		operator[](track).markSequence(sequence);
+	} else {
+		cerr << "Warning: track " << track << " does not exist." << endl;
 	}
 }
 
@@ -875,14 +885,21 @@ void MidiFile::markSequence(void) {
 // MidiFile::clearSequence -- Remove any seqence serial numbers from
 //   MidiEvents in the MidiFile.  This will cause the default ordering by
 //   sortTracks() to be used, in which case the ordering of MidiEvents
-//   occurding at the same tick may switch their ordering.
+//   occurring at the same tick may switch their ordering.
 //
 
 void MidiFile::clearSequence(void) {
-	for (int i=0; i<size(); i++) {
-		for (int j=0; j<events[i]->size(); j++) {
-			(*events[i])[j].seq = 0;
-		}
+	for (int i=0; i<getTrackCount(); i++) {
+		operator[](i).clearSequence();
+	}
+}
+
+
+void MidiFile::clearSequence(int track) {
+	if ((track >= 0) && (track < getTrackCount())) {
+		operator[](track).clearSequence();
+	} else {
+		cerr << "Warning: track " << track << " does not exist." << endl;
 	}
 }
 
@@ -1982,6 +1999,15 @@ int MidiFile::addTrack(int count) {
 	return length + count - 1;
 }
 
+//
+// MidiFile::addTracks -- Alias for MidiFile::addTrack().
+//
+
+int MidiFile::addTracks(int count) {
+	return addTrack(count);
+}
+
+
 
 
 //////////////////////////////
@@ -2134,7 +2160,7 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 		mergedTrack->push_back((*events[aTrack2])[j]);
 	}
 
-	sortTrack(*mergedTrack);
+	mergedTrack->sort();
 
 	delete events[aTrack1];
 
@@ -2182,7 +2208,9 @@ void MidiFile::setTPQ(int ticks) {
 //   frame rate is 40 frame per division.  In hexadecimal, these
 //   values are: -25 = 1110,0111 = 0xE7 and 40 = 0010,1000 = 0x28
 //   So setting the ticks per quarter note value to 0xE728 will cause
-//   delta times in the MIDI file to represent milliseconds.
+//   delta times in the MIDI file to represent milliseconds.  Calling
+//   this function will not change any exiting timestamps, it will
+//   only change the meaning of the timestamps.
 //
 
 void MidiFile::setMillisecondTicks(void) {
@@ -2193,19 +2221,18 @@ void MidiFile::setMillisecondTicks(void) {
 
 //////////////////////////////
 //
-// MidiFile::sortTrack --
+// MidiFile::sortTrack -- Sort the specified track in tick order.
+//    If the MidiEvent::seq variables have been filled in with
+//    a sequence value, this will preserve the order of the
+//    events that occur at the same tick time before the sort
+//    was done.
 //
-
-void MidiFile::sortTrack(MidiEventList& trackData) {
-	if (theTimeState == TIME_STATE_ABSOLUTE) {
-		qsort(trackData.data(), trackData.size(), sizeof(MidiEvent*), eventcompare);
-	}
-}
-
 
 void MidiFile::sortTrack(int track) {
 	if ((track >= 0) && (track < getTrackCount())) {
-		sortTrack(operator[](track));
+		events.at(track)->sort();
+	} else {
+		cerr << "Warning: track " << track << " does not exist." << endl;
 	}
 }
 
@@ -2219,8 +2246,10 @@ void MidiFile::sortTrack(int track) {
 void MidiFile::sortTracks(void) {
 	if (theTimeState == TIME_STATE_ABSOLUTE) {
 		for (int i=0; i<getTrackCount(); i++) {
-			sortTrack(*events[i]);
+			events.at(i)->sort();
 		}
+	} else {
+		cerr << "Warning: Sorting only allowed in absolute tick mode.";
 	}
 }
 
@@ -2545,7 +2574,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 		case 0xA0:        // aftertouch (2 more bytes)
 		case 0xB0:        // cont. controller (2 more bytes)
 		case 0xE0:        // pitch wheel (2 more bytes)
-			byte = MidiFile::readByte(input);
+			byte = readByte(input);
 			if (!status()) { return rwstatus; }
 			if (byte > 0x7f) {
 				cerr << "MIDI data byte too large: " << (int)byte << endl;
@@ -2553,7 +2582,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 			}
 			array.push_back(byte);
 			if (!runningQ) {
-				byte = MidiFile::readByte(input);
+				byte = readByte(input);
 				if (!status()) { return rwstatus; }
 				if (byte > 0x7f) {
 					cerr << "MIDI data byte too large: " << (int)byte << endl;
@@ -2565,7 +2594,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 		case 0xC0:        // patch change (1 more byte)
 		case 0xD0:        // channel pressure (1 more byte)
 			if (!runningQ) {
-				byte = MidiFile::readByte(input);
+				byte = readByte(input);
 				if (!status()) { return rwstatus; }
 				if (byte > 0x7f) {
 					cerr << "MIDI data byte too large: " << (int)byte << endl;
@@ -2579,7 +2608,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 				case 0xff:                 // meta event
 					{
 					if (!runningQ) {
-						byte = MidiFile::readByte(input); // meta type
+						byte = readByte(input); // meta type
 						if (!status()) { return rwstatus; }
 						array.push_back(byte);
 					}
@@ -2588,19 +2617,19 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 					uchar byte2 = 0;
 					uchar byte3 = 0;
 					uchar byte4 = 0;
-					byte1 = MidiFile::readByte(input);
+					byte1 = readByte(input);
 					if (!status()) { return rwstatus; }
 					array.push_back(byte1);
 					if (byte1 >= 0x80) {
-						byte2 = MidiFile::readByte(input);
+						byte2 = readByte(input);
 						if (!status()) { return rwstatus; }
 						array.push_back(byte2);
 						if (byte2 > 0x80) {
-							byte3 = MidiFile::readByte(input);
+							byte3 = readByte(input);
 							if (!status()) { return rwstatus; }
 							array.push_back(byte3);
 							if (byte3 >= 0x80) {
-								byte4 = MidiFile::readByte(input);
+								byte4 = readByte(input);
 								if (!status()) { return rwstatus; }
 								array.push_back(byte4);
 								if (byte4 >= 0x80) {
@@ -2622,7 +2651,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 						length = byte1;
 					}
 					for (int j=0; j<(int)length; j++) {
-						byte = MidiFile::readByte(input); // meta type
+						byte = readByte(input); // meta type
 						if (!status()) { return rwstatus; }
 						array.push_back(byte);
 					}
@@ -2645,7 +2674,7 @@ int MidiFile::extractMidiData(istream& input, vector<uchar>& array,
 					{         // (complete, or start of message).
 					int length = (int)readVLValue(input);
 					for (i=0; i<length; i++) {
-						byte = MidiFile::readByte(input);
+						byte = readByte(input);
 						if (!status()) { return rwstatus; }
 						array.push_back(byte);
 					}
@@ -2680,7 +2709,7 @@ ulong MidiFile::readVLValue(istream& input) {
 	uchar b[5] = {0};
 
 	for (int i=0; i<5; i++) {
-		b[i] = MidiFile::readByte(input);
+		b[i] = readByte(input);
 		if (!status()) { return rwstatus; }
 		if (b[i] < 0x80) {
 			break;
@@ -2780,78 +2809,10 @@ void MidiFile::clear_no_deallocate(void) {
 }
 
 
-
 ///////////////////////////////////////////////////////////////////////////
 //
 // external functions
 //
-
-
-
-//////////////////////////////
-//
-// eventcompare -- Event comparison function for sorting tracks.
-//
-// Sorting rules:
-//    (1) sort by (absolute) tick value; otherwise, if tick values are the same:
-//    (2) end-of-track meta message is always last.
-//    (3) other meta-messages come before regular MIDI messages.
-//    (4) note-offs come after all other regular MIDI messages except note-ons.
-//    (5) note-ons come after all other regular MIDI messages.
-//
-
-int eventcompare(const void* a, const void* b) {
-	MidiEvent& aevent = **((MidiEvent**)a);
-	MidiEvent& bevent = **((MidiEvent**)b);
-
-	if (aevent.tick > bevent.tick) {
-		// aevent occurs after bevent
-		return +1;
-	} else if (aevent.tick < bevent.tick) {
-		// aevent occurs before bevent
-		return -1;
-	} else if (aevent.seq > bevent.seq) {
-		// aevent sequencing state occurs after bevent
-		// see MidiFile::markSequence()
-		return +1;
-	} else if (aevent.seq < bevent.seq) {
-		// aevent sequencing state occurs before bevent
-		// see MidiFile::markSequence()
-		return -1;
-	} else if (aevent[0] == 0xff && aevent[1] == 0x2f) {
-		// end-of-track meta-message should always be last (but won't really
-		// matter since the writing function ignores all end-of-track messages
-		// and writes its own.
-		return +1;
-	} else if (bevent[0] == 0xff && bevent[1] == 0x2f) {
-		// end-of-track meta-message should always be last (but won't really
-		// matter since the writing function ignores all end-of-track messages
-		// and writes its own.
-		return -1;
-	} else if (aevent[0] == 0xff && bevent[0] != 0xff) {
-		// other meta-messages are placed before real MIDI messages
-		return -1;
-	} else if (aevent[0] != 0xff && bevent[0] == 0xff) {
-		// other meta-messages are placed before real MIDI messages
-		return +1;
-	} else if (((aevent[0] & 0xf0) == 0x90) && (aevent[2] != 0)) {
-		// note-ons come after all other types of MIDI messages
-		return +1;
-	} else if (((bevent[0] & 0xf0) == 0x90) && (bevent[2] != 0)) {
-		// note-ons come after all other types of MIDI messages
-		return -1;
-	} else if (((aevent[0] & 0xf0) == 0x90) || ((aevent[0] & 0xf0) == 0x80)) {
-		// note-offs come after all other MIDI messages (except note-ons)
-		return +1;
-	} else if (((bevent[0] & 0xf0) == 0x90) || ((bevent[0] & 0xf0) == 0x80)) {
-		// note-offs come after all other MIDI messages (except note-ons)
-		return -1;
-	} else {
-		return 0;
-	}
-}
-
-
 
 //////////////////////////////
 //

@@ -34,12 +34,15 @@ class MidiMessage : public vector<uchar> {
 		               MidiMessage          (const vector<char>& message);
 		               MidiMessage          (const vector<int>& message);
 
-		              ~MidiMessage         ();
+		              ~MidiMessage          ();
 
 		MidiMessage&   operator=            (const MidiMessage& message);
 		MidiMessage&   operator=            (const vector<uchar>& bytes);
 		MidiMessage&   operator=            (const vector<char>& bytes);
 		MidiMessage&   operator=            (const vector<int>& bytes);
+
+		void           sortTrack            (void);
+		void           sortTrackWithSequence(void);
 
 		// data access convenience functions (returns -1 if not present):
 		int            getP0                (void) const;

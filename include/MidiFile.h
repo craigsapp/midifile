@@ -1,20 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Nov 26 14:12:01 PST 1999
-// Last Modified: Fri Dec  2 13:26:44 PST 1999
-// Last Modified: Fri Nov 10 12:13:15 PST 2000 Added some more editing cap.
-// Last Modified: Thu Jan 10 10:03:39 PST 2002 Added allocateEvents()
-// Last Modified: Mon Jun 10 22:43:10 PDT 2002 Added clear()
-// Last Modified: Sat Dec 17 23:11:57 PST 2005 Added millisecond ticks
-// Last Modified: Tue Feb  5 11:51:43 PST 2008 Read() set to const char*
-// Last Modified: Tue Apr  7 09:23:48 PDT 2009 Added addMetaEvent
-// Last Modified: Fri Jun 12 22:58:34 PDT 2009 Renamed SigCollection class
-// Last Modified: Thu Jul 22 23:28:54 PDT 2010 Added tick to time mapping
-// Last Modified: Thu Jul 22 23:28:54 PDT 2010 Changed _MidiEvent to MidiEvent
-// Last Modified: Tue Feb 22 13:26:40 PST 2011 Added write(ostream)
-// Last Modified: Mon Nov 18 13:10:37 PST 2013 Added .printHex function.
-// Last Modified: Mon Feb  9 14:01:31 PST 2015 Removed FileIO dependency.
-// Last Modified: Sat Feb 14 22:35:25 PST 2015 Split out subclasses.
+// Last Modified: Tue Apr 17 21:27:58 PDT 2018 Rearrange sorting functions.
 // Filename:      midifile/include/MidiFile.h
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -58,6 +45,8 @@ class MidiFile {
 		          MidiFile                  (MidiFile&& other);
 		         ~MidiFile                  ();
 
+		MidiFile&  operator=                 (MidiFile other);
+
 		// reading/writing functions:
 		int       read                      (const char* aFile);
 		int       read                      (const string& aFile);
@@ -77,16 +66,22 @@ class MidiFile {
 		int       status                    (void);
 
 		// track-related functions:
-		MidiEventList& operator[]           (int aTrack);
+		MidiEventList&       operator[]     (int aTrack);
 		const MidiEventList& operator[]     (int aTrack) const;
 		int       getTrackCount             (void) const;
 		int       getNumTracks              (void) const;
 		int       size                      (void) const;
 		void      removeEmpties             (void);
 
+		// tick-related functions:
+		void      deltaTicks                (void);
+		void      absoluteTicks             (void);
+		int       getTickState              (void);
+		int       isDeltaTicks              (void);
+		int       isAbsoluteTicks           (void);
+		int       getMaxTick                (void);
+
 		// join/split track functionality:
-		void      markSequence              (void);
-		void      clearSequence             (void);
 		void      joinTracks                (void);
 		void      splitTracks               (void);
 		void      splitTracksByChannel      (void);
@@ -96,28 +91,21 @@ class MidiFile {
 		int       getSplitTrack             (int track, int index);
 		int       getSplitTrack             (int index);
 
-		void      sortTrack                 (MidiEventList& trackData);
+		// track sorting funcionality:
 		void      sortTrack                 (int track);
 		void      sortTracks                (void);
+		void      markSequence              (void);
+		void      markSequence              (int track, int sequence = 1);
+		void      clearSequence             (void);
+		void      clearSequence             (int track);
 
+		// track manipulation functionality:
 		int       addTrack                  (void);
 		int       addTrack                  (int count);
-		int       addTracks(int count) { return addTrack(count); }
+		int       addTracks                 (int count);
 		void      deleteTrack               (int aTrack);
 		void      mergeTracks               (int aTrack1, int aTrack2);
 		int       getTrackCountAsType1      (void);
-
-		int       getEventCount             (int aTrack);
-		void      allocateEvents            (int track, int aSize);
-		int       getNumEvents              (int aTrack);
-
-		// tick-related functions:
-		void      deltaTicks                (void);
-		void      absoluteTicks             (void);
-		int       getTickState              (void);
-		int       isDeltaTicks              (void);
-		int       isAbsoluteTicks           (void);
-		int       getMaxTick                (void);
 
 		// ticks-per-quarter related functions:
 		void      setMillisecondTicks       (void);
@@ -146,9 +134,17 @@ class MidiFile {
 		void      setFilename               (const string& aname);
 		const char* getFilename             (void);
 
-		int       addEvent                  (int aTrack, int aTick,
+		// event functionality:
+		int        addEvent                  (int aTrack, int aTick,
 		                                     vector<uchar>& midiData);
-		int       addEvent                  (MidiEvent& mfevent);
+		int        addEvent                  (MidiEvent& mfevent);
+		MidiEvent& getEvent                  (int aTrack, int anIndex);
+		int        getEventCount             (int aTrack);
+		int        getNumEvents              (int aTrack);
+		void       allocateEvents            (int track, int aSize);
+		void       erase                     (void);
+		void       clear                     (void);
+		void       clear_no_deallocate       (void);
 
 		// MIDI message adding convenience functions:
 		int       addNoteOn                 (int aTrack, int aTick,
@@ -189,21 +185,14 @@ class MidiFile {
 		                                     double aTempo);
 		int       addTimeSignature          (int aTrack, int aTick,
 		                                     int top, int bottom,
-	                                   int clocksPerClick = 24,
+		                                     int clocksPerClick = 24,
 		                                     int num32dsPerQuarter = 8);
 		int       addCompoundTimeSignature  (int aTrack, int aTick,
 		                                     int top, int bottom,
-	                                   int clocksPerClick = 36,
+		                                     int clocksPerClick = 36,
 		                                     int num32dsPerQuarter = 8);
 
-		void      erase                     (void);
-		void      clear                     (void);
-		void      clear_no_deallocate       (void);
-		MidiEvent& getEvent                 (int aTrack, int anIndex);
-
-		MidiFile& operator=(MidiFile other);
-
-		uchar    readByte                (istream& input);
+		uchar     readByte                  (istream& input);
 
 		// static functions:
 		static ushort   readLittleEndian2Bytes  (istream& input);
@@ -222,20 +211,19 @@ class MidiFile {
 		static ostream& writeBigEndianDouble    (ostream& out, double value);
 
 	protected:
-		vector<MidiEventList*> events;             // MIDI file events
-		int              ticksPerQuarterNote;      // time base of file
-		int              trackCount;               // # of tracks in file
-		int              theTrackState;            // joined or split
-		int              theTimeState;             // absolute or delta
-		string           readFileName;             // read file name
-
+		vector<MidiEventList*> events;           // MIDI file events
+		int               ticksPerQuarterNote;   // time base of file
+		int               trackCount;            // # of tracks in file
+		int               theTrackState;         // joined or split
+		int               theTimeState;          // absolute or delta
+		string            readFileName;          // read file name
 		int               timemapvalid;
 		vector<_TickTime> timemap;
-		int               rwstatus;                // read/write success flag
+		int               rwstatus;              // read/write success flag
 
 	private:
 		int        extractMidiData  (istream& inputfile, vector<uchar>& array,
-		                                 uchar& runningCommand);
+		                             uchar& runningCommand);
 		ulong      readVLValue      (istream& inputfile);
 		ulong      unpackVLV        (uchar a = 0, uchar b = 0, uchar c = 0,
 		                             uchar d = 0, uchar e = 0);
@@ -248,8 +236,6 @@ class MidiFile {
 		double     linearSecondInterpolationAtTick  (int ticktime);
 };
 
-
-int eventcompare(const void* a, const void* b);
 ostream& operator<<(ostream& out, MidiFile& aMidiFile);
 
 #endif /* _MIDIFILE_H_INCLUDED */
