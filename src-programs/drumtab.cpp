@@ -14,6 +14,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 #define HIGH_HAT    59
 #define SNARE       38

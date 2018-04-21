@@ -18,6 +18,7 @@
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 typedef unsigned char uchar;
 

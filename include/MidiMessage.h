@@ -17,11 +17,14 @@
 #include <vector>
 #include <string>
 
+namespace smf {
+
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
 typedef unsigned long  ulong;
 
 class MidiMessage : public std::vector<uchar> {
+
 	public:
 		               MidiMessage          (void);
 		               MidiMessage          (int command);
@@ -159,6 +162,7 @@ class MidiMessage : public std::vector<uchar> {
 
 };
 
+} // end of namespace smf
 
 #endif /* _MIDIMESSAGE_H_INCLUDED */
 

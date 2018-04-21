@@ -20,6 +20,8 @@
 #include <algorithm>
 
 
+namespace smf {
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // Option_register class function definitions.
@@ -1216,6 +1218,9 @@ std::ostream& Options::printRegister(std::ostream& out) {
    }
    return out;
 }
+
+
+} // end namespace smf
 
 
 

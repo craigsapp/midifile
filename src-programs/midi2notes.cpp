@@ -21,6 +21,7 @@
 #include <vector>
 
 using namespace std;
+using namespace smf;
 
 #define TICK 1
 #define BEAT 2

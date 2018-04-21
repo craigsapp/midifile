@@ -22,6 +22,7 @@
 #include <signal.h>
 
 using namespace std;
+using namespace smf;
 
 void beepOff(int)
 {

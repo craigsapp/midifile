@@ -30,6 +30,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 typedef unsigned char uchar;
 

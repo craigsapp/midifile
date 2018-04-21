@@ -14,6 +14,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 void checkOptions  (Options& opts, int argc, char* argv[]);
 void printAscii    (MidiFile& file, Options& options);

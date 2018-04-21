@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+namespace smf {
 
 class Option_register {
 	public:
@@ -143,6 +144,7 @@ class Options {
 
 };
 
+} // end of namespace smf
 
 #define OPTION_BOOLEAN_TYPE   'b'
 #define OPTION_CHAR_TYPE      'c'

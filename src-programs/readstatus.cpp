@@ -13,6 +13,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 void printResult(const string& filename, int status, int status2);
 

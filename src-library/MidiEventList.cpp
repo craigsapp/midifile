@@ -19,6 +19,8 @@
 #include <utility>
 
 
+namespace smf {
+
 //////////////////////////////
 //
 // MidiEventList::MidiEventList -- Constructor.
@@ -599,6 +601,9 @@ int eventcompare(const void* a, const void* b) {
 		return 0;
 	}
 }
+
+
+} // end namespace smf
 
 
 

@@ -17,6 +17,7 @@
 #include <vector>
 
 using namespace std;
+using namespace smf;
 
 // user interface variables:
 Options options;

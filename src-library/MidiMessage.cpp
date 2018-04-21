@@ -18,6 +18,8 @@
 #include <iterator>
 
 
+namespace smf {
+
 //////////////////////////////
 //
 // MidiMessage::MidiMessage -- Constructor.
@@ -1813,6 +1815,9 @@ void MidiMessage::makeMarker(const std::string& text) {
 void MidiMessage::makeCue(const std::string& text) {
 	makeMetaMessage(0x07, text);
 }
+
+
+} // end namespace smf
 
 
 

@@ -19,12 +19,14 @@
 #include <cstdlib>
 #include <stdlib.h> /* needed for MinGW */
 
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned long ulong;
-
+namespace smf {
 
 class Binasc {
+
+	typedef unsigned char uchar;
+	typedef unsigned short ushort;
+	typedef unsigned long ulong;
+
 	public:
 		                     Binasc                  (void);
 
@@ -149,6 +151,7 @@ class Binasc {
 
 };
 
+} // end of namespace smf
 
 #endif /* _BINASC_H_INCLUDED */
 

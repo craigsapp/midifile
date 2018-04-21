@@ -17,6 +17,7 @@
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 #define DECODE 0
 #define ENCODE 1

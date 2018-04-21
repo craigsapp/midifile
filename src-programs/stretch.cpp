@@ -24,6 +24,7 @@
 #include <algorithm>
 
 using namespace std;
+using namespace smf;
 
 void doStretch (MidiFile& midifile, double bars, double duration);
 

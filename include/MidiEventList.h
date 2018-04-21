@@ -16,6 +16,7 @@
 #include "MidiEvent.h"
 #include <vector>
 
+namespace smf {
 
 class MidiEventList {
 	public:
@@ -67,6 +68,8 @@ class MidiEventList {
 
 
 int eventcompare(const void* a, const void* b);
+
+} // end of namespace smf
 
 #endif /* _MIDIEVENTLIST_H_INCLUDED */
 

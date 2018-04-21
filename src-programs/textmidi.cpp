@@ -14,6 +14,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 #define STYLE_TIME_DELTA      'd'
 #define STYLE_TIME_ABSOLUTE   'a'

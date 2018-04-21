@@ -54,6 +54,7 @@
 #define CSTRING str().c_str()
 
 using namespace std;
+using namespace smf;
 
 
 class MidiInfo {

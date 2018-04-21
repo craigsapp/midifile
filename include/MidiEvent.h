@@ -17,6 +17,7 @@
 #include "MidiMessage.h"
 #include <vector>
 
+namespace smf {
 
 class MidiEvent : public MidiMessage {
 	public:
@@ -61,6 +62,7 @@ class MidiEvent : public MidiMessage {
 
 };
 
+} // end of namespace smf
 
 #endif /* _MIDIEVENT_H_INCLUDED */
 

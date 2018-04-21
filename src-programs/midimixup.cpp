@@ -17,6 +17,7 @@
 #include <iterator>
 
 using namespace std;
+using namespace smf;
 
 // function declarations:
 void checkOptions         (Options& opts);

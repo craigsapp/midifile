@@ -25,6 +25,8 @@
 #include <algorithm>
 
 
+namespace smf {
+
 //////////////////////////////
 //
 // MidiFile::MidiFile -- Constuctor.
@@ -2868,22 +2870,6 @@ void MidiFile::clear_no_deallocate(void) {
 }
 
 
-///////////////////////////////////////////////////////////////////////////
-//
-// external functions
-//
-
-//////////////////////////////
-//
-// operator<< -- for printing an ASCII version of the MIDI file
-//
-
-std::ostream& operator<<(std::ostream& out, MidiFile& aMidiFile) {
-	aMidiFile.writeBinascWithComments(out);
-	return out;
-}
-
-
 
 //////////////////////////////
 //
@@ -3199,6 +3185,26 @@ std::ostream& MidiFile::writeLittleEndianDouble(std::ostream& out, double value)
 MidiFile& MidiFile::operator=(MidiFile other) {
 	m_events.swap(other.m_events);
 	return *this;
+}
+
+
+} // end namespace smf
+
+
+
+///////////////////////////////////////////////////////////////////////////
+//
+// external functions
+//
+
+//////////////////////////////
+//
+// operator<< -- for printing an ASCII version of the MIDI file
+//
+
+std::ostream& operator<<(std::ostream& out, smf::MidiFile& aMidiFile) {
+	aMidiFile.writeBinascWithComments(out);
+	return out;
 }
 
 

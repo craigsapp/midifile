@@ -14,6 +14,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 // User interface variables:
 Options options;

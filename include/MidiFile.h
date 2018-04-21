@@ -27,6 +27,7 @@
 #define TRACK_STATE_SPLIT      0
 #define TRACK_STATE_JOINED     1
 
+namespace smf {
 
 class _TickTime {
 	public:
@@ -272,7 +273,9 @@ class MidiFile {
 		double     linearSecondInterpolationAtTick (int ticktime);
 };
 
-std::ostream& operator<<(std::ostream& out, MidiFile& aMidiFile);
+} // end of namespace smf
+
+std::ostream& operator<<(std::ostream& out, smf::MidiFile& aMidiFile);
 
 #endif /* _MIDIFILE_H_INCLUDED */
 

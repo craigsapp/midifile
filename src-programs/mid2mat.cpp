@@ -29,6 +29,7 @@
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 // Four types of event time display:
 #define TICK 1            /* time units are MIDI file ticks (absolute)     */

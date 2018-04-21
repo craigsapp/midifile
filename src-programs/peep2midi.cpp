@@ -16,6 +16,9 @@
 #include <string.h>
 #include <stdio.h>
 
+using namespace std;
+using namespace smf;
+
 typedef unsigned char uchar;
 
 // user interface variables

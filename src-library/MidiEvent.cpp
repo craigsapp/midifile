@@ -12,8 +12,11 @@
 //
 
 #include "MidiEvent.h"
+
 #include <stdlib.h>
 
+
+namespace smf {
 
 //////////////////////////////
 //
@@ -268,6 +271,9 @@ double MidiEvent::getDurationInSeconds(void) {
 		return seconds - seconds2;
 	}
 }
+
+
+} // end namespace smf
 
 
 
