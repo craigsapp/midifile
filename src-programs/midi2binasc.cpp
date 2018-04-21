@@ -178,7 +178,7 @@ int getTrackByteCount(MidiFile& midifile, int track) {
    for (i=0; i<eventcount; i++) {
       event = midifile.getEvent(track, i);
       sum += getVlvSize(event.tick);
-      sum += event.size();
+      sum += (int)event.size();
    }
    return sum;
 }

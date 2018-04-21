@@ -110,7 +110,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
    int i, j;
    for (i=0; i<(int)sequence.size(); i++) {
       if ((int)sequence[i].size() > maxlen) {
-         maxlen = sequence[i].size();
+         maxlen = (int)sequence[i].size();
       }
    }
 

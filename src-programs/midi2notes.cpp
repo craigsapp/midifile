@@ -518,7 +518,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void setFilterOptions(vector<int>& channelfilter, const char* exclude) {
-   int length = strlen(exclude);
+   int length = (int)strlen(exclude);
    int character;
    int i;
    int value;

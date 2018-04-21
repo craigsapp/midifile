@@ -590,7 +590,7 @@ int MidiFile::write(std::ostream& out) {
 				// do not insert the VLV byte length yourself, as this code will
 				// do it for you automatically.
 				trackdata.push_back((*m_events[i])[j][0]); // 0xf0 or 0xf7;
-				writeVLValue((*m_events[i])[j].size()-1, trackdata);
+				writeVLValue(((int)(*m_events[i])[j].size())-1, trackdata);
 				for (k=1; k<(int)(*m_events[i])[j].size(); k++) {
 					trackdata.push_back((*m_events[i])[j][k]);
 				}
@@ -620,7 +620,7 @@ int MidiFile::write(std::ostream& out) {
 		ch = 'k'; out << ch;
 
 		// A. write the size of the MIDI data to follow:
-		longdata = trackdata.size();
+		longdata = (int)trackdata.size();
 		writeBigEndianULong(out, longdata);
 
 		// B. write the actual data

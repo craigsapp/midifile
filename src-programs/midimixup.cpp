@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 //
 
 void reverseNotes(vector<MidiEvent*>& notes) {
-   int count = notes.size();
+   int count = (int)notes.size();
    for (int i=0; i<count/2; i++) {
       swapNotes(notes, i, count-1-i);
    }

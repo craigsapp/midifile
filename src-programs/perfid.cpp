@@ -122,7 +122,7 @@ void printID(vector<int>& noteondeltas) {
    }
    deltas.push_back(noteondeltas.back());
    hist.push_back(count);
-   int size = deltas.size();
+   int size = (int)deltas.size();
    if (size > 2) {
       if (deltas[0] == 0 && hist[0] > 10 && deltas[1] >= 10) {
          cout << "Quantized" << endl;

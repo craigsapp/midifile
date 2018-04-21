@@ -387,7 +387,7 @@ int Options::define(const std::string& aDefinition) {
    // Set up space for a option entry in the registry
    definitionEntry = new Option_register(aDefinition, otype[0], ovalue);
 
-   auto definitionIndex = m_optionRegister.size();
+   int definitionIndex = (int)m_optionRegister.size();
 
    // Store option aliases
    std::string optionName;
@@ -474,7 +474,7 @@ const std::string& Options::getArgument(int index) {
 //
 
 int Options::getArgCount(void) {
-   return m_argument.size() - 1;
+   return ((int)m_argument.size()) - 1;
 }
 
 // Alias:
@@ -760,7 +760,7 @@ void Options::setOptions(int argc, char** argv) {
       m_extraArgv[i] = m_extraArgv_strings[i];
    }
 
-   m_oargc  = m_extraArgv.size();
+   m_oargc  = (int)m_extraArgv.size();
    m_oargv  = m_extraArgv;
 }
 
@@ -780,7 +780,7 @@ void Options::appendOptions(int argc, char** argv) {
    //gargv = argv;
    // but now gets interfaced to: m_extraArgv and m_extraArgv_strings:
 
-   int oldsize = m_extraArgv.size();
+   int oldsize = (int)m_extraArgv.size();
    m_extraArgv.resize(oldsize + argc);
    m_extraArgv_strings.resize(oldsize + argc);
 
@@ -790,7 +790,7 @@ void Options::appendOptions(int argc, char** argv) {
       m_extraArgv[i+oldsize] = m_extraArgv_strings[i+oldsize];
    }
 
-   m_oargc = m_extraArgv.size();
+   m_oargc = (int)m_extraArgv.size();
    m_oargv = m_extraArgv;
 }
 
@@ -798,7 +798,7 @@ void Options::appendOptions(int argc, char** argv) {
 void Options::appendOptions(const std::vector<std::string>& argv) {
    m_processedQ = 0;
 
-   int oldsize = m_extraArgv.size();
+   int oldsize = (int)m_extraArgv.size();
    m_extraArgv.resize(oldsize + argv.size());
    m_extraArgv_strings.resize(oldsize + argv.size());
 
@@ -808,7 +808,7 @@ void Options::appendOptions(const std::vector<std::string>& argv) {
       m_extraArgv[i+oldsize] = m_extraArgv_strings[i+oldsize];
    }
 
-   m_oargc = m_extraArgv.size();
+   m_oargc = (int)m_extraArgv.size();
    m_oargv = m_extraArgv;
 }
 
