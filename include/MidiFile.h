@@ -187,7 +187,7 @@ class MidiFile {
 		                                           std::vector<uchar>& metaData);
 		MidiEvent*      addMetaEvent              (int aTrack, int aTick,
 		                                           int aType,
-		                                           const char* metaData);
+		                                           const std::string& metaData);
 		MidiEvent*      addText                   (int aTrack, int aTick,
 		                                           const std::string& text);
 		MidiEvent*      addCopyright              (int aTrack, int aTick,

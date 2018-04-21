@@ -1589,8 +1589,8 @@ MidiEvent* MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
 
 
 MidiEvent* MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
-		const char* metaData) {
-	int length = (int)strlen(metaData);
+		const std::string& metaData) {
+	int length = (int)metaData.size();
 	std::vector<uchar> buffer;
 	buffer.resize(length);
 	int i;
