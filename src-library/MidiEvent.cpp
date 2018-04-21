@@ -43,18 +43,21 @@ MidiEvent::MidiEvent(int command, int p1, int p2)
 
 MidiEvent::MidiEvent(int aTime, int aTrack, vector<uchar>& message)
 		: MidiMessage(message) {
-	tick      = aTime;
-	track     = aTrack;
-	eventlink = NULL;
+	track       = aTrack;
+	tick        = aTime;
+	seconds     = 0.0;
+	seq         = 0;
+	m_eventlink = NULL;
 }
 
 
 MidiEvent::MidiEvent(const MidiEvent& mfevent) {
-	tick    = mfevent.tick;
 	track   = mfevent.track;
+	tick    = mfevent.tick;
 	seconds = mfevent.seconds;
 	seq     = mfevent.seq;
-	eventlink = NULL;
+	m_eventlink = NULL;
+
 	this->resize(mfevent.size());
 	for (int i=0; i<(int)this->size(); i++) {
 		(*this)[i] = mfevent[i];
@@ -69,10 +72,12 @@ MidiEvent::MidiEvent(const MidiEvent& mfevent) {
 //
 
 MidiEvent::~MidiEvent() {
-	tick  = -1;
-	track = -1;
+	track   = -1;
+	tick    = -1;
+	seconds = -1.0;
+	seq     = -1;
 	this->resize(0);
-	eventlink = NULL;
+	m_eventlink = NULL;
 }
 
 
@@ -82,11 +87,11 @@ MidiEvent::~MidiEvent() {
 //
 
 void MidiEvent::clearVariables(void) {
-	tick      = 0;
 	track     = 0;
+	tick      = 0;
 	seconds   = 0.0;
 	seq       = 0;
-	eventlink = NULL;
+	m_eventlink = NULL;
 }
 
 
@@ -103,7 +108,7 @@ MidiEvent& MidiEvent::operator=(const MidiEvent& mfevent) {
 	track   = mfevent.track;
 	seconds = mfevent.seconds;
 	seq     = mfevent.seq;
-	eventlink = NULL;
+	m_eventlink = NULL;
 	this->resize(mfevent.size());
 	for (int i=0; i<(int)this->size(); i++) {
 		(*this)[i] = mfevent[i];
@@ -157,11 +162,11 @@ MidiEvent& MidiEvent::operator=(const vector<int>& bytes) {
 //
 
 void MidiEvent::unlinkEvent(void) {
-	if (eventlink == NULL) {
+	if (m_eventlink == NULL) {
 		return;
 	}
-	MidiEvent* mev = eventlink;
-	eventlink = NULL;
+	MidiEvent* mev = m_eventlink;
+	m_eventlink = NULL;
 	mev->unlinkEvent();
 }
 
@@ -174,18 +179,18 @@ void MidiEvent::unlinkEvent(void) {
 //
 
 void MidiEvent::linkEvent(MidiEvent* mev) {
-	if (mev->eventlink != NULL) {
+	if (mev->m_eventlink != NULL) {
 		// unlink other event if it is linked to something else;
 		mev->unlinkEvent();
 	}
 	// if this is already linked to something else, then unlink:
-	if (eventlink != NULL) {
-		eventlink->unlinkEvent();
+	if (m_eventlink != NULL) {
+		m_eventlink->unlinkEvent();
 	}
 	unlinkEvent();
 
-	mev->eventlink = this;
-	eventlink = mev;
+	mev->m_eventlink = this;
+	m_eventlink = mev;
 }
 
 
@@ -203,7 +208,7 @@ void MidiEvent::linkEvent(MidiEvent& mev) {
 //
 
 MidiEvent* MidiEvent::getLinkedEvent(void) {
-	return eventlink;
+	return m_eventlink;
 }
 
 
@@ -215,7 +220,7 @@ MidiEvent* MidiEvent::getLinkedEvent(void) {
 //
 
 int MidiEvent::isLinked(void) {
-	return eventlink == NULL ? 0 : 1;
+	return m_eventlink == NULL ? 0 : 1;
 }
 
 

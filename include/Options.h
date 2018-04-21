@@ -117,22 +117,22 @@ class Options {
 		int                isDefined         (const std::string& name);
 
 	protected:
-		int                           options_error_check;  // for verify command
-		int                           oargc;
-		std::vector<std::string>      oargv;
-		std::string                   commandString;
-		char                          optionFlag;
-		std::vector<std::string>      argument;
+		int                           m_options_error_check;  // verify command
+		int                           m_oargc;
+		std::vector<std::string>      m_oargv;
+		std::string                   m_commandString;
+		char                          m_optionFlag;
+		std::vector<std::string>      m_argument;
 
-		std::vector<Option_register*> optionRegister;
-		std::map<std::string, int>    optionList;
+		std::vector<Option_register*> m_optionRegister;
+		std::map<std::string, int>    m_optionList;
 
-		int                           processedQ;
-		int                           suppressQ;       // prevent --options option
-		int                           optionsArgument; // indicates --options present
+		int                           m_processedQ;
+		int                           m_suppressQ;       // prevent --options
+		int                           m_optionsArgument; // --options present
 
-		std::vector<std::string>      extraArgv;
-		std::vector<std::string>      extraArgv_strings;
+		std::vector<std::string>      m_extraArgv;
+		std::vector<std::string>      m_extraArgv_strings;
 
 	private:
 		int                getRegIndex       (const std::string& optionName);

@@ -20,11 +20,11 @@
 //
 
 Binasc::Binasc(void) {
-	bytesQ    = 1; // option for printing HEX bytes when converting to ASCII
-	commentsQ = 0; // option for printing text comments when converting to ASCII
-	midiQ     = 0; // option for printing ASCII as parsed MIDI file.
-	maxLineLength = 75;
-	maxLineBytes  = 25;
+	m_bytesQ    = 1; // for printing HEX bytes when converting to ASCII
+	m_commentsQ = 0; // for printing text comments when converting to ASCII
+	m_midiQ     = 0; // for printing ASCII as parsed MIDI file.
+	m_maxLineLength = 75;
+	m_maxLineBytes  = 25;
 }
 
 
@@ -49,11 +49,11 @@ Binasc::~Binasc() {
 
 int Binasc::setLineLength(int length) {
 	if (length < 1) {
-		maxLineLength = 75;
+		m_maxLineLength = 75;
 	} else {
-		maxLineLength = length;
+		m_maxLineLength = length;
 	}
-	return maxLineLength;
+	return m_maxLineLength;
 }
 
 
@@ -65,7 +65,7 @@ int Binasc::setLineLength(int length) {
 //
 
 int Binasc::getLineLength(void) {
-	return maxLineLength;
+	return m_maxLineLength;
 }
 
 
@@ -79,11 +79,11 @@ int Binasc::getLineLength(void) {
 
 int Binasc::setLineBytes(int length) {
 	if (length < 1) {
-		maxLineBytes = 25;
+		m_maxLineBytes = 25;
 	} else {
-		maxLineBytes = length;
+		m_maxLineBytes = length;
 	}
-	return maxLineBytes;
+	return m_maxLineBytes;
 }
 
 
@@ -94,7 +94,7 @@ int Binasc::setLineBytes(int length) {
 //
 
 int Binasc::getLineBytes(void) {
-	return maxLineLength;
+	return m_maxLineLength;
 }
 
 
@@ -106,7 +106,7 @@ int Binasc::getLineBytes(void) {
 //
 
 void Binasc::setComments(int state) {
-	commentsQ = state ? 1 : 0;
+	m_commentsQ = state ? 1 : 0;
 }
 
 
@@ -128,7 +128,7 @@ void Binasc::setCommentsOff(void) {
 //
 
 int Binasc::getComments(void) {
-	return commentsQ;
+	return m_commentsQ;
 }
 
 
@@ -140,7 +140,7 @@ int Binasc::getComments(void) {
 //
 
 void Binasc::setBytes(int state) {
-	bytesQ = state ? 1 : 0;
+	m_bytesQ = state ? 1 : 0;
 }
 
 
@@ -160,7 +160,7 @@ void Binasc::setBytesOff(void) {
 //
 
 int Binasc::getBytes(void) {
-	return bytesQ;
+	return m_bytesQ;
 }
 
 
@@ -170,7 +170,7 @@ int Binasc::getBytes(void) {
 //
 
 void Binasc::setMidi(int state) {
-	midiQ = state ? 1 : 0;
+	m_midiQ = state ? 1 : 0;
 }
 
 
@@ -191,7 +191,7 @@ void Binasc::setMidiOff(void) {
 //
 
 int Binasc::getMidi(void) {
-	return midiQ;
+	return m_midiQ;
 }
 
 
@@ -339,11 +339,11 @@ int Binasc::readFromBinary(std::ostream& out, const std::string& infile) {
 
 int Binasc::readFromBinary(std::ostream& out, std::istream& input) {
 	int status;
-	if (midiQ) {
+	if (m_midiQ) {
 		status = outputStyleMidi(out, input);
-	} else if (!bytesQ) {
+	} else if (!m_bytesQ) {
 		status = outputStyleAscii(out, input);
-	} else if (bytesQ && commentsQ) {
+	} else if (m_bytesQ && m_commentsQ) {
 		status = outputStyleBoth(out, input);
 	} else {
 		status = outputStyleBinary(out, input);
@@ -380,7 +380,7 @@ int Binasc::outputStyleAscii(std::ostream& out, std::istream& input) {
 
 		if ((type == 1) && (lastType == 0)) {
 			// start of a new word.  check where to put old word
-			if (index + lineCount >= maxLineLength) {  // put on next line
+			if (index + lineCount >= m_maxLineLength) {  // put on next line
 				outputWord[index] = '\0';
 				out << '\n' << outputWord;
 				lineCount = index;
@@ -433,7 +433,7 @@ int Binasc::outputStyleBinary(std::ostream& out, std::istream& input) {
 		}
 		out << std::hex << (int)ch << ' ';
 		currentByte++;
-		if (currentByte >= maxLineBytes) {
+		if (currentByte >= m_maxLineBytes) {
 			out << '\n';
 			currentByte = 0;
 		}
@@ -481,7 +481,7 @@ int Binasc::outputStyleBoth(std::ostream& out, std::istream& input) {
 		}
 		asciiLine[index++] = ' ';
 
-		if (currentByte >= maxLineBytes) {
+		if (currentByte >= m_maxLineBytes) {
 			out << '\n';
 			asciiLine[index] = '\0';
 			out << asciiLine << "\n\n";
@@ -665,7 +665,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 			trackbytes++;
 			byte2 = ch;
 			output << " '" << std::dec << (int)byte2;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				comment += "note-off " + keyToPitchName(byte1);
 			}
 			break;
@@ -675,7 +675,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 			trackbytes++;
 			byte2 = ch;
 			output << " '" << std::dec << (int)byte2;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				if (byte2 == 0) {
 					comment += "note-off " + keyToPitchName(byte1);
 				} else {
@@ -689,7 +689,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 			trackbytes++;
 			byte2 = ch;
 			output << " '" << std::dec << (int)byte2;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				comment += "after-touch";
 			}
 			break;
@@ -699,7 +699,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 			trackbytes++;
 			byte2 = ch;
 			output << " '" << std::dec << (int)byte2;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				comment += "controller";
 			}
 			break;
@@ -709,20 +709,20 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 			trackbytes++;
 			byte2 = ch;
 			output << " '" << std::dec << (int)byte2;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				comment += "pitch-bend";
 			}
 			break;
 		case 0xC0:    // patch change: 1 bytes
 			output << " '" << std::dec << (int)byte1;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				output << "\t";
 				comment += "patch-change";
 			}
 			break;
 		case 0xD0:    // channel pressure: 1 bytes
 			output << " '" << std::dec << (int)byte1;
-			if (commentsQ) {
+			if (m_commentsQ) {
 				comment += "channel pressure";
 			}
 			break;
@@ -929,7 +929,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 	}
 
 	out << output.str();
-	if (commentsQ) {
+	if (m_commentsQ) {
 		out << "\t; " << comment;
 	}
 
@@ -995,7 +995,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 	input.read((char*)&ch, 1);
 	if (ch != 'd') { std::cerr << "Not a MIDI file d" << std::endl; return 0; }
 	tempout << "\"MThd\"";
-	if (commentsQ) {
+	if (m_commentsQ) {
 		tempout << "\t\t\t; MIDI header chunk marker";
 	}
 	tempout << std::endl;
@@ -1008,7 +1008,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 	input.read((char*)&ch, 1); headersize = (headersize << 8) | ch;
 	input.read((char*)&ch, 1); headersize = (headersize << 8) | ch;
 	tempout << "4'" << headersize;
-	if (commentsQ) {
+	if (m_commentsQ) {
 		tempout << "\t\t\t; bytes to follow in header chunk";
 	}
 	tempout << std::endl;
@@ -1020,7 +1020,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 	input.read((char*)&ch, 1);
 	filetype = (filetype << 8) | ch;
 	tempout << "2'" << filetype;
-	if (commentsQ) {
+	if (m_commentsQ) {
 		tempout << "\t\t\t; file format: Type-" << filetype << " (";
 		switch (filetype) {
 			case 0:  tempout << "single track"; break;
@@ -1039,7 +1039,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 	input.read((char*)&ch, 1);
 	trackcount = (trackcount << 8) | ch;
 	tempout << "2'" << trackcount;
-	if (commentsQ) {
+	if (m_commentsQ) {
 		tempout << "\t\t\t; number of tracks";
 	}
 	tempout << std::endl;
@@ -1055,12 +1055,12 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 	if (byte1 & 0x80) {
 		// SMPTE divisions
 		tempout << "'-" << 0xff - (ulong)byte1 + 1;
-		if (commentsQ) {
+		if (m_commentsQ) {
 			tempout << "\t\t\t; SMPTE frames/second";
 		}
 		tempout << std::endl;
 		tempout << "'" << std::dec << (long)byte2;
-		if (commentsQ) {
+		if (m_commentsQ) {
 			tempout << "\t\t\t; subframes per frame";
 		}
 		tempout << std::endl;
@@ -1070,7 +1070,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 		divisions = (divisions << 8) | byte1;
 		divisions = (divisions << 8) | byte2;
 		tempout << "2'" << divisions;
-		if (commentsQ) {
+		if (m_commentsQ) {
 			tempout << "\t\t\t; ticks per quarter note";
 		}
 		tempout << std::endl;
@@ -1105,7 +1105,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 		input.read((char*)&ch, 1);
 		if (ch != 'k') { std::cerr << "Not a MIDI file k" << std::endl; return 0; }
 		tempout << "\"MTrk\"";
-		if (commentsQ) {
+		if (m_commentsQ) {
 			tempout << "\t\t\t; MIDI track chunk marker";
 		}
 		tempout << std::endl;
@@ -1117,7 +1117,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 		input.read((char*)&ch, 1); tracksize = (tracksize << 8) | ch;
 		input.read((char*)&ch, 1); tracksize = (tracksize << 8) | ch;
 		tempout << "4'" << tracksize;
-		if (commentsQ) {
+		if (m_commentsQ) {
 			tempout << "\t\t\t; bytes to follow in track chunk";
 		}
 		tempout << std::endl;

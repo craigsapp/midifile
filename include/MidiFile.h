@@ -216,31 +216,43 @@ class MidiFile {
 		uchar           readByte                  (std::istream& input);
 
 		// static functions:
-		static ushort   readLittleEndian2Bytes  (std::istream& input);
-		static ulong    readLittleEndian4Bytes  (std::istream& input);
-		static std::ostream& writeLittleEndianUShort (std::ostream& out, ushort value);
-		static std::ostream& writeBigEndianUShort    (std::ostream& out, ushort value);
-		static std::ostream& writeLittleEndianShort  (std::ostream& out, short  value);
-		static std::ostream& writeBigEndianShort     (std::ostream& out, short  value);
-		static std::ostream& writeLittleEndianULong  (std::ostream& out, ulong  value);
-		static std::ostream& writeBigEndianULong     (std::ostream& out, ulong  value);
-		static std::ostream& writeLittleEndianLong   (std::ostream& out, long   value);
-		static std::ostream& writeBigEndianLong      (std::ostream& out, long   value);
-		static std::ostream& writeLittleEndianFloat  (std::ostream& out, float  value);
-		static std::ostream& writeBigEndianFloat     (std::ostream& out, float  value);
-		static std::ostream& writeLittleEndianDouble (std::ostream& out, double value);
-		static std::ostream& writeBigEndianDouble    (std::ostream& out, double value);
+		static ushort        readLittleEndian2Bytes  (std::istream& input);
+		static ulong         readLittleEndian4Bytes  (std::istream& input);
+		static std::ostream& writeLittleEndianUShort (std::ostream& out,
+		                                              ushort value);
+		static std::ostream& writeBigEndianUShort    (std::ostream& out,
+		                                              ushort value);
+		static std::ostream& writeLittleEndianShort  (std::ostream& out,
+		                                              short value);
+		static std::ostream& writeBigEndianShort     (std::ostream& out,
+		                                              short value);
+		static std::ostream& writeLittleEndianULong  (std::ostream& out,
+		                                              ulong value);
+		static std::ostream& writeBigEndianULong     (std::ostream& out,
+		                                              ulong value);
+		static std::ostream& writeLittleEndianLong   (std::ostream& out,
+		                                              long value);
+		static std::ostream& writeBigEndianLong      (std::ostream& out,
+		                                              long value);
+		static std::ostream& writeLittleEndianFloat  (std::ostream& out,
+		                                              float value);
+		static std::ostream& writeBigEndianFloat     (std::ostream& out,
+		                                              float value);
+		static std::ostream& writeLittleEndianDouble (std::ostream& out,
+		                                              double value);
+		static std::ostream& writeBigEndianDouble    (std::ostream& out,
+		                                              double value);
 
 	protected:
-		std::vector<MidiEventList*> events;         // MIDI file events
-		int                         ticksPerQuarterNote; // time base of file
-		int                         trackCount;     // # of tracks in file
-		int                         theTrackState;  // joined or split
-		int                         theTimeState;   // absolute or delta
-		std::string                 readFileName;   // read file name
-		int                         timemapvalid;
-		std::vector<_TickTime>      timemap;
-		int                         rwstatus;       // read/write success flag
+		std::vector<MidiEventList*> m_events;         // MIDI file events
+		int                         m_ticksPerQuarterNote; // time base of file
+		int                         m_trackCount;     // # of tracks in file
+		int                         m_theTrackState;  // joined or split
+		int                         m_theTimeState;   // absolute or delta
+		std::string                 m_readFileName;   // read file name
+		int                         m_timemapvalid;
+		std::vector<_TickTime>      m_timemap;
+		int                         m_rwstatus;       // read/write success flag
 
 	private:
 		int        extractMidiData                 (std::istream& inputfile,

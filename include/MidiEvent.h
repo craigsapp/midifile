@@ -53,11 +53,11 @@ class MidiEvent : public MidiMessage {
 
 		int        tick;     // delta or absolute MIDI ticks
 		int        track;    // [original] track number of event in MIDI file
-		double     seconds;  // calculated time in sec. (doTimeAnalysis())
+		double     seconds;  // calculated time in sec. (after doTimeAnalysis())
 		int        seq;      // sorting sequence number of event
 
 	private:
-		MidiEvent* eventlink;  // used to match note-ons and note-offs
+		MidiEvent* m_eventlink;  // used to match note-ons and note-offs
 
 };
 
