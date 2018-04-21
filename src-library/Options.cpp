@@ -1,10 +1,9 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr  5 13:07:18 PDT 1998
-// Last Modified: Sat Mar  1 09:31:01 PST 2014 Implemented with STL.
-// Filename:      Options.cpp
-// Web Address:   https://github.com/craigsapp/optionlib/blob/master/include/Options.h
-// Documentation: http://sig.sapp.org/doc/classes/Options
+// Last Modified: Sat Apr 21 10:52:19 PDT 2018 Removed using namespace std;
+// Filename:      midifile/src-library/Options.cpp
+// Web Address:   http://midifile.sapp.org
 // Syntax:        C++11
 // vim:           ts=3 noexpandtab
 //
@@ -14,12 +13,11 @@
 #include "Options.h"
 
 #include <stdlib.h>
-#include <string.h>
+#include <string>
+#include <vector>
 #include <cctype>
 #include <iostream>
 #include <algorithm>
-
-using namespace std;
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -39,8 +37,8 @@ Option_register::Option_register(void) {
 }
 
 
-Option_register::Option_register(const string& aDefinition, char aType,
-      const string& aDefaultOption) {
+Option_register::Option_register(const std::string& aDefinition, char aType,
+      const std::string& aDefaultOption) {
    type = 's';
    modifiedQ = 0;
    setType(aType);
@@ -48,8 +46,8 @@ Option_register::Option_register(const string& aDefinition, char aType,
    setDefault(aDefaultOption);
 }
 
-Option_register::Option_register(const string& aDefinition, char aType,
-      const string& aDefaultOption, const string& aModifiedOption) {
+Option_register::Option_register(const std::string& aDefinition, char aType,
+      const std::string& aDefaultOption, const std::string& aModifiedOption) {
    type = 's';
    modifiedQ = 0;
    setType(aType);
@@ -89,7 +87,7 @@ void Option_register::clearModified(void) {
 //	string used to define this entry.
 //
 
-const string& Option_register::getDefinition(void) {
+const std::string& Option_register::getDefinition(void) {
    return definition;
 }
 
@@ -101,7 +99,7 @@ const string& Option_register::getDefinition(void) {
 //      of the entry.
 //
 
-const string& Option_register::getDescription(void) {
+const std::string& Option_register::getDescription(void) {
    return description;
 }
 
@@ -112,7 +110,7 @@ const string& Option_register::getDescription(void) {
 // Option_register::getDefault --  Return the default value string.
 //
 
-const string& Option_register::getDefault(void) {
+const std::string& Option_register::getDefault(void) {
    return defaultOption;
 }
 
@@ -123,7 +121,7 @@ const string& Option_register::getDefault(void) {
 // Option_register::getModified -- Return the modified option string.
 //
 
-const string& Option_register::getModified(void) {
+const std::string& Option_register::getModified(void) {
    return modifiedOption;
 }
 
@@ -158,7 +156,7 @@ char Option_register::getType(void) {
 //  	or the default option if no modified option.
 //
 
-const string& Option_register::getOption(void) {
+const std::string& Option_register::getOption(void) {
    if (isModified()) {
       return getModified();
    } else {
@@ -187,7 +185,7 @@ void Option_register::reset(void) {
 // Option_register::setDefault -- Set the default value.
 //
 
-void Option_register::setDefault(const string& aString) {
+void Option_register::setDefault(const std::string& aString) {
    defaultOption = aString;
 }
 
@@ -198,7 +196,7 @@ void Option_register::setDefault(const string& aString) {
 // Option_register::setDefinition -- Set the option definition.
 //
 
-void Option_register::setDefinition(const string& aString) {
+void Option_register::setDefinition(const std::string& aString) {
    definition = aString;
 }
 
@@ -209,7 +207,7 @@ void Option_register::setDefinition(const string& aString) {
 // Option_register::setDescription -- Set the textual description.
 //
 
-void Option_register::setDescription(const string& aString) {
+void Option_register::setDescription(const std::string& aString) {
    description = aString;
 }
 
@@ -220,7 +218,7 @@ void Option_register::setDescription(const string& aString) {
 // Option_register::setModified -- Set the modified value.
 //
 
-void Option_register::setModified(const string& aString) {
+void Option_register::setModified(const std::string& aString) {
    modifiedOption = aString;
    modifiedQ = 1;
 }
@@ -244,13 +242,13 @@ void Option_register::setType(char aType) {
 //     Useul for debugging.
 //
 
-ostream& Option_register::print(ostream& out) {
-   out << "definition:\t"     << definition     << endl;
-   out << "description:\t"    << description    << endl;
-   out << "defaultOption:\t"  << defaultOption  << endl;
-   out << "modifiedOption:\t" << modifiedOption << endl;
-   out << "modifiedQ:\t\t"    << modifiedQ      << endl;
-   out << "type:\t\t"         << type           << endl;
+std::ostream& Option_register::print(std::ostream& out) {
+   out << "definition:\t"     << definition     << std::endl;
+   out << "description:\t"    << description    << std::endl;
+   out << "defaultOption:\t"  << defaultOption  << std::endl;
+   out << "modifiedOption:\t" << modifiedOption << std::endl;
+   out << "modifiedQ:\t\t"    << modifiedQ      << std::endl;
+   out << "type:\t\t"         << type           << std::endl;
    return out;
 };
 
@@ -323,7 +321,7 @@ int Options::argc(void) const {
 // Options::argv -- returns the arguments strings as input from main().
 //
 
-const vector<string>& Options::argv(void) const {
+const std::vector<std::string>& Options::argv(void) const {
    return oargv;
 }
 
@@ -341,23 +339,23 @@ const vector<string>& Options::argv(void) const {
 // option-default :: default value for option if no given on the command-line.
 //
 
-int Options::define(const string& aDefinition) {
+int Options::define(const std::string& aDefinition) {
    Option_register* definitionEntry = NULL;
 
    // Error if definition string doesn't contain an equals sign
    auto location = aDefinition.find("=");
-   if (location == string::npos) {
-      cerr << "Error: no \"=\" in option definition: " << aDefinition << endl;
+   if (location == std::string::npos) {
+      std::cerr << "Error: no \"=\" in option definition: " << aDefinition << std::endl;
       exit(1);
    }
 
-   string aliases = aDefinition.substr(0, location);
-   string rest    = aDefinition.substr(location+1);
-   string otype   = rest;
-   string ovalue  = "";
+   std::string aliases = aDefinition.substr(0, location);
+   std::string rest    = aDefinition.substr(location+1);
+   std::string otype   = rest;
+   std::string ovalue  = "";
 
    location = rest.find(":");
-   if (location != string::npos) {
+   if (location != std::string::npos) {
       otype  = rest.substr(0, location);
       ovalue = rest.substr(location+1);
    }
@@ -367,8 +365,8 @@ int Options::define(const string& aDefinition) {
 
    // Option types are only a single charater (b, i, d, c or s)
    if (otype.size() != 1) {
-      cerr << "Error: option type is invalid: " << otype
-           << " in option definition: " << aDefinition << endl;
+      std::cerr << "Error: option type is invalid: " << otype
+           << " in option definition: " << aDefinition << std::endl;
       exit(1);
    }
 
@@ -379,8 +377,8 @@ int Options::define(const string& aDefinition) {
        otype[0] != OPTION_DOUBLE_TYPE  &&
        otype[0] != OPTION_BOOLEAN_TYPE &&
        otype[0] != OPTION_CHAR_TYPE ) {
-      cerr << "Error: unknown option type \'" << otype[0]
-           << "\' in defintion: " << aDefinition << endl;
+      std::cerr << "Error: unknown option type \'" << otype[0]
+           << "\' in defintion: " << aDefinition << std::endl;
       exit(1);
    }
 
@@ -390,7 +388,7 @@ int Options::define(const string& aDefinition) {
    auto definitionIndex = optionRegister.size();
 
    // Store option aliases
-   string optionName;
+   std::string optionName;
    unsigned int i;
    aliases += '|';
    for (i=0; i<aliases.size(); i++) {
@@ -398,10 +396,10 @@ int Options::define(const string& aDefinition) {
          continue;
       } else if (aliases[i] == '|') {
          if (isDefined(optionName)) {
-            cerr << "Option \"" << optionName << "\" from definition:" << endl;
-            cerr << "\t" << aDefinition << endl;
-            cerr << "is already defined in: " << endl;
-            cerr << "\t" << getDefinition(optionName) << endl;
+            std::cerr << "Option \"" << optionName << "\" from definition:" << std::endl;
+            std::cerr << "\t" << aDefinition << std::endl;
+            std::cerr << "is already defined in: " << std::endl;
+            std::cerr << "\t" << getDefinition(optionName) << std::endl;
             exit(1);
          }
          if (optionName.size() > 0) {
@@ -421,7 +419,8 @@ int Options::define(const string& aDefinition) {
 }
 
 
-int Options::define(const string& aDefinition, const string& aDescription) {
+int Options::define(const std::string& aDefinition,
+		const std::string& aDescription) {
    int index = define(aDefinition);
    optionRegister[index]->setDescription(aDescription);
    return index;
@@ -434,7 +433,7 @@ int Options::define(const string& aDefinition, const string& aDescription) {
 // Options::isDefined -- Return true if option is present in registry.
 //
 
-int Options::isDefined(const string& name) {
+int Options::isDefined(const std::string& name) {
    if (optionList.find(name) == optionList.end()) {
       return 0;
    } else {
@@ -450,9 +449,9 @@ int Options::isDefined(const string& name) {
 //	argurment 0 is the command name.
 //
 
-const string& Options::getArg(int index) {
+const std::string& Options::getArg(int index) {
    if (index < 0 || index >= (int)argument.size()) {
-      cerr << "Error: argument " << index << " does not exist." << endl;
+      std::cerr << "Error: argument " << index << " does not exist." << std::endl;
       exit(1);
    }
    return argument[index];
@@ -460,7 +459,7 @@ const string& Options::getArg(int index) {
 
 // Alias:
 
-const string& Options::getArgument(int index) {
+const std::string& Options::getArgument(int index) {
    return getArg(index);
 }
 
@@ -490,13 +489,13 @@ int Options::getArgumentCount(void) {
 //     after the options have been parsed out of it.
 //
 
-const vector<string>& Options::getArgList(void) {
+const std::vector<std::string>& Options::getArgList(void) {
    return argument;
 }
 
 // Alias:
 
-const vector<string>& Options::getArgumentList(void) {
+const std::vector<std::string>& Options::getArgumentList(void) {
    return getArgList();
 }
 
@@ -508,7 +507,7 @@ const vector<string>& Options::getArgumentList(void) {
 //	used on the command line.
 //
 
-int Options::getBoolean(const string& optionName) {
+int Options::getBoolean(const std::string& optionName) {
    int index = getRegIndex(optionName);
    if (index < 0) {
       return 0;
@@ -524,7 +523,7 @@ int Options::getBoolean(const string& optionName) {
 //     in the original argv list.
 //
 
-string Options::getCommand(void) {
+std::string Options::getCommand(void) {
    if (argument.size() == 0) {
       return "";
    } else {
@@ -540,7 +539,7 @@ string Options::getCommand(void) {
 //     command-line call to the program.  Deal with spaces in arguments...
 //
 
-const string& Options::getCommandLine(void) {
+const std::string& Options::getCommandLine(void) {
    if (commandString.size()) {
       return commandString;
    }
@@ -566,7 +565,7 @@ const string& Options::getCommandLine(void) {
 //      the option name.  spaces count in the input option name.
 //
 
-string Options::getDefinition(const string& optionName) {
+std::string Options::getDefinition(const std::string& optionName) {
    auto it = optionList.find(optionName);
    if (it == optionList.end()) {
       return "";
@@ -584,7 +583,7 @@ string Options::getDefinition(const string& optionName) {
 //	number associated with the option.
 //
 
-double Options::getDouble(const string& optionName) {
+double Options::getDouble(const std::string& optionName) {
    return strtod(getString(optionName).c_str(), (char**)NULL);
 }
 
@@ -596,7 +595,7 @@ double Options::getDouble(const string& optionName) {
 //      If the length is zero, then return '\0'.
 //
 
-char Options::getChar(const string& optionName) {
+char Options::getChar(const std::string& optionName) {
    return getString(optionName).c_str()[0];
 }
 
@@ -608,7 +607,7 @@ char Options::getChar(const string& optionName) {
 //	associated with the given option.
 //
 
-float Options::getFloat(const string& optionName) {
+float Options::getFloat(const std::string& optionName) {
    return (float)getDouble(optionName);
 }
 
@@ -621,11 +620,11 @@ float Options::getFloat(const string& optionName) {
 //	C syntax.
 //
 
-int Options::getInt(const string& optionName) {
+int Options::getInt(const std::string& optionName) {
    return (int)strtol(getString(optionName).c_str(), (char**)NULL, 0);
 }
 
-int Options::getInteger(const string& optionName) {
+int Options::getInteger(const std::string& optionName) {
    return getInt(optionName);
 }
 
@@ -636,7 +635,7 @@ int Options::getInteger(const string& optionName) {
 // Options::getString -- Return the option argument string.
 //
 
-string Options::getString(const string& optionName) {
+std::string Options::getString(const std::string& optionName) {
    int index = getRegIndex(optionName);
    if (index < 0) {
       return "UNKNOWN OPTION";
@@ -664,10 +663,10 @@ int Options::optionsArg(void) {
 // Options::print -- Print a list of the defined options.
 //
 
-ostream& Options::print(ostream& out) {
+std::ostream& Options::print(std::ostream& out) {
    for (unsigned int i=0; i<optionRegister.size(); i++) {
       out << optionRegister[i]->getDefinition() << "\t"
-           << optionRegister[i]->getDescription() << endl;
+           << optionRegister[i]->getDescription() << std::endl;
    }
    return out;
 }
@@ -728,7 +727,8 @@ void Options::setFlag(char aFlag) {
 // Options::setModified --
 //
 
-void Options::setModified(const string& optionName, const string& aString) {
+void Options::setModified(const std::string& optionName,
+		const std::string& aString) {
    int index = getRegIndex(optionName);
    if (index < 0) {
       return;
@@ -794,7 +794,7 @@ void Options::appendOptions(int argc, char** argv) {
 }
 
 
-void Options::appendOptions(const vector<string>& argv) {
+void Options::appendOptions(const std::vector<std::string>& argv) {
    processedQ = 0;
 
    int oldsize = extraArgv.size();
@@ -825,14 +825,14 @@ void Options::appendOptions(const vector<string>& argv) {
 //      '-T \'\'' is equal to: '-T ""'
 //
 
-void Options::appendOptions(const string& strang) {
+void Options::appendOptions(const std::string& strang) {
    int i;
    int doublequote = 0;
    int singlequote = 0;
 
-   vector<string> tokens;
-   vector<string> tempargv;
-   string tempvalue;
+   std::vector<std::string> tokens;
+   std::vector<std::string> tempargv;
+   std::string tempvalue;
 
    tokens.reserve(100);
    tempargv.reserve(100);
@@ -916,7 +916,7 @@ void Options::appendOptions(const string& strang) {
 // Options:getType -- Return the type of the option.
 //
 
-char Options::getType(const string& optionName) {
+char Options::getType(const std::string& optionName) {
    int index = getRegIndex(optionName);
    if (index < 0) {
       return -1;
@@ -1028,13 +1028,13 @@ void Options::xverify(int argc, char** argv, int error_check, int suppress) {
 //	with this name.
 //
 
-int Options::getRegIndex(const string& optionName) {
+int Options::getRegIndex(const std::string& optionName) {
    if (suppressQ && (optionName == "options")) {
          return -1;
    }
 
    if (optionName == "options") {
-      print(cout);
+      print(std::cout);
       exit(0);
    }
 
@@ -1042,8 +1042,8 @@ int Options::getRegIndex(const string& optionName) {
    auto it = optionList.find(optionName);
    if (it == optionList.end()) {
       if (options_error_check) {
-         cerr << "Error: unknown option \"" << optionName << "\"." << endl;
-         print(cout);
+         std::cerr << "Error: unknown option \"" << optionName << "\"." << std::endl;
+         print(std::cout);
          exit(1);
       } else {
          return -1;
@@ -1062,7 +1062,7 @@ int Options::getRegIndex(const string& optionName) {
 //	aString is assumed to not be NULL.
 //
 
-int Options::optionQ(const string& aString, int& argp) {
+int Options::optionQ(const std::string& aString, int& argp) {
    if (aString[0] == getFlag()) {
       if (aString[1] == '\0') {
          argp++;
@@ -1141,8 +1141,8 @@ int Options::storeOption(int gargp, int& position, int& running) {
          }
          if (oargv[gargp][position] == '=') {
             if (optionType == OPTION_BOOLEAN_TYPE) {
-               cerr << "Error: boolean variable cannot have any options: "
-                    << tempname << endl;
+               std::cerr << "Error: boolean variable cannot have any options: "
+                    << tempname << std::endl;
                exit(1);
             }
             position++;
@@ -1172,7 +1172,7 @@ int Options::storeOption(int gargp, int& position, int& running) {
    }
 
    if (gargp >= oargc) {
-      cerr << "Error: last option requires a parameter" << endl;
+      std::cerr << "Error: last option requires a parameter" << std::endl;
       exit(1);
    }
    setModified(tempname, &oargv[gargp][position]);
@@ -1190,9 +1190,9 @@ int Options::storeOption(int gargp, int& position, int& running) {
 // Options::printOptionList --
 //
 
-ostream& Options::printOptionList(ostream& out) {
+std::ostream& Options::printOptionList(std::ostream& out) {
    for (auto it = optionList.begin(); it != optionList.end(); it++) {
-      out << it->first << "\t" << it->second << endl;
+      out << it->first << "\t" << it->second << std::endl;
    }
    return out;
 }
@@ -1204,10 +1204,10 @@ ostream& Options::printOptionList(ostream& out) {
 // Options::printOptionBooleanState --
 //
 
-ostream& Options::printOptionListBooleanState(ostream& out) {
+std::ostream& Options::printOptionListBooleanState(std::ostream& out) {
    for (auto it = optionList.begin(); it != optionList.end(); it++) {
       out << it->first << "\t"
-          << optionRegister[it->second]->isModified() << endl;
+          << optionRegister[it->second]->isModified() << std::endl;
    }
    return out;
 }
@@ -1219,7 +1219,7 @@ ostream& Options::printOptionListBooleanState(ostream& out) {
 // Options::printRegister --
 //
 
-ostream& Options::printRegister(ostream& out) {
+std::ostream& Options::printRegister(std::ostream& out) {
    for (auto it = optionRegister.begin(); it != optionRegister.end(); it++) {
       (*it)->print(out);
    }
