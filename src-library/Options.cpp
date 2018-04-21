@@ -966,11 +966,7 @@ void Options::xverify(int error_check, int suppress) {
       m_argument.clear();
    }
 
-   char* tempargument;
-   tempargument = new char[m_oargv[0].size()+1];
-   strcpy(tempargument, m_oargv[0].c_str());
-   m_argument.push_back(tempargument);
-
+   m_argument.push_back(m_oargv[0]);
    int oldgargp;
    int position = 0;
    int running = 0;
@@ -989,18 +985,14 @@ void Options::xverify(int error_check, int suppress) {
             gargp++;
             break;
          } else {                          // this is an argument
-            tempargument = new char[m_oargv[gargp].size()+1];
-            strcpy(tempargument, m_oargv[gargp].c_str());
-            m_argument.push_back(tempargument);
+            m_argument.push_back(m_oargv[gargp]);
             gargp++;
          }
       }
    }
 
    while (gargp < m_oargc) {
-      tempargument = new char[m_oargv[gargp].size()+1];
-      strcpy(tempargument, m_oargv[gargp].c_str());
-      m_argument.push_back(tempargument);
+      m_argument.push_back(m_oargv[gargp]);
       gargp++;
    }
 
