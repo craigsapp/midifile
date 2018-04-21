@@ -122,7 +122,7 @@ class MidiFile {
 		void             doTimeAnalysis            (void);
 		double           getTimeInSeconds          (int aTrack, int anIndex);
 		double           getTimeInSeconds          (int tickvalue);
-		int              getAbsoluteTickTime       (double starttime);
+		double           getAbsoluteTickTime       (double starttime);
 		double           getTotalTimeInSeconds     (void);
 		int              getTotalTimeInTicks       (void);
 		double           getTotalTimeInQuarters    (void);
@@ -269,7 +269,7 @@ class MidiFile {
 		static int ticksearch                      (const void* A, const void* B);
 		static int secondsearch                    (const void* A, const void* B);
 		void       buildTimeMap                    (void);
-		int        linearTickInterpolationAtSecond (double seconds);
+		double     linearTickInterpolationAtSecond (double seconds);
 		double     linearSecondInterpolationAtTick (int ticktime);
 };
 

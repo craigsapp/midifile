@@ -87,12 +87,12 @@ void doStretch(MidiFile& midifile, double bars, double duration) {
 	MidiEventList &track = midifile[t];
 	for (int e = 0; e < track.size(); ++e) {
 	    MidiEvent &event = track[e];
-	    event.tick *= tick_mult;
+	    event.tick *= (int)(event.tick * tick_mult);
 	    if (event.getMetaType() == 0x51) {
-		int tempo = event.getTempoMicroseconds();
+		double tempo = event.getTempoMicroseconds();
 		tempo *= bars;
 		tempo *= duration;
-		event.setTempoMicroseconds( tempo );
+		event.setTempoMicroseconds( (int)tempo );
 	    }
 	}
     }

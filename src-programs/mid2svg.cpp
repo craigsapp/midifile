@@ -2096,8 +2096,8 @@ void getMinMaxPitch(const MidiFile& midifile, int& minpitch, int& maxpitch) {
 void getMinMaxTrackPitch(const MidiEventList& evl, int& minpitch,
       int &maxpitch) {
    int key = 0;
-   minpitch = -1.0;
-   maxpitch = -1.0;
+   minpitch = -1;
+   maxpitch = -1;
    for (int i=0; i<evl.size(); i++) {
       if (evl[i].isNoteOn()) {
          key = evl[i].getP1();

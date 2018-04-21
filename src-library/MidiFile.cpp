@@ -1356,7 +1356,7 @@ double MidiFile::getTimeInSeconds(int tickvalue) {
 //    the given time in seconds, then interpolate between two values.
 //
 
-int MidiFile::getAbsoluteTickTime(double starttime) {
+double MidiFile::getAbsoluteTickTime(double starttime) {
 	if (m_timemapvalid == 0) {
 		buildTimeMap();
 		if (m_timemapvalid == 0) {
@@ -1429,7 +1429,7 @@ int MidiFile::getTotalTimeInTicks(void) {
 	if (oldTimeState == TIME_STATE_DELTA) {
 		deltaTicks();
 	}
-	int output = 0.0;
+	int output = 0;
 	for (int i=0; i<(int)m_events.size(); i++) {
 		if (m_events[i]->last().tick > output) {
 			output = m_events[i]->last().tick;
@@ -2368,7 +2368,7 @@ void MidiFile::clearLinks(void) {
 //    given input time.
 //
 
-int MidiFile::linearTickInterpolationAtSecond(double seconds) {
+double MidiFile::linearTickInterpolationAtSecond(double seconds) {
 	if (m_timemapvalid == 0) {
 		buildTimeMap();
 		if (m_timemapvalid == 0) {
@@ -2380,10 +2380,10 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
 	double lasttime = m_timemap[m_timemap.size()-1].seconds;
 	// give an error value of -1 if time is out of range of data.
 	if (seconds < 0.0) {
-		return -1;
+		return -1.0;
 	}
 	if (seconds > m_timemap[m_timemap.size()-1].seconds) {
-		return -1;
+		return -1.0;
 	}
 
 	// Guess which side of the list is closest to target:
@@ -2413,10 +2413,10 @@ int MidiFile::linearTickInterpolationAtSecond(double seconds) {
 	}
 
 	if (startindex < 0) {
-		return -1;
+		return -1.0;
 	}
 	if (startindex >= (int)m_timemap.size()-1) {
-		return -1;
+		return -1.0;
 	}
 
 	double x1 = m_timemap[startindex].seconds;

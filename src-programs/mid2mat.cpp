@@ -942,7 +942,7 @@ void printEvent(vector<double>& event) {
    int i;
    for (i=0; i<(int)event.size(); i++) {
       if ((i == 1) && (!numQ)) {
-         printOpName(event[i]);
+         printOpName((int)event[i]);
          cout << ",\t";
          continue;
       }
