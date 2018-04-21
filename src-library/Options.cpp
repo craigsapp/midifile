@@ -841,7 +841,7 @@ void Options::appendOptions(const std::string& strang) {
 
    char ch;
 
-   int length = strang.size();
+   int length = (int)strang.size();
    for (i=0; i<length; i++) {
 
       if (!singlequote && (strang[i] == '"')) {

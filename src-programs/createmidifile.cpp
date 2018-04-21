@@ -14,8 +14,6 @@
 using namespace std;
 using namespace smf;
 
-typedef unsigned char uchar;
-
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {

@@ -20,6 +20,7 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -83,8 +84,6 @@ const char *GMinstrument[128] = {
 vector<int> legend_instr;
 vector<int> legend_opcode;
 vector<int> legend_controller;
-
-typedef unsigned char uchar;
 
 // user interface variables
 Options options;

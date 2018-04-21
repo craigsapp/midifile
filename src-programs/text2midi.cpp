@@ -21,8 +21,6 @@
 using namespace std;
 using namespace smf;
 
-typedef unsigned char uchar;
-
 // user interface variables
 Options options;
 int     tpq = 480;              // ticks per quarter note

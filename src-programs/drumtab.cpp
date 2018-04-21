@@ -23,7 +23,6 @@ using namespace smf;
 #define QUARTER   120        /* ticks per quarter note */
 #define SIXTEENTH 30         /* ticks per sixteenth note */
 
-typedef unsigned char uchar;
 void AddDrumTrack(MidiFile& midifile, int* data, int instrument, int ticks);
 
 ///////////////////////////////////////////////////////////////////////////

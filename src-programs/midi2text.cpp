@@ -12,6 +12,7 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -20,8 +21,6 @@
 
 using namespace std;
 using namespace smf;
-
-typedef unsigned char uchar;
 
 // user interface variables
 Options options;

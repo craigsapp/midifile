@@ -14,13 +14,12 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <iostream>
 #include <iomanip>
 
 using namespace std;
 using namespace smf;
-
-typedef unsigned char uchar;
 
 void    convertMidiFile         (MidiFile& midifile);
 void    printMidiHeader         (MidiFile& midifile);
