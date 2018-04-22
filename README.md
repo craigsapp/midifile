@@ -453,10 +453,13 @@ ____________________________________
 MIDI file writing example
 --------------------------
 
-Here is an example of creating content for a MIDI file and then writing 
-it.  The program will generate a random sequence of notes and append
-them to the end of the first track.  After adding notes to the track,
-it must be sorted into time sequence before it is written as a MIDI file.
+Below is an example program to create a MIDI file.  This program will
+generate a random sequence of notes and append them to the end of
+the track.  By default a `MidiFile` object contains a single track and
+will be written as a type-0 MIDI file unless more tracks are added.  After 
+adding notes to the track, it must be sorted into time sequence
+before being written to a file.
+
 
 ``` cpp
 #include "MidiFile.h"
@@ -514,9 +517,9 @@ int main(int argc, char** argv) {
 }
 ```
 
-If no output file is specified, the MIDI file will be printed in the Binasc
-format to standard output, which can be read back into a MidiFile object and
-converted into a Standard MIDI file:
+If no output file is specified, the MIDI file contents will be printed
+in the Binasc format to standard output, which can be read back into a
+MidiFile object and converted into a Standard MIDI file:
 
 ```
 "MThd"			; MIDI header chunk marker
