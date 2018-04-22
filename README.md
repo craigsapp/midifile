@@ -608,3 +608,38 @@ Visualization with `bin/mid2svg -s 6 -a 12 -v`:
 ![100 random notes](https://user-images.githubusercontent.com/3487289/39097422-bd085ac2-4610-11e8-832d-f9a1239ff560.png)
 
 
+Read/Write example
+------------------
+
+Here is an example minimal program that converts the above hex byte-codes 
+into a standard MIDI file:
+
+
+```cpp
+#include "MidiFile.h"
+#include <iostream>
+
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   if (argc != 3) {
+      return 1;
+   }
+   MidiFile midifile;
+   midifile.read(argv[1]);
+   if (midifile.status()) {
+      midifile.write(argv[2]);
+   } else {
+      cerr << "Problem reading MIDI file " << argv[1] << endl;
+   }
+}
+```
+
+The `MidiFile::read()` function will automatically identify if the
+input is a binary standard MIDI file, a hex byte-code representation,
+or a generalized binasc syntax file (which includes byte-codes).
+The `MidiFile::status()` function can be checked after reading a MIDI
+file to determine if the file was read without problems.
+
+
