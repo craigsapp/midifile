@@ -118,13 +118,13 @@ Using in your own project
 The easiest way to use the midifile library in your own project is to
 copy the header files in the `include` directory, and the source-code
 files in the `src-library` directory into your own project.  You do not
-need to copy `Options.h` or `Options.cpp` since the `MidiFile` class
-is not dependent on them.  The [verovio](https://rism-ch/verovio) and
-[midiroll](https://craigsapp/midiroll) projects on Github both use this
-method to use the midifile library.  Alternatively, you can fork the
-midifile repository and build a compiled library file of the source
-code that can be copied with the `include` directory contents into
-your project.
+need to copy `Options.h` or `Options.cpp` since the `MidiFile` class is
+not dependent on them.  The [verovio](https://github.com/rism-ch/verovio)
+and [midiroll](https://github.com/craigsapp/midiroll) projects on Github
+both use this method to use the midifile library.  Alternatively, you
+can fork the midifile repository and build a compiled library file of
+the source code that can be copied with the `include` directory contents
+into your project.
 
 
 MIDI file reading examples
