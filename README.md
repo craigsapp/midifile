@@ -37,7 +37,7 @@ MIDI files.  The library consists of 6 classes:
 	<a href="http://midifile.sapp.org/class/MidiMessage">MidiMessage</a>
 </td><td>
 	The base class for MidiEvents.  This is a STL vector of 
-	unsingned bytes representing a MIDI (or meta) message.
+	unsigned bytes representing a MIDI (or meta) message.
 </td></tr>
 
 <tr valign="top"><td>
