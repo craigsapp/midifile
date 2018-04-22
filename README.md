@@ -459,7 +459,6 @@ them to the end of the first track.  After adding notes to the track,
 it must be sorted into time sequence before it is written as a MIDI file.
 
 ``` cpp
-
 #include "MidiFile.h"
 #include "Options.h"
 #include <random>
@@ -472,6 +471,8 @@ int main(int argc, char** argv) {
    Options options;
    options.define("n|note-count=i:10", "How many notes to randomly play");
    options.define("o|output-file=s",   "Output filename (stdout if none)");
+   options.define("i|instrument=i:0",  "General MIDI instrument number");
+   options.define("x|hex=b",           "Hex byte-code output");
    options.process(argc, argv);
 
    random_device rd;
@@ -484,6 +485,9 @@ int main(int argc, char** argv) {
    MidiFile midifile;
    int track   = 0;
    int channel = 0;
+   int instr   = options.getInteger("instrument");
+   midifile.addTimbre(track, 0, channel, instr);
+
    int tpq     = midifile.getTPQ();
    int count   = options.getInteger("note-count");
    for (int i=0; i<count; i++) {
@@ -497,7 +501,11 @@ int main(int argc, char** argv) {
                            // appended to track in random tick order.
    string filename = options.getString("output-file");
    if (filename.empty()) {
-      cout << midifile;
+      if (options.getBoolean("hex")) {
+         midifile.writeHex(cout);
+      } else {
+         cout << midifile;
+      }
    } else {
       midifile.write(filename);
    }
@@ -509,7 +517,6 @@ int main(int argc, char** argv) {
 If no output file is specified, the MIDI file will be printed in the Binasc
 format to standard output, which can be read back into a MidiFile object and
 converted into a Standard MIDI file:
-
 
 ```
 "MThd"			; MIDI header chunk marker
@@ -543,5 +550,61 @@ v30	90 '76 '0	; note-off E5
 v60	90 '70 '0	; note-off A#4
 v0	ff 2f v0	; end-of-track
 ```
+
+Here is the MIDI data visualized with the sample program
+[mid2svg](https://github.com/craigsapp/midifile/blob/master/src-programs/mid2svg.cpp):
+
+![10 random nots](https://user-images.githubusercontent.com/3487289/39096697-5728558e-4608-11e8-9b02-c29f39d85d0f.png)
+
+The `-x` option can be used to output the data as hex byte-codes, the `-n` option 
+controls the number of notes, and `-i #` specifies the instrument number
+to used:
+
+``` bash
+myprogram -n 100 -x -i 24
+```
+
+produces the hex byte-code MIDI file:
+
+```
+4d 54 68 64 00 00 00 06 00 00 00 01 00 78 4d 54 72 6b 00 00 03 27 00 c0 18 
+1e 90 4d 2f 1e 90 31 5e 00 90 40 42 1e 90 47 55 1e 90 47 00 00 90 31 00 00 
+90 32 62 1e 90 43 2d 1e 90 43 00 00 90 3f 5f 1e 90 32 00 1e 90 4d 00 00 90 
+47 38 1e 90 51 33 1e 90 40 00 00 90 31 31 00 90 35 3a 1e 90 24 41 00 90 4d 
+4f 00 90 4e 32 1e 90 31 00 00 90 51 00 1e 90 4e 00 00 90 48 51 1e 90 3f 00 
+00 90 24 00 1e 90 47 00 1e 90 35 00 00 90 2c 61 1e 90 4d 63 3c 90 4d 00 00 
+90 48 00 00 90 33 30 1e 90 2c 00 00 90 4d 00 00 90 40 5f 00 90 45 5f 00 90 
+3e 58 00 90 3f 45 00 90 24 4a 1e 90 33 00 00 90 3c 3c 1e 90 32 38 1e 90 39 
+40 1e 90 53 43 1e 90 40 00 00 90 3f 00 00 90 3e 00 00 90 45 00 00 90 4d 62 
+1e 90 24 00 00 90 32 00 00 90 30 42 00 90 2d 28 1e 90 3c 00 00 90 4d 00 00 
+90 53 00 00 90 2a 45 3c 90 36 51 1e 90 39 00 00 90 2a 00 00 90 36 4b 3c 90 
+36 00 00 90 3e 5c 1e 90 2d 00 1e 90 30 00 00 90 3e 00 3c 90 41 48 00 90 37 
+3f 00 90 36 3a 00 90 41 51 00 90 46 38 3c 90 36 00 1e 90 36 00 00 90 46 00 
+00 90 36 58 1e 90 41 00 00 90 32 44 00 90 47 2a 1e 90 37 00 00 90 45 2b 1e 
+90 41 53 00 90 3e 2d 1e 90 3e 00 00 90 33 28 00 90 29 4b 1e 90 41 00 00 90 
+41 00 1e 90 29 00 00 90 49 51 1e 90 47 00 00 90 35 49 00 90 49 43 1e 90 35 
+00 00 90 45 00 00 90 36 00 00 90 27 5c 1e 90 32 00 1e 90 49 00 00 90 28 4d 
+1e 90 49 00 00 90 33 00 00 90 2e 44 1e 90 29 2b 3c 90 27 00 00 90 24 3e 00 
+90 28 53 00 90 52 51 1e 90 4d 4f 00 90 26 5c 1e 90 28 00 00 90 29 00 00 90 
+27 32 1e 90 28 00 00 90 2e 00 00 90 4d 00 1e 90 2f 28 1e 90 4a 5a 00 90 47 
+43 1e 90 4a 00 00 90 52 00 00 90 24 00 00 90 34 2f 1e 90 2f 00 00 90 3c 5e 
+00 90 28 4f 00 90 32 2d 1e 90 26 00 00 90 3c 00 00 90 27 00 00 90 53 63 1e 
+90 47 00 1e 90 32 00 00 90 44 5d 00 90 32 40 1e 90 28 00 00 90 46 46 1e 90 
+34 00 1e 90 2a 3e 1e 90 53 00 00 90 3a 3f 00 90 53 31 1e 90 28 5f 1e 90 28 
+00 00 90 46 00 00 90 53 00 00 90 2a 00 1e 90 32 00 00 90 3a 00 00 90 44 00 
+3c 90 33 4d 1e 90 53 57 00 90 54 30 1e 90 38 45 1e 90 2f 46 1e 90 2f 00 00 
+90 33 00 1e 90 3a 61 00 90 38 40 1e 90 54 00 00 90 27 37 1e 90 3a 00 00 90 
+53 00 00 90 32 29 1e 90 38 00 00 90 40 2b 00 90 36 41 1e 90 38 00 00 90 34 
+46 1e 90 27 00 5a 90 36 00 00 90 32 00 00 90 40 00 00 90 48 4a 5a 90 34 00 
+00 90 48 00 1e 90 29 62 00 90 3e 4d 1e 90 39 3e 00 90 4a 2d 00 90 40 2d 3c 
+90 39 00 00 90 4a 00 00 90 25 58 1e 90 29 00 00 90 41 37 00 90 45 4c 00 90 
+4d 64 1e 90 41 00 00 90 3e 00 1e 90 4d 00 3c 90 40 00 00 90 25 00 00 90 39 
+4a 3c 90 32 43 1e 90 45 4a 1e 90 45 00 3c 90 45 00 3c 90 32 00 00 90 39 00 
+00 ff 2f 00 
+```
+
+Visualization with `bin/mid2svg -s 6 -a 12 -v`:
+
+![100 random notes](https://user-images.githubusercontent.com/3487289/39097422-bd085ac2-4610-11e8-832d-f9a1239ff560.png)
 
 
