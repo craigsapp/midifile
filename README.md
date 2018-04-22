@@ -437,13 +437,98 @@ ____________________________________
 
 
 
-MIDI file writing examples
+MIDI file writing example
 --------------------------
 
-Here are some examples of MIDI file writing.  MidiFiles can be created
-in either delta or absolute tick timestamp modes.  For now, see the
-[createmidifile](https://github.com/craigsapp/midifile/blob/master/src-programs/createmidifile.cpp)
-example program source code, or a higher-level example using convenience functions for creating MIDI events:
-[createmidifile2](https://github.com/craigsapp/midifile/blob/master/src-programs/createmidifile2.cpp).
+Here is an example of creating content for a MIDI file and then writing 
+it.  The program will generate a random seuqence of notes and append
+them to the end of the first track.  After adding notes to the track,
+it must be sorted into time sequence before it is written as a MIDI file.
+
+``` cpp
+
+#include "MidiFile.h"
+#include "Options.h"
+#include <random>
+#include <iostream>
+
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   Options options;
+   options.define("n|note-count=i:10", "How many notes to randomly play");
+   options.define("o|output-file=s",   "Output filename (stdout if none)");
+   options.process(argc, argv);
+
+   random_device rd;
+   mt19937 mt(rd());
+   uniform_int_distribution<int> starttime(0, 100);
+   uniform_int_distribution<int> duration(1, 8);
+   uniform_int_distribution<int> pitch(36, 84);
+   uniform_int_distribution<int> velocity(40, 100);
+
+   MidiFile midifile;
+   int track   = 0;
+   int channel = 0;
+   int tpq     = midifile.getTPQ();
+   int count   = options.getInteger("note-count");
+   for (int i=0; i<count; i++) {
+      int starttick = int(starttime(mt) / 4.0 * tpq);
+      int key = pitch(mt);
+      int endtick = starttick + int(duration(mt) / 4.0 * tpq);
+      midifile.addNoteOn(track, starttick, channel, key, velocity(mt));
+      midifile.addNoteOff(track, endtick, channel, key);
+   }
+   midifile.sortTracks();  // Need to sort tracks since added events are 
+                           // appended to track in random tick order.
+   string filename = options.getString("output-file");
+   if (filename.empty()) {
+      cout << midifile;
+   } else {
+      midifile.write(filename);
+   }
+
+   return 0;
+}
+```
+
+If no output file is specified, the MIDI file will be printed in the Binasc
+format to standard output, which can be read back into a MidiFile and
+converted into a Standard MIDI file:
+
+
+```
+"MThd"			; MIDI header chunk marker
+4'6			; bytes to follow in header chunk
+2'0			; file format: Type-0 (single track)
+2'1			; number of tracks
+2'120			; ticks per quarter note
+
+;;; TRACK 0 ----------------------------------
+"MTrk"			; MIDI track chunk marker
+4'89			; bytes to follow in track chunk
+v30	90 '74 '72	; note-on D5
+v150	90 '68 '88	; note-on G#4
+v0	90 '79 '83	; note-on G5
+v60	90 '74 '0	; note-off D5
+v150	90 '79 '0	; note-off G5
+v30	90 '68 '0	; note-off G#4
+v990	90 '60 '100	; note-on C4
+v90	90 '60 '0	; note-off C4
+v630	90 '83 '69	; note-on B5
+v60	90 '83 '0	; note-off B5
+v30	90 '56 '51	; note-on G#3
+v90	90 '56 '0	; note-off G#3
+v390	90 '78 '46	; note-on F#5
+v30	90 '60 '78	; note-on C4
+v90	90 '78 '0	; note-off F#5
+v0	90 '70 '56	; note-on A#4
+v60	90 '76 '100	; note-on E5
+v90	90 '60 '0	; note-off C4
+v30	90 '76 '0	; note-off E5
+v60	90 '70 '0	; note-off A#4
+v0	ff 2f v0	; end-of-track
+```
 
 
