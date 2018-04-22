@@ -72,7 +72,9 @@ class MidiFile {
 		void             removeEmpties             (void);
 
 		// tick-related functions:
+		void             makeDeltaTicks            (void);
 		void             deltaTicks                (void);
+		void             makeAbsoluteTicks         (void);
 		void             absoluteTicks             (void);
 		int              getTickState              (void);
 		int              isDeltaTicks              (void);
@@ -107,8 +109,8 @@ class MidiFile {
 
 		// ticks-per-quarter related functions:
 		void             setMillisecondTicks       (void);
-		int              getTicksPerQuarterNote    (void);
-		int              getTPQ                    (void);
+		int              getTicksPerQuarterNote    (void) const;
+		int              getTPQ                    (void) const;
 		void             setTicksPerQuarterNote    (int ticks);
 		void             setTPQ                    (int ticks);
 
@@ -135,8 +137,8 @@ class MidiFile {
 		                                            std::vector<uchar>& midiData);
 		MidiEvent*       addEvent                  (MidiEvent& mfevent);
 		MidiEvent&       getEvent                  (int aTrack, int anIndex);
-		int              getEventCount             (int aTrack);
-		int              getNumEvents              (int aTrack);
+		int              getEventCount             (int aTrack) const;
+		int              getNumEvents              (int aTrack) const;
 		void             allocateEvents            (int track, int aSize);
 		void             erase                     (void);
 		void             clear                     (void);

@@ -501,7 +501,7 @@ int MidiFile::write(const std::string& filename) {
 int MidiFile::write(std::ostream& out) {
 	int oldTimeState = getTickState();
 	if (oldTimeState == TIME_STATE_ABSOLUTE) {
-		deltaTicks();
+		makeDeltaTicks();
 	}
 
 	// write the header of the Standard MIDI File
@@ -917,7 +917,7 @@ void MidiFile::joinTracks(void) {
 	m_events.push_back(joinedTrack);
 	sortTracks();
 	if (oldTimeState == TIME_STATE_DELTA) {
-		deltaTicks();
+		makeDeltaTicks();
 	}
 
 	m_theTrackState = TRACK_STATE_JOINED;
@@ -971,7 +971,7 @@ void MidiFile::splitTracks(void) {
 	delete olddata;
 
 	if (oldTimeState == TIME_STATE_DELTA) {
-		deltaTicks();
+		makeDeltaTicks();
 	}
 
 	m_theTrackState = TRACK_STATE_SPLIT;
@@ -1041,7 +1041,7 @@ void MidiFile::splitTracksByChannel(void) {
 	delete olddata;
 
 	if (oldTimeState == TIME_STATE_DELTA) {
-		deltaTicks();
+		makeDeltaTicks();
 	}
 
 	m_theTrackState = TRACK_STATE_SPLIT;
@@ -1123,14 +1123,14 @@ int MidiFile::getSplitTrack(int index) {
 
 //////////////////////////////
 //
-// MidiFile::deltaTicks -- convert the time data to
+// MidiFile::makeDeltaTicks -- convert the time data to
 //     delta time, which means that the time field
 //     in the MidiEvent struct represents the time
 //     since the last event was played. When a MIDI file
 //     is read from a file, this is the default setting.
 //
 
-void MidiFile::deltaTicks(void) {
+void MidiFile::makeDeltaTicks(void) {
 	if (getTickState() == TIME_STATE_DELTA) {
 		return;
 	}
@@ -1161,11 +1161,19 @@ void MidiFile::deltaTicks(void) {
 	delete [] timedata;
 }
 
+//
+// MidiFile::deltaTicks -- Alias for MidiFile::makeDeltaTicks().
+//
+
+void MidiFile::deltaTicks(void) {
+	makeDeltaTicks();
+}
+
 
 
 //////////////////////////////
 //
-// MidiFile::absoluteTicks -- convert the time data to
+// MidiFile::makeAbsoluteTicks -- convert the time data to
 //    absolute time, which means that the time field
 //    in the MidiEvent struct represents the exact tick
 //    time to play the event rather than the time since
@@ -1173,7 +1181,7 @@ void MidiFile::deltaTicks(void) {
 //    event.
 //
 
-void MidiFile::absoluteTicks(void) {
+void MidiFile::makeAbsoluteTicks(void) {
 	if (getTickState() == TIME_STATE_ABSOLUTE) {
 		return;
 	}
@@ -1194,6 +1202,14 @@ void MidiFile::absoluteTicks(void) {
 	}
 	m_theTimeState = TIME_STATE_ABSOLUTE;
 	delete [] timedata;
+}
+
+//
+// MidiFile::absoluteTicks -- Alias for MidiFile::makeAbsoluteTicks().
+//
+
+void MidiFile::absoluteTicks(void) {
+	makeAbsoluteTicks();
 }
 
 
@@ -2115,7 +2131,7 @@ MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
 //   time units that are supposed to occur during a quarternote.
 //
 
-int MidiFile::getTicksPerQuarterNote(void) {
+int MidiFile::getTicksPerQuarterNote(void) const {
 	if (m_ticksPerQuarterNote == 0xE728) {
 		// this is a special case which is the SMPTE time code
 		// setting for 25 frames a second with 40 subframes
@@ -2131,7 +2147,7 @@ int MidiFile::getTicksPerQuarterNote(void) {
 // Alias for getTicksPerQuarterNote:
 //
 
-int MidiFile::getTPQ(void) {
+int MidiFile::getTPQ(void) const {
 	return getTicksPerQuarterNote();
 }
 
@@ -2143,12 +2159,12 @@ int MidiFile::getTPQ(void) {
 //   in a given track.
 //
 
-int MidiFile::getEventCount(int aTrack) {
+int MidiFile::getEventCount(int aTrack) const {
 	return m_events[aTrack]->size();
 }
 
 
-int MidiFile::getNumEvents(int aTrack) {
+int MidiFile::getNumEvents(int aTrack) const {
 	return m_events[aTrack]->size();
 }
 
