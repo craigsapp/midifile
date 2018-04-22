@@ -653,7 +653,7 @@ Code snippets
 
 ### How to extract text meta-messages from a file. ###
 
-```
+```cpp
 string filename = "myfile.mid";
 MidiFile midifile(filename);
 midifile.joinTracks();
@@ -675,7 +675,7 @@ Here is a demonstration of converting a multi-track MIDI file into
 a single-track MIDI file:
 
 
-```
+```cpp
 MidiFile midifile;
 midifile.read(filename1);
 if (!midifile.status()) {
@@ -697,7 +697,7 @@ In General MIDI files, the drum track is on the 10th channel, which is
 represented by the integer 9.  The following example searches through
 the MIDI events in each track until it finds a note on channel 9:
 
-```
+```cpp
 MidiFile midifile;
 midifile.read(filename);
 bool found = false;
@@ -727,7 +727,7 @@ if (found) {
 The following example lists all of the instrument numbers
 used in a MIDI file.  It does not analyze the drum track.
 
-```
+```cpp
 #include "MidiFile.h"
 #include "Options.h"
 #include <set>
