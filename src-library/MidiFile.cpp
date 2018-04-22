@@ -33,106 +33,40 @@ namespace smf {
 //
 
 MidiFile::MidiFile(void) {
-	m_ticksPerQuarterNote = 120;            // TPQ time base of file
-	m_trackCount = 1;                       // # of tracks in file
-	m_theTrackState = TRACK_STATE_SPLIT;    // joined or split
-	m_theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
-	m_events.resize(1);
-	m_events[0] = new MidiEventList;
-	m_timemap.clear();
-	m_timemapvalid = 0;
-	m_rwstatus = 1;
-}
-
-
-MidiFile::MidiFile(const char* filename) {
-	m_ticksPerQuarterNote = 120;            // TPQ time base of file
-	m_trackCount = 1;                       // # of tracks in file
-	m_theTrackState = TRACK_STATE_SPLIT;    // joined or split
-	m_theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
-	m_events.resize(1);
-	m_events[0] = new MidiEventList;
-	read(filename);
-	m_timemap.clear();
-	m_timemapvalid = 0;
-	m_rwstatus = 1;
+	m_events.resize(m_trackCount);
+	for (int i=0; i<m_trackCount; i++) {
+		m_events[i] = new MidiEventList;
+	}
 }
 
 
 MidiFile::MidiFile(const std::string& filename) {
-	m_ticksPerQuarterNote = 120;            // TQP time base of file
-	m_trackCount = 1;                       // # of tracks in file
-	m_theTrackState = TRACK_STATE_SPLIT;    // joined or split
-	m_theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
-	m_events.resize(1);
-	m_events[0] = new MidiEventList;
+	m_events.resize(m_trackCount);
+	for (int i=0; i<m_trackCount; i++) {
+		m_events[i] = new MidiEventList;
+	}
 	read(filename);
-	m_timemap.clear();
-	m_timemapvalid = 0;
-	m_rwstatus = 1;
 }
 
 
 MidiFile::MidiFile(std::istream& input) {
-	m_ticksPerQuarterNote = 120;            // TQP time base of file
-	m_trackCount = 1;                       // # of tracks in file
-	m_theTrackState = TRACK_STATE_SPLIT;    // joined or split
-	m_theTimeState = TIME_STATE_ABSOLUTE;   // absolute or delta
-	m_events.resize(1);
-	m_events[0] = new MidiEventList;
+	m_events.resize(m_trackCount);
+	for (int i=0; i<m_trackCount; i++) {
+		m_events[i] = new MidiEventList;
+	}
 	read(input);
-	m_timemap.clear();
-	m_timemapvalid = 0;
-	m_rwstatus = 1;
 }
 
 
-
-//////////////////////////////
-//
-// MidiFile::MidiFile(MidiFile&) -- Copy constructor.
-//
 
 MidiFile::MidiFile(const MidiFile& other) {
-	m_events.reserve(other.m_events.size());
-	auto it = other.m_events.begin();
-	std::generate_n(std::back_inserter(m_events), other.m_events.size(),
-			[&]() -> MidiEventList* {
-		return new MidiEventList(**it++);
-	});
-
-	m_ticksPerQuarterNote = other.m_ticksPerQuarterNote;
-	m_trackCount = other.m_trackCount;
-	m_theTrackState = other.m_theTrackState;
-	m_theTimeState = other.m_theTimeState;
-	m_readFileName = other.m_readFileName;
-
-	m_timemapvalid = other.m_timemapvalid;
-	m_timemap = other.m_timemap;
-	m_rwstatus = other.m_rwstatus;
+	*this = other;
 }
 
 
 
-//////////////////////////////
-//
-// MidiFile::MidiFile(MidiFile&&) -- Move constructor.
-//
-
 MidiFile::MidiFile(MidiFile&& other) {
-	m_events = std::move(other.m_events);
-	other.m_events.clear();
-	other.m_events.push_back(new MidiEventList);
-
-	m_ticksPerQuarterNote = other.m_ticksPerQuarterNote;
-	m_trackCount = other.m_trackCount;
-	m_theTrackState = other.m_theTrackState;
-	m_theTimeState = other.m_theTimeState;
-	m_readFileName = other.m_readFileName;
-
-	m_timemapvalid = other.m_timemapvalid;
-	m_timemap = other.m_timemap;
-	m_rwstatus = other.m_rwstatus;
+	*this = std::move(other);
 }
 
 
@@ -153,6 +87,56 @@ MidiFile::~MidiFile() {
 	m_rwstatus = 0;
 	m_timemap.clear();
 	m_timemapvalid = 0;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::operator= -- Copying another 
+//
+
+MidiFile& MidiFile::operator=(const MidiFile& other) {
+	if (this == &other) {
+		return *this;
+	}
+	m_events.reserve(other.m_events.size());
+	auto it = other.m_events.begin();
+	std::generate_n(std::back_inserter(m_events), other.m_events.size(),
+		[&]()->MidiEventList* {
+			return new MidiEventList(**it++);
+		}
+	);
+	m_ticksPerQuarterNote = other.m_ticksPerQuarterNote;
+	m_trackCount          = other.m_trackCount;
+	m_theTrackState       = other.m_theTrackState;
+	m_theTimeState        = other.m_theTimeState;
+	m_readFileName        = other.m_readFileName;
+	m_timemapvalid        = other.m_timemapvalid;
+	m_timemap             = other.m_timemap;
+	m_rwstatus            = other.m_rwstatus;
+	if (other.m_linkedEventsQ) {
+		linkEventPairs();
+	}
+	return *this;
+}
+
+
+MidiFile& MidiFile::operator=(MidiFile&& other) {
+	m_events = std::move(other.m_events);
+	m_linkedEventsQ = other.m_linkedEventsQ;
+	other.m_linkedEventsQ = false;
+	other.m_events.clear();
+	other.m_events.emplace_back(new MidiEventList);
+	m_ticksPerQuarterNote = other.m_ticksPerQuarterNote;
+	m_trackCount          = other.m_trackCount;
+	m_theTrackState       = other.m_theTrackState;
+	m_theTimeState        = other.m_theTimeState;
+	m_readFileName        = other.m_readFileName;
+	m_timemapvalid        = other.m_timemapvalid;
+	m_timemap             = other.m_timemap;
+	m_rwstatus            = other.m_rwstatus;
+	return *this;
 }
 
 
@@ -1456,6 +1440,7 @@ int MidiFile::linkNotePairs(void) {
 		}
 		sum += m_events[i]->linkNotePairs();
 	}
+	m_linkedEventsQ = true;
 	return sum;
 }
 
@@ -2329,6 +2314,7 @@ void MidiFile::clearLinks(void) {
 		}
 		m_events[i]->clearLinks();
 	}
+	m_linkedEventsQ = false;
 }
 
 
@@ -3149,18 +3135,6 @@ std::ostream& MidiFile::writeLittleEndianDouble(std::ostream& out, double value)
 	out << data.bytes[6];
 	out << data.bytes[7];
 	return out;
-}
-
-
-
-//////////////////////////////
-//
-// MidiFile::operator=(MidiFile) -- Assignment.
-//
-
-MidiFile& MidiFile::operator=(MidiFile other) {
-	m_events.swap(other.m_events);
-	return *this;
 }
 
 

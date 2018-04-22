@@ -39,14 +39,15 @@ class _TickTime {
 class MidiFile {
 	public:
 		               MidiFile                    (void);
-		               MidiFile                    (const char* aFile);
 		               MidiFile                    (const std::string& aFile);
 		               MidiFile                    (std::istream& input);
 		               MidiFile                    (const MidiFile& other);
 		               MidiFile                    (MidiFile&& other);
+
 		              ~MidiFile                    ();
 
-		MidiFile&      operator=                   (MidiFile other);
+		MidiFile&      operator=                   (const MidiFile& other);
+		MidiFile&      operator=                   (MidiFile&& other);
 
 		// reading/writing functions:
 		int            read                        (const std::string& filename);
@@ -240,15 +241,42 @@ class MidiFile {
 		                                              double value);
 
 	protected:
-		std::vector<MidiEventList*> m_events;         // MIDI file events
-		int                         m_ticksPerQuarterNote; // time base of file
-		int                         m_trackCount;     // # of tracks in file
-		int                         m_theTrackState;  // joined or split
-		int                         m_theTimeState;   // absolute or delta
-		std::string                 m_readFileName;   // read file name
-		int                         m_timemapvalid;
-		std::vector<_TickTime>      m_timemap;
-		int                         m_rwstatus;       // read/write success flag
+		// m_events == Lists of MidiEvents for each MIDI file track.
+		std::vector<MidiEventList*> m_events;
+
+		// m_ticksPerQuarterNote == A value for the MIDI file header
+		// which represents the number of ticks in a quarter note
+		// that are used as units for the delta times for MIDI events
+		// in MIDI file track data.
+		int m_ticksPerQuarterNote = 120;
+
+		// m_trackCount == the number of tracks in the file.
+		int m_trackCount = 1;
+
+		// m_theTrackState == state variable for whether the tracks
+		// are joined or split.
+		int m_theTrackState = TRACK_STATE_SPLIT;
+
+		// m_theTimeState == state variable for whether the MidiEvent::tick
+		// variable contain absolute ticks since the start of the file's
+		// time, or delta ticks since the last MIDI event in the track.
+		int m_theTimeState = TIME_STATE_ABSOLUTE;
+
+		// m_readFileName == the filename of the last file read into
+		// the object.
+		std::string m_readFileName;
+
+		// m_timemapvalid ==
+		bool m_timemapvalid = false;
+
+		// m_timemap == 
+		std::vector<_TickTime> m_timemap;
+
+		// m_rwstatus == True if last read was successful, false if a problem.
+		bool m_rwstatus = true;
+
+		// m_linkedEventQ == True if link analysis has been done.
+		bool m_linkedEventsQ = false;
 
 	private:
 		int        extractMidiData                 (std::istream& inputfile,
