@@ -46,7 +46,7 @@ class MidiEventList {
       int         append           (MidiEvent& event);
 
       int         remove           (int index);
-      int         add              (int index, MidiEvent& event);
+      int         insert           (int index, MidiEvent& event);
 
       // careful when using these, intended for internal use in MidiFile class:
       void        detach              (void);

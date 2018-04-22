@@ -205,6 +205,7 @@ int MidiEventList::push_back(MidiEvent& event) {
 //
 int MidiEventList::remove(int index) {
    if ( ( index >=0 ) && ( index < (int)list.size() ) ) {
+     delete list[ index ];
      list.erase(list.begin() + index);
      return (int)list.size()-1;
    } else {
@@ -219,7 +220,7 @@ int MidiEventList::remove(int index) {
 //      the index is invalid then the request is ignored and -1 is returned.
 //      If the index is valid then the new size of the list is returned.
 //
-int MidiEventList::add(int index, MidiEvent& event) {
+int MidiEventList::insert(int index, MidiEvent& event) {
   if ( ( index >=0 ) && ( index < (int)list.size() ) ) {
    MidiEvent* ptr = new MidiEvent(event);
    list.insert(list.begin()+index, ptr);
