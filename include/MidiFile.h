@@ -50,19 +50,19 @@ class MidiFile {
 		MidiFile&      operator=                   (MidiFile&& other);
 
 		// reading/writing functions:
-		int            read                        (const std::string& filename);
-		int            read                        (std::istream& instream);
-		int            write                       (const std::string& filename);
-		int            write                       (std::ostream& out);
-		int            writeHex                    (const std::string& filename,
+		bool           read                        (const std::string& filename);
+		bool           read                        (std::istream& instream);
+		bool           write                       (const std::string& filename);
+		bool           write                       (std::ostream& out);
+		bool           writeHex                    (const std::string& filename,
 		                                            int width = 25);
-		int            writeHex                    (std::ostream& out,
+		bool           writeHex                    (std::ostream& out,
 		                                            int width = 25);
-		int            writeBinasc                 (const std::string& filename);
-		int            writeBinasc                 (std::ostream& out);
-		int            writeBinascWithComments     (const std::string& filename);
-		int            writeBinascWithComments     (std::ostream& out);
-		int            status                      (void) const;
+		bool           writeBinasc                 (const std::string& filename);
+		bool           writeBinasc                 (std::ostream& out);
+		bool           writeBinascWithComments     (const std::string& filename);
+		bool           writeBinascWithComments     (std::ostream& out);
+		bool           status                      (void) const;
 
 		// track-related functions:
 		const MidiEventList& operator[]            (int aTrack) const;
