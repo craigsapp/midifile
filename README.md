@@ -19,30 +19,31 @@ MIDI files.  The library consists of 6 classes:
 </td></tr>
 
 <tr valign="top"><td>
-	<a href="http://midifile.sapp.org/class/MidiEvent">MidiEvent</a>
+	<a href="http://midifile.sapp.org/class/MidiEventList">MidiEventList</a>
 </td><td>
-	The primary storage unit for MidiMessages in a MidiFile.  The class
-	consists of a (delta)tick timestamp and a MIDI (or meta) message.
+	A data structure that manages the list of MidiEvents for a MIDI file track.
 </td></tr>
 
 <tr valign="top"><td>
-	<a href="http://midifile.sapp.org/class/MidiEventList">MidiEventList</a>
+	<a href="http://midifile.sapp.org/class/MidiEvent">MidiEvent</a>
 </td><td>
-	A data structure that manages the list of MidiEvents in a track.
+	The primary storage unit for MidiMessages in a MidiFile.  The class
+	consists of a tick timestamp (delta or abolute) and a vector of 
+        MIDI message bytes (or Standard MIDI File meta messages).
 </td></tr>
 
 
 <tr valign="top"><td>
 	<a href="http://midifile.sapp.org/class/MidiMessage">MidiMessage</a>
 </td><td>
-	The base class for MidiEvents.  This is a vector&lt;uchar&gt; of 
-	bytes in a MIDI (or meta) message.
+	The base class for MidiEvents.  This is a STL vector of 
+	unsingned bytes representing a MIDI (or meta) message.
 </td></tr>
 
 <tr valign="top"><td>
 	<a href="http://midifile.sapp.org/class/Binasc">Binasc</a>
 </td><td>
-	A helper class for MidiFile which allows reading/writing of MIDI
+	A helper class for MidiFile that allows reading/writing of MIDI
 	files in an ASCII format describing the bytes of the binary Standard
 	MIDI Files.
 </td></tr>
@@ -50,8 +51,8 @@ MIDI files.  The library consists of 6 classes:
 <tr valign="top"><td>
 	<a href="http://midifile.sapp.org/class/Options">Options</a>
 </td><td>
-	A convenience class used for parsing command-line options in 
-	the example programs.  This class can be removed from the library
+	A optional convenience class used for parsing command-line options
+	in the example programs.  This class can be removed from the library
         since it is not needed for using the MidiFile class.
 </td></tr>
 
@@ -72,11 +73,6 @@ or if you use git, then download with this command:
 
 ``` bash
 git clone https://github.com/craigsapp/midifile
-```
-or
-
-``` bash
-git clone https://cm-github.stanford.edu/craig/midifile
 ```
 
 This will create the `midifile` directory with the source code for the library.
@@ -118,16 +114,30 @@ The compiled program will be `bin/myprogram`.
 
 
 
-
-
 MIDI file reading examples
 --------------------------
 
 The following program lists all MidiEvents in an input MIDI file. The
-program iterates over each track, printing a list of MIDI events
-in the track.  For each event, the tick timestamp for the performance
+program iterates over each track, printing a list of all MIDI events
+in the track.  For each event, the absolute tick timestamp for the performance
 time of the MIDI message is given, followed by the message itself
-as a list of hex bytes.
+as a list of hex bytes.  
+
+You can run the `MidiFile::doTimeAnalysis()` function
+to convert the absolute tick timestamps into seconds, according to the
+any tempo meta-messages in the file (using a default tempo of 120 quarter notes
+per minute if there are no tempo meta-messages).  The absolute starting
+time of the event is shown in the second column of the program's output.
+
+The `MidiFile::linkNotePairs()` function can be used to
+match note-ons and note-offs.  When this is done, you can access the
+duration of the note with `MidiEvent::getDurationInSeconds()` for
+note-on messages. The note durations are shown in the third column
+of the program's output.
+
+Note that the midifile library classes are in the `smf` namespace, so
+`using namespace smf;` or `smf::` prefixes are needed to access the 
+classes.
 
 ``` cpp
 #include "MidiFile.h"
@@ -136,28 +146,37 @@ as a list of hex bytes.
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 int main(int argc, char** argv) {
    Options options;
    options.process(argc, argv);
    MidiFile midifile;
-   if (options.getArgCount() > 0) {
-      midifile.read(options.getArg(1));
-   } else {
+   if (options.getArgCount() == 0) {
       midifile.read(cin);
+   } else {
+      midifile.read(options.getArg(1));
    }
+   midifile.doTimeAnalysis();
+   midifile.linkNotePairs();
 
    int tracks = midifile.getTrackCount();
    cout << "TPQ: " << midifile.getTicksPerQuarterNote() << endl;
    if (tracks > 1) {
       cout << "TRACKS: " << tracks << endl;
    }
-   for (int track=0; track < tracks; track++) {
+   for (int track=0; track<tracks; track++) {
       if (tracks > 1) {
          cout << "\nTrack " << track << endl;
       }
-      for (int event=0; event < midifile[track].size(); event++) {
+      cout << "Tick\tSeconds\tDur\tMessage" << endl;
+      for (int event=0; event<midifile[track].size(); event++) {
          cout << dec << midifile[track][event].tick;
+         cout << '\t' << dec << midifile[track][event].seconds;
+         cout << '\t';
+         if (midifile[track][event].isNoteOn()) {
+            cout << midifile[track][event].getDurationInSeconds();
+         }
          cout << '\t' << hex;
          for (int i=0; i<midifile[track][event].size(); i++) {
             cout << (int)midifile[track][event][i] << ' ';
@@ -170,13 +189,13 @@ int main(int argc, char** argv) {
 }
 ```
 
-The program will read the first filename it finds on the command-line, 
-or it will read from standard input if no arguments are found.  Both binary
-Standard MIDI Files and ASCII representations of MIDI Files can be input 
-into the program.  For example, save the following text in a file called
-twinkle.txt to use as input data.  This content represents the hex bytes 
-for a MIDI file, which will automatically be parsed into a Standard MIDI 
-File by the MidiFile class.
+The above example program will read the first filename it finds on the
+command-line, or it will read from standard input if no arguments are
+found.  Both binary Standard MIDI Files and ASCII representations of MIDI
+Files can be input into the program.  For example, save the following
+text into a file called twinkle.txt to use as input data.  This content
+represents the hex bytes for a MIDI file, which will automatically be
+parsed into a Standard MIDI File by the MidiFile class.
 
 ```
 4d 54 68 64 00 00 00 06 00 01 00 03 00 78 4d 54 72 6b 00 00 00 04 00 ff 2f 
@@ -207,85 +226,89 @@ TPQ: 120
 TRACKS: 3
 
 Track 0
-0	ff 2f 0 
+Tick	Seconds	Dur	Message
+0	0		ff 2f 0 
 
 Track 1
-0	90 48 40 
-120	80 48 40 
-120	90 48 40 
-240	80 48 40 
-240	90 4f 40 
-360	80 4f 40 
-360	90 4f 40 
-480	80 4f 40 
-480	90 51 40 
-600	80 51 40 
-600	90 51 40 
-720	80 51 40 
-720	90 4f 40 
-960	80 4f 40 
-960	90 4d 40 
-1080	80 4d 40 
-1080	90 4d 40 
-1200	80 4d 40 
-1200	90 4c 40 
-1320	80 4c 40 
-1320	90 4c 40 
-1440	80 4c 40 
-1440	90 4a 40 
-1560	80 4a 40 
-1560	90 4a 40 
-1680	80 4a 40 
-1680	90 48 40 
-1920	80 48 40 
-1920	ff 2f 0 
+Tick	Seconds	Dur	Message
+0	0	0.5	90 48 40 
+120	0.5		80 48 40 
+120	0.5	0.5	90 48 40 
+240	1		80 48 40 
+240	1	0.5	90 4f 40 
+360	1.5		80 4f 40 
+360	1.5	0.5	90 4f 40 
+480	2		80 4f 40 
+480	2	0.5	90 51 40 
+600	2.5		80 51 40 
+600	2.5	0.5	90 51 40 
+720	3		80 51 40 
+720	3	1	90 4f 40 
+960	4		80 4f 40 
+960	4	0.5	90 4d 40 
+1080	4.5		80 4d 40 
+1080	4.5	0.5	90 4d 40 
+1200	5		80 4d 40 
+1200	5	0.5	90 4c 40 
+1320	5.5		80 4c 40 
+1320	5.5	0.5	90 4c 40 
+1440	6		80 4c 40 
+1440	6	0.5	90 4a 40 
+1560	6.5		80 4a 40 
+1560	6.5	0.5	90 4a 40 
+1680	7		80 4a 40 
+1680	7	1	90 48 40 
+1920	8		80 48 40 
+1920	8		ff 2f 0 
 
 Track 2
-0	90 30 40 
-120	80 30 40 
-120	90 3c 40 
-240	80 3c 40 
-240	90 40 40 
-360	80 40 40 
-360	90 3c 40 
-480	80 3c 40 
-480	90 41 40 
-600	80 41 40 
-600	90 3c 40 
-720	80 3c 40 
-720	90 40 40 
-840	80 40 40 
-840	90 3c 40 
-960	80 3c 40 
-960	90 3e 40 
-1080	80 3e 40 
-1080	90 3b 40 
-1200	80 3b 40 
-1200	90 3c 40 
-1320	80 3c 40 
-1320	90 39 40 
-1440	80 39 40 
-1440	90 35 40 
-1560	80 35 40 
-1560	90 37 40 
-1680	80 37 40 
-1680	90 30 40 
-1920	80 30 40 
-1920	ff 2f 0 
+Tick	Seconds	Dur	Message
+0	0	0.5	90 30 40 
+120	0.5		80 30 40 
+120	0.5	0.5	90 3c 40 
+240	1		80 3c 40 
+240	1	0.5	90 40 40 
+360	1.5		80 40 40 
+360	1.5	0.5	90 3c 40 
+480	2		80 3c 40 
+480	2	0.5	90 41 40 
+600	2.5		80 41 40 
+600	2.5	0.5	90 3c 40 
+720	3		80 3c 40 
+720	3	0.5	90 40 40 
+840	3.5		80 40 40 
+840	3.5	0.5	90 3c 40 
+960	4		80 3c 40 
+960	4	0.5	90 3e 40 
+1080	4.5		80 3e 40 
+1080	4.5	0.5	90 3b 40 
+1200	5		80 3b 40 
+1200	5	0.5	90 3c 40 
+1320	5.5		80 3c 40 
+1320	5.5	0.5	90 39 40 
+1440	6		80 39 40 
+1440	6	0.5	90 35 40 
+1560	6.5		80 35 40 
+1560	6.5	0.5	90 37 40 
+1680	7		80 37 40 
+1680	7	1	90 30 40 
+1920	8		80 30 40 
+1920	8		ff 2f 0 
 </pre>
 
 The default behavior of the MidiFile class is to store the absolute tick
-times of MIDI events.  Within Standard MIDI files, the tick values are
-in delta format, where the tick value indicates the duration to wait
-since the last message.  To access the delta tick values, you can either
-(1) subtrack the current tick time from the previous tick time in the list,
-or call MidiFile::deltaTime() to convert the absolute tick values into
-delta tick values.  
+times of MIDI events, which is the tick time from the start of the file to
+the current event..  Within Standard MIDI files, the tick values are in
+delta format, where the tick value indicates the duration to wait since
+the last message.  To access the delta tick values, you can either (1)
+subtrack the current tick time from the previous tick time in the list,
+or call `MidiFile::makeDeltaTime()` to convert the absolute tick values
+into delta tick values.
 
-The MidiFile::joinTracks() function can be used to convert multi-track
-data into a single time sequence.  The joinTrack() operation can be 
-reversed with the MidiFile::splitTracks() function.  Here is a sample
-of output data for the same example if joinTracks() is called before
+The `MidiFile::joinTracks()` function can be used to convert multi-track
+data into a single time sequence.  The `joinTrack()` operation can be 
+reversed with the `MidiFile::splitTracks()` function.  Here is a sample
+of output data for the same example if `joinTracks()` is called before
 printing the MIDI events:
 
 ``` cpp
@@ -295,6 +318,7 @@ printing the MIDI events:
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 int main(int argc, char** argv) {
    Options options;
