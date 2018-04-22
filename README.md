@@ -488,10 +488,10 @@ int main(int argc, char** argv) {
    int count   = options.getInteger("note-count");
    for (int i=0; i<count; i++) {
       int starttick = int(starttime(mt) / 4.0 * tpq);
-      int key = pitch(mt);
-      int endtick = starttick + int(duration(mt) / 4.0 * tpq);
-      midifile.addNoteOn(track, starttick, channel, key, velocity(mt));
-      midifile.addNoteOff(track, endtick, channel, key);
+      int key       = pitch(mt);
+      int endtick   = starttick + int(duration(mt) / 4.0 * tpq);
+      midifile.addNoteOn (track, starttick, channel, key, velocity(mt));
+      midifile.addNoteOff(track, endtick,   channel, key);
    }
    midifile.sortTracks();  // Need to sort tracks since added events are 
                            // appended to track in random tick order.
