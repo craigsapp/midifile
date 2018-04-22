@@ -43,6 +43,7 @@ int      grandQ       = 0;         // used with --gs option
 int      finalQ       = 0;         // used with -f option
 int      doubleQ      = 0;         // used with --double option
 int      transparentQ = 1;         // used with -T option
+bool     velocitybQ   = false;     // used with -v option
 double   ClefFactor   = 6;
 double   StaffThickness = 2.0;     // used with --staff-width
 double   LineThickness  = 2.0;     // used with --line-width
@@ -786,8 +787,23 @@ void drawNote(ostream& out, MidiFile& midifile, int i, int j, int dataQ,
 
 
    // note box:
-   out     << "\t\t\t<g"
-            << " class=\"note key-" << pitch12;
+   out << "\t\t\t<g";
+   if (velocitybQ) {
+      double bright = velocity / 127.0;
+      bright -= 0.2;
+      if (bright < 0.0) {
+         bright = 0.0;
+      }
+      bright *= 100;
+      bright = int(bright);
+      double hue = 0;
+      out << " fill=\"hsl(";
+      out << hue;
+      out << ",100%,";
+      out << bright;
+      out << "%)\"";
+   }
+   out << " class=\"note key-" << pitch12;
 
    out << " ont-";
    printDoubleClass(out, starttime);
@@ -2171,9 +2187,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    opts.define("o|opacity=d:1.0",      "Opacity for notes");
    opts.define("l|line=b",             "Draw lines between center of notes");
    opts.define("cl|cline=b",           "Draw curved lines between notes");
-   opts.define("rl|rline=d:0.25",           "Draw lines with curved radius between notes");
+   opts.define("rl|rline=d:0.25",      "Draw lines with curved radius between notes");
    opts.define("e|end-space=d:0.0",    "extra horiz. space at end of piece");
    opts.define("c|clef|clefs=b",       "Draw clefs");
+   opts.define("v|velocity-brightness=b",  "Show velocity as brightness on note");
    opts.define("S|shapes=s:rectangle,rectangle", "shape of notes for each track");
    opts.define("mr|rest|max-rest=d:4.0 seconds",
       "Maximum rest through which to draw lines");
@@ -2263,6 +2280,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       LineThickness = StaffThickness;
    }
 
+   velocitybQ = opts.getBoolean("velocity-brightness");
    char buffer[12345] = {0};
    strcpy(buffer, opts.getString("shapes").c_str());
    Shapes.resize(0);
