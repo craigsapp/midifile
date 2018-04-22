@@ -28,7 +28,7 @@ MIDI files.  The library consists of 6 classes:
 	<a href="http://midifile.sapp.org/class/MidiEvent">MidiEvent</a>
 </td><td>
 	The primary storage unit for MidiMessages in a MidiFile.  The class
-	consists of a tick timestamp (delta or abolute) and a vector of
+	consists of a tick timestamp (delta or absolute) and a vector of
         MIDI message bytes (or Standard MIDI File meta messages).
 </td></tr>
 
@@ -112,6 +112,19 @@ make myprogram
 The compiled program will be `bin/myprogram`.
 
 
+Using in your own project
+-------------------------
+
+The easiest way to use the midifile library in your own project is to
+copy the header files in the `include` directory, and the source-code
+files in the `src-library` directory into your own project.  You do not
+need to copy `Options.h` or `Options.cpp` since the `MidiFile` class
+is not dependent on them.  The [verovio](https://rism-ch/verovio) and
+[midiroll](https://craigsapp/midiroll) projects on Github both use this
+method to use the midifile library.  Alternatively, you can fork the
+midifile repository and build a compiled library file of the source
+code that can be copied with the `include` directory contents into
+your project.
 
 
 MIDI file reading examples
@@ -441,7 +454,7 @@ MIDI file writing example
 --------------------------
 
 Here is an example of creating content for a MIDI file and then writing 
-it.  The program will generate a random seuqence of notes and append
+it.  The program will generate a random sequence of notes and append
 them to the end of the first track.  After adding notes to the track,
 it must be sorted into time sequence before it is written as a MIDI file.
 
