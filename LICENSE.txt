@@ -1,4 +1,4 @@
-Copyright (c) 1999-2015, Craig Stuart Sapp
+Copyright (c) 1999-2018, Craig Stuart Sapp
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
