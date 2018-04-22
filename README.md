@@ -507,7 +507,7 @@ int main(int argc, char** argv) {
 ```
 
 If no output file is specified, the MIDI file will be printed in the Binasc
-format to standard output, which can be read back into a MidiFile and
+format to standard output, which can be read back into a MidiFile object and
 converted into a Standard MIDI file:
 
 
