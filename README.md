@@ -116,7 +116,7 @@ Using in your own project
 -------------------------
 
 The easiest way to use the midifile library in your own project is to
-copy the header files in the `include` directory, and the source-code
+copy the header files in the `include` directory and the source-code
 files in the `src-library` directory into your own project.  You do not
 need to copy `Options.h` or `Options.cpp` since the `MidiFile` class is
 not dependent on them.  The [verovio](https://github.com/rism-ch/verovio)
@@ -203,7 +203,7 @@ int main(int argc, char** argv) {
 
 The above example program will read the first filename it finds on
 the command-line, or it will read from standard input if no arguments
-are found.  Both binary Standard MIDI Files and ASCII representations
+are found.  Both binary standard MIDI files and ASCII representations
 of MIDI Files can be input into the program.  For example, save the
 following text into a file called `twinkle.txt` to use as input data.
 This content represents the hex bytes for a standard MIDI file, which
@@ -519,7 +519,8 @@ int main(int argc, char** argv) {
 
 If no output file is specified, the MIDI file contents will be printed
 in the Binasc format to standard output, which can be read back into a
-MidiFile object and converted into a Standard MIDI file:
+MidiFile object and converted into a Standard MIDI file (see the read/write
+example further down the page for how to do that):
 
 ```
 "MThd"			; MIDI header chunk marker
@@ -554,14 +555,14 @@ v60	90 '70 '0	; note-off A#4
 v0	ff 2f v0	; end-of-track
 ```
 
-Here is the MIDI data visualized with the sample program
+Here is the MIDI data visualized with the example program
 [mid2svg](https://github.com/craigsapp/midifile/blob/master/src-programs/mid2svg.cpp):
 
 ![10 random nots](https://user-images.githubusercontent.com/3487289/39096697-5728558e-4608-11e8-9b02-c29f39d85d0f.png)
 
 The `-x` option can be used to output the data as hex byte-codes, the `-n` option 
 controls the number of notes, and `-i #` specifies the instrument number
-to used:
+to be used:
 
 ``` bash
 myprogram -n 100 -x -i 24
@@ -644,5 +645,46 @@ input is a binary standard MIDI file, a hex byte-code representation,
 or a generalized binasc syntax file (which includes byte-codes).
 The `MidiFile::status()` function can be checked after reading a MIDI
 file to determine if the file was read without problems.
+
+
+Code snippets
+-------------
+
+
+### How to extract text meta-messages from a file. ###
+
+```
+string filename = "myfile.mid";
+MidiFile midifile(filename);
+midifile.joinTracks();
+for (int i=0; i<midifile[0].getEventCount(); i++) {
+   if (midifile[0][i].isText()) {
+      string content = midifile[0][i].getMetaContent();
+      cout << content << endl;
+   }
+}
+
+```
+
+Lyrics would work the same by using `.isLyricText()` instead of `.isText()`,
+and the track name is identified with `.isTrackName()`.
+
+### How to convert a Type-1 MIDI file into a Type-0. ###
+
+Here is a demonstration of converting a multi-track MIDI file into
+a single-track MIDI file:
+
+
+```
+MidiFile midifile;
+midifile.read(filename1);
+midifile.joinTracks();
+midifile.write(filename2
+```
+
+The `.joinTracks()` function merges all tracks into a single track.  And if 
+a `MidiFile` object has only one track when it is being written, it will be
+written as a type-0 (single-track) MIDI file.
+
 
 
