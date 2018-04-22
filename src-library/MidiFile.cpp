@@ -167,31 +167,6 @@ MidiFile::~MidiFile() {
 //      in the object.
 //
 
-int MidiFile::read(const char* filename) {
-	m_rwstatus = 1;
-	m_timemapvalid = 0;
-	if (filename != NULL) {
-		setFilename(filename);
-	}
-
-	std::fstream input;
-	input.open(filename, std::ios::binary | std::ios::in);
-
-	if (!input.is_open()) {
-		m_rwstatus = 0;
-		return m_rwstatus;
-	}
-
-	m_rwstatus = read(input);
-	return m_rwstatus;
-}
-
-
-//
-// string version of read().
-//
-
-
 int MidiFile::read(const std::string& filename) {
 	m_timemapvalid = 0;
 	setFilename(filename);
@@ -208,7 +183,6 @@ int MidiFile::read(const std::string& filename) {
 	m_rwstatus = read(input);
 	return m_rwstatus;
 }
-
 
 //
 // istream version of read().
@@ -508,8 +482,8 @@ int MidiFile::read(std::istream& input) {
 //    stream.
 //
 
-int MidiFile::write(const char* filename) {
-	std::fstream output(filename, std::ios::binary | std::ios::out);
+int MidiFile::write(const std::string& filename) {
+	std::fstream output(filename.c_str(), std::ios::binary | std::ios::out);
 
 	if (!output.is_open()) {
 		std::cerr << "Error: could not write: " << filename << std::endl;
@@ -520,11 +494,9 @@ int MidiFile::write(const char* filename) {
 	return m_rwstatus;
 }
 
-
-int MidiFile::write(const std::string& filename) {
-	return MidiFile::write(filename.c_str());
-}
-
+//
+// ostream version of MidiFile::write().
+//
 
 int MidiFile::write(std::ostream& out) {
 	int oldTimeState = getTickState();
@@ -533,9 +505,7 @@ int MidiFile::write(std::ostream& out) {
 	}
 
 	// write the header of the Standard MIDI File
-
 	char ch;
-
 	// 1. The characters "MThd"
 	ch = 'M'; out << ch;
 	ch = 'T'; out << ch;
@@ -646,10 +616,10 @@ int MidiFile::write(std::ostream& out) {
 //  default value: width=25
 //
 
-int MidiFile::writeHex(const char* aFile, int width) {
-	std::fstream output(aFile, std::ios::out);
+int MidiFile::writeHex(const std::string& filename, int width) {
+	std::fstream output(filename.c_str(), std::ios::out);
 	if (!output.is_open()) {
-		std::cerr << "Error: could not write: " << aFile << std::endl;
+		std::cerr << "Error: could not write: " << filename << std::endl;
 		return 0;
 	}
 	m_rwstatus = writeHex(output, width);
@@ -657,18 +627,8 @@ int MidiFile::writeHex(const char* aFile, int width) {
 	return m_rwstatus;
 }
 
-
 //
-// string version of writeHex().
-//
-
-int MidiFile::writeHex(const std::string& aFile, int width) {
-	return MidiFile::writeHex(aFile.c_str(), width);
-}
-
-
-//
-// ostream version of writeHex().
+// ostream version of MidiFile::writeHex().
 //
 
 int MidiFile::writeHex(std::ostream& out, int width) {
@@ -707,11 +667,11 @@ int MidiFile::writeHex(std::ostream& out, int width) {
 //    the binasc format (ASCII version of the MIDI file).
 //
 
-int MidiFile::writeBinasc(const char* aFile) {
-	std::fstream output(aFile, std::ios::out);
+int MidiFile::writeBinasc(const std::string& filename) {
+	std::fstream output(filename.c_str(), std::ios::out);
 
 	if (!output.is_open()) {
-		std::cerr << "Error: could not write: " << aFile << std::endl;
+		std::cerr << "Error: could not write: " << filename << std::endl;
 		return 0;
 	}
 	m_rwstatus = writeBinasc(output);
@@ -719,29 +679,9 @@ int MidiFile::writeBinasc(const char* aFile) {
 	return m_rwstatus;
 }
 
-
-int MidiFile::writeBinascWithComments(const char* aFile) {
-	std::fstream output(aFile, std::ios::out);
-
-	if (!output.is_open()) {
-		std::cerr << "Error: could not write: " << aFile << std::endl;
-		return 0;
-	}
-	m_rwstatus = writeBinascWithComments(output);
-	output.close();
-	return m_rwstatus;
-}
-
-
-int MidiFile::writeBinasc(const std::string& aFile) {
-	return writeBinasc(aFile.c_str());
-}
-
-
-int MidiFile::writeBinascWithComments(const std::string& aFile) {
-	return writeBinascWithComments(aFile.c_str());
-}
-
+//
+// ostream version of MidiFile::writeBinasc().
+//
 
 int MidiFile::writeBinasc(std::ostream& output) {
 	std::stringstream binarydata;
@@ -757,6 +697,30 @@ int MidiFile::writeBinasc(std::ostream& output) {
 	return 1;
 }
 
+
+
+//////////////////////////////
+//
+// MidiFile::writeBinascWithComents -- write a standard MIDI
+//    file from data into the binasc format (ASCII version
+//    of the MIDI file), including commentary about the MIDI messages.
+//
+
+int MidiFile::writeBinascWithComments(const std::string& filename) {
+	std::fstream output(filename.c_str(), std::ios::out);
+
+	if (!output.is_open()) {
+		std::cerr << "Error: could not write: " << filename << std::endl;
+		return 0;
+	}
+	m_rwstatus = writeBinascWithComments(output);
+	output.close();
+	return m_rwstatus;
+}
+
+//
+// ostream version of MidiFile::writeBinascWithComments().
+//
 
 int MidiFile::writeBinascWithComments(std::ostream& output) {
 	std::stringstream binarydata;
@@ -781,7 +745,7 @@ int MidiFile::writeBinascWithComments(std::ostream& output) {
 //    write (writeHex, writeBinasc).
 //
 
-int MidiFile::status(void) {
+int MidiFile::status(void) const {
 	return m_rwstatus;
 }
 
@@ -1509,12 +1473,6 @@ void MidiFile::setFilename(const std::string& aname) {
 }
 
 
-void MidiFile::setFilename(const char* aname) {
-	std::string newname = aname;
-	MidiFile::setFilename(newname);
-}
-
-
 
 //////////////////////////////
 //
@@ -1533,7 +1491,8 @@ const char* MidiFile::getFilename(void) {
 // MidiFile::addEvent --
 //
 
-MidiEvent* MidiFile::addEvent(int aTrack, int aTick, std::vector<uchar>& midiData) {
+MidiEvent* MidiFile::addEvent(int aTrack, int aTick,
+		std::vector<uchar>& midiData) {
 	m_timemapvalid = 0;
 	MidiEvent* me = new MidiEvent;
 	me->tick = aTick;
@@ -1654,7 +1613,8 @@ MidiEvent* MidiFile::addTrackName(int aTrack, int aTick, const std::string& name
 // MidiFile::addInstrumentName --  Add an instrument name meta-message (#4).
 //
 
-MidiEvent* MidiFile::addInstrumentName(int aTrack, int aTick, const std::string& name) {
+MidiEvent* MidiFile::addInstrumentName(int aTrack, int aTick,
+		const std::string& name) {
 	MidiEvent* me = new MidiEvent;
 	me->makeInstrumentName(name);
 	me->tick = aTick;

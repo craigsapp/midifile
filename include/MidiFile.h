@@ -49,25 +49,19 @@ class MidiFile {
 		MidiFile&      operator=                   (MidiFile other);
 
 		// reading/writing functions:
-		int            read                        (const char* aFile);
-		int            read                        (const std::string& aFile);
+		int            read                        (const std::string& filename);
 		int            read                        (std::istream& instream);
-		int            write                       (const char* aFile);
-		int            write                       (const std::string& aFile);
+		int            write                       (const std::string& filename);
 		int            write                       (std::ostream& out);
-		int            writeHex                    (const char* aFile,
-		                                            int width = 25);
-		int            writeHex                    (const std::string& aFile,
+		int            writeHex                    (const std::string& filename,
 		                                            int width = 25);
 		int            writeHex                    (std::ostream& out,
 		                                            int width = 25);
-		int            writeBinasc                 (const char* aFile);
-		int            writeBinasc                 (const std::string& aFile);
+		int            writeBinasc                 (const std::string& filename);
 		int            writeBinasc                 (std::ostream& out);
-		int            writeBinascWithComments     (const char* aFile);
-		int            writeBinascWithComments     (const std::string& aFile);
+		int            writeBinascWithComments     (const std::string& filename);
 		int            writeBinascWithComments     (std::ostream& out);
-		int            status                      (void);
+		int            status                      (void) const;
 
 		// track-related functions:
 		const MidiEventList& operator[]            (int aTrack) const;
@@ -133,7 +127,6 @@ class MidiFile {
 		void             clearLinks                (void);
 
 		// filename functions:
-		void             setFilename               (const char* aname);
 		void             setFilename               (const std::string& aname);
 		const char*      getFilename               (void);
 
