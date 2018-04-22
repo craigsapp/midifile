@@ -666,8 +666,8 @@ for (int i=0; i<midifile[0].getEventCount(); i++) {
 
 ```
 
-Lyrics would work the same by using `.isLyricText()` instead of `.isText()`,
-and the track name is identified with `.isTrackName()`.
+Extracting lyrics would work the same by using `.isLyricText()` instead of
+`.isText()`, and the track name is identified with `.isTrackName()`.
 
 ### How to convert a Type-1 MIDI file into a Type-0. ###
 
@@ -678,8 +678,12 @@ a single-track MIDI file:
 ```
 MidiFile midifile;
 midifile.read(filename1);
+if (!midifile.status()) {
+   cerr << "Error parsing MIDI file" << endl;
+   return 1;
+}
 midifile.joinTracks();
-midifile.write(filename2
+midifile.write(filename2);
 ```
 
 The `.joinTracks()` function merges all tracks into a single track.  And if 
@@ -687,4 +691,81 @@ a `MidiFile` object has only one track when it is being written, it will be
 written as a type-0 (single-track) MIDI file.
 
 
+### How to check for a drum track ###
+
+In General MIDI files, the drum track is on the 10th channel, which is
+represented by the integer 9.  The following example searches through
+the MIDI events in each track until it finds a note on channel 9:
+
+```
+MidiFile midifile;
+midifile.read(filename);
+bool found = false;
+for (int i=0; i<midifile.getTrackCount(); i++) {
+   for (int j=0; j<midifile[i].getEventCount(); j++) {
+      if (!midifile[i][j].isNote()) {
+         int channel = midifile[i][j].getChannelNibble();
+         if (channel == 9) {
+            found = true;
+            break;
+         }
+      }
+   }
+   if (found == true) {
+      break;
+   }
+}
+if (found) {
+   cout << "MIDI file " << filename << " has a drum track." << endl;
+} else {
+   cout << "MIDI file " << filename << " does not have a drum track." << endl;
+}
+```
+
+### List instrument numbers used in a MIDI file ###
+
+The following example lists all of the instrument numbers
+used in a MIDI file.  It does not analyze the drum track.
+
+```
+#include "MidiFile.h"
+#include "Options.h"
+#include <set>
+#include <utility>
+#include <iostream>
+
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   Options options;
+   options.process(argc, argv);
+   MidiFile midifile;
+   if (options.getArgCount() == 0) {
+      midifile.read(cin);
+   } else {
+      midifile.read(options.getArg(1));
+   }
+   if (!midifile.status()) {
+      cerr << "Could not read MIDI file" << endl;
+      return 1;
+   }
+
+   pair<int, int> trackinst;
+   set<pair<int, int>> iset;
+   for (int i=0; i<midifile.getTrackCount(); i++) {
+      for (int j=0; j<midifile[i].getEventCount(); j++) {
+         if (midifile[i][j].isTimbre()) {
+            trackinst.first = i;
+            trackinst.second = midifile[i][j].getP1();
+            iset.insert(trackinst);
+         }
+      }
+   }
+   for (auto it : iset) {
+      cout << "Track:" << it.first << "\tInstrument:" << it.second << endl;
+   }
+   return 0;
+}
+```
 
