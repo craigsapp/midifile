@@ -58,6 +58,16 @@ MIDI files.  The library consists of 6 classes:
 
 </table>
 
+Here is a schematic of how the classes are used together:
+
+![Class organization](https://user-images.githubusercontent.com/3487289/39109379-7db4d00a-4681-11e8-9b14-8fe7a1688ab0.png)
+
+The `MidiFile` class contains a vector of tracks stored in `MidiEventList` 
+objects.  The `MidiEventList` is itself a vector of `MidiEvent`s, which stores
+each MIDI event in the track.  `MidiEvent`s contain a timestamp and a `MidiMessage`
+which is a vector of unsigned char values, storing the raw bytes of a MIDI message
+(or meta-message).
+
 
 Documentation is under construction at
 [http://midifile.sapp.org](http://midifile.sapp.org).
