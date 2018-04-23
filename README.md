@@ -60,7 +60,7 @@ MIDI files.  The library consists of 6 classes:
 
 Here is a schematic of how the classes are used together:
 
-![Class organization](https://user-images.githubusercontent.com/3487289/39109379-7db4d00a-4681-11e8-9b14-8fe7a1688ab0.png)
+![Class organization](https://user-images.githubusercontent.com/3487289/39109564-493bca94-4682-11e8-87c4-991a931ca41b.png)
 
 The `MidiFile` class contains a vector of tracks stored in `MidiEventList` 
 objects.  The `MidiEventList` is itself a vector of `MidiEvent`s, which stores
