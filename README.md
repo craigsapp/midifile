@@ -690,7 +690,7 @@ int main(int argc, char** argv) {
 Extracting lyrics would work the same by using `.isLyricText()` instead of
 `.isText()`, and a track-name meta-message is identified by `.isTrackName()`.
 
-### How to convert a Type-1 MIDI file into a Type-0. ###
+### How to convert a Type-1 MIDI file into a Type-0 one ###
 
 Here is a demonstration of converting a multi-track MIDI file into
 a single-track MIDI file:
@@ -725,6 +725,7 @@ int main(int argc, char** argv) {
 The `.joinTracks()` function merges all tracks into a single track.  And if 
 a `MidiFile` object has only one track when it is being written, it will be
 written as a type-0 (single-track) MIDI file.
+
 
 
 ### How to check for a drum track ###
@@ -769,6 +770,55 @@ int main(int argc, char** argv) {
    return 0;
 }
 ```
+
+
+
+### Deleting percussion notes ###
+
+For some music-analysis applications, it is useful to remove percussion
+notes from a MIDI file.  Here is an example of how that can be done with
+the midifile library.
+
+```cpp
+#include "MidiFile.h"
+#include <iostream>
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   if (argc != 3) {
+      cerr << "Usage: " << argv[0] << " input output" << endl;
+      return 1;
+   }
+   MidiFile midifile;
+   midifile.read(argv[1]);
+   if (!midifile.status()) {
+      cerr << "Problem reading MIDI file" << endl;
+      return 1;
+   }
+
+   for (int i=0; i<midifile.getTrackCount(); i++) {
+      for (int j=0; j<midifile[i].getEventCount(); j++) {
+         if (midifile[i][j].isNote()) {
+            int channel = midifile[i][j].getChannelNibble();
+            if (channel == 9) {
+               midifile[i][j].clear();
+            }
+         }
+      }
+   }
+
+   midifile.removeEmpties();  // optional
+
+   midifile.write(argv[2]);
+   return 0;
+}
+```
+
+The `MidiFile::removeEmpties()` function is optional, since 
+the `MidiFile::write()` function will ignore any empty `MidiMessage`s.
+
+
 
 ### List instrument numbers used in a MIDI file ###
 
