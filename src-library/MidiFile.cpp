@@ -870,6 +870,7 @@ void MidiFile::joinTracks(void) {
 		return;
 	}
 	if (getNumTracks() == 1) {
+		m_theTrackState = TRACK_STATE_JOINED;
 		return;
 	}
 
