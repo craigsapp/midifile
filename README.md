@@ -653,21 +653,42 @@ Code snippets
 
 ### How to extract text meta-messages from a file. ###
 
-```cpp
-string filename = "myfile.mid";
-MidiFile midifile(filename);
-midifile.joinTracks();
-for (int i=0; i<midifile[0].getEventCount(); i++) {
-   if (midifile[0][i].isText()) {
-      string content = midifile[0][i].getMetaContent();
-      cout << content << endl;
-   }
-}
+The `MidiMessage::isText()` function will return true if the message
+is a text meta-message.  The following program merges all tracks into 
+a single list and does one loop checking for text meta-messages, printing
+them out when found.  The `MidiMessage::getMetaContent()` function extracts
+the text string of the message from the raw MIDI file bytes.
 
+```cpp
+#include "MidiFile.h"
+#include <iostream>
+
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   MidiFile midifile;
+   if (argc == 1) midifile.read(cin);
+   else midifile.read(argv[1]);
+   if (!midifile.status()) {
+      cerr << "Problem reading MIDI file" << endl;
+      return 1;
+   }
+
+   midifile.joinTracks();
+   for (int i=0; i<midifile[0].getEventCount(); i++) {
+      if (midifile[0][i].isText()) {
+         string content = midifile[0][i].getMetaContent();
+         cout << content << endl;
+      }
+   }
+
+   return 0;
+}
 ```
 
 Extracting lyrics would work the same by using `.isLyricText()` instead of
-`.isText()`, and the track name is identified with `.isTrackName()`.
+`.isText()`, and a track-name meta-message is identified by `.isTrackName()`.
 
 ### How to convert a Type-1 MIDI file into a Type-0. ###
 
@@ -676,14 +697,29 @@ a single-track MIDI file:
 
 
 ```cpp
-MidiFile midifile;
-midifile.read(filename1);
-if (!midifile.status()) {
-   cerr << "Error parsing MIDI file" << endl;
-   return 1;
+#include "MidiFile.h"
+#include <iostream>
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   if (argc != 3) {
+      cerr << "Usage: " << argv[0] << " input output" << endl;
+      return 1;
+   }
+   MidiFile midifile;
+   midifile.read(argv[1]);
+   if (!midifile.status()) {
+      cerr << "Problem reading MIDI file" << endl;
+      return 1;
+   }
+
+   midifile.joinTracks();
+   midifile.write(argv[2]);
+
+   return 0;
 }
-midifile.joinTracks();
-midifile.write(filename2);
+
 ```
 
 The `.joinTracks()` function merges all tracks into a single track.  And if 
@@ -698,27 +734,39 @@ represented by the integer 9.  The following example searches through
 the MIDI events in each track until it finds a note on channel 9:
 
 ```cpp
-MidiFile midifile;
-midifile.read(filename);
-bool found = false;
-for (int i=0; i<midifile.getTrackCount(); i++) {
-   for (int j=0; j<midifile[i].getEventCount(); j++) {
-      if (!midifile[i][j].isNote()) {
-         int channel = midifile[i][j].getChannelNibble();
-         if (channel == 9) {
-            found = true;
-            break;
+#include "MidiFile.h"
+#include <iostream>
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   MidiFile midifile;
+   if (argc == 1) midifile.read(cin);
+   else midifile.read(argv[1]);
+   if (!midifile.status()) {
+      cerr << "Problem reading MIDI file" << endl;
+      return 1;
+   }
+
+   bool found = false;
+   for (int i=0; i<midifile.getTrackCount(); i++) {
+      for (int j=0; j<midifile[i].getEventCount(); j++) {
+         if (midifile[i][j].isNote()) {
+            int channel = midifile[i][j].getChannelNibble();
+            if (channel == 9) {
+               found = true;
+               break;
+            }
          }
       }
+      if (found == true) {
+         break;
+      }
    }
-   if (found == true) {
-      break;
-   }
-}
-if (found) {
-   cout << "MIDI file " << filename << " has a drum track." << endl;
-} else {
-   cout << "MIDI file " << filename << " does not have a drum track." << endl;
+   if (found) cout << "Has a percussion part." << endl;
+   else cout << "Does not have a percussion part." << endl;
+
+   return 0;
 }
 ```
 
