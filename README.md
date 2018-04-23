@@ -174,35 +174,26 @@ int main(int argc, char** argv) {
    Options options;
    options.process(argc, argv);
    MidiFile midifile;
-   if (options.getArgCount() == 0) {
-      midifile.read(cin);
-   } else {
-      midifile.read(options.getArg(1));
-   }
+   if (options.getArgCount() == 0) midifile.read(cin);
+   else midifile.read(options.getArg(1));
    midifile.doTimeAnalysis();
    midifile.linkNotePairs();
 
    int tracks = midifile.getTrackCount();
    cout << "TPQ: " << midifile.getTicksPerQuarterNote() << endl;
-   if (tracks > 1) {
-      cout << "TRACKS: " << tracks << endl;
-   }
+   if (tracks > 1) cout << "TRACKS: " << tracks << endl;
    for (int track=0; track<tracks; track++) {
-      if (tracks > 1) {
-         cout << "\nTrack " << track << endl;
-      }
+      if (tracks > 1) cout << "\nTrack " << track << endl;
       cout << "Tick\tSeconds\tDur\tMessage" << endl;
       for (int event=0; event<midifile[track].size(); event++) {
          cout << dec << midifile[track][event].tick;
          cout << '\t' << dec << midifile[track][event].seconds;
          cout << '\t';
-         if (midifile[track][event].isNoteOn()) {
+         if (midifile[track][event].isNoteOn()) 
             cout << midifile[track][event].getDurationInSeconds();
-         }
          cout << '\t' << hex;
-         for (int i=0; i<midifile[track][event].size(); i++) {
+         for (int i=0; i<midifile[track][event].size(); i++) 
             cout << (int)midifile[track][event][i] << ' ';
-         }
          cout << endl;
       }
    }
@@ -346,41 +337,29 @@ int main(int argc, char** argv) {
    Options options;
    options.process(argc, argv);
    MidiFile midifile;
-   if (options.getArgCount() > 0) {
-      midifile.read(options.getArg(1));
-   } else {
-      midifile.read(cin);
-   }
-
+   if (options.getArgCount() > 0) midifile.read(options.getArg(1));
+   else midifile.read(cin);
    cout << "TPQ: " << midifile.getTicksPerQuarterNote() << endl;
    cout << "TRACKS: " << midifile.getTrackCount() << endl;
-
    midifile.joinTracks();
    // midifile.getTrackCount() will now return "1", but original
    // track assignments can be seen in .track field of MidiEvent.
-
    cout << "TICK    DELTA   TRACK   MIDI MESSAGE\n";
    cout << "____________________________________\n";
-
    MidiEvent* mev;
    int deltatick;
    for (int event=0; event < midifile[0].size(); event++) {
       mev = &midifile[0][event];
-      if (event == 0) {
-         deltatick = mev->tick;
-      } else {
-         deltatick = mev->tick - midifile[0][event-1].tick;
-      }
+      if (event == 0) deltatick = mev->tick;
+      else deltatick = mev->tick - midifile[0][event-1].tick;
       cout << dec << mev->tick;
       cout << '\t' << deltatick;
       cout << '\t' << mev->track;
       cout << '\t' << hex;
-      for (int i=0; i < mev->size(); i++) {
+      for (int i=0; i < mev->size(); i++) 
          cout << (int)(*mev)[i] << ' ';
-      }
       cout << endl;
    }
-
    return 0;
 }
 ```
@@ -514,14 +493,10 @@ int main(int argc, char** argv) {
                            // appended to track in random tick order.
    string filename = options.getString("output-file");
    if (filename.empty()) {
-      if (options.getBoolean("hex")) {
-         midifile.writeHex(cout);
-      } else {
-         cout << midifile;
-      }
-   } else {
+      if (options.getBoolean("hex")) midifile.writeHex(cout);
+      else cout << midifile;
+   } else 
       midifile.write(filename);
-   }
 
    return 0;
 }
@@ -637,16 +612,11 @@ using namespace std;
 using namespace smf;
 
 int main(int argc, char** argv) {
-   if (argc != 3) {
-      return 1;
-   }
+   if (argc != 3) return 1;
    MidiFile midifile;
    midifile.read(argv[1]);
-   if (midifile.status()) {
-      midifile.write(argv[2]);
-   } else {
-      cerr << "Problem reading MIDI file " << argv[1] << endl;
-   }
+   if (midifile.status()) midifile.write(argv[2]);
+   else cerr << "Problem reading MIDI file " << argv[1] << endl;
 }
 ```
 
@@ -770,9 +740,7 @@ int main(int argc, char** argv) {
             }
          }
       }
-      if (found == true) {
-         break;
-      }
+      if (found == true) break;
    }
    if (found) cout << "Has a percussion part." << endl;
    else cout << "Does not have a percussion part." << endl;
@@ -819,7 +787,6 @@ int main(int argc, char** argv) {
    }
 
    midifile.removeEmpties();  // optional
-
    midifile.write(argv[2]);
    return 0;
 }
@@ -831,8 +798,52 @@ function will ignore any empty `MidiMessage`s.  The
 `MidiFile::removeEmpties()` function can be called to explicitly remove
 any empty `MidiEvents` from the track.
 
+### How to transpose pitches in a MIDI file ###
 
-### List instrument numbers used in a MIDI file ###
+This example shows how to transpose notes in a MIDI file.  Care should be
+taken to avoid transposing channel 10 in General MIDI, since this is
+reserved for the drum track (and most MIDI files use the General MIDI 
+convention).
+
+```cpp
+#include "MidiFile.h"
+#include "Options.h"
+#include <iostream>
+
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   Options options;
+   options.define("t|transpose=i:0", "Semitones to transpose by");
+   options.process(argc, argv);
+
+   MidiFile midifile;
+   if (options.getArgCount() == 0) midifile.read(cin);
+   else midifile.read(options.getArg(1));
+   if (!midifile.status()) {
+      cerr << "Could not read MIDI file" << endl;
+      return 1;
+   }
+
+   int transpose = options.getInteger("transpose");
+   for (int i=0; i<midifile.getTrackCount(); i++) {
+      for (int j=0; j<midifile[i].getEventCount(); j++) {
+         if (!midifile[i][j].isNote()) continue;
+         if (midifile[i][j].getChannel() == 9) continue;
+         int newkey = transpose + midifile[i][j].getP1();
+         midifile[i][j].setP1(newkey);
+      }
+   }
+
+   if (options.getArgCount() < 2) cout << midifile;
+   else midifile.write(options.getArg(2));
+   return 0;
+}
+```
+
+
+### How to list instrument numbers used in a MIDI file ###
 
 The following example lists all of the instrument numbers
 used in a MIDI file.  It does not analyze the drum track.
@@ -851,11 +862,8 @@ int main(int argc, char** argv) {
    Options options;
    options.process(argc, argv);
    MidiFile midifile;
-   if (options.getArgCount() == 0) {
-      midifile.read(cin);
-   } else {
-      midifile.read(options.getArg(1));
-   }
+   if (options.getArgCount() == 0) midifile.read(cin);
+   else midifile.read(options.getArg(1));
    if (!midifile.status()) {
       cerr << "Could not read MIDI file" << endl;
       return 1;
@@ -872,9 +880,8 @@ int main(int argc, char** argv) {
          }
       }
    }
-   for (auto it : iset) {
+   for (auto it : iset) 
       cout << "Track:" << it.first << "\tInstrument:" << it.second << endl;
-   }
    return 0;
 }
 ```
