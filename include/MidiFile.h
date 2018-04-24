@@ -80,7 +80,6 @@ class MidiFile {
 		int              getTickState              (void) const;
 		bool             isDeltaTicks              (void) const;
 		bool             isAbsoluteTicks           (void) const;
-		int              getMaxTick                (void) const;
 
 		// join/split track functionality:
 		void             joinTracks                (void);
@@ -120,9 +119,9 @@ class MidiFile {
 		double           getTimeInSeconds          (int aTrack, int anIndex);
 		double           getTimeInSeconds          (int tickvalue);
 		double           getAbsoluteTickTime       (double starttime);
-		double           getTotalTimeInSeconds     (void);
-		int              getTotalTimeInTicks       (void);
-		double           getTotalTimeInQuarters    (void);
+		int              getFileDurationInTicks    (void);
+		double           getFileDurationInQuarters (void);
+		double           getFileDurationInSeconds  (void);
 
 		// note-analysis functions:
 		int              linkNotePairs             (void);

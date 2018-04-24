@@ -93,7 +93,7 @@ MidiFile::~MidiFile() {
 
 //////////////////////////////
 //
-// MidiFile::operator= -- Copying another 
+// MidiFile::operator= -- Copying another
 //
 
 MidiFile& MidiFile::operator=(const MidiFile& other) {
@@ -581,7 +581,7 @@ bool MidiFile::write(std::ostream& out) {
 	}
 
 	if (oldTimeState == TIME_STATE_ABSOLUTE) {
-		absoluteTicks();
+		makeAbsoluteTicks();
 	}
 
 	return true;
@@ -885,7 +885,7 @@ void MidiFile::joinTracks(void) {
 
 	int oldTimeState = getTickState();
 	if (oldTimeState == TIME_STATE_DELTA) {
-		absoluteTicks();
+		makeAbsoluteTicks();
 	}
 	for (i=0; i<length; i++) {
 		for (j=0; j<(int)m_events[i]->size(); j++) {
@@ -920,7 +920,7 @@ void MidiFile::splitTracks(void) {
 	}
 	int oldTimeState = getTickState();
 	if (oldTimeState == TIME_STATE_DELTA) {
-		absoluteTicks();
+		makeAbsoluteTicks();
 	}
 
 	int maxTrack = 0;
@@ -975,7 +975,7 @@ void MidiFile::splitTracksByChannel(void) {
 
 	int oldTimeState = getTickState();
 	if (oldTimeState == TIME_STATE_DELTA) {
-		absoluteTicks();
+		makeAbsoluteTicks();
 	}
 
 	int maxTrack = 0;
@@ -1233,19 +1233,82 @@ bool MidiFile::isAbsoluteTicks(void) const {
 
 //////////////////////////////
 //
-// MidiFile::getMaxTick -- Returns the largest tick value
-//    in any track.  Note that the tick values must be in
-//    absolute states not delta states.  And the tracks
-//    must be sorted before calling this function.
+// MidiFile::getFileDurationInTicks -- Returns the largest
+//    tick value in any track.  The tracks must be sorted
+//    before calling this function, since this function
+//    assumes that the last MidiEvent in the track has the
+//    highest tick timestamp.  The file state can be in delta
+//    ticks since this function will temporarily go to absolute
+//    tick mode for the calculation of the max tick.
 //
 
-int MidiFile::getMaxTick(void) const {
+int MidiFile::getFileDurationInTicks(void) {
+	bool revertToDelta = false;
+	if (isDeltaTicks()) {
+		makeAbsoluteTicks();
+		revertToDelta = true;
+	}
 	const MidiFile& mf = *this;
 	int output = 0;
 	for (int i=0; i<mf.getTrackCount(); i++) {
 		if (mf[i].back().tick > output) {
 			output = mf[i].back().tick;
 		}
+	}
+	if (revertToDelta) {
+		deltaTicks();
+	}
+	return output;
+}
+
+
+
+///////////////////////////////
+//
+// MidiFile::getFileDurationInQuarters -- Returns the Duration of the MidiFile
+//    in units of quarter notes.  If the MidiFile is in delta tick mode,
+//    then temporarily got into absolute tick mode to do the calculations.
+//    Note that this is expensive, so you should normally call this function
+//    while in aboslute tick (default) mode.
+//
+
+double MidiFile::getFileDurationInQuarters(void) {
+	return (double)getFileDurationInTicks() / (double)getTicksPerQuarterNote();
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::getFileDurationInSeconds -- returns the duration of the
+//    logest track in the file.  The tracks must be sorted before
+//    calling this function, since this function assumes that the
+//    last MidiEvent in the track has the highest timestamp.
+//    The file state can be in delta ticks since this function
+//    will temporarily go to absolute tick mode for the calculation
+//    of the max time.
+
+double MidiFile::getFileDurationInSeconds(void) {
+	if (m_timemapvalid == 0) {
+		buildTimeMap();
+		if (m_timemapvalid == 0) {
+			return -1.0;    // something went wrong
+		}
+	}
+	bool revertToDelta = false;
+	if (isDeltaTicks()) {
+		makeAbsoluteTicks();
+		revertToDelta = true;
+	}
+	const MidiFile& mf = *this;
+	double output = 0.0;
+	for (int i=0; i<mf.getTrackCount(); i++) {
+		if (mf[i].back().tick > output) {
+			output = mf[i].back().seconds;
+		}
+	}
+	if (revertToDelta) {
+		deltaTicks();
 	}
 	return output;
 }
@@ -1346,74 +1409,6 @@ double MidiFile::getAbsoluteTickTime(double starttime) {
 
 }
 
-
-
-//////////////////////////////
-//
-// MidiFile::getTotalTimeInSeconds -- Returns the duration of the MidiFile
-//    event list in seconds.  If doTimeAnalysis() is not called before this
-//    function is called, it will be called automatically.
-//
-
-double MidiFile::getTotalTimeInSeconds(void) {
-	if (m_timemapvalid == 0) {
-		buildTimeMap();
-		if (m_timemapvalid == 0) {
-			return -1.0;    // something went wrong
-		}
-	}
-	double output = 0.0;
-	for (int i=0; i<(int)m_events.size(); i++) {
-		if (m_events[i]->last().seconds > output) {
-			output = m_events[i]->last().seconds;
-		}
-	}
-	return output;
-}
-
-
-
-///////////////////////////////
-//
-// MidiFile::getTotalTimeInTicks -- Returns the absolute tick value for the
-//    latest event in any track.  If the MidiFile is in TIME_STATE_DELTA,
-//    then temporarily got into TIME_STATE_ABSOLUTE to do the calculations.
-//    Note that this is expensive, so you should normally call this function
-//    while in aboslute tick mode.
-//
-
-int MidiFile::getTotalTimeInTicks(void) {
-	int oldTimeState = getTickState();
-	if (oldTimeState == TIME_STATE_DELTA) {
-		absoluteTicks();
-	}
-	if (oldTimeState == TIME_STATE_DELTA) {
-		deltaTicks();
-	}
-	int output = 0;
-	for (int i=0; i<(int)m_events.size(); i++) {
-		if (m_events[i]->last().tick > output) {
-			output = m_events[i]->last().tick;
-		}
-	}
-	return output;
-}
-
-
-
-///////////////////////////////
-//
-// MidiFile::getTotalTimeInQuarters -- Returns the Duration of the MidiFile
-//    in units of quarter notes.  If the MidiFile is in TIME_STATE_DELTA,
-//    then temporarily got into TIME_STATE_ABSOLUTE to do the calculations.
-//    Note that this is expensive, so you should normally call this function
-//    while in aboslute tick mode.
-//
-
-double MidiFile::getTotalTimeInQuarters(void) {
-	double totalTicks = getTotalTimeInTicks();
-	return totalTicks / getTicksPerQuarterNote();
-}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2172,7 +2167,7 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 	mergedTrack = new MidiEventList;
 	int oldTimeState = getTickState();
 	if (oldTimeState == TIME_STATE_DELTA) {
-		absoluteTicks();
+		makeAbsoluteTicks();
 	}
 	int i, j;
 	int length = getNumTracks();
@@ -2489,7 +2484,7 @@ void MidiFile::buildTimeMap(void) {
 	int trackstate = getTrackState();
 	int timestate  = getTickState();
 
-	absoluteTicks();
+	makeAbsoluteTicks();
 	joinTracks();
 
 	int allocsize = getNumEvents(0);

@@ -24,7 +24,8 @@ void processFile(MidiFile& midifile, Options& options);
 
 int main(int argc, char** argv) {
 	Options options;
-	options.define("s|seconds=b", "display total time in seconds");
+	options.define("s|seconds=b",  "display total time in seconds");
+	options.define("q|quarters=b", "display total time in quarter notes");
 	options.process(argc, argv);
 	MidiFile midifile;
 	if (options.getArgCount() == 0) {
@@ -53,17 +54,12 @@ int main(int argc, char** argv) {
 //
 
 void processFile(MidiFile& midifile, Options& options) {
-	int maxtick = midifile.getMaxTick();
-	cout << "maxtick=" << maxtick;
+	cout << "maxtick=" << midifile.getFileDurationInTicks();
+	if (options.getBoolean("quarters")) {
+		cout << "\tquarters=" << midifile.getFileDurationInQuarters();
+	}
 	if (options.getBoolean("seconds")) {
-		midifile.doTimeAnalysis();
-		double maxtime = 0.0;
-		for (int i=0; i<midifile.getTrackCount(); i++) {
-			if (midifile[i].last().seconds > maxtime) {
-				maxtime = midifile[i].last().seconds;
-			}
-		}
-		cout << "\tseconds=" << maxtime;
+		cout << "\tseconds=" << midifile.getFileDurationInSeconds();
 	}
 	cout << endl;
 }

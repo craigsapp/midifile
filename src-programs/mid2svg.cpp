@@ -266,7 +266,7 @@ void convertMidiFileToSvg(stringstream& output, MidiFile& midifile,
 
    if (staffQ) {
       drawStaves(notes, StaffThickness, StaffColor,
-          midifile.getTotalTimeInSeconds());
+          midifile.getFileDurationInSeconds());
       if (clefQ) {
          drawClefs(notes);
       }
