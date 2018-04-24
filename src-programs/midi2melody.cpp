@@ -73,9 +73,6 @@ void sortMelody(vector<Melody>& melody) {
 //
 
 void printMelody(vector<Melody>& melody, int tpq) {
-   int i;
-   double delta = 0;
-
    if (melody.size() < 1) {
       return;
    }
@@ -87,8 +84,8 @@ void printMelody(vector<Melody>& melody, int tpq) {
    temp.duration = 0;
    melody.push_back(temp);
 
-   for (i=0; i<(int)melody.size()-1; i++) {
-      delta = melody[i+1].tick - melody[i].tick;
+   for (int i=0; i<(int)melody.size()-1; i++) {
+      double delta = melody[i+1].tick - melody[i].tick;
       if (delta == 0) {
          continue;
       }

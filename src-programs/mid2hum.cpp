@@ -295,7 +295,6 @@ void processMetaMessage(MidiFile& midifile, int track, int event,
          }
          tempmeta.text[tempmeta.tsize] = '\0';
          break;
-         break;
       case 0x20:   // MIDI channel prefix
          break;
       case 0x54:   // SMPTE Offset

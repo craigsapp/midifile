@@ -554,7 +554,7 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
    }
 
    if (braceQ) {
-      staffwidth = 5 * staffwidth;
+      // staffwidth = 5 * staffwidth;
       out << "\t\t<path vector-effect=\"non-scaling-stroke\""
           << " d=\"M" << start << "," << miny
           << " L"  << start << "," << maxy
@@ -574,16 +574,13 @@ void drawStaves(ostream& out, double staffwidth, const string& staffcolor,
 
 void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       Options& options) {
-   int counter = -1;
-   int i, j;
    int dashing = options.getBoolean("dash");
    int track = 0;
-   for (i=midifile.size()-1; i>=0; i--) {
+   for (int i=midifile.size()-1; i>=0; i--) {
       if (!hasNotes(midifile[i])) {
          continue;
       }
       track = i;
-      counter++;
       string color = "hsl(" + to_string(hues[i]) + ", 100%, 75%)";
       if (bwQ) {
          color = StaffColor;
@@ -599,7 +596,7 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
          out << " vector-effect=\"non-scaling-stroke\"";
       }
       out << " stroke-width=\""<< LineThickness << "\">\n";
-      for (j=0; j<midifile[i].size(); j++) {
+      for (int j=0; j<midifile[i].size(); j++) {
          if (!midifile[i][j].isNoteOn()) {
             continue;
          }
@@ -607,9 +604,6 @@ void drawLines(ostream& out, MidiFile& midifile, vector<double>& hues,
       }
       out << "\t\t</g>\n";
    }
-
-
-
 }
 
 

@@ -148,24 +148,21 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
       onvelocities[i] = -1;
    }
 
-   double offtime = 0.0;
-
-   int key = 0;
-   int vel = 0;
-   int command = 0;
-
    if (verboseQ) {
       cout << "-1\ttpq\t" << midifile.getTicksPerQuarterNote() << endl;
    }
-   int channel;
+
+   double offtime = 0.0;
+   int key = 0;
+   int vel = 0;
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
       if (verboseQ) {
          cout << ">>> " << (int)midifile[0][i][0] << "\n";
       }
       event.assign(event.size(), unused);
-      command = midifile[0][i][0] & 0xf0;
-      channel = midifile[0][i][0] & 0x0f;
+      int command = midifile[0][i][0] & 0xf0;
+      int channel = midifile[0][i][0] & 0x0f;
 
       // check for tempo indication
       if (midifile[0][i][0] == 0xff &&
@@ -279,7 +276,6 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
          matlab.push_back(event);
       }
    }
-
 }
 
 

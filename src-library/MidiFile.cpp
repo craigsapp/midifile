@@ -1008,9 +1008,8 @@ void MidiFile::splitTracksByChannel(void) {
 		m_events[i] = new MidiEventList;
 	}
 
-	int trackValue = 0;
 	for (i=0; i<length; i++) {
-		trackValue = 0;
+		int trackValue = 0;
 		if ((eventlist[i][0] & 0xf0) == 0xf0) {
 			trackValue = 0;
 		} else if (eventlist[i].size() > 0) {
@@ -2756,7 +2755,7 @@ ulong MidiFile::readVLValue(std::istream& input) {
 ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
 	uchar bytes[5] = {a, b, c, d, e};
 	int count = 0;
-	while ((bytes[count] > 0x7f) && count < 5) {
+	while ((count < 5) && (bytes[count] > 0x7f)) {
 		count++;
 	}
 	count++;
