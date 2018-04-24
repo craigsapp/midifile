@@ -237,8 +237,8 @@ void usage(const char* command) {
 //
 
 int notecompare(const void* a, const void* b) {
-   Melody& aa = *((Melody*)a);
-   Melody& bb = *((Melody*)b);
+   const Melody& aa = *static_cast<const Melody*>(a);
+   const Melody& bb = *static_cast<const Melody*>(b);
 
    if (aa.tick < bb.tick) {
       return -1;

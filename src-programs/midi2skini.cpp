@@ -56,17 +56,15 @@ int main(int argc, char* argv[]) {
 //
 
 void printMidiAsSkini(MidiFile& midifile) {
-   int      tpq      = midifile.getTicksPerQuarterNote();
-   int      oldticks = 0;          // absolute ticks of last event
-   int      ticks    = 0;          // absolute ticks of current event
-   double   tempo    = 120.0;      // time units will be in seconds
-   MidiEvent  event;                 // temporary event for printing
-   double  curtime  = 0.0;         // current time in seconds
-   int      i;
+   int       tpq      = midifile.getTicksPerQuarterNote();
+   int       ticks    = 0;     // absolute ticks of current event
+   double    tempo    = 120.0; // time units will be in seconds
+   double    curtime  = 0.0;   // current time in seconds
+   int       i;
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
-      oldticks = ticks;
-      event = midifile.getEvent(0, i);
+      int oldticks = ticks;
+      MidiEvent event = midifile.getEvent(0, i);
       ticks = event.tick;
       if (i>0) {
          curtime += (ticks - oldticks) * 60.0 / tempo / tpq;

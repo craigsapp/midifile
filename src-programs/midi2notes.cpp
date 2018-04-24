@@ -381,7 +381,6 @@ double getTime(int ticks, double tempo, int tpq) {
 //
 
 void setTempo(MidiFile& midifile, int index, double& tempo) {
-   double newtempo = 0.0;
    static int count = 0;
    count++;
    vector<double> event;
@@ -394,7 +393,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    microseconds = microseconds | (mididata[4] << 8);
    microseconds = microseconds | (mididata[5] << 0);
 
-   newtempo = 60.0 / microseconds * 1000000.0;
+   double newtempo = 60.0 / microseconds * 1000000.0;
    if (count <= 1) {
       tempo = newtempo;
    } else if (tempo != newtempo) {
@@ -518,12 +517,10 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 
 void setFilterOptions(vector<int>& channelfilter, const char* exclude) {
    int length = (int)strlen(exclude);
-   int character;
-   int i;
    int value;
 
-   for (i=0; i<length; i++) {
-      character = toupper(exclude[i]);
+   for (int i=0; i<length; i++) {
+      int character = toupper(exclude[i]);
       if (!isxdigit(character)) {
          continue;
       }

@@ -68,10 +68,9 @@ void convertMidiFileToText(MidiFile& midifile) {
 
    int key = 0;
    int vel = 0;
-   int command = 0;
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
-      command = midifile[0][i][0] & 0xf0;
+      int command = midifile[0][i][0] & 0xf0;
       if (command == 0x90 && midifile[0][i][2] != 0) {
          // store note-on velocity and time
          key = midifile[0][i][1];
@@ -107,7 +106,6 @@ void convertMidiFileToText(MidiFile& midifile) {
 //
 
 void setTempo(MidiFile& midifile, int index, double& tempo) {
-   double newtempo = 0.0;
    static int count = 0;
    count++;
 
@@ -118,7 +116,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    microseconds = microseconds | (mididata[4] << 8);
    microseconds = microseconds | (mididata[5] << 0);
 
-   newtempo = 60.0 / microseconds * 1000000.0;
+   double newtempo = 60.0 / microseconds * 1000000.0;
    if (count <= 1) {
       tempo = newtempo;
    } else if (tempo != newtempo) {

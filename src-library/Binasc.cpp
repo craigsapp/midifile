@@ -373,12 +373,11 @@ int Binasc::outputStyleAscii(std::ostream& out, std::istream& input) {
 	int index     = 0;             // current length of word
 	int lineCount = 0;             // current length of line
 	int type      = 0;             // 0=space, 1=printable
-	int lastType  = 0;             // 0=space, 1=printable
 	uchar ch;                      // current input byte
 
 	ch = input.get();
 	while (!input.eof()) {
-		lastType = type;
+		int lastType = type;
 		type = (isprint(ch) && !isspace(ch)) ? 1 : 0;
 
 		if ((type == 1) && (lastType == 0)) {
@@ -659,8 +658,6 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 		trackbytes++;
 	}
 	byte1 = ch;
-	int i;
-	int metatype = 0;
 	switch (command & 0xf0) {
 		case 0x80:    // note-off: 2 bytes
 			output << " '" << std::dec << (int)byte1;
@@ -743,7 +740,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 					trackbytes--;
 					int length = getVLV(infile, trackbytes);
 					output << " v" << std::dec << length;
-					for (i=0; i<length; i++) {
+					for (int i=0; i<length; i++) {
 						infile.read((char*)&ch, 1);
 						trackbytes++;
 						if (ch < 0x10) {
@@ -784,7 +781,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 					break;
 				case 0xff:  // meta message
 					{
-					metatype = ch;
+					int metatype = ch;
 					output << " " << std::hex << metatype;
 					int length = getVLV(infile, trackbytes);
 					output << " v" << std::dec << length;
@@ -881,7 +878,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 						case 0x08: // program name
 						case 0x09: // device name
 						   output << " \"";
-						   for (i=0; i<length; i++) {
+						   for (int i=0; i<length; i++) {
 						      infile.read((char*)&ch, 1);
 						      trackbytes++;
 						      output << (char)ch;
@@ -889,7 +886,7 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 						   output << "\"";
 						   break;
 						default:
-						   for (i=0; i<length; i++) {
+						   for (int i=0; i<length; i++) {
 						      infile.read((char*)&ch, 1);
 						      trackbytes++;
 						      output << " ";
@@ -1093,7 +1090,6 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 		tempout << std::endl;
 	}
 
-	int trackbytes;
 	for (i=0; i<trackcount; i++) {
 		tempout << "\n;;; TRACK "
 				  << i << " ----------------------------------" << std::endl;
@@ -1125,7 +1121,7 @@ int Binasc::outputStyleMidi(std::ostream& out, std::istream& input) {
 		}
 		tempout << std::endl;
 
-		trackbytes = 0;
+		int trackbytes = 0;
 		int command = 0;
 
 		// process MIDI events until the end of the track

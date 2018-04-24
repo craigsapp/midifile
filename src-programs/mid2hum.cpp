@@ -1,7 +1,6 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Mar  5 22:49:55 PST 2004
-// Last Modified: Sat Mar  6 11:28:05 PST 2004
 // Last Modified: Thu Jan  6 03:41:05 PST 2011 (fixed array out-of-bounds err)
 // Filename:      ...sig/examples/all/mid2hum.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/mid2hum.cpp
@@ -404,8 +403,8 @@ void identifyChords(Array<Array<MidiInfo> >& mididata) {
 //
 
 int MidiInfoCompare(const void* a, const void* b) {
-   MidiInfo& A = *((MidiInfo*)a);
-   MidiInfo& B = *((MidiInfo*)b);
+   const MidiInfo& A = *static_cast<const MidiInfo*>(a);
+   const MidiInfo& B = *static_cast<const MidiInfo*>(b);
 
    if (A.starttick < B.starttick) {
       return -1;

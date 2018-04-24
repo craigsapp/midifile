@@ -333,7 +333,6 @@ bool MidiFile::read(std::istream& input) {
 	uchar runningCommand;
 	MidiEvent event;
 	std::vector<uchar> bytes;
-	int absticks;
 	int xstatus;
 	// int barline;
 
@@ -408,7 +407,7 @@ bool MidiFile::read(std::istream& input) {
 		m_events[i]->clear();
 
 		// process the track
-		absticks = 0;
+		int absticks = 0;
 		// barline = 1;
 		while (!input.eof()) {
 			longdata = readVLValue(input);
@@ -618,16 +617,15 @@ bool MidiFile::writeHex(const std::string& filename, int width) {
 bool MidiFile::writeHex(std::ostream& out, int width) {
 	std::stringstream tempstream;
 	MidiFile::write(tempstream);
-	int value = 0;
 	int len = (int)tempstream.str().length();
 	int wordcount = 1;
 	int linewidth = width >= 0 ? width : 25;
 	for (int i=0; i<len; i++) {
-		value = (unsigned char)tempstream.str()[i];
+		int value = (unsigned char)tempstream.str()[i];
 		out << std::hex << std::setw(2) << std::setfill('0') << value;
 		if (linewidth) {
 			if (i < len - 1) {
-				out << (wordcount % linewidth ? ' ' : '\n');
+				out << ((wordcount % linewidth) ? ' ' : '\n');
 			}
 			wordcount++;
 		} else {
@@ -946,9 +944,8 @@ void MidiFile::splitTracks(void) {
 		m_events[i] = new MidiEventList;
 	}
 
-	int trackValue = 0;
 	for (i=0; i<length; i++) {
-		trackValue = (*olddata)[i].track;
+		int trackValue = (*olddata)[i].track;
 		m_events[trackValue]->push_back_no_copy(&(*olddata)[i]);
 	}
 
@@ -2503,7 +2500,6 @@ void MidiFile::buildTimeMap(void) {
 	_TickTime value;
 
 	int lasttick = 0;
-	int curtick;
 	int tickinit = 0;
 
 	int i;
@@ -2515,7 +2511,7 @@ void MidiFile::buildTimeMap(void) {
 	double cursec = 0.0;
 
 	for (i=0; i<getNumEvents(0); i++) {
-		curtick = getEvent(0, i).tick;
+		int curtick = getEvent(0, i).tick;
 		getEvent(0, i).seconds = cursec;
 		if ((curtick > lasttick) || !tickinit) {
 			tickinit = 1;
@@ -2596,7 +2592,6 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 		array.push_back(byte);
 	}
 
-	int i;
 	switch (runningCommand & 0xf0) {
 		case 0x80:        // note off (2 more bytes)
 		case 0x90:        // note on (2 more bytes)
@@ -2702,7 +2697,7 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 				case 0xf0:   // System Exclusive message
 					{         // (complete, or start of message).
 					int length = (int)readVLValue(input);
-					for (i=0; i<length; i++) {
+					for (int i=0; i<length; i++) {
 						byte = readByte(input);
 						if (!status()) { return m_rwstatus; }
 						array.push_back(byte);
@@ -2761,7 +2756,7 @@ ulong MidiFile::readVLValue(std::istream& input) {
 ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
 	uchar bytes[5] = {a, b, c, d, e};
 	int count = 0;
-	while (bytes[count] > 0x7f && count < 5) {
+	while ((bytes[count] > 0x7f) && count < 5) {
 		count++;
 	}
 	count++;

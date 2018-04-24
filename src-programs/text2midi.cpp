@@ -142,8 +142,7 @@ void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
 
 void readvalues(char* buffer, int& eventtype, double& start, double& dur,
    int& note, int& vel) {
-   char *ptr = NULL;
-   ptr = strtok(buffer, " \t\n");
+   char *ptr = strtok(buffer, " \t\n");
    if (ptr == NULL) {
       eventtype = 0;
       return;

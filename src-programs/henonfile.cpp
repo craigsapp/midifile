@@ -114,15 +114,12 @@ void createHenon(double alpha, double beta, double x0, double y0e,
 
    double x = x0;
    double y = y0e;
-   double newx;
-   double newy;
    int key;
    int termination = 0;
-   int i;
 
-   for (i=0; i<maxcount; i++) {
-      newx = 1 + alpha * x * x + beta * y;
-      newy = x;
+   for (int i=0; i<maxcount; i++) {
+      double newx = 1 + alpha * x * x + beta * y;
+      double newy = x;
       x = newx;
       y = newy;
 

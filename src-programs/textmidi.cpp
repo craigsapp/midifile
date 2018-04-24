@@ -31,17 +31,16 @@ void  usage           (const char* command);
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;
    MidiFile  inputfile;
    Options   options(argc, argv);
 
    checkOptions(options);
    for (int i=1; i<=options.getArgCount(); i++) {
-      status = inputfile.read(options.getArg(i));
+      bool status = inputfile.read(options.getArg(i));
       if (options.getArgCount() > 1) {
          cout << "\n\n\n+++ FILE " << i << "++++++++++++++++++++++++++++\n\n";
       }
-      if (status != 0) {
+      if (status == true) {
          switch (timestyle) {
             case 'd': inputfile.deltaTicks();    break;
             case 'a': inputfile.absoluteTicks(); break;

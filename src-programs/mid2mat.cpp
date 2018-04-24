@@ -205,7 +205,6 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
 
    int key = 0;
    int vel = 0;
-   int command = 0;
 
    if (verboseQ) {
       cout << "-1\ttpq\t" << midifile.getTicksPerQuarterNote() << endl;
@@ -213,7 +212,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
       event.assign(event.size(), unused);
-      command = midifile[0][i][0] & 0xf0;
+      int command = midifile[0][i][0] & 0xf0;
       if (command == 0xf0) {
          command = midifile[0][i][0];
       }
