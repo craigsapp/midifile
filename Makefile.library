@@ -17,6 +17,9 @@
 ## created, you can compile specific programs with the Makefile.examples
 ## file.
 ##
+## NB: To build on Windows with Visual Studio, use visual-studio/midifile.sln
+##     instead of this Makefile.
+##
 
 ##############################
 ##
