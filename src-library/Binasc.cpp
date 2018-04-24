@@ -12,7 +12,7 @@
 #include "Binasc.h"
 
 #include <sstream>
-// #include <string.h>
+#include <stdlib.h>
 
 
 namespace smf {
