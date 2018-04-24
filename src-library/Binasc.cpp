@@ -1476,7 +1476,7 @@ int Binasc::processHexWord(std::ostream& out, const std::string& word,
 //
 
 int Binasc::processStringWord(std::ostream& out, const std::string& word,
-		int lineNum) {
+		int /* lineNum */) {
 	out << word;
 	return 1;
 }

@@ -210,7 +210,7 @@ void MidiEvent::linkEvent(MidiEvent& mev) {
 //   Returns null if there are no links.
 //
 
-MidiEvent* MidiEvent::getLinkedEvent(void) {
+MidiEvent* MidiEvent::getLinkedEvent(void) const {
 	return m_eventlink;
 }
 
@@ -222,7 +222,7 @@ MidiEvent* MidiEvent::getLinkedEvent(void) {
 //   NULL.  This function is similar to getLinkedEvent().
 //
 
-int MidiEvent::isLinked(void) {
+int MidiEvent::isLinked(void) const {
 	return m_eventlink == NULL ? 0 : 1;
 }
 
@@ -236,7 +236,7 @@ int MidiEvent::isLinked(void) {
 //    delta tick mode.  Returns 0 if not linked.
 //
 
-int MidiEvent::getTickDuration(void) {
+int MidiEvent::getTickDuration(void) const {
 	MidiEvent* mev = getLinkedEvent();
 	if (mev == NULL) {
 		return 0;
@@ -259,7 +259,7 @@ int MidiEvent::getTickDuration(void) {
 //     reported as zero.
 //
 
-double MidiEvent::getDurationInSeconds(void) {
+double MidiEvent::getDurationInSeconds(void) const {
 	MidiEvent* mev = getLinkedEvent();
 	if (mev == NULL) {
 		return 0;
