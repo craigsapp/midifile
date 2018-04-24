@@ -135,7 +135,7 @@ const std::string& Option_register::getModified(void) {
 //    set on the command-line.
 //
 
-int Option_register::isModified(void) {
+bool Option_register::isModified(void) {
    return modifiedQ;
 }
 
@@ -435,12 +435,8 @@ int Options::define(const std::string& aDefinition,
 // Options::isDefined -- Return true if option is present in registry.
 //
 
-int Options::isDefined(const std::string& name) {
-   if (m_optionList.find(name) == m_optionList.end()) {
-      return 0;
-   } else {
-      return 1;
-   }
+bool Options::isDefined(const std::string& name) {
+   return m_optionList.find(name) == m_optionList.end() ? false : true;
 }
 
 
@@ -509,7 +505,7 @@ const std::vector<std::string>& Options::getArgumentList(void) {
 //	used on the command line.
 //
 
-int Options::getBoolean(const std::string& optionName) {
+bool Options::getBoolean(const std::string& optionName) {
    int index = getRegIndex(optionName);
    if (index < 0) {
       return 0;
