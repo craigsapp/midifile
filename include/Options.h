@@ -19,6 +19,14 @@
 #include <string>
 #include <vector>
 
+#define OPTION_BOOLEAN_TYPE   'b'
+#define OPTION_CHAR_TYPE      'c'
+#define OPTION_DOUBLE_TYPE    'd'
+#define OPTION_FLOAT_TYPE     'f'
+#define OPTION_INT_TYPE       'i'
+#define OPTION_STRING_TYPE    's'
+#define OPTION_UNKNOWN_TYPE   'x'
+
 namespace smf {
 
 class Option_register {
@@ -145,14 +153,6 @@ class Options {
 };
 
 } // end of namespace smf
-
-#define OPTION_BOOLEAN_TYPE   'b'
-#define OPTION_CHAR_TYPE      'c'
-#define OPTION_DOUBLE_TYPE    'd'
-#define OPTION_FLOAT_TYPE     'f'
-#define OPTION_INT_TYPE       'i'
-#define OPTION_STRING_TYPE    's'
-#define OPTION_UNKNOWN_TYPE   'x'
 
 
 #endif  /* _OPTIONS_H_INCLUDED */
