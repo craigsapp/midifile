@@ -21,3 +21,6 @@ err
 .vs/
 .VC.db
 *.cache
+*.idb
+*.ilk
+*.opendb
