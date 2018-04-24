@@ -1296,4 +1296,74 @@ in C-sharp minor:
 ```
 
 
+### How to create vibrato with pitch-bend messages ###
+
+This example demonstrates the generation of a constant vibrato for notes
+in a MIDI file (on a particular channel).  The program adds an extra
+track at the end of the file to store the pitch bends.  The vibrato
+rate is constant regardless of the tempo setting for the MIDI file,
+since the vibrato is calculated in physical time rather than tick time.
+The `MidiFile::getAbsoluteTickTime()` function calculates the conversion
+between physical time in seconds and tick time in the MIDI file.
+
+```cpp
+#include "MidiFile.h"
+#include "Options.h"
+#include <iostream>
+#include <utility>
+#include <cmath>
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   Options options;
+   options.define("f|frequency=d:4.0",     "vibrato frequency");
+   options.define("d|depth=d:20.0",        "vibrato depth in cents");
+   options.define("b|bend-max=d:200.0",    "pitch bend depth");
+   options.define("s|sample-rate=d:100.0", "sample rate");
+   options.define("o|output-file=s",       "output filename");
+   options.define("c|channel=i:0",         "output channel");
+   options.process(argc, argv);
+
+   MidiFile midifile;
+   if (options.getArgCount() == 0) midifile.read(cin);
+   else midifile.read(options.getArg(1));
+   if (!midifile.status()) {
+      cerr << "Problem reading file" << endl;
+      return 1;
+   }
+
+   string filename  = options.getString("output-file");
+   int    channel   = options.getInteger("channel");
+   double freq      = options.getDouble("frequency");
+   double depth     = options.getDouble("depth");
+   double bend      = options.getDouble("bend-max");
+   double srate     = options.getDouble("sample-rate");
+   double phase     = 0.0;
+   double twopi     = 2.0 * M_PI;
+   double increment = twopi * freq / srate;
+   double maxtime   = midifile.getFileDurationInSeconds();
+   midifile.addTrack(); // store vibrato in separate track
+   pair<int, double> tickbend;
+   vector<pair<double, double>> storage;
+   int count = maxtime * srate;
+   storage.reserve(maxtime * srate + 1000);
+   for (int i=0; i<count; i++) {
+      tickbend.first = int(midifile.getAbsoluteTickTime(i/srate) + 0.5);
+      tickbend.second = depth/bend * sin(phase);
+      if ((storage.size() > 0) && (tickbend.first == 0)) break;
+      storage.push_back(tickbend);
+      phase += increment;
+      if (phase > twopi) phase -= twopi;
+   }
+   int track = midifile.getTrackCount() - 1;
+   for (int i=0; i<(int)storage.size(); i++) 
+      midifile.addPitchBend(track, storage[i].first, channel, storage[i].second);
+   if (filename.empty()) cout << midifile;
+   else midifile.write(filename);
+   return 0;
+}
+```
+
+
 
