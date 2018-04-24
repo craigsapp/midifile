@@ -10,16 +10,20 @@
 //                on a single channel playing a single note at a time)
 //
 
+#include "MidiFile.h"
+#include "Options.h"
 
 #include <iostream>
 #include <cmath>
 #include <unistd.h>     // usleep()
-#include <sys/io.h>
-
-#include "MidiFile.h"
-#include "Options.h"
-
 #include <signal.h>
+
+#ifdef __APPLE__
+    #include <sys/uio.h>
+#else
+    #include <sys/io.h>
+#endif
+
 
 using namespace std;
 using namespace smf;
