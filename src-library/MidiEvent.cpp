@@ -210,7 +210,12 @@ void MidiEvent::linkEvent(MidiEvent& mev) {
 //   Returns null if there are no links.
 //
 
-MidiEvent* MidiEvent::getLinkedEvent(void) const {
+MidiEvent* MidiEvent::getLinkedEvent(void) {
+	return m_eventlink;
+}
+
+
+const MidiEvent* MidiEvent::getLinkedEvent(void) const {
 	return m_eventlink;
 }
 
@@ -237,7 +242,7 @@ int MidiEvent::isLinked(void) const {
 //
 
 int MidiEvent::getTickDuration(void) const {
-	MidiEvent* mev = getLinkedEvent();
+	const MidiEvent* mev = getLinkedEvent();
 	if (mev == NULL) {
 		return 0;
 	}
@@ -260,7 +265,7 @@ int MidiEvent::getTickDuration(void) const {
 //
 
 double MidiEvent::getDurationInSeconds(void) const {
-	MidiEvent* mev = getLinkedEvent();
+	const MidiEvent* mev = getLinkedEvent();
 	if (mev == NULL) {
 		return 0;
 	}
