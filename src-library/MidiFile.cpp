@@ -1040,7 +1040,7 @@ void MidiFile::splitTracksByChannel(void) {
 //     is being used: either TRACK_STATE_JOINED or TRACK_STATE_SPLIT.
 //
 
-int MidiFile::getTrackState(void) {
+int MidiFile::getTrackState(void) const {
 	return m_theTrackState;
 }
 
@@ -1052,7 +1052,7 @@ int MidiFile::getTrackState(void) {
 //    are in a joined state.
 //
 
-int MidiFile::hasJoinedTracks(void) {
+int MidiFile::hasJoinedTracks(void) const {
 	return m_theTrackState == TRACK_STATE_JOINED;
 }
 
@@ -1064,7 +1064,7 @@ int MidiFile::hasJoinedTracks(void) {
 //     are in a split state.
 //
 
-int MidiFile::hasSplitTracks(void) {
+int MidiFile::hasSplitTracks(void) const {
 	return m_theTrackState == TRACK_STATE_SPLIT;
 }
 
@@ -1079,7 +1079,7 @@ int MidiFile::hasSplitTracks(void) {
 //   MidiFile is converted to the joined-track state.
 //
 
-int MidiFile::getSplitTrack(int track, int index) {
+int MidiFile::getSplitTrack(int track, int index) const {
 	if (hasSplitTracks()) {
 		return track;
 	} else {
@@ -1091,7 +1091,7 @@ int MidiFile::getSplitTrack(int track, int index) {
 // When the parameter is void, assume track 0:
 //
 
-int MidiFile::getSplitTrack(int index) {
+int MidiFile::getSplitTrack(int index) const {
 	if (hasSplitTracks()) {
 		return 0;
 	} else {
@@ -1205,7 +1205,7 @@ void MidiFile::absoluteTicks(void) {
 //   being used: either TIME_STATE_ABSOLUTE or TIME_STATE_DELTA.
 //
 
-int MidiFile::getTickState(void) {
+int MidiFile::getTickState(void) const {
 	return m_theTimeState;
 }
 
@@ -1217,8 +1217,8 @@ int MidiFile::getTickState(void) {
 //    variables are in delta time mode.
 //
 
-int MidiFile::isDeltaTicks(void) {
-	return m_theTimeState == TIME_STATE_DELTA ? 1 : 0;
+bool MidiFile::isDeltaTicks(void) const {
+	return m_theTimeState == TIME_STATE_DELTA ? true : false;
 }
 
 
@@ -1229,8 +1229,8 @@ int MidiFile::isDeltaTicks(void) {
 //    variables are in absolute time mode.
 //
 
-int MidiFile::isAbsoluteTicks(void) {
-	return m_theTimeState == TIME_STATE_ABSOLUTE ? 1 : 0;
+bool MidiFile::isAbsoluteTicks(void) const {
+	return m_theTimeState == TIME_STATE_ABSOLUTE ? true : false;
 }
 
 
@@ -1243,8 +1243,8 @@ int MidiFile::isAbsoluteTicks(void) {
 //    must be sorted before calling this function.
 //
 
-int MidiFile::getMaxTick(void) {
-	MidiFile& mf = *this;
+int MidiFile::getMaxTick(void) const {
+	const MidiFile& mf = *this;
 	int output = 0;
 	for (int i=0; i<mf.getTrackCount(); i++) {
 		if (mf[i].back().tick > output) {
@@ -1482,7 +1482,7 @@ void MidiFile::setFilename(const std::string& aname) {
 //    structure (if the data was read from a file).
 //
 
-const char* MidiFile::getFilename(void) {
+const char* MidiFile::getFilename(void) const {
 	return m_readFileName.c_str();
 }
 
@@ -2106,6 +2106,11 @@ void MidiFile::erase(void) {
 //
 
 MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) {
+	return (*m_events[aTrack])[anIndex];
+}
+
+
+const MidiEvent& MidiFile::getEvent(int aTrack, int anIndex) const {
 	return (*m_events[aTrack])[anIndex];
 }
 

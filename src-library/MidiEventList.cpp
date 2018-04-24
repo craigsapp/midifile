@@ -96,11 +96,21 @@ MidiEvent& MidiEventList::back(void) {
 	return *list.back();
 }
 
+
+const MidiEvent& MidiEventList::back(void) const {
+	return *list.back();
+}
+
 //
 // MidiEventList::last -- Alias for MidiEventList::back().
 //
 
 MidiEvent& MidiEventList::last(void) {
+	return back();
+}
+
+
+const MidiEvent& MidiEventList::last(void) const {
 	return back();
 }
 
@@ -113,6 +123,11 @@ MidiEvent& MidiEventList::last(void) {
 //
 
 MidiEvent& MidiEventList::getEvent(int index) {
+   return *list[index];
+}
+
+
+const MidiEvent& MidiEventList::getEvent(int index) const {
    return *list[index];
 }
 
