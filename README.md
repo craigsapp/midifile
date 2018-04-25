@@ -666,7 +666,7 @@ int main(int argc, char** argv) {
 
 
 
-### How to extract text meta-messages from a file. ###
+### How to extract text meta-messages from a MIDI file. ###
 
 The `MidiMessage::isText()` function will return true if the message
 is a text meta-message.  The following program merges all tracks into
@@ -707,7 +707,7 @@ Extracting lyrics would work the same by using `.isLyricText()` instead of
 
 
 
-### How to convert a Type-1 MIDI file into a Type-0 one ###
+### How to convert a Type-1 MIDI file into a Type-0 MIDI file ###
 
 Here is a demonstration of converting a multi-track MIDI file into
 a single-track MIDI file:
@@ -744,7 +744,7 @@ written as a type-0 (single-track) MIDI file.
 
 
 
-### How to check for a drum track ###
+### How to check for a drum track in a MIDI file ###
 
 In General MIDI files, the drum track is on the 10th channel, which is
 represented by the integer 9.  The following example searches through
@@ -787,7 +787,7 @@ int main(int argc, char** argv) {
 
 
 
-### How to delete percussion notes ###
+### How to delete percussion notes in a MIDI file ###
 
 For some music-analysis applications, it is useful to remove percussion
 notes from a MIDI file.  Here is an example of how that can be done with
@@ -927,7 +927,7 @@ int main(int argc, char** argv) {
 
 
 
-### How to emulate temperaments ###
+### How to emulate temperaments in a MIDI file ###
 
 If you want to simulate temperaments in a Standard MIDI file without
 a synthesizer that specifically knows about temperaments, then this
@@ -1296,7 +1296,7 @@ in C-sharp minor:
 ```
 
 
-### How to create vibrato with pitch-bend messages ###
+### How to create vibrato with pitch-bend messages in a MIDI file ###
 
 This example demonstrates the generation of a constant vibrato for notes
 in a MIDI file (on a particular channel).  The program adds an extra
@@ -1364,6 +1364,80 @@ int main(int argc, char** argv) {
    return 0;
 }
 ```
+
+
+### Polyrhythm generator ###
+
+Here is a program that generates polyrhythm patterns. Command line
+options are:
+
+| option   | default value | meaning                                    |
+|:--------:|:-------------:|:------------------------------------------:|
+| `-a`     |   2           | first instrument's division of the cycle   |
+| `-b`     |   3           | first instrument's division of the cycle   |
+| `-c`     |   10          | number of cycles                           |
+| `-d`     |   2.0         | duration of each cycle                     |
+| `--key1` |   76          | percussion key number for first instrument |
+| `--key2` |   77          | percussion key number for first instrument |
+| `-o`     |               | output filename                            |
+
+
+```cpp
+#include "MidiFile.h"
+#include "Options.h"
+#include <iostream>
+#include <utility>
+#include <cmath>
+using namespace std;
+using namespace smf;
+
+int main(int argc, char** argv) {
+   Options options;
+   options.define("a=i:2",           "cycle division 1");
+   options.define("b=i:3",           "cycle division 2");
+   options.define("c|cycle=i:10",    "cycle count");
+   options.define("d|dur=d:2.0",     "duration of cycle in seconds");
+   options.define("key1=i:76",       "first percussion key number");
+   options.define("key2=i:77",       "second percussion key number");
+   options.define("o|output-file=s", "output filename");
+   options.process(argc, argv);
+
+   int a = options.getInteger("a");
+   int b = options.getInteger("b");
+   int c = options.getInteger("cycle");
+   int key1 = options.getInteger("key1");
+   int key2 = options.getInteger("key2");
+   double dur = options.getDouble("dur");
+   double tempo = 60.0 / dur;
+
+   MidiFile midifile;
+   midifile.setTPQ(a*b);
+   midifile.addTempo(0, 0, tempo);
+   midifile.addTracks(2);
+   for (int i=0; i<b*c + 1; i++) {
+      midifile.addNoteOn(1, i*a, 9, key1, 64);
+      midifile.addNoteOff(1, (i+1)*a, 9, key1);
+   }
+   for (int i=0; i<a*c + 1; i++) {
+      midifile.addNoteOn(2, i*b, 9, key2, 64);
+      midifile.addNoteOff(2, (i+1)*b, 9, key2);
+   }
+
+   string filename  = options.getString("output-file");
+   if (filename.empty()) cout << midifile;
+   else midifile.write(filename);
+   return 0;
+}
+```
+
+This program demonstrates how to set the ticks-per-quarter-note value in the
+MIDI header.  In this case it is set to the factor of `a*b` which is the duration
+of one cycle (so each cycle has the duration of a quarter note).  A tempo meta-message
+is also calculated based on the desired duration of a cycle.
+
+For example, try the options `-a 3 -b 4 -c 200 -d 1 -o 3x4.mid`, which will play
+a 3-against-4 pattern for 200 cycles with each cycle lasting 1 second.  Or here 
+is 11-against-13 for 100 cycles: `-a 11 -b 13 -c 100 -d 5 -o 11x13.mid`.
 
 
 
