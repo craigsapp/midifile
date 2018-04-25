@@ -136,6 +136,7 @@ class MidiFile {
 		MidiEvent*       addEvent                  (int aTrack, int aTick,
 		                                            std::vector<uchar>& midiData);
 		MidiEvent*       addEvent                  (MidiEvent& mfevent);
+		MidiEvent*       addEvent                  (int aTrack, MidiEvent& mfevent);
 		MidiEvent&       getEvent                  (int aTrack, int anIndex);
 		const MidiEvent& getEvent                  (int aTrack, int anIndex) const;
 		int              getEventCount             (int aTrack) const;

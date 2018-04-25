@@ -1507,8 +1507,24 @@ MidiEvent* MidiFile::addEvent(MidiEvent& mfevent) {
 		m_events[0]->push_back(mfevent);
 		return &m_events[0]->back();
 	} else {
-		m_events[mfevent.track]->push_back(mfevent);
-		return &m_events[mfevent.track]->back();
+		m_events.at(mfevent.track)->push_back(mfevent);
+		return &m_events.at(mfevent.track)->back();
+	}
+}
+
+//
+// Variant where the track is an input parameter:
+//
+
+MidiEvent* MidiFile::addEvent(int aTrack, MidiEvent& mfevent) {
+	if (getTrackState() == TRACK_STATE_JOINED) {
+		m_events[0]->push_back(mfevent);
+      m_events[0]->back().track = aTrack;
+		return &m_events[0]->back();
+	} else {
+		m_events.at(aTrack)->push_back(mfevent);
+		m_events.at(aTrack)->back().track = aTrack;
+		return &m_events.at(aTrack)->back();
 	}
 }
 
