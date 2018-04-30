@@ -20,6 +20,7 @@
 #include <stdio.h>
 
 using namespace std;
+using namespace smf;
 
 
 // function declarations:
@@ -113,19 +114,15 @@ void createHenon(double alpha, double beta, double x0, double y0e,
 
    double x = x0;
    double y = y0e;
-   double newx;
-   double newy;
-   int key;
    int termination = 0;
-   int i;
 
-   for (i=0; i<maxcount; i++) {
-      newx = 1 + alpha * x * x + beta * y;
-      newy = x;
+   for (int i=0; i<maxcount; i++) {
+      double newx = 1 + alpha * x * x + beta * y;
+      double newy = x;
       x = newx;
       y = newy;
 
-      key = (int)((x + 1.0)/2.0 * 127.0 + 0.5);
+      int key = (int)((x + 1.0)/2.0 * 127.0 + 0.5);
       if (key < minNote) {
          key = 0;
       }
@@ -203,12 +200,9 @@ int checkTermination(int key) {
       return 0;
    }
 
-   int j;
-   int i;
-   int cycleQ;
-   for (j=1; j<20; j++) {
-      cycleQ = 1;
-      for (i=0; i<40; i++) {
+   for (int j=1; j<20; j++) {
+      int cycleQ = 1;
+      for (int i=0; i<40; i++) {
          if (memory[i] != memory[i+j]) {
             cycleQ = 0;
             break;

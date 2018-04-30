@@ -17,6 +17,9 @@
 ## created, you can compile specific programs with the Makefile.examples
 ## file.
 ##
+## NB: To build on Windows with Visual Studio, use visual-studio/midifile.sln
+##     instead of this Makefile.
+##
 
 ##############################
 ##
@@ -59,6 +62,7 @@ SRCDIR    = src-library
 INCDIR    = include
 LIBDIR    = lib
 LIBFILE   = libmidifile.a
+DYLIBFILE = libmidifile.dylib
 COMPILER  = LANG=C $(ENV) g++ $(ARCH)
 AR        = ar
 RANLIB    = ranlib
@@ -106,8 +110,10 @@ all: makedirs $(OBJS)
 ifeq ($(OSTYPE),OSX)
 	@echo "Creating midifile library file for OSX (Intel)..."
 	-rm -f $(LIBDIR)/$(LIBFILE)
+	-rm -f $(LIBDIR)/$(DYLIBFILE)
 	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o
 	$(RANLIB) $(LIBDIR)/$(LIBFILE)
+	@$(COMPILER) -dynamiclib -o $(LIBDIR)/$(DYLIBFILE) $(OBJDIR)/*.o
 else
 	@echo "Creating midifile library file for linux ..."
 	-rm -f $(LIBDIR)/$(LIBFILE)

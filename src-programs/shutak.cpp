@@ -32,6 +32,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace smf;
 
 // Global variables for command-line options.
 Options  options;            // for command-line processing
@@ -70,7 +71,7 @@ int main(int argc, char** argv) {
 
 void processFile(const string& filename) {
    char buffer[1024] = {0};
-   strncpy(buffer, filename.data(),1000);
+   strncpy(buffer, filename.c_str(),1000);
    char* ptr = strrchr(buffer, '.');
    if (ptr != NULL) {
       *ptr = '\0';
@@ -109,7 +110,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
    int i, j;
    for (i=0; i<(int)sequence.size(); i++) {
       if ((int)sequence[i].size() > maxlen) {
-         maxlen = sequence[i].size();
+         maxlen = (int)sequence[i].size();
       }
    }
 
@@ -150,7 +151,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
 
 void getData(vector<vector<int> >& sequence, const string& filename) {
    ifstream infile;
-   infile.open(filename.data());
+   infile.open(filename.c_str());
    string line;
    int key;
    stringstream sss;

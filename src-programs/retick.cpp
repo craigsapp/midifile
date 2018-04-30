@@ -16,6 +16,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 // user interface variables
 

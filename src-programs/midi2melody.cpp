@@ -16,6 +16,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 class Melody {
    public:
@@ -73,9 +74,6 @@ void sortMelody(vector<Melody>& melody) {
 //
 
 void printMelody(vector<Melody>& melody, int tpq) {
-   int i;
-   double delta = 0;
-
    if (melody.size() < 1) {
       return;
    }
@@ -87,8 +85,8 @@ void printMelody(vector<Melody>& melody, int tpq) {
    temp.duration = 0;
    melody.push_back(temp);
 
-   for (i=0; i<(int)melody.size()-1; i++) {
-      delta = melody[i+1].tick - melody[i].tick;
+   for (int i=0; i<(int)melody.size()-1; i++) {
+      double delta = melody[i+1].tick - melody[i].tick;
       if (delta == 0) {
          continue;
       }
@@ -192,7 +190,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -200,7 +198,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 
@@ -237,8 +235,8 @@ void usage(const char* command) {
 //
 
 int notecompare(const void* a, const void* b) {
-   Melody& aa = *((Melody*)a);
-   Melody& bb = *((Melody*)b);
+   const Melody& aa = *static_cast<const Melody*>(a);
+   const Melody& bb = *static_cast<const Melody*>(b);
 
    if (aa.tick < bb.tick) {
       return -1;

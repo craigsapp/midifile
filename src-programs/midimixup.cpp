@@ -17,6 +17,7 @@
 #include <iterator>
 
 using namespace std;
+using namespace smf;
 
 // function declarations:
 void checkOptions         (Options& opts);
@@ -90,7 +91,7 @@ int main(int argc, char** argv) {
 //
 
 void reverseNotes(vector<MidiEvent*>& notes) {
-   int count = notes.size();
+   int count = (int)notes.size();
    for (int i=0; i<count/2; i++) {
       swapNotes(notes, i, count-1-i);
    }
@@ -108,7 +109,7 @@ void randomizeNotes(vector<MidiEvent*>& notes) {
    random_device rd;
    mt19937 md(rd());
    uniform_real_distribution<double> dist(0, 100);
-   int count = notes.size();
+   int count = (int)notes.size();
    vector<pairing> neworder;
    neworder.resize(notes.size());
    int i;
@@ -180,7 +181,7 @@ void checkOptions(Options& opts) {
       cout << "compiled: " << __DATE__ << endl;
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    }
    if (opts.getBoolean("example")) {

@@ -20,6 +20,7 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -29,6 +30,7 @@
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 // Four types of event time display:
 #define TICK 1            /* time units are MIDI file ticks (absolute)     */
@@ -82,8 +84,6 @@ const char *GMinstrument[128] = {
 vector<int> legend_instr;
 vector<int> legend_opcode;
 vector<int> legend_controller;
-
-typedef unsigned char uchar;
 
 // user interface variables
 Options options;
@@ -205,7 +205,6 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
 
    int key = 0;
    int vel = 0;
-   int command = 0;
 
    if (verboseQ) {
       cout << "-1\ttpq\t" << midifile.getTicksPerQuarterNote() << endl;
@@ -213,7 +212,7 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
       event.assign(event.size(), unused);
-      command = midifile[0][i][0] & 0xf0;
+      int command = midifile[0][i][0] & 0xf0;
       if (command == 0xf0) {
          command = midifile[0][i][0];
       }
@@ -495,7 +494,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -508,7 +507,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    numQ     = opts.getBoolean("num");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 
@@ -516,7 +515,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    secQ  = opts.getBoolean("seconds");
    msecQ = opts.getBoolean("milliseconds");
    beatQ = opts.getBoolean("beats");
-   strcpy(arrayname, opts.getString("name").data());
+   strcpy(arrayname, opts.getString("name").c_str());
 
    if (tickQ) {
       timetype = TICK;
@@ -941,7 +940,7 @@ void printEvent(vector<double>& event) {
    int i;
    for (i=0; i<(int)event.size(); i++) {
       if ((i == 1) && (!numQ)) {
-         printOpName(event[i]);
+         printOpName((int)event[i]);
          cout << ",\t";
          continue;
       }

@@ -12,6 +12,7 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
@@ -21,6 +22,7 @@
 #include <vector>
 
 using namespace std;
+using namespace smf;
 
 #define TICK 1
 #define BEAT 2
@@ -63,8 +65,6 @@ const char *GMinstrument[128] = {
 vector<int> legend_instr;
 vector<int> legend_opcode;
 vector<int> legend_controller;
-
-typedef unsigned char uchar;
 
 // user interface variables
 Options options;
@@ -148,24 +148,21 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
       onvelocities[i] = -1;
    }
 
-   double offtime = 0.0;
-
-   int key = 0;
-   int vel = 0;
-   int command = 0;
-
    if (verboseQ) {
       cout << "-1\ttpq\t" << midifile.getTicksPerQuarterNote() << endl;
    }
-   int channel;
+
+   double offtime = 0.0;
+   int key = 0;
+   int vel = 0;
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
       if (verboseQ) {
          cout << ">>> " << (int)midifile[0][i][0] << "\n";
       }
       event.assign(event.size(), unused);
-      command = midifile[0][i][0] & 0xf0;
-      channel = midifile[0][i][0] & 0x0f;
+      int command = midifile[0][i][0] & 0xf0;
+      int channel = midifile[0][i][0] & 0x0f;
 
       // check for tempo indication
       if (midifile[0][i][0] == 0xff &&
@@ -279,7 +276,6 @@ void convertMidiFile(MidiFile& midifile, vector<vector<double> >& matlab) {
          matlab.push_back(event);
       }
    }
-
 }
 
 
@@ -381,7 +377,6 @@ double getTime(int ticks, double tempo, int tpq) {
 //
 
 void setTempo(MidiFile& midifile, int index, double& tempo) {
-   double newtempo = 0.0;
    static int count = 0;
    count++;
    vector<double> event;
@@ -394,7 +389,7 @@ void setTempo(MidiFile& midifile, int index, double& tempo) {
    microseconds = microseconds | (mididata[4] << 8);
    microseconds = microseconds | (mididata[5] << 0);
 
-   newtempo = 60.0 / microseconds * 1000000.0;
+   double newtempo = 60.0 / microseconds * 1000000.0;
    if (count <= 1) {
       tempo = newtempo;
    } else if (tempo != newtempo) {
@@ -453,7 +448,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -465,11 +460,11 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    maxcount = opts.getInteger("max");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 
-   setFilterOptions(channelfilter, opts.getString("exclude").data());
+   setFilterOptions(channelfilter, opts.getString("exclude").c_str());
    if (opts.getBoolean("no-drum")) {
       // turn off MIDI channel 10
       channelfilter[9] = 0;
@@ -479,7 +474,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    secQ  = opts.getBoolean("seconds");
    msecQ = opts.getBoolean("milliseconds");
    beatQ = opts.getBoolean("beats");
-   strcpy(arrayname, opts.getString("name").data());
+   strcpy(arrayname, opts.getString("name").c_str());
 
    if (tickQ) {
       timetype = TICK;
@@ -517,13 +512,11 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void setFilterOptions(vector<int>& channelfilter, const char* exclude) {
-   int length = strlen(exclude);
-   int character;
-   int i;
+   int length = (int)strlen(exclude);
    int value;
 
-   for (i=0; i<length; i++) {
-      character = toupper(exclude[i]);
+   for (int i=0; i<length; i++) {
+      int character = toupper(exclude[i]);
       if (!isxdigit(character)) {
          continue;
       }

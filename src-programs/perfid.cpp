@@ -17,6 +17,7 @@
 #include <vector>
 
 using namespace std;
+using namespace smf;
 
 // user interface variables:
 Options options;
@@ -121,7 +122,7 @@ void printID(vector<int>& noteondeltas) {
    }
    deltas.push_back(noteondeltas.back());
    hist.push_back(count);
-   int size = deltas.size();
+   int size = (int)deltas.size();
    if (size > 2) {
       if (deltas[0] == 0 && hist[0] > 10 && deltas[1] >= 10) {
          cout << "Quantized" << endl;
@@ -251,7 +252,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -265,7 +266,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    fileQ    = opts.getBoolean("file");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 }

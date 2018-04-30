@@ -10,22 +10,26 @@
 //                on a single channel playing a single note at a time)
 //
 
+#include "MidiFile.h"
+#include "Options.h"
 
 #include <iostream>
 #include <cmath>
 #include <unistd.h>     // usleep()
-#include <sys/io.h>
-
-#include "MidiFile.h"
-#include "Options.h"
-
 #include <signal.h>
 
+#ifdef __APPLE__
+    #include <sys/uio.h>
+#else
+    #include <sys/io.h>
+#endif
+
+
 using namespace std;
+using namespace smf;
 
 void beepOff(int)
 {
-
     int r = inb(0x61);
     outb(r|3, 0x61);
     outb(r & 0xFC, 0x61);
@@ -35,16 +39,14 @@ void beepOff(int)
 
 void beep(int fre, int usDuration)
 {
-    int r, ff;
-
-    if(fre > 0) {
-        ff = 1193180/fre;
+    if (fre > 0) {
+        int ff = 1193180/fre;
         outb( 0xB6,            0x43);
         outb( ff & 0xff,       0x42);
         outb((ff >> 8) & 0xff, 0x42);
     }
 
-    r = inb(0x61);
+    int r = inb(0x61);
     if(fre > 0) outb(r|3, 0x61);
     usleep(usDuration);
     outb(r & 0xFC, 0x61);
@@ -110,8 +112,8 @@ int main(int argc, char** argv)
         }
     }
 
-
     return 0;
 }
+
 
 

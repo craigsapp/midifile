@@ -14,12 +14,12 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+
 #include <iostream>
 #include <iomanip>
 
 using namespace std;
-
-typedef unsigned char uchar;
+using namespace smf;
 
 void    convertMidiFile         (MidiFile& midifile);
 void    printMidiHeader         (MidiFile& midifile);
@@ -177,7 +177,7 @@ int getTrackByteCount(MidiFile& midifile, int track) {
    for (i=0; i<eventcount; i++) {
       event = midifile.getEvent(track, i);
       sum += getVlvSize(event.tick);
-      sum += event.size();
+      sum += (int)event.size();
    }
    return sum;
 }
@@ -278,7 +278,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -288,7 +288,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    debugQ   = opts.getBoolean("debug");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 
