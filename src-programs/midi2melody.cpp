@@ -42,6 +42,7 @@ int       notecompare       (const void* a, const void* b);
 int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile midifile(options.getArg(1));
+   midifile.joinTracks();
 
    vector<Melody> melody;
    convertToMelody(midifile, melody);
