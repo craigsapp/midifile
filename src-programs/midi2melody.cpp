@@ -43,7 +43,13 @@ int       notecompare       (const void* a, const void* b);
 int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
    MidiFile midifile(options.getArg(1));
-   midifile.joinTracks();
+   if (options.getBoolean("track-count")) {
+      cout << midifile.getTrackCount() << endl;
+      return 0;
+   }
+   if (!options.getBoolean("track")) {
+      midifile.joinTracks();
+   } 
 
    vector<Melody> melody;
    convertToMelody(midifile, melody);
@@ -172,7 +178,8 @@ noteoff:
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("t|track=i:0",  "Track from which to extract melody");
+   opts.define("t|track=i:0",        "Track from which to extract melody");
+   options.define("c|track-count=b", "List number of tracks");
 
    opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
