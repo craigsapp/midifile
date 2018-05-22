@@ -2202,6 +2202,9 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 
 	for (int i=aTrack2; i<length-1; i++) {
 		m_events[i] = m_events[i+1];
+		for (int j=0; j<(int)m_events[i]->size(); j++) {
+			(*m_events[i])[j].track = i;
+		}
 	}
 
 	m_events[length-1] = NULL;
