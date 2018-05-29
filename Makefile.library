@@ -113,7 +113,7 @@ ifeq ($(OSTYPE),OSX)
 	-rm -f $(LIBDIR)/$(DYLIBFILE)
 	$(AR) r $(LIBDIR)/$(LIBFILE) $(OBJDIR)/*.o
 	$(RANLIB) $(LIBDIR)/$(LIBFILE)
-	@$(COMPILER) -dynamiclib -o $(LIBDIR)/$(DYLIBFILE) $(OBJDIR)/*.o
+#	@$(COMPILER) -dynamiclib -o $(LIBDIR)/$(DYLIBFILE) $(OBJDIR)/*.o
 else
 	@echo "Creating midifile library file for linux ..."
 	-rm -f $(LIBDIR)/$(LIBFILE)
