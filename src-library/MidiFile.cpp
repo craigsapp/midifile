@@ -2185,12 +2185,11 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 	if (oldTimeState == TIME_STATE_DELTA) {
 		makeAbsoluteTicks();
 	}
-	int i, j;
 	int length = getNumTracks();
-	for (i=0; i<(int)m_events[aTrack1]->size(); i++) {
+	for (int i=0; i<(int)m_events[aTrack1]->size(); i++) {
 		mergedTrack->push_back((*m_events[aTrack1])[i]);
 	}
-	for (j=0; j<(int)m_events[aTrack2]->size(); j++) {
+	for (int j=0; j<(int)m_events[aTrack2]->size(); j++) {
 		(*m_events[aTrack2])[j].track = aTrack1;
 		mergedTrack->push_back((*m_events[aTrack2])[j]);
 	}
@@ -2201,11 +2200,14 @@ void MidiFile::mergeTracks(int aTrack1, int aTrack2) {
 
 	m_events[aTrack1] = mergedTrack;
 
-	for (i=aTrack2; i<length-1; i++) {
+	for (int i=aTrack2; i<length-1; i++) {
 		m_events[i] = m_events[i+1];
+		for (int j=0; j<(int)m_events[i]->size(); j++) {
+			(*m_events[i])[j].track = i;
+		}
 	}
 
-	m_events[length] = NULL;
+	m_events[length-1] = NULL;
 	m_events.resize(length-1);
 
 	if (oldTimeState == TIME_STATE_DELTA) {
