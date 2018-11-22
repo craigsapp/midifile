@@ -1536,7 +1536,7 @@ MidiEvent* MidiFile::addEvent(int aTrack, MidiEvent& mfevent) {
 //
 
 MidiEvent* MidiFile::addMetaEvent(int aTrack, int aTick, int aType,
-		std::vector<uchar>& metaData) {
+		const std::vector<uchar>& metaData) {
 	m_timemapvalid = 0;
 	int i;
 	int length = (int)metaData.size();

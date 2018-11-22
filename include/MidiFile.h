@@ -182,7 +182,7 @@ class MidiFile {
 		// Meta-event adding convenience functions:
 		MidiEvent*         addMetaEvent           (int aTrack, int aTick,
 		                                           int aType,
-		                                           std::vector<uchar>& metaData);
+		                                           const std::vector<uchar>& metaData);
 		MidiEvent*         addMetaEvent           (int aTrack, int aTick,
 		                                           int aType,
 		                                           const std::string& metaData);
