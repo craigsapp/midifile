@@ -28,6 +28,7 @@ void      example           (void);
 void      usage             (const char* command);
 void      appendMidi        (MidiFile& outfile, const char* filename,
                              double seconds, int initQ);
+double 	  correctTempo		(double oldTempo, int oldTpq, int newTpq);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -61,6 +62,19 @@ int main(int argc, char* argv[]) {
    }
 
    return 0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////
+//
+// correctTempo -- Corrects the problem of tempo distortion due to difference in tpq of the two midi files being concatenated. 
+// 				   Returns the new tempo which = oldTempo * newTpq / oldTpq
+//
+
+int correctTempo(int oldTempo, int oldTpq, int newTpq) {
+	return (oldTempo * newTpq / oldTpq);
 }
 
 
@@ -118,12 +132,18 @@ void appendMidi(MidiFile& outfile, const char* filename,
       infile.getEvent(0,0).tick = int(seconds * 2 * tpq + 0.5);
    }
 
+   int tpqInfile = infile.getTicksPerQuarterNote();
    count = infile.getEventCount(0);
    // don't include end-of-track meta event
    count--;
    for (i=0; i<count; i++) {
       anevent = infile.getEvent(0,i);
       anevent.track = 0;
+	  if (anevent.isTempo()) {
+		  int oldTempo = anevent.getTempoMicroseconds();
+		  int newTempo = correctTempo(oldTempo, tpqInfile, tpq);
+		  anevent.setTempoMicroseconds(newTempo);
+	  }
       outfile.addEvent(anevent);
    }
 }
