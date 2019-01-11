@@ -28,7 +28,7 @@ void      example           (void);
 void      usage             (const char* command);
 void      appendMidi        (MidiFile& outfile, const char* filename,
                              double seconds, int initQ);
-double 	  correctTempo		(double oldTempo, int oldTpq, int newTpq);
+double 	  correctTempo		(int oldTempo, int oldTpq, int newTpq);
 
 //////////////////////////////////////////////////////////////////////////
 
