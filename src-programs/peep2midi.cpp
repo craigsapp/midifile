@@ -12,11 +12,13 @@
 #include "MidiFile.h"
 #include "humdrum.h"
 #include "Options.h"
+
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
 
-typedef unsigned char uchar;
+using namespace std;
+using namespace smf;
 
 // user interface variables
 Options options;
@@ -293,9 +295,8 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    filename = opts.getString("output");
-   int count;
    if (opts.getBoolean("range")) {
-      count = sscanf(opts.getString("range"), "%d-%d", &mindyn, &maxdyn);
+      int count = sscanf(opts.getString("range"), "%d-%d", &mindyn, &maxdyn);
       if (count != 2) {
          count = sscanf(opts.getString("range"), "%d:%d", &mindyn, &maxdyn);
       }
@@ -306,7 +307,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
          count = sscanf(opts.getString("range"), "%d, %d", &mindyn, &maxdyn);
       }
       if (count != 2) {
-         count = sscanf(opts.getString("range"), "%d %d", &mindyn, &maxdyn);
+         /* count = */ sscanf(opts.getString("range"), "%d %d", &mindyn, &maxdyn);
       }
    }
 

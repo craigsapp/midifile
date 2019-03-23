@@ -16,6 +16,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 // Global variables for command-line options.
 Options  options;

@@ -17,6 +17,7 @@
 #include <iomanip>
 
 using namespace std;
+using namespace smf;
 
 // user interface variables:
 Options options;
@@ -55,17 +56,15 @@ int main(int argc, char* argv[]) {
 //
 
 void printMidiAsSkini(MidiFile& midifile) {
-   int      tpq      = midifile.getTicksPerQuarterNote();
-   int      oldticks = 0;          // absolute ticks of last event
-   int      ticks    = 0;          // absolute ticks of current event
-   double   tempo    = 120.0;      // time units will be in seconds
-   MidiEvent  event;                 // temporary event for printing
-   double  curtime  = 0.0;         // current time in seconds
-   int      i;
+   int       tpq      = midifile.getTicksPerQuarterNote();
+   int       ticks    = 0;     // absolute ticks of current event
+   double    tempo    = 120.0; // time units will be in seconds
+   double    curtime  = 0.0;   // current time in seconds
+   int       i;
 
    for (i=0; i<midifile.getNumEvents(0); i++) {
-      oldticks = ticks;
-      event = midifile.getEvent(0, i);
+      int oldticks = ticks;
+      MidiEvent event = midifile.getEvent(0, i);
       ticks = event.tick;
       if (i>0) {
          curtime += (ticks - oldticks) * 60.0 / tempo / tpq;
@@ -180,7 +179,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -192,7 +191,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    maxcount = opts.getInteger("max");
 
    if (opts.getArgCount() != 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 }

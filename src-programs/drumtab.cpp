@@ -14,6 +14,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 #define HIGH_HAT    59
 #define SNARE       38
@@ -22,7 +23,6 @@ using namespace std;
 #define QUARTER   120        /* ticks per quarter note */
 #define SIXTEENTH 30         /* ticks per sixteenth note */
 
-typedef unsigned char uchar;
 void AddDrumTrack(MidiFile& midifile, int* data, int instrument, int ticks);
 
 ///////////////////////////////////////////////////////////////////////////

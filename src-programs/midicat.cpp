@@ -15,6 +15,7 @@
 #include <vector>
 
 using namespace std;
+using namespace smf;
 
 // user interface variables
 Options options;
@@ -39,7 +40,7 @@ int main(int argc, char* argv[]) {
    int i;
    int initQ = 0;
    for (i=1; i<=options.getArgCount(); i++) {
-      appendMidi(outfile, options.getArg(i).data(), seconds, initQ++);
+      appendMidi(outfile, options.getArg(i).c_str(), seconds, initQ++);
    }
 
    // insert an end-of track Meta Event
@@ -154,7 +155,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       cout << "compiled: " << __DATE__ << endl;
       exit(0);
    } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    } else if (opts.getBoolean("example")) {
       example();
@@ -162,7 +163,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
    }
 
    if (opts.getArgCount() <= 1) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 

@@ -14,6 +14,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 #define STYLE_TIME_DELTA      'd'
 #define STYLE_TIME_ABSOLUTE   'a'
@@ -30,17 +31,16 @@ void  usage           (const char* command);
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;
    MidiFile  inputfile;
    Options   options(argc, argv);
 
    checkOptions(options);
    for (int i=1; i<=options.getArgCount(); i++) {
-      status = inputfile.read(options.getArg(i));
+      bool status = inputfile.read(options.getArg(i));
       if (options.getArgCount() > 1) {
          cout << "\n\n\n+++ FILE " << i << "++++++++++++++++++++++++++++\n\n";
       }
-      if (status != 0) {
+      if (status == true) {
          switch (timestyle) {
             case 'd': inputfile.deltaTicks();    break;
             case 'a': inputfile.absoluteTicks(); break;
@@ -81,7 +81,7 @@ void checkOptions(Options& opts) {
       cout << "compiled: " << __DATE__ << endl;
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    }
    if (opts.getBoolean("example")) {
@@ -92,7 +92,7 @@ void checkOptions(Options& opts) {
    // can only have one output filename
    if (opts.getArgCount() == 0) {
       cout << "Error: need one input MIDI file." << endl;
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(1);
    }
 

@@ -15,6 +15,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace smf;
 
 // function declarations:
 void   checkOptions        (Options& opts);
@@ -56,19 +57,14 @@ int main(int argc, char** argv) {
 void processMidiFile(MidiFile& midifile) {
    midifile.absoluteTicks();
    midifile.joinTracks();
-   int i, j;
    int eventcount = midifile.getEventCount(0);
-   int track;
-   int timeinticks;
-   double timeinsecs;
    MidiEvent *ptr;
-   int attack;
-   for (i=0; i<eventcount; i++) {
+   for (int i=0; i<eventcount; i++) {
       ptr = &(midifile[0][i]);
-      track       = ptr->track;
-      timeinticks = ptr->tick;
-      timeinsecs  = midifile.getTimeInSeconds(0, i);
-      attack = ((*ptr)[0] & 0xf0) == 0x90;
+      int track       = ptr->track;
+      int timeinticks = ptr->tick;
+      double timeinsecs  = midifile.getTimeInSeconds(0, i);
+      int attack = ((*ptr)[0] & 0xf0) == 0x90;
       if (onsetQ && !attack) {
          continue;
       }
@@ -82,7 +78,7 @@ void processMidiFile(MidiFile& midifile) {
       cout << timeinsecs << "\t";
       cout << track << "\t";
       cout << i << "\t";
-      for (j=0; j<(int)ptr->size(); j++) {
+      for (int j=0; j<(int)ptr->size(); j++) {
          if (j == 0) {
             cout << "0x" << hex << (int)(*ptr)[j] << dec << " ";
          } else {
@@ -119,7 +115,7 @@ void checkOptions(Options& opts) {
       cout << "compiled: " << __DATE__ << endl;
    }
    if (opts.getBoolean("help")) {
-      usage(opts.getCommand().data());
+      usage(opts.getCommand().c_str());
       exit(0);
    }
    if (opts.getBoolean("example")) {

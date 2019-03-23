@@ -12,8 +12,7 @@
 #include <iostream>
 
 using namespace std;
-
-typedef unsigned char uchar;
+using namespace smf;
 
 ///////////////////////////////////////////////////////////////////////////
 
