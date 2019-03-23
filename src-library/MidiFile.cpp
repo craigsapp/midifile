@@ -697,9 +697,11 @@ int MidiFile::writeHex(ostream& out, int width) {
    int len = (int)tempstream.str().length();
    int wordcount = 1;
    int linewidth = width >= 0 ? width : 25;
+   char buffer[1024] = {0};
    for (int i=0; i<len; i++) {
       value = (unsigned char)tempstream.str()[i];
-      printf("%02x", value);
+      sprintf(buffer, "%02x", value);
+      out << buffer;
       if (linewidth) {
          if (i < len - 1) {
             out << (wordcount % linewidth ? ' ' : '\n');
