@@ -24,16 +24,20 @@ void      checkOptions          (Options& opts, int argc, char* argv[]);
 void      usage                 (const char* command);
 void      example               (void);
 double    getTotalDuration      (MidiFile& midifile);
+string    minutes               (double seconds);
 
 
 //////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
-
+	int fileQ  = options.getBoolean("filename");
+	int minuteQ = options.getBoolean("minute");
 
    MidiFile midifile;
 
+	int counter = 0;
+	double sum = 0.0;
    int numinputs = options.getArgCount();
    for (int i=0; i < numinputs || i==0; i++) {
       midifile.clear();
@@ -45,13 +49,80 @@ int main(int argc, char* argv[]) {
       if (options.getArgCount() > 1) {
          cout << options.getArg(i+1) << "\t";
       }
-      cout << getTotalDuration(midifile);
+		double duration = getTotalDuration(midifile);
+		sum += duration;
+		counter++;
+      cout << duration;
+		if (minuteQ) {
+			cout << "\t" << minutes(duration);
+		}
+		if (fileQ) {
+			cout << "\t";
+			cout << midifile.getFilename();
+		}
       cout << endl;
    }
+	if (counter > 1) {
+		cout << "TOTAL\t" << sum;
+		if (minuteQ) {
+			cout << "\t" << minutes(sum);
+		}
+		cout << endl;
+		cout << "AVERAGE\t" << sum/counter;
+		if (minuteQ) {
+			cout << "\t" << minutes(sum/counter);
+		}
+		cout << endl;
+	}
 }
 
 
 //////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////
+//
+// minutes -- display time in seconds as minutes mm:ss, or hh:mm:ss if 
+//    an hour or longer
+//
+
+string minutes(double seconds) {
+	int minutes = seconds / 60;
+	seconds = seconds - minutes * 60;
+	if (seconds - int(seconds) >= 0.5) {
+		seconds = int(seconds) + 1;
+	} else{
+		seconds = int(seconds);
+	}
+	if (seconds == 60) {
+		minutes++;
+		seconds = 0;
+	}
+	int hours = minutes / 60;
+	if (hours >= 1) {
+		minutes = minutes - hours * 60;
+	}
+
+	string output;
+	if (hours) {
+		output += to_string(hours);
+		output += ":";
+		if (minutes < 10) {
+			output += "0";
+		}
+	}
+	output += to_string(minutes);
+	output += ":";
+	if (seconds < 10) {
+		output += "0";
+	}
+	int isec = seconds;
+	output += to_string(isec);
+	return output;
+}
+
+
 
 
 //////////////////////////////
@@ -73,6 +144,8 @@ double getTotalDuration(MidiFile& midifile) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
+	opts.define("f|filename=b", "display filename after duration");
+	opts.define("m|minute|minutes=b", "also display duration in minutes after seconds display");
 
    opts.define("author=b",  "author of program");
    opts.define("version=b", "compilation info");
