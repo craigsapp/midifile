@@ -29,10 +29,9 @@
 ##
 
 # targets which don't actually refer to files
-.PHONY : all info library examples programs bin options clean lib
+.PHONY : all info library examples programs cs4995 bin options clean lib
 
-
-all: info library programs lib
+all: info library lib cs4995 #programs
 
 
 info:
@@ -55,6 +54,8 @@ lib: library
 library:
 	$(MAKE) -f Makefile.library
 
+cs4995:
+	$(MAKE) -f Makefile.cs4995
 
 clean:
 	$(MAKE) -f Makefile.library clean
