@@ -1,8 +1,10 @@
+#ifndef NOTE_HPP_
+#define NOTE_HPP_
+
 #include <map>
 #include <iostream>
 #include <string>
 #include <sstream>
-#include "MidiFile.h"
 
 namespace smf {
 
@@ -10,11 +12,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-int DEFAULT_OCTAVE = 5;
-int DEFAULT_VELOCITY = 64;
-int NOTE_ON = 0x90;
-int NOTE_OFF = 0x80;
-
+uint8_t DEFAULT_OCTAVE = 5;
 string EXTEND = "-";
 string REST = ".";
 
@@ -26,7 +24,7 @@ map<char, BasePitch> charPitchMap {
     {'C', C}, {'D', D}, {'E', E}, {'F', F}, {'G', G}, {'A', A}, {'B', B}
 };
 
-map<char, int> charAccidentalMap { {'#', 1}, {'b', -1} };
+map<char, int8_t> charAccidentalMap { {'#', 1}, {'b', -1} };
 
 bool isBasePitch(char c) {
     return charPitchMap.find(c) != charPitchMap.end();
@@ -40,7 +38,7 @@ bool isAccidental(char c) {
     return charAccidentalMap.find(c) != charAccidentalMap.end();
 }
 
-int toAccidental(char c) {
+int8_t toAccidental(char c) {
     return charAccidentalMap[c];
 }
 
@@ -48,26 +46,26 @@ bool isOctave(char c) {
     return '0' <= c && c <= '9';
 }
 
-unsigned int toOctave(char c) {
-    return (int) (c - '0');
+uint8_t toOctave(char c) {
+    return (uint8_t) (c - '0');
 }
 
 class Pitch {
 private:
     BasePitch base;
-    int accidental; // sharp = 1, flat = -1
-    unsigned int octave;
+    int8_t accidental; // sharp = 1, flat = -1
+    uint8_t octave;
 
 public:
-    Pitch(BasePitch base = C, int accidental = 0,
-          unsigned int octave = DEFAULT_OCTAVE) :
+    Pitch(BasePitch base = C, int8_t accidental = 0,
+          uint8_t octave = DEFAULT_OCTAVE) :
         base(base), accidental(accidental), octave(octave) {}
 
     BasePitch getBasePitch() {
         return base;
     }
 
-    int toInt() {
+    uint8_t toInt() {
         return base + accidental + 12 * octave;
     }
 
@@ -109,56 +107,14 @@ public:
     }
 };
 
-class MidiOutput {
-private:
-    int tpq;
-    int velocity;
-    vector< vector<Note> > tracks;
-
-public:
-    MidiOutput(int tpq = 120, int velocity = DEFAULT_VELOCITY) :
-        tpq(tpq), velocity(velocity) {}
-
-    void addTrack(vector<Note> trk) {
-        tracks.push_back(trk);
-    }
-
-    void write(string filename) {
-        MidiFile outputFile;
-        outputFile.absoluteTicks();
-        outputFile.setTicksPerQuarterNote(tpq);
-        outputFile.addTracks(tracks.size());
-        for (int track_num = 0; track_num < tracks.size(); track_num++) {
-            int actionTime = 0;
-            for (Note n : tracks[track_num]) {
-                if (n.isRest()) {
-                    actionTime += tpq * n.getLength();
-                } else {
-                    vector<uchar> midievent;
-                    midievent.resize(3);
-                    midievent[0] = NOTE_ON;
-                    midievent[1] = n.getPitch().toInt();
-                    midievent[2] = velocity;
-                    outputFile.addEvent(track_num + 1, actionTime, midievent);
-                    actionTime += tpq * n.getLength();
-                    midievent[0] = NOTE_OFF;
-                    outputFile.addEvent(track_num + 1, actionTime, midievent);
-                }
-            }
-        }
-        outputFile.sortTracks();
-        outputFile.write(filename);
-    }
-};
-
 Pitch toPitch(string s) {
     if (s.length() == 0) {
         std::cerr << "Invalid conversion from empty string to Pitch.\n";
         exit(1);
     }
     BasePitch base = toBasePitch(s[0]);
-    int accidental = 0;
-    unsigned int octave = DEFAULT_OCTAVE;
+    int8_t accidental = 0;
+    uint8_t octave = DEFAULT_OCTAVE;
     if (s.length() == 2) {
         if (isAccidental(s[1])) {
             accidental = toAccidental(s[1]);
@@ -206,3 +162,5 @@ vector<Note> toMelody(string s) {
 }
 
 } // namespace smf
+
+#endif

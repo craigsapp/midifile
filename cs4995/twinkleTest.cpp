@@ -1,9 +1,5 @@
-#include <map>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include "MidiFile.h"
-#include "MidiObject.hpp"
+#include "MidiOutput.hpp"
+#include "Note.hpp"
 
 using namespace smf;
 
