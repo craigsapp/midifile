@@ -24,7 +24,9 @@ map<char, BasePitch> charPitchMap {
     {'C', C}, {'D', D}, {'E', E}, {'F', F}, {'G', G}, {'A', A}, {'B', B}
 };
 
-map<char, int8_t> charAccidentalMap { {'#', 1}, {'b', -1} };
+map<char, int8_t> charAccidentalMap {
+    {'#', 1} /* sharp */, {'b', -1} /* flat */
+};
 
 bool isBasePitch(char c) {
     return charPitchMap.find(c) != charPitchMap.end();
@@ -50,10 +52,14 @@ uint8_t toOctave(char c) {
     return (uint8_t) (c - '0');
 }
 
+/*
+ * A Pitch is composed of a base note, an optional accidental, and an octave.
+ * For example, middle C is { C, 0, 5 }.
+ */
 class Pitch {
 private:
     BasePitch base;
-    int8_t accidental; // sharp = 1, flat = -1
+    int8_t accidental; // e.g. sharp or flat
     uint8_t octave;
 
 public:
@@ -107,6 +113,11 @@ public:
     }
 };
 
+/*
+ * Currently, a Pitch can be represented by a string with base pitch and
+ * optionally, accidental and octave. "C", "C#", "C3", "C#3" are all examples
+ * of valid notes.
+ */
 Pitch toPitch(string s) {
     if (s.length() == 0) {
         std::cerr << "Invalid conversion from empty string to Pitch.\n";
@@ -126,39 +137,6 @@ Pitch toPitch(string s) {
         octave = toOctave(s[2]);
     }
     return Pitch{ base, accidental, octave };
-}
-
-vector<string> tokenize(string str, char delimiter) {
-    vector<string> tokens;
-    std::stringstream stream(str);
-    string intermediate;
-    while(getline(stream, intermediate, delimiter)) {
-        if (intermediate.length() > 0) {
-            tokens.push_back(intermediate);
-        }
-    }
-    return tokens;
-}
-
-vector<Note> toMelody(string s) {
-    vector<Note> melody;
-    vector<string> tokens = tokenize(s, ' ');
-    if (tokens.size() == 0) {
-        return melody;
-    }
-
-    auto it = tokens.begin();
-    while (it < tokens.end()) {
-        Note n; // default: quarter rest
-        if (it->compare(REST) != 0) {
-            n = Note{toPitch(*it)};
-        }
-        while(++it < tokens.end() && it->compare(EXTEND) == 0) {
-            n.incrementLength();
-        }
-        melody.push_back(n);
-    }
-    return melody;
 }
 
 } // namespace smf
