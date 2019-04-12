@@ -1303,7 +1303,7 @@ double MidiFile::getFileDurationInSeconds(void) {
 	const MidiFile& mf = *this;
 	double output = 0.0;
 	for (int i=0; i<mf.getTrackCount(); i++) {
-		if (mf[i].back().tick > output) {
+		if (mf[i].back().seconds > output) {
 			output = mf[i].back().seconds;
 		}
 	}
