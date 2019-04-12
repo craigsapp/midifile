@@ -12,7 +12,8 @@ using std::map;
 using std::string;
 using std::vector;
 
-uint8_t DEFAULT_OCTAVE = 5;
+int OCTAVE_WIDTH = 12;
+int DEFAULT_OCTAVE = 5;
 string EXTEND = "-";
 string REST = ".";
 
@@ -24,7 +25,7 @@ map<char, BasePitch> charPitchMap {
     {'C', C}, {'D', D}, {'E', E}, {'F', F}, {'G', G}, {'A', A}, {'B', B}
 };
 
-map<char, int8_t> charAccidentalMap {
+map<char, int> charAccidentalMap {
     {'#', 1} /* sharp */, {'b', -1} /* flat */
 };
 
@@ -40,7 +41,7 @@ bool isAccidental(char c) {
     return charAccidentalMap.find(c) != charAccidentalMap.end();
 }
 
-int8_t toAccidental(char c) {
+int toAccidental(char c) {
     return charAccidentalMap[c];
 }
 
@@ -48,8 +49,8 @@ bool isOctave(char c) {
     return '0' <= c && c <= '9';
 }
 
-uint8_t toOctave(char c) {
-    return (uint8_t) (c - '0');
+int toOctave(char c) {
+    return (int) (c - '0');
 }
 
 /*
@@ -59,20 +60,82 @@ uint8_t toOctave(char c) {
 class Pitch {
 private:
     BasePitch base;
-    int8_t accidental; // e.g. sharp or flat
-    uint8_t octave;
+    int accidental; // e.g. sharp or flat
+    int octave;
 
 public:
-    Pitch(BasePitch base = C, int8_t accidental = 0,
-          uint8_t octave = DEFAULT_OCTAVE) :
+    Pitch(BasePitch base = C, int accidental = 0,
+          int octave = DEFAULT_OCTAVE) :
         base(base), accidental(accidental), octave(octave) {}
+
+    /*
+     * Currently, a Pitch can be represented by a string with base pitch and
+     * optionally, accidental and octave. "C", "C#", "C3", "C#3" are all examples
+     * of valid notes.
+     */
+    Pitch(string s) {
+        if (s.length() == 0) {
+            std::cerr << "Invalid conversion from empty string to Pitch.\n";
+            exit(1);
+        }
+        base = toBasePitch(s[0]);
+        accidental = 0;
+        octave = DEFAULT_OCTAVE;
+        if (s.length() == 2) {
+            if (isAccidental(s[1])) {
+                accidental = toAccidental(s[1]);
+            } else if (isOctave(s[1])) {
+                octave = toOctave(s[1]);
+            }
+        } else if (s.length() == 3) {
+            accidental = toAccidental(s[1]);
+            octave = toOctave(s[2]);
+        }
+    }
+
+    // MIDI pitch representation to Pitch object
+    Pitch(int p) {
+        octave = p / OCTAVE_WIDTH;
+        switch(p % OCTAVE_WIDTH) {
+            case 0:  base = C; accidental = 0;  break;
+            case 1:  base = C; accidental = 1;  break;
+            case 2:  base = D; accidental = 0;  break;
+            case 3:  base = E; accidental = -1; break;
+            case 4:  base = E; accidental = 0;  break;
+            case 5:  base = F; accidental = 0;  break;
+            case 6:  base = F; accidental = 1;  break;
+            case 7:  base = G; accidental = 0;  break;
+            case 8:  base = A; accidental = -1; break;
+            case 9:  base = A; accidental = 0;  break;
+            case 10: base = B; accidental = -1; break;
+            case 11: base = B; accidental = 0;  break;
+            default: break;
+        }
+    }
 
     BasePitch getBasePitch() {
         return base;
     }
 
-    uint8_t toInt() {
-        return base + accidental + 12 * octave;
+    int toInt() {
+        return base + accidental + OCTAVE_WIDTH * octave;
+    }
+
+    void transform(int delta) {
+        Pitch result{toInt() + delta};
+        base = result.base;
+        accidental = result.accidental;
+        octave = result.octave;
+    }
+
+    void transform(const map<int, int> &deltas) {
+        auto val = deltas.find(base + accidental);
+        if (val != deltas.end()) {
+            Pitch result{toInt() + val->second};
+            base = result.base;
+            accidental = result.accidental;
+            octave = result.octave;
+        }
     }
 
     friend std::ostream& operator<<(std::ostream &os, const Pitch &p);
@@ -100,6 +163,14 @@ public:
         return pitch;
     }
 
+    void transformPitch(int delta) {
+        pitch.transform(delta);
+    }
+
+    void transformPitch(const map<int, int> &deltas) {
+        pitch.transform(deltas);
+    }
+
     float getLength() {
         return length;
     }
@@ -112,32 +183,6 @@ public:
         length++;
     }
 };
-
-/*
- * Currently, a Pitch can be represented by a string with base pitch and
- * optionally, accidental and octave. "C", "C#", "C3", "C#3" are all examples
- * of valid notes.
- */
-Pitch toPitch(string s) {
-    if (s.length() == 0) {
-        std::cerr << "Invalid conversion from empty string to Pitch.\n";
-        exit(1);
-    }
-    BasePitch base = toBasePitch(s[0]);
-    int8_t accidental = 0;
-    uint8_t octave = DEFAULT_OCTAVE;
-    if (s.length() == 2) {
-        if (isAccidental(s[1])) {
-            accidental = toAccidental(s[1]);
-        } else if (isOctave(s[1])) {
-            octave = toOctave(s[1]);
-        }
-    } else if (s.length() == 3) {
-        accidental = toAccidental(s[1]);
-        octave = toOctave(s[2]);
-    }
-    return Pitch{ base, accidental, octave };
-}
 
 } // namespace smf
 

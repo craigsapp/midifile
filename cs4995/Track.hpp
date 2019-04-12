@@ -2,25 +2,35 @@
 #define TRACK_HPP_
 
 #include <string>
-#include <sstream>
+#include "Key.hpp"
 #include "Note.hpp"
+#include "StringProcessing.hpp"
 
 namespace smf {
 
 using std::string;
 using std::vector;
 
-uint8_t DEFAULT_VELOCITY = 64;
+int DEFAULT_VELOCITY = 64;
 
-vector<string> tokenize(string str, char delimiter);
+/* unimplemented
+void transformLength(
+    vector<Note> &notes, const map<float, float> &transformation);
+    */
 
 class Track {
 private:
     vector<Note> notes;
-    uint8_t velocity;
+    int velocity;
+
+    void transformPitch(const map<int, int> &deltas) {
+        for (Note &n : notes) {
+            n.transformPitch(deltas);
+        }
+    }
 
 public:
-    Track(uint8_t velocity = DEFAULT_VELOCITY) : velocity(velocity) {}
+    Track(int velocity = DEFAULT_VELOCITY) : velocity(velocity) {}
 
     const vector<Note>& getNotes() {
         return notes;
@@ -34,8 +44,18 @@ public:
         return notes[index];
     }
 
-    uint8_t getVelocity() {
+    int getVelocity() {
         return velocity;
+    }
+
+    void transpose(int delta) {
+        for (Note &n : notes) {
+            n.transformPitch(delta);
+        }
+    }
+
+    void modulate(const Scale &src, const Scale &dest) {
+        transformPitch(src.getDifferences(dest));
     }
 
     friend void operator<<(Track &trk, Note n);
@@ -67,7 +87,7 @@ void operator<<(Track &trk, string s) {
     while (it < tokens.end()) {
         Note n; // default: quarter rest
         if (it->compare(REST) != 0) {
-            n = Note{toPitch(*it)};
+            n = Note{Pitch{*it}};
         }
         while(++it < tokens.end() && it->compare(EXTEND) == 0) {
             n.incrementLength();
@@ -75,18 +95,6 @@ void operator<<(Track &trk, string s) {
         trk << n;
     }
     return;
-}
-
-vector<string> tokenize(string str, char delimiter) {
-    vector<string> tokens;
-    std::stringstream stream(str);
-    string intermediate;
-    while(getline(stream, intermediate, delimiter)) {
-        if (intermediate.length() > 0) {
-            tokens.push_back(intermediate);
-        }
-    }
-    return tokens;
 }
 
 } // namespace smf

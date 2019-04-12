@@ -1,7 +1,9 @@
-#ifndef MIDIOUTPUT_HPP_
-#define MIDIOUTPUT_HPP_
+#ifndef MIDI_OUTPUT_HPP_
+#define MIDI_OUTPUT_HPP_
 
 #include <string>
+#include <vector>
+#include "Key.hpp"
 #include "MidiFile.h"
 #include "Note.hpp"
 #include "Track.hpp"
@@ -26,6 +28,18 @@ public:
         tracks.push_back(trk);
     }
 
+    void transpose(int delta) {
+        for (Track &trk : tracks) {
+            trk.transpose(delta);
+        }
+    }
+
+    void modulate(const Scale &src, const Scale &dest) {
+        for (Track &trk : tracks) {
+            trk.modulate(src, dest);
+        }
+    }
+
     void write(string filename) {
         MidiFile outputFile;
         outputFile.absoluteTicks();
@@ -40,8 +54,11 @@ public:
                     actionTime += tpq * n.getLength();
                 } else {
                     // NOTE_ON event
+                    // TODO: add overflow checking since we're using ints
                     vector<uchar> midievent = {
-                        NOTE_ON, n.getPitch().toInt(), trk.getVelocity()
+                        NOTE_ON,
+                        static_cast<uint8_t>(n.getPitch().toInt()),
+                        static_cast<uint8_t>(trk.getVelocity())
                     };
                     outputFile.addEvent(track_num + 1, actionTime, midievent);
                     actionTime += tpq * n.getLength();
