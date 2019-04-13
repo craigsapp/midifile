@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr  5 13:07:18 PDT 1998
 // Last Modified: Sat Apr 21 10:52:19 PDT 2018 Removed using namespace std;
-// Filename:      midifile/src-library/Options.cpp
+// Filename:      midifile/src/Options.cpp
 // Web Address:   http://midifile.sapp.org
 // Syntax:        C++11
 // vim:           ts=3 noexpandtab

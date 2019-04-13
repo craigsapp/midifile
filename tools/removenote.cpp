@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr 15 10:43:19 PDT 2018
 // Last Modified: Sun Apr 15 11:01:11 PDT 2018
-// Filename:      midifile/src-programs/removenote.cpp
+// Filename:      midifile/tools/removenote.cpp
 // Syntax:        C++11
 //
 // Description:   Demonstration of how to remove a MIDI message.

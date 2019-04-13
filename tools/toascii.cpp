@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 20:42:18 PST 2015
 // Last Modified: Wed Feb 18 22:25:17 PST 2015
-// Filename:      midifile/src-programs/toascii.cpp
+// Filename:      midifile/tools/toascii.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

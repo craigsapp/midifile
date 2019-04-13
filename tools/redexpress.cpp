@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Feb 24 20:20:18 PST 2018
 // Last Modified: Sat Feb 24 20:20:21 PST 2018
-// Filename:      midifile/src-programs/redexpress.cpp
+// Filename:      midifile/tools/redexpress.cpp
 // Web Address:   
 // Syntax:        C++; midifile
 // vim:           ts=3

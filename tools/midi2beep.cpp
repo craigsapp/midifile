@@ -2,8 +2,8 @@
 // Programmer:    Tom M. <tom.mbrt@gmail.com>
 // Creation Date: Sat Nov 05 14:51:00 PST 2016
 // Last Modified: Sat Nov 05 14:51:00 PST 2016
-// Filename:      midifile/src-programs/mid2beep.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/src-programs/mid2beep.cpp
+// Filename:      midifile/tools/mid2beep.cpp
+// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/mid2beep.cpp
 // Syntax:        C++
 //
 // Description:   Linux-only: Play a monophonic midi file on the PC Speaker (i.e. the midi file contains only a single track

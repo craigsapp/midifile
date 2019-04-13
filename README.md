@@ -103,7 +103,7 @@ the command:
 ``` bash
 make programs
 ```
-This will compile all example programs in the src-programs directory.  Compiled
+This will compile all example programs in the tools directory.  Compiled
 example programs will be stored in the `bin` directory.  To compile both the
 library and the example programs all in one step, type:
 ``` bash
@@ -114,7 +114,7 @@ To compile only a single program, such as `createmidifile`, type:
 ``` bash
 make createmidifile
 ```
-You can also place your own programs in `src-programs`, such as `myprogram.cpp`
+You can also place your own programs in `tools`, such as `myprogram.cpp`
 and to compile type:
 ``` bash
 make myprogram
@@ -127,7 +127,7 @@ Using in your own project
 
 The easiest way to use the midifile library in your own project is to
 copy the header files in the `include` directory and the source-code
-files in the `src-library` directory into your own project.  You do not
+files in the `src` directory into your own project.  You do not
 need to copy `Options.h` or `Options.cpp` since the `MidiFile` class is
 not dependent on them.  The [verovio](https://github.com/rism-ch/verovio)
 and [midiroll](https://github.com/craigsapp/midiroll) projects on Github
@@ -541,7 +541,7 @@ v0	ff 2f v0	; end-of-track
 ```
 
 Here is the MIDI data visualized with the example program
-[mid2svg](https://github.com/craigsapp/midifile/blob/master/src-programs/mid2svg.cpp):
+[mid2svg](https://github.com/craigsapp/midifile/blob/master/tools/mid2svg.cpp):
 
 ![10 random nots](https://user-images.githubusercontent.com/3487289/39096697-5728558e-4608-11e8-9b02-c29f39d85d0f.png)
 

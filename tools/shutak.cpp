@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Feb 10 21:57:42 PST 2015
 // Last Modified: Tue Feb 10 21:57:45 PST 2015
-// Filename:      midifile/src-programs/shutak.cpp
+// Filename:      midifile/tools/shutak.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 23:35:23 PST 2015
 // Last Modified: Wed Feb 18 23:35:26 PST 2015
-// Filename:      midifile/src-programs/type0.cpp
+// Filename:      midifile/tools/type0.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

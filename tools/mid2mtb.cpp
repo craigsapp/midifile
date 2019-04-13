@@ -3,7 +3,7 @@
 // Creation Date: Tue Feb  2 15:06:12 PST 2016
 // Last Modified: Tue Feb  2 15:06:15 PST 2016
 // Filename:      ...sig/examples/all/mid2mtb.cpp
-// Web Address:   http://midifile.sapp.org/src-programs//mid2mtb.cpp
+// Web Address:   http://midifile.sapp.org/tools//mid2mtb.cpp
 // Syntax:        C++; museinfo
 //
 // Description:   Converts a MIDI file into a MIDI Toolbox compatible

@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 14:45:32 PST 2015 Class-ified binasc functionality
 // Last Modified: Wed Feb 18 14:45:44 PST 2015
-// Filename:      midifile/src-programs/binasc.cpp
+// Filename:      midifile/tools/binasc.cpp
 // Syntax:        C++11
 // vim:           ts=3 expandtab
 //

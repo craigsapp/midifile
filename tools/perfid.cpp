@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jun 18 12:14:03 PDT 2002
 // Last Modified: Mon Feb  9 20:28:07 PST 2015 Updated for C++11.
-// Filename:      midifile/src-programs/perfid.cpp
+// Filename:      midifile/tools/perfid.cpp
 // Web Address:   http://sig.sapp.org/examples/museinfo/midi/perfid.cpp
 // Syntax:        C++; museinfo
 //

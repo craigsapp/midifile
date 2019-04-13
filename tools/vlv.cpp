@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Jan 13 08:31:19 PST 1999
 // Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
-// Filename:      midifile/src-programs/vlv.cpp
+// Filename:      midifile/tools/vlv.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

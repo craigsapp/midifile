@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Feb 16 20:00:41 PST 2016
 // Last Modified: Tue Feb 16 20:16:17 PST 2016
-// Filename:      midifile/src-programs/createmidifile2.cpp
+// Filename:      midifile/tools/createmidifile2.cpp
 // Syntax:        C++11
 //
 // Description:   Demonstration of how to create a Multi-track MIDI file

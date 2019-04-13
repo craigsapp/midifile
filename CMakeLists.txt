@@ -45,12 +45,12 @@ endif()
 ##
 
 set(SRCS
-    src-library/Options.cpp
-    src-library/Binasc.cpp
-    src-library/MidiEvent.cpp
-    src-library/MidiEventList.cpp
-    src-library/MidiFile.cpp
-    src-library/MidiMessage.cpp
+    src/Options.cpp
+    src/Binasc.cpp
+    src/MidiEvent.cpp
+    src/MidiEventList.cpp
+    src/MidiFile.cpp
+    src/MidiMessage.cpp
 )
 
 set(HDRS
@@ -69,39 +69,39 @@ add_library(midifile STATIC ${SRCS} ${HDRS})
 ## Programs:
 ##
 
-add_executable(80off src-programs/80off.cpp)
-add_executable(asciimidi src-programs/asciimidi.cpp)
-add_executable(binasc src-programs/binasc.cpp)
-add_executable(createmidifile src-programs/createmidifile.cpp)
-add_executable(createmidifile2 src-programs/createmidifile2.cpp)
-add_executable(drumtab src-programs/drumtab.cpp)
-add_executable(durations src-programs/durations.cpp)
-add_executable(mid2mat src-programs/mid2mat.cpp)
-add_executable(mid2mtb src-programs/mid2mtb.cpp)
-add_executable(mid2svg src-programs/mid2svg.cpp)
-add_executable(midi2binasc src-programs/midi2binasc.cpp)
-add_executable(midi2melody src-programs/midi2melody.cpp)
-add_executable(midi2notes src-programs/midi2notes.cpp)
-add_executable(midi2skini src-programs/midi2skini.cpp)
-add_executable(midi2text src-programs/midi2text.cpp)
-add_executable(midicat src-programs/midicat.cpp)
-add_executable(midimixup src-programs/midimixup.cpp)
-add_executable(miditime src-programs/miditime.cpp)
-add_executable(perfid src-programs/perfid.cpp)
-add_executable(retick src-programs/retick.cpp)
-add_executable(shutak src-programs/shutak.cpp)
-add_executable(smfdur src-programs/smfdur.cpp)
-add_executable(stretch src-programs/stretch.cpp)
-add_executable(sysextest src-programs/sysextest.cpp)
-add_executable(text2midi src-programs/text2midi.cpp)
-add_executable(textmidi src-programs/textmidi.cpp)
-add_executable(toascii src-programs/toascii.cpp)
-add_executable(tobin src-programs/tobin.cpp)
-add_executable(tobinary src-programs/tobinary.cpp)
-add_executable(todec src-programs/todec.cpp)
-add_executable(tohex src-programs/tohex.cpp)
-add_executable(type0 src-programs/type0.cpp)
-add_executable(vlv src-programs/vlv.cpp)
+add_executable(80off tools/80off.cpp)
+add_executable(asciimidi tools/asciimidi.cpp)
+add_executable(binasc tools/binasc.cpp)
+add_executable(createmidifile tools/createmidifile.cpp)
+add_executable(createmidifile2 tools/createmidifile2.cpp)
+add_executable(drumtab tools/drumtab.cpp)
+add_executable(durations tools/durations.cpp)
+add_executable(mid2mat tools/mid2mat.cpp)
+add_executable(mid2mtb tools/mid2mtb.cpp)
+add_executable(mid2svg tools/mid2svg.cpp)
+add_executable(midi2binasc tools/midi2binasc.cpp)
+add_executable(midi2melody tools/midi2melody.cpp)
+add_executable(midi2notes tools/midi2notes.cpp)
+add_executable(midi2skini tools/midi2skini.cpp)
+add_executable(midi2text tools/midi2text.cpp)
+add_executable(midicat tools/midicat.cpp)
+add_executable(midimixup tools/midimixup.cpp)
+add_executable(miditime tools/miditime.cpp)
+add_executable(perfid tools/perfid.cpp)
+add_executable(retick tools/retick.cpp)
+add_executable(shutak tools/shutak.cpp)
+add_executable(smfdur tools/smfdur.cpp)
+add_executable(stretch tools/stretch.cpp)
+add_executable(sysextest tools/sysextest.cpp)
+add_executable(text2midi tools/text2midi.cpp)
+add_executable(textmidi tools/textmidi.cpp)
+add_executable(toascii tools/toascii.cpp)
+add_executable(tobin tools/tobin.cpp)
+add_executable(tobinary tools/tobinary.cpp)
+add_executable(todec tools/todec.cpp)
+add_executable(tohex tools/tohex.cpp)
+add_executable(type0 tools/type0.cpp)
+add_executable(vlv tools/vlv.cpp)
 
 target_link_libraries(80off midifile)
 target_link_libraries(asciimidi midifile)
@@ -138,7 +138,7 @@ target_link_libraries(type0 midifile)
 target_link_libraries(vlv midifile)
 
 if(HAVE_UNISTD_H AND HAVE_SYS_IO_H)
-    add_executable(midi2beep src-programs/midi2beep.cpp)
+    add_executable(midi2beep tools/midi2beep.cpp)
 
     target_link_libraries(midi2beep midifile)
 endif()
@@ -146,10 +146,10 @@ endif()
 # The following programs require headers from humextra repository.
 # <https://github.com/humdrum-tools/humextra>
 if(HAVE_HUMDRUM_H)
-    add_executable(henonfile src-programs/henonfile.cpp)
-    add_executable(mid2hum src-programs/mid2hum.cpp)
-    add_executable(midiexcerpt src-programs/midiexcerpt.cpp)
-    add_executable(peep2midi src-programs/peep2midi.cpp)
+    add_executable(henonfile tools/henonfile.cpp)
+    add_executable(mid2hum tools/mid2hum.cpp)
+    add_executable(midiexcerpt tools/midiexcerpt.cpp)
+    add_executable(peep2midi tools/peep2midi.cpp)
 
     target_link_libraries(henonfile midifile)
     target_link_libraries(mid2hum midifile)

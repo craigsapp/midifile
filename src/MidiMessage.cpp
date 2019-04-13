@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Feb 14 20:49:21 PST 2015
 // Last Modified: Sun Apr 15 11:11:05 PDT 2018 Added event removal system.
-// Filename:      midifile/src-library/MidiMessage.cpp
+// Filename:      midifile/src/MidiMessage.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 // vim:           ts=3 noexpandtab

@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Mar 19 13:42:37 PDT 2015
 // Last Modified: Thu Mar 19 15:34:12 PDT 2015
-// Filename:      src-programs/sysextest.cpp
+// Filename:      tools/sysextest.cpp
 // Syntax:        C++
 //
 // Description:   Demonstration of how to create a MIDI file with

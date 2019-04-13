@@ -67,7 +67,7 @@ EXTEN     =
 # User-modifiable configuration variables:
 #
 
-SRCDIR    = src-programs
+SRCDIR    = tools
 INCDIR    = include
 OBJDIR    = obj
 LIBDIR    = lib

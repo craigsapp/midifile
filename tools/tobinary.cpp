@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 20:48:48 PST 2015
 // Last Modified: Wed Feb 18 20:48:51 PST 2015
-// Filename:      midifile/src-programs/tobinary.cpp
+// Filename:      midifile/tools/tobinary.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

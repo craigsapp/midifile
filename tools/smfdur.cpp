@@ -2,8 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Feb 23 05:34:17 PST 2016
 // Last Modified: Tue Feb 23 05:34:20 PST 2016
-// Filename:      midifile/src-programs/smfdur.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/src-programs/smfdur.cpp
+// Filename:      midifile/tools/smfdur.cpp
+// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/smfdur.cpp
 // Syntax:        C++11
 //
 // Description:   Calcualte the total duration of a MIDI file.

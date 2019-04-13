@@ -2,8 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Feb 19 22:25:22 PST 2016
 // Last Modified: Sat Feb 27 18:16:39 PST 2016
-// Filename:      midifile/src-programs/mid2svg.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/src-programs/mid2svg.cpp
+// Filename:      midifile/tools/mid2svg.cpp
+// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/mid2svg.cpp
 // Syntax:        C++; museinfo
 //
 // Description:   Convert a MIDI file into an SVG piano roll.

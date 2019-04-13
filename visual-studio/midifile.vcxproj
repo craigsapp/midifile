@@ -84,12 +84,12 @@
     <ClInclude Include="..\include\Options.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src-library\Binasc.cpp" />
-    <ClCompile Include="..\src-library\MidiEvent.cpp" />
-    <ClCompile Include="..\src-library\MidiEventList.cpp" />
-    <ClCompile Include="..\src-library\MidiFile.cpp" />
-    <ClCompile Include="..\src-library\MidiMessage.cpp" />
-    <ClCompile Include="..\src-library\Options.cpp" />
+    <ClCompile Include="..\src\Binasc.cpp" />
+    <ClCompile Include="..\src\MidiEvent.cpp" />
+    <ClCompile Include="..\src\MidiEventList.cpp" />
+    <ClCompile Include="..\src\MidiFile.cpp" />
+    <ClCompile Include="..\src\MidiMessage.cpp" />
+    <ClCompile Include="..\src\Options.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

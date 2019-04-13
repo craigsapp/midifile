@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Feb 19 20:43:49 PST 2015
 // Last Modified: Thu Feb 19 20:43:52 PST 2015
-// Filename:      midifile/src-programs/durations.cpp
+// Filename:      midifile/tools/durations.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

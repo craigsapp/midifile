@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Feb  9 16:51:58 PST 2015
 // Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
-// Filename:      midifile/src-programs/80off.cpp
+// Filename:      midifile/tools/80off.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
 //

@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr 15 12:11:36 PDT 2018
 // Last Modified: Sun Apr 15 12:11:40 PDT 2018
-// Filename:      midifile/src-programs/readstatus.cpp
+// Filename:      midifile/tools/readstatus.cpp
 // Syntax:        C++11
 //
 // Description:   Demonstration of checking the read status.

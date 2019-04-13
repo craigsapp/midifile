@@ -2,7 +2,7 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr 15 19:09:11 PDT 2018
 // Last Modified: Sun Apr 15 19:09:22 PDT 2018
-// Filename:      midifile/src-programs/extractlyrics.cpp
+// Filename:      midifile/tools/extractlyrics.cpp
 // Syntax:        C++11
 //
 // Description:   Demonstration of how to extract lyrics from a MIDI file.

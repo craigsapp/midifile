@@ -16,7 +16,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src-programs\binasc.cpp" />
+    <ClCompile Include="..\tools\binasc.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5230AA11-C456-48E6-B19F-23703EC38D80}</ProjectGuid>

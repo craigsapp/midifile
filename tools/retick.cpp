@@ -3,7 +3,7 @@
 // Creation Date: Mon Jan  8 23:44:16 PST 2018
 // Last Modified: Mon Jan  8 23:44:22 PST 2018
 // Filename:      retick.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/src-programs/retick.cpp
+// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/retick.cpp
 // Syntax:        C++; museinfo
 // vim:           ts=3
 //

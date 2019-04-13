@@ -16,7 +16,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src-programs\createmidifile.cpp" />
+    <ClCompile Include="..\tools\createmidifile.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{52724792-CD79-4152-984C-DFD7DA570855}</ProjectGuid>
