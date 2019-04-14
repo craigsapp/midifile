@@ -2073,7 +2073,7 @@ void MidiFile::deleteTrack(int aTrack) {
 		m_events[i] = m_events[i+1];
 	}
 
-	m_events[length] = NULL;
+	m_events[length-1] = NULL;
 	m_events.resize(length-1);
 }
 
