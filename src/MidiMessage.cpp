@@ -396,6 +396,63 @@ bool MidiMessage::isController(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::isSustain -- Returns true if the MidiMessages is a sustain pedal
+//    control event.  Controller 64 is the sustain pedal for general MIDI.
+//
+
+bool MidiMessage::isSustain(void) const {
+	if (!isController()) {
+		return false;
+	}
+	if (getP1() == 64) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isSustainOn -- Returns true if a sustain-pedal-on control message.
+//     Sustain-on is a value in the range from 64-127 for controller 64.
+//
+
+bool MidiMessage::isSustainOn(void) const {
+	if (!isSustain()) {
+		return false;
+	}
+	if (getP2() >= 64) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isSustainOff -- Returns true if a sustain-pedal-off control message.
+//     Sustain-off is a value in the range from 0-63 for controller 64.
+//
+
+bool MidiMessage::isSustainOff(void) const {
+	if (!isSustain()) {
+		return false;
+	}
+	if (getP2() < 64) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::isTimbre -- Returns true of a patch change message
 //    (command nibble 0xc0).
 //
