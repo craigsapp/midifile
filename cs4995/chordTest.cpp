@@ -20,7 +20,8 @@ int main() {
 
     // write tracks
     out.write("chords.mid");
-
+    
+    out.old_write("working_chords.mid");
 
 
     return 0;

@@ -24,7 +24,7 @@ private:
     // writes notes from current collection of notes to midifile
     // does not assume single notes are a special case
     // does not handle incrementing actionTime
-    void write_notes(MidiFile outputFile, Chord c, Track trk, int track_num,
+    void write_notes(MidiFile& outputFile, Chord c, Track trk, int track_num,
 	int actionTime) {
 	for (Pitch p : c.getPitches()){
 	    vector<uchar> midievent = {
@@ -61,8 +61,34 @@ public:
             trk.modulate(src, dest);
         }
     }
-
+    
     void write(string filename) {
+        MidiFile outputFile;
+        outputFile.absoluteTicks();
+        outputFile.setTicksPerQuarterNote(tpq);
+        outputFile.addTracks(tracks.size());
+        for (int track_num = 0; track_num < tracks.size(); track_num++) {
+            int actionTime = 0;
+            Track trk = tracks[track_num];
+            for (Chord c : trk.getChords()) {
+                if (c.isRest()) {
+                    // simply skip for the duration of the note
+                    actionTime += tpq * c.getLength();
+                } else if (c.isNote()){
+		    write_notes(outputFile, c, trk, track_num, actionTime);
+		    actionTime += tpq * c.getLength();
+		} else {
+		    write_notes(outputFile, c, trk, track_num, actionTime); 
+		    actionTime += tpq * c.getLength();
+		}
+            }
+        }
+        outputFile.sortTracks();
+        outputFile.write(filename);
+    }
+
+
+    void old_write(string filename) {
         MidiFile outputFile;
         outputFile.absoluteTicks();
         outputFile.setTicksPerQuarterNote(tpq);
