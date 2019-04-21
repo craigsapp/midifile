@@ -48,24 +48,26 @@ public:
         for (int track_num = 0; track_num < tracks.size(); track_num++) {
             int actionTime = 0;
             Track trk = tracks[track_num];
-            for (Note n : trk.getNotes()) {
-                if (n.isRest()) {
+            for (Chord c : trk.getChords()) {
+                if (c.isRest()) {
                     // simply skip for the duration of the note
-                    actionTime += tpq * n.getLength();
-                } else {
+                    actionTime += tpq * c.getLength();
+                } else if (c.isNote()){
                     // NOTE_ON event
                     // TODO: add overflow checking since we're using ints
                     vector<uchar> midievent = {
                         NOTE_ON,
-                        static_cast<uint8_t>(n.getPitch().toInt()),
+                        static_cast<uint8_t>(c.getPitches()[0].toInt()),
                         static_cast<uint8_t>(trk.getVelocity())
                     };
                     outputFile.addEvent(track_num + 1, actionTime, midievent);
-                    actionTime += tpq * n.getLength();
+                    actionTime += tpq * c.getLength();
                     // NOTE_OFF event
                     midievent[0] = NOTE_OFF;
                     outputFile.addEvent(track_num + 1, actionTime, midievent);
-                }
+                } else {
+			// TODO handle chord writing
+		}
             }
         }
         outputFile.sortTracks();

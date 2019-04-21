@@ -20,28 +20,28 @@ void transformLength(
 
 class Track {
 private:
-    vector<Note> notes;
+    vector<Chord> chords;
     int velocity;
 
     void transformPitch(const map<int, int> &deltas) {
-        for (Note &n : notes) {
-            n.transformPitch(deltas);
+        for (Chord &c : chords) {
+            c.transformPitch(deltas);
         }
     }
 
 public:
     Track(int velocity = DEFAULT_VELOCITY) : velocity(velocity) {}
 
-    const vector<Note>& getNotes() {
-        return notes;
+    const vector<Chord>& getChords() {
+        return chords;
     }
 
-    const Note& operator[](int index) const {
-        return notes[index];
+    const Chord& operator[](int index) const {
+        return chords[index];
     }
 
-    Note& operator[](int index) {
-        return notes[index];
+    Chord& operator[](int index) {
+        return chords[index];
     }
 
     int getVelocity() {
@@ -49,8 +49,8 @@ public:
     }
 
     void transpose(int delta) {
-        for (Note &n : notes) {
-            n.transformPitch(delta);
+        for (Chord &c : chords) {
+            c.transformPitch(delta);
         }
     }
 
@@ -58,19 +58,19 @@ public:
         transformPitch(src.getDifferences(dest));
     }
 
-    friend void operator<<(Track &trk, Note n);
-    friend void operator<<(Track &trk, const vector<Note> &n);
+    friend void operator<<(Track &trk, Chord c);
+    friend void operator<<(Track &trk, const vector<Chord> &c);
     friend void operator<<(Track &trk, string s);
 };
 
-void operator<<(Track &trk, Note n) {
-    trk.notes.push_back(n);
+void operator<<(Track &trk, Chord c) {
+    trk.chords.push_back(c);
 }
 
-void operator<<(Track &trk, const vector<Note> &nv) {
-    trk.notes.reserve(trk.notes.size() + nv.size());
-    for (Note n : nv) {
-        trk.notes.push_back(n);
+void operator<<(Track &trk, const vector<Chord> &cv) {
+    trk.chords.reserve(trk.chords.size() + cv.size());
+    for (Chord c : cv) {
+        trk.chords.push_back(c);
     }
 }
 
@@ -81,18 +81,36 @@ void operator<<(Track &trk, string s) {
     }
 
     // reserve space >= the amount needed
-    trk.notes.reserve(trk.notes.size() + tokens.size());
+    trk.chords.reserve(trk.chords.size() + tokens.size());
 
     auto it = tokens.begin();
     while (it < tokens.end()) {
-        Note n; // default: quarter rest
-        if (it->compare(REST) != 0) {
-            n = Note{Pitch{*it}};
-        }
+        Chord c; // default: quarter rest
+        
+	// assume that containing '/' means we're dealing with a chord
+	// split using / as a delimiter
+	// construct pitch with each token, then construct chord 
+	// using vector of pitches 
+	if (it->find('/') != string::npos){
+		vector<Pitch> pitches;
+		vector<string> pitch_tokens = tokenize(*it, '/');
+		for (auto& pitch_token: pitch_tokens){
+			pitches.push_back(Pitch{pitch_token});
+		}	
+		c = Chord{pitches};
+
+	// creates single note
+	} else if (it->compare(REST) != 0) {
+            c = Chord{Pitch{*it}};
+
+        } else if (it->compare(REST) == 0) {
+	    // TODO make rest
+	}
+
         while(++it < tokens.end() && it->compare(EXTEND) == 0) {
-            n.incrementLength();
+            c.incrementLength();
         }
-        trk << n;
+        trk << c;
     }
     return;
 }
