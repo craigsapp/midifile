@@ -71,18 +71,15 @@ public:
         for (int track_num = 0; track_num < tracks.size(); track_num++) {
             int actionTime = 0;
             Track trk = tracks[track_num];
-            for (Chord c : trk.getChords()) {
-                if (c.isRest()) {
-                    // simply skip for the duration of the note
-                    actionTime += tpq * c.getLength();
-                } else if (c.isNote()){
+	    
+	    // write all notes to midifile
+	    // if it's a rest, just increment actionTime
+	    for (Chord c : trk.getChords()) {
+		if( !(c.isRest())){
 		    write_notes(outputFile, c, trk, track_num, actionTime);
-		    actionTime += tpq * c.getLength();
-		} else {
-		    write_notes(outputFile, c, trk, track_num, actionTime); 
-		    actionTime += tpq * c.getLength();
 		}
-            }
+		actionTime += tpq * c.getLength();
+	    }  
         }
         outputFile.sortTracks();
         outputFile.write(filename);
