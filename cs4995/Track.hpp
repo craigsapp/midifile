@@ -107,6 +107,7 @@ void operator<<(Track &trk, string s) {
 	    // TODO make rest
 	}
 
+	// does this assume valid input?
         while(++it < tokens.end() && it->compare(EXTEND) == 0) {
             c.incrementLength();
         }

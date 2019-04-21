@@ -18,8 +18,30 @@ uint8_t NOTE_OFF = 0x80;
  */
 class MidiOutput {
 private:
-    int tpq;
+    int tpq; // this needs a better naming convention
     vector<Track> tracks;
+
+    // writes notes from current collection of notes to midifile
+    // does not assume single notes are a special case
+    // does not handle incrementing actionTime
+    void write_notes(MidiFile outputFile, Chord c, Track trk, int track_num,
+	int actionTime) {
+	for (Pitch p : c.getPitches()){
+	    vector<uchar> midievent = {
+		NOTE_ON,
+		static_cast<uint8_t>(p.toInt()),
+		static_cast<uint8_t>(trk.getVelocity())
+	    };
+
+	    outputFile.addEvent(track_num + 1, actionTime, midievent);
+	    midievent[0] = NOTE_OFF;
+	
+	    outputFile.addEvent(
+		track_num + 1, 
+		actionTime + tpq * c.getLength(), 
+		midievent);
+	}
+    }
 
 public:
     MidiOutput(int tpq = 120) : tpq(tpq) {}
@@ -63,10 +85,26 @@ public:
                     outputFile.addEvent(track_num + 1, actionTime, midievent);
                     actionTime += tpq * c.getLength();
                     // NOTE_OFF event
+		    // what happens with the pitch here? 
+		    // why not pass in vector<uchar>{NOTE_OFF,0,0}
                     midievent[0] = NOTE_OFF;
                     outputFile.addEvent(track_num + 1, actionTime, midievent);
                 } else {
-			// TODO handle chord writing
+		    // TODO handle chord writing
+		    for (Pitch p : c.getPitches()){
+			vector<uchar> midievent = {
+			    NOTE_ON,
+			    static_cast<uint8_t>(p.toInt()),
+			    static_cast<uint8_t>(trk.getVelocity())
+		        };
+			
+			outputFile.addEvent(track_num + 1, actionTime, midievent);
+			midievent[0] = NOTE_OFF;
+			outputFile.addEvent(track_num + 1,
+					actionTime + tpq * c.getLength(),
+					midievent);
+		    }
+		    actionTime += tpq * c.getLength();
 		}
             }
         }
