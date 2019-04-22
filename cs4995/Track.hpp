@@ -12,6 +12,7 @@ using std::string;
 using std::vector;
 
 int DEFAULT_VELOCITY = 64;
+int DEFAULT_OCTAVE = 5;
 
 /* unimplemented
 void transformLength(
@@ -21,6 +22,7 @@ void transformLength(
 class Track {
 private:
     vector<Chord> chords;
+    int octave;
     int velocity;
 
     void transformPitch(const map<int, int> &deltas) {
@@ -30,7 +32,8 @@ private:
     }
 
 public:
-    Track(int velocity = DEFAULT_VELOCITY) : velocity(velocity) {}
+    Track(int octave = DEFAULT_OCTAVE, int velocity = DEFAULT_VELOCITY) :
+        octave(octave), velocity(velocity) {}
 
     const vector<Chord>& getChords() {
         return chords;
@@ -46,6 +49,10 @@ public:
 
     int getVelocity() {
         return velocity;
+    }
+
+    int getOctave() {
+        return octave;
     }
 
     void transpose(int delta) {
@@ -86,17 +93,17 @@ void operator<<(Track &trk, string s) {
     auto it = tokens.begin();
     while (it < tokens.end()) {
         Chord c; // default: quarter rest
-        
+
 	// assume that containing '/' means we're dealing with a chord
 	// split using / as a delimiter
-	// construct pitch with each token, then construct chord 
-	// using vector of pitches 
+	// construct pitch with each token, then construct chord
+	// using vector of pitches
 	if (it->find('/') != string::npos){
 		vector<Pitch> pitches;
 		vector<string> pitch_tokens = tokenize(*it, '/');
 		for (auto& pitch_token: pitch_tokens){
 			pitches.push_back(Pitch{pitch_token});
-		}	
+		}
 		c = Chord{pitches};
 
 	// creates single note

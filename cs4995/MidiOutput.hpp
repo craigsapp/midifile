@@ -30,16 +30,16 @@ private:
 	for (Pitch p : c.getPitches()){
 	    vector<uchar> midievent = {
 		NOTE_ON,
-		static_cast<uint8_t>(p.toInt()),
+		static_cast<uint8_t>(p.toInt() + OCTAVE_WIDTH * trk.getOctave()),
 		static_cast<uint8_t>(trk.getVelocity())
 	    };
 
 	    outputFile.addEvent(track_num + 1, actionTime, midievent);
 	    midievent[0] = NOTE_OFF;
-	
+
 	    outputFile.addEvent(
-		track_num + 1, 
-		actionTime + tpq * c.getLength(), 
+		track_num + 1,
+		actionTime + tpq * c.getLength(),
 		midievent);
 	}
     }
@@ -63,7 +63,7 @@ public:
             trk.modulate(src, dest);
         }
     }
-    
+
     void write(string filename) {
         MidiFile outputFile;
         outputFile.absoluteTicks();
@@ -72,7 +72,7 @@ public:
         for (int track_num = 0; track_num < tracks.size(); track_num++) {
             int actionTime = 0;
             Track trk = tracks[track_num];
-	    
+
 	    // write all notes to midifile
 	    // if it's a rest, just increment actionTime
 	    for (Chord c : trk.getChords()) {
@@ -80,7 +80,7 @@ public:
 		    write_notes(outputFile, c, trk, track_num, actionTime);
 		}
 		actionTime += tpq * c.getLength();
-	    }  
+	    }
         }
         outputFile.sortTracks();
         outputFile.write(filename);
