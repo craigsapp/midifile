@@ -98,9 +98,12 @@ class MidiMessage : public std::vector<uchar> {
 		bool             isNoteOn           (void) const;
 		bool           isAftertouch         (void) const;
 		bool           isController         (void) const;
-		bool             isSustain          (void) const;
+		bool             isSustain          (void) const;  // controller 64
 		bool             isSustainOn        (void) const;
 		bool             isSustainOff       (void) const;
+		bool             isSoft             (void) const;  // controller 67
+		bool             isSoftOn           (void) const;
+		bool             isSoftOff          (void) const;
 		bool           isPatchChange        (void) const;
 		bool             isTimbre           (void) const;
 		bool           isPressure           (void) const;

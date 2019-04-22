@@ -453,6 +453,63 @@ bool MidiMessage::isSustainOff(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::isSoft -- Returns true if the MidiMessages is a soft pedal
+//    control event.  Controller 67 is the sustain pedal for general MIDI.
+//
+
+bool MidiMessage::isSoft(void) const {
+	if (!isController()) {
+		return false;
+	}
+	if (getP1() == 67) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isSoftOn -- Returns true if a sustain-pedal-on control message.
+//     Soft-on is a value in the range from 64-127 for controller 67.
+//
+
+bool MidiMessage::isSoftOn(void) const {
+	if (!isSoft()) {
+		return false;
+	}
+	if (getP2() >= 64) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::isSoftOff -- Returns true if a sustain-pedal-off control message.
+//     Soft-off is a value in the range from 0-63 for controller 67.
+//
+
+bool MidiMessage::isSoftOff(void) const {
+	if (!isSoft()) {
+		return false;
+	}
+	if (getP2() < 64) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::isTimbre -- Returns true of a patch change message
 //    (command nibble 0xc0).
 //
