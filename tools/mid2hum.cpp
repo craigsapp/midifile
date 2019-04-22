@@ -41,10 +41,10 @@
 // Reference:     http://crystal.apana.org.au/ghansper/midi_introduction/midi_file_format.html
 //
 
-#include "MidiFile.h"
-#include "Options.h"
-#include "Convert.h"
-#include "HumdrumFile.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
+#include "midifile/Convert.h"
+#include "midifile/HumdrumFile.h"
 #include <math.h>
 #include <cctype>
 #include <iostream>

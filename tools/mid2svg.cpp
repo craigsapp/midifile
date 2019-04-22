@@ -9,8 +9,8 @@
 // Description:   Convert a MIDI file into an SVG piano roll.
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <sstream>
 #include <iostream>
 #include <algorithm>

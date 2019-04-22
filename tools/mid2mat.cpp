@@ -18,8 +18,8 @@
 //    tpq     = ticks per quarter note
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 
 #include <ctype.h>
 #include <string.h>

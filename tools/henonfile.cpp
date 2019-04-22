@@ -12,10 +12,10 @@
 //                plain text.
 //
 
-#include "MidiFile.h"
-#include "Convert.h"
-#include "Options.h"
-#include "CircularBuffer.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Convert.h"
+#include "midifile/Options.h"
+#include "midifile/CircularBuffer.h"
 #include <string.h>
 #include <stdio.h>
 

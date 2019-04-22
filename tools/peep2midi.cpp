@@ -9,9 +9,9 @@
 //                output data into MIDI data.
 //
 
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include "humdrum.h"
-#include "Options.h"
+#include "midifile/Options.h"
 
 #include <ctype.h>
 #include <string.h>

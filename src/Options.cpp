@@ -10,7 +10,7 @@
 // Description:   Interface to command-line options.
 //
 
-#include "Options.h"
+#include "midifile/Options.h"
 
 #include <stdlib.h>
 #include <string>

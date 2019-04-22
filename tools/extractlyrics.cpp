@@ -10,8 +10,8 @@
 //                that the lyric occurs at.
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 
 using namespace std;

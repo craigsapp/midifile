@@ -11,7 +11,7 @@
 //                MIDI Files.
 //
 
-#include "MidiMessage.h"
+#include "midifile/MidiMessage.h"
 
 #include <vector>
 #include <iostream>

@@ -8,7 +8,7 @@
 // Description:   Demonstration of how to remove a MIDI message.
 //
 
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;

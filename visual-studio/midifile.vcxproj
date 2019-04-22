@@ -33,13 +33,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../include/midifile</IncludePath>
     <IntDir>$(Configuration)Lib\</IntDir>
     <OutDir>$(SolutionDir)$(Configuration)Lib\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../include/midifile</IncludePath>
     <IntDir>$(Configuration)Lib\</IntDir>
     <OutDir>$(SolutionDir)$(Configuration)Lib\</OutDir>
   </PropertyGroup>
@@ -76,11 +76,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\Binasc.h" />
-    <ClInclude Include="..\include\MidiEvent.h" />
-    <ClInclude Include="..\include\MidiEventList.h" />
-    <ClInclude Include="..\include\MidiFile.h" />
-    <ClInclude Include="..\include\MidiMessage.h" />
+    <ClInclude Include="..\include\midifile\Binasc.h" />
+    <ClInclude Include="..\include\midifile\MidiEvent.h" />
+    <ClInclude Include="..\include\midifile\MidiEventList.h" />
+    <ClInclude Include="..\include\midifile\MidiFile.h" />
+    <ClInclude Include="..\include\midifile\MidiMessage.h" />
     <ClInclude Include="..\include\Options.h" />
   </ItemGroup>
   <ItemGroup>

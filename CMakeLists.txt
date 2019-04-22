@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(CheckIncludeFiles)
 
-include_directories(include)
-
 check_include_files(unistd.h HAVE_UNISTD_H)
 check_include_files(humdrum.h HAVE_HUMDRUM_H)
 check_include_files(sys/io.h HAVE_SYS_IO_H)
@@ -54,15 +52,17 @@ set(SRCS
 )
 
 set(HDRS
-    include/Binasc.h
-    include/MidiEvent.h
-    include/MidiEventList.h
-    include/MidiFile.h
-    include/MidiMessage.h
-    include/Options.h
+    include/midifile/Binasc.h
+    include/midifile/MidiEvent.h
+    include/midifile/MidiEventList.h
+    include/midifile/MidiFile.h
+    include/midifile/MidiMessage.h
+    include/midifile/Options.h
 )
 
 add_library(midifile STATIC ${SRCS} ${HDRS})
+target_include_directories(midifile PUBLIC include)
+
 
 ##############################
 ##

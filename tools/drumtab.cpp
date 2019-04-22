@@ -10,7 +10,7 @@
 //                drum part.
 //
 
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;

@@ -9,8 +9,8 @@
 //                in seconds for MIDI events in a MIDI file, along with
 //                the track information.
 
-#include "Options.h"
-#include "MidiFile.h"
+#include "midifile/Options.h"
+#include "midifile/MidiFile.h"
 #include <stdlib.h>
 #include <iostream>
 

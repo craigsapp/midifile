@@ -24,8 +24,8 @@
 //     (66, 75, 63)
 //
 
-#include "Options.h"
-#include "MidiFile.h"
+#include "midifile/Options.h"
+#include "midifile/MidiFile.h"
 #include <string.h>
 #include <iostream>
 #include <string>

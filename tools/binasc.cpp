@@ -11,9 +11,9 @@
 
 #include <string.h>
 
-#include "Binasc.h"
-#include "Options.h"
-#include "MidiFile.h"
+#include "midifile/Binasc.h"
+#include "midifile/Options.h"
+#include "midifile/MidiFile.h"
 
 using namespace std;
 using namespace smf;

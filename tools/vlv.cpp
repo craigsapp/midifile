@@ -10,7 +10,7 @@
 //                well as converts integers into VLVs.
 //
 
-#include "Options.h"
+#include "midifile/Options.h"
 #include <stdlib.h>
 #include <string>
 #include <iostream>

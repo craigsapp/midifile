@@ -11,9 +11,9 @@
 //                will be turned off at the given end time.
 //
 
-#include "Options.h"
-#include "MidiFile.h"
-#include "PerlRegularExpression.h"
+#include "midifile/Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/PerlRegularExpression.h"
 #include <stdlib.h>
 
 using namespace std;

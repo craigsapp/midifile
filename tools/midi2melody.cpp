@@ -10,8 +10,8 @@
 //                format with starting time and pitch.
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <vector>
 #include <iostream>
 

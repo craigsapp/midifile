@@ -9,8 +9,8 @@
 // Description:   Concatenate multiple MIDI files into single type-0 MIDI file.
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 #include <vector>
 

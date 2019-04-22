@@ -9,8 +9,8 @@
 // Description:   Reads a MIDI file and converts data to/from ASCII text.
 //
 
-#include "Options.h"
-#include "MidiFile.h"
+#include "midifile/Options.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;
