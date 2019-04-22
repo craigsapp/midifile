@@ -177,8 +177,9 @@ public:
     // individual notes are not a special case, just chords
     // with only one pitch
     Chord(Pitch pitch, float length = 1.0) :
-	pitches(), length(length), is_rest(false) {
-	    pitches.push_back(pitch);
+        pitches(), length(length), is_rest(false)
+    {
+        pitches.push_back(pitch);
     }
 
     Chord(float length = 1.0) : length(length), is_rest(true) {}
@@ -188,15 +189,15 @@ public:
     }
 
     void transformPitch(int delta) {
-        for (Pitch p: pitches){
-	    p.transform(delta);
-	}
+        for (Pitch &p : pitches) {
+            p.transform(delta);
+        }
     }
 
     void transformPitch(const map<int, int> &deltas) {
-        for (Pitch &p: pitches){
-	    p.transform(deltas);
-	}
+        for (Pitch &p : pitches) {
+            p.transform(deltas);
+        }
     }
 
     float getLength() {
@@ -208,8 +209,9 @@ public:
     }
 
     bool isNote() {
-	return pitches.size() == 1;
+        return pitches.size() == 1;
     }
+
     void incrementLength() {
         length++;
     }

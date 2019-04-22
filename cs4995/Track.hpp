@@ -92,29 +92,30 @@ void operator<<(Track &trk, string s) {
 
     auto it = tokens.begin();
     while (it < tokens.end()) {
-        Chord c; // default: quarter rest
+        Chord c;
 
-	// assume that containing '/' means we're dealing with a chord
-	// split using / as a delimiter
-	// construct pitch with each token, then construct chord
-	// using vector of pitches
-	if (it->find('/') != string::npos){
-		vector<Pitch> pitches;
-		vector<string> pitch_tokens = tokenize(*it, '/');
-		for (auto& pitch_token: pitch_tokens){
-			pitches.push_back(Pitch{pitch_token});
-		}
-		c = Chord{pitches};
+        // assume that containing '/' means we're dealing with a chord
+        // split using / as a delimiter
+        // construct pitch with each token, then construct chord
+        // using vector of pitches
+        if (it->find('/') != string::npos){
+            vector<Pitch> pitches;
+            vector<string> pitch_tokens = tokenize(*it, '/');
+            for (auto& pitch_token: pitch_tokens){
+                pitches.push_back(Pitch{pitch_token});
+            }
+            c = Chord{pitches};
 
-	// creates single note
-	} else if (it->compare(REST) != 0) {
+            // creates single note
+        } else if (it->compare(REST) != 0) {
             c = Chord{Pitch{*it}};
 
         } else if (it->compare(REST) == 0) {
-	    // TODO make rest
-	}
+            // default chord is quarter rest
+            // TODO: set length once length is implemented
+        }
 
-	// does this assume valid input?
+        // does this assume valid input?
         while(++it < tokens.end() && it->compare(EXTEND) == 0) {
             c.incrementLength();
         }

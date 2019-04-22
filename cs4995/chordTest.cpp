@@ -11,15 +11,12 @@ int main() {
     Track melody;
     melody << "C/E/G - B_1/D/G - C/E/A - C/F/A -";
 
-
     // combine tracks
     MidiOutput out;
     out.addTrack(melody);
 
     // write tracks
     out.write("chords.mid");
-
-
 
     return 0;
 }

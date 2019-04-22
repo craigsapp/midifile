@@ -30,30 +30,23 @@ bool is_note_char(char& c){
 // assumes valid input
 // creates new token every time it encounters one of
 // {'A','B','C','D','E','F','G'}
-vector<string> tokenize_chordstr(string str){
-    
-    
+vector<string> tokenize_chordstr(string str) {
     vector<string> tokens;
     unsigned int start, end;
     start = end = 0;
 
-    
     while (end < str.size()){
-
-
-	while ( !(is_note_char(str[end])) && end < str.size() ) {
-	    end++;
-	}
-	if (start != end){
-		tokens.push_back(str.substr(start, end-(start)));
-	}
-	start = end;
-	end++;
-
+        while ( !(is_note_char(str[end])) && end < str.size() ) {
+            end++;
+        }
+        if (start != end){
+            tokens.push_back(str.substr(start, end-(start)));
+        }
+        start = end;
+        end++;
     }
 
     tokens.push_back(str.substr(start));
     return tokens;
-
 }
 #endif
