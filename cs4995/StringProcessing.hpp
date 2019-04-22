@@ -32,16 +32,13 @@ bool is_note_char(char& c){
 // {'A','B','C','D','E','F','G'}
 vector<string> tokenize_chordstr(string str) {
     vector<string> tokens;
-    unsigned int start, end;
-    start = end = 0;
+    unsigned int start = 0, end = 1;
 
     while (end < str.size()){
-        while ( !(is_note_char(str[end])) && end < str.size() ) {
+        while (!(is_note_char(str[end])) && end < str.size() ) {
             end++;
         }
-        if (start != end){
-            tokens.push_back(str.substr(start, end-(start)));
-        }
+        tokens.push_back(str.substr(start, end - start));
         start = end;
         end++;
     }
