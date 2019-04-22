@@ -45,6 +45,7 @@ private:
     }
 
 public:
+
     MidiOutput(int tpq = 120) : tpq(tpq) {}
 
     void addTrack(Track trk) {

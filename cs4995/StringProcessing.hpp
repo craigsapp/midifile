@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iostream>
 
 using std::vector;
 using std::string;
@@ -30,19 +31,29 @@ bool is_note_char(char& c){
 // creates new token every time it encounters one of
 // {'A','B','C','D','E','F','G'}
 vector<string> tokenize_chordstr(string str){
+    
+    
     vector<string> tokens;
     unsigned int start, end;
-    end = 0;
+    start = end = 0;
+
+    
     while (end < str.size()){
-	start = end;
+
+
 	while ( !(is_note_char(str[end])) && end < str.size() ) {
 	    end++;
 	}
-
-	tokens.push_back(str.substr(start, end-start));
-	
-    return tokens;
+	if (start != end){
+		tokens.push_back(str.substr(start, end-(start)));
+	}
+	start = end;
+	end++;
 
     }
+
+    tokens.push_back(str.substr(start));
+    return tokens;
+
 }
 #endif
