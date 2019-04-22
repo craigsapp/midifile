@@ -27,11 +27,11 @@ int main() {
 
     Track piTrack;
     for (int i = 0; i < pi.length(); i++) {
-        piTrack << Note{digitToPitch[pi[i]], 0.25};
+        piTrack << Chord{digitToPitch[pi[i]], 0.25};
     }
     Track eTrack;
     for (int i = 0; i < e.length(); i++) {
-        eTrack << Note{digitToPitch[e[i]]};
+        eTrack << Chord{digitToPitch[e[i]]};
     }
     eTrack.transpose(-24);
 

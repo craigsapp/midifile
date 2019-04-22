@@ -147,28 +147,41 @@ std::ostream& operator<<(std::ostream &os, const Pitch &p) {
     return os;
 }
 
-class Note {
+class Chord {
 private:
-    Pitch pitch;
+    vector<Pitch> pitches;
     float length; // quarter note == 1.0
     bool is_rest;
 
 public:
-    Note(Pitch pitch, float length = 1.0) :
-        pitch(pitch), length(length), is_rest(false) {}
+    
+    // constructs a chord out of a collection of pitches
+    Chord(vector<Pitch> pitches, float length = 1.0) :
+        pitches(pitches), length(length), is_rest(false) {}
 
-    Note(float length = 1.0) : length(length), is_rest(true) {}
+    // individual notes are not a special case, just chords
+    // with only one pitch
+    Chord(Pitch pitch, float length = 1.0) :
+	pitches(), length(length), is_rest(false) {
+	    pitches.push_back(pitch);	
+    }
 
-    Pitch getPitch() {
-        return pitch;
+    Chord(float length = 1.0) : length(length), is_rest(true) {}
+
+    vector<Pitch> getPitches() {
+        return pitches;
     }
 
     void transformPitch(int delta) {
-        pitch.transform(delta);
+        for (Pitch p: pitches){
+	    p.transform(delta);
+	}
     }
 
     void transformPitch(const map<int, int> &deltas) {
-        pitch.transform(deltas);
+        for (Pitch p: pitches){
+	    p.transform(deltas);
+	}
     }
 
     float getLength() {
@@ -179,6 +192,9 @@ public:
         return is_rest;
     }
 
+    bool isNote() {
+	return pitches.size() == 1;
+    }
     void incrementLength() {
         length++;
     }
