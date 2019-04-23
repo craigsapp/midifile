@@ -5,38 +5,17 @@
 
 using namespace std;
 
+void test(string input, vector<string> expected) {
+    vector<string> tokens = tokenize_chordstr(input);
+    for (int i = 0; i < tokens.size(); i++) {
+        assert(tokens[i].compare(expected[i]) == 0);
+    }
+}
+
 int main() {
-	string input_1 = "A/C/E";
-	string input_2 = "ACE";
-	string input_3 = "A#CbF";
-	
-	cerr << "\nstarting...\n";
-	vector<string> tokens_1 = tokenize_chordstr(input_1);
-	cerr << "finished 1\n";
-	vector<string> tokens_2 = tokenize_chordstr(input_2);
-	cerr << "finished 2\n";
-	vector<string> tokens_3 = tokenize_chordstr(input_3);
-	cerr << "finished 3\n\n";
-
-	cout << "tokens_1:\n";
-	for (auto s : tokens_1) {
-		cout << s << ", ";
-	}
-	cout << "\nshould be '" << "A/ C/ E" << "'\n\n";
-	
-	cout << "tokens_2:\n";
-	for (auto s : tokens_2) {
-		cout << s << ", ";
-	}
-
-	cout << "\nshould be '" << "A C E" << "'\n\n";	
-	
-	cout << "tokens_3:\n";
-	for (auto s : tokens_3) {
-		cout << s << ", ";
-	}
-
-	cout << "\nshould be '" << "A# Cb F" << "'\n\n";	
-	
-
+    std::cout << "Testing chord tokenizer...\n";
+    test("ACE", {"A", "C", "E"});
+    test("A#CbF", {"A#", "Cb", "F"});
+    test("A1234B1234C1234", {"A1234", "B1234", "C1234"});
+    std::cout << "...Passed\n";
 }

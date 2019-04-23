@@ -12,6 +12,7 @@ using std::string;
 using std::vector;
 
 int DEFAULT_VELOCITY = 64;
+int DEFAULT_OCTAVE = 5;
 
 /* unimplemented
 void transformLength(
@@ -21,6 +22,7 @@ void transformLength(
 class Track {
 private:
     vector<Chord> chords;
+    int octave;
     int velocity;
 
     void transformPitch(const map<int, int> &deltas) {
@@ -30,7 +32,8 @@ private:
     }
 
 public:
-    Track(int velocity = DEFAULT_VELOCITY) : velocity(velocity) {}
+    Track(int octave = DEFAULT_OCTAVE, int velocity = DEFAULT_VELOCITY) :
+        octave(octave), velocity(velocity) {}
 
     const vector<Chord>& getChords() {
         return chords;
@@ -46,6 +49,10 @@ public:
 
     int getVelocity() {
         return velocity;
+    }
+
+    int getOctave() {
+        return octave;
     }
 
     void transpose(int delta) {
@@ -84,7 +91,6 @@ void operator<<(Track &trk, string s) {
     trk.chords.reserve(trk.chords.size() + tokens.size());
 
     float chordLength = 1.0;
-
     auto it = tokens.begin();
     while (it < tokens.end()) {
         Chord c; // default: quarter rest
@@ -108,6 +114,8 @@ void operator<<(Track &trk, string s) {
             exit(1);
           }
 
+          // Move the pointer and continue so that we don't write the empty chord
+          //   down (which is still a quarter rest)
           ++it;
           continue;
         } else if (it->compare(")") == 0) {
@@ -134,10 +142,11 @@ void operator<<(Track &trk, string s) {
           c = Chord{Pitch{*it}, chordLength};
 
         } else if (it->compare(REST) == 0) {
+            // default chord is quarter rest
       	    // TODO make rest
       	}
 
-  	    // does this assume valid input?
+        // does this assume valid input?
         while(++it < tokens.end() && it->compare(EXTEND) == 0) {
             c.incrementLength();
         }

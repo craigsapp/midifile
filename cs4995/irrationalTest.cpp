@@ -29,11 +29,10 @@ int main() {
     for (int i = 0; i < pi.length(); i++) {
         piTrack << Chord{digitToPitch[pi[i]], 0.25};
     }
-    Track eTrack;
+    Track eTrack(3);
     for (int i = 0; i < e.length(); i++) {
         eTrack << Chord{digitToPitch[e[i]]};
     }
-    eTrack.transpose(-24);
 
     MidiOutput pieOut;
     pieOut.addTrack(piTrack);

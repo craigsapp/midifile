@@ -8,9 +8,9 @@ using namespace smf;
 int main() {
 
     // create tracks
-    Track melody, bass;
+    Track melody, bass(4);
     melody << "C C G G A A G . F F E E D D C -";
-    bass << "C3 C4 E4 C4 F4 C4 E4 C4 D4 B3 C4 A3 F3 G3 C3 -";
+    bass << "C_1 C E C F C E C D B_1 C A_1 F_1 G_1 C_1 -";
 
     // combine tracks
     MidiOutput out;

@@ -9,8 +9,7 @@ int main() {
 
     // create tracks
     Track melody;
-    melody << "C/E/G - G/B/D - A/C/E - F/A/C -";
-
+    melody << "C/E/G - B_1/D/G - C/E/A - C/F/A -";
 
     // combine tracks
     MidiOutput out;
@@ -18,8 +17,6 @@ int main() {
 
     // write tracks
     out.write("chords.mid");
-    
-
 
     return 0;
 }
