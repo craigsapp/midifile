@@ -83,36 +83,67 @@ void operator<<(Track &trk, string s) {
     // reserve space >= the amount needed
     trk.chords.reserve(trk.chords.size() + tokens.size());
 
+    float chordLength = 1.0;
+
     auto it = tokens.begin();
     while (it < tokens.end()) {
         Chord c; // default: quarter rest
-        
-	// assume that containing '/' means we're dealing with a chord
-	// split using / as a delimiter
-	// construct pitch with each token, then construct chord 
-	// using vector of pitches 
-	if (it->find('/') != string::npos){
-		vector<Pitch> pitches;
-		vector<string> pitch_tokens = tokenize(*it, '/');
-		for (auto& pitch_token: pitch_tokens){
-			pitches.push_back(Pitch{pitch_token});
-		}	
-		c = Chord{pitches};
+        std::cout << "On: " << *it << std::endl;
+        // Check for note subdivision and parentheses
+        if (it->find('(') != string::npos) {
+          // Expected output of the form: { '4', '(' }
+          vector<string> parenths_tokens = tokenize(*it, '(');
 
-	// creates single note
-	} else if (it->compare(REST) != 0) {
-            c = Chord{Pitch{*it}};
+          // Get the digit in the front as a string, and then as a character
+          char noteDivDigit = parenths_tokens[0][0];
+
+          if (is_note_number(noteDivDigit)) {
+            float wholeNoteLength = 4.0;
+            int noteDivDigitInt = (int) noteDivDigit - '0';
+            // Reminder: quarter notes are manually specified at 4
+            chordLength = wholeNoteLength / noteDivDigitInt;
+          } else {
+            //TODO: Assuming valid input for now
+            std::cout << "Wrong format" << std::endl;
+            exit(1);
+          }
+
+          ++it;
+          continue;
+        } else if (it->compare(")") == 0) {
+          chordLength = 1.0;
+
+          ++it;
+          continue;
+        }
+
+        if (it->find('/') != string::npos) {
+            	// assume that containing '/' means we're dealing with a chord
+            	// split using / as a delimiter
+            	// construct pitch with each token, then construct chord
+            	// using vector of pitches
+      		vector<Pitch> pitches;
+      		vector<string> pitch_tokens = tokenize(*it, '/');
+      		for (auto& pitch_token: pitch_tokens){
+      			pitches.push_back(Pitch{pitch_token});
+      		}
+      		c = Chord{pitches, chordLength};
+
+      	// creates single note
+      	} else if (it->compare(REST) != 0) {
+          c = Chord{Pitch{*it}, chordLength};
 
         } else if (it->compare(REST) == 0) {
-	    // TODO make rest
-	}
+      	    // TODO make rest
+      	}
 
-	// does this assume valid input?
+  	    // does this assume valid input?
         while(++it < tokens.end() && it->compare(EXTEND) == 0) {
             c.incrementLength();
         }
         trk << c;
     }
+
     return;
 }
 

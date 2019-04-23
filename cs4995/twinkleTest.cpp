@@ -12,7 +12,6 @@ int main() {
     melody << "C C G G A A G . F F E E D D C -";
     bass << "C3 C4 E4 C4 F4 C4 E4 C4 D4 B3 C4 A3 F3 G3 C3 -";
 
-
     // combine tracks
     MidiOutput out;
     out.addTrack(melody);

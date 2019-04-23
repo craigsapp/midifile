@@ -27,17 +27,21 @@ bool is_note_char(char& c){
     return (c >= 'A' && c <= 'G');
 }
 
+bool is_note_number(char& c) {
+  return (c >= '0' && c <= '9');
+}
+
 // assumes valid input
 // creates new token every time it encounters one of
 // {'A','B','C','D','E','F','G'}
 vector<string> tokenize_chordstr(string str){
-    
-    
+
+
     vector<string> tokens;
     unsigned int start, end;
     start = end = 0;
 
-    
+
     while (end < str.size()){
 
 
