@@ -31,6 +31,34 @@ private:
         }
     }
 
+    bool changeChordDuration(float &chordLength, vector<string>::iterator tokenIterator) {
+      // Check for note subdivision and parentheses
+      if (tokenIterator->find('(') != string::npos) {
+        // Expected output of the form: { '4', '(' }
+        vector<string> parenths_tokens = tokenize(*tokenIterator, '(');
+
+        // Get the digit in the front as a string, and then as a character
+        char noteDivDigit = parenths_tokens[0][0];
+
+        if (is_note_number(noteDivDigit)) {
+          float wholeNoteLength = 4.0;
+          int noteDivDigitInt = (int) noteDivDigit - '0';
+          // Reminder: quarter notes are manually specified at 4
+          chordLength = wholeNoteLength / noteDivDigitInt;
+        } else {
+          //TODO: Assuming valid input for now
+          std::cerr << "Need number in front of parentheses to specify note duration\n";
+          exit(1);
+        }
+      } else if (tokenIterator->compare(")") == 0) {
+        chordLength = 1.0;
+      } else {
+        return false;
+      }
+
+      return true;
+    }
+
 public:
     Track(int octave = DEFAULT_OCTAVE, int velocity = DEFAULT_VELOCITY) :
         octave(octave), velocity(velocity) {}
@@ -95,32 +123,10 @@ void operator<<(Track &trk, string s) {
     while (it < tokens.end()) {
         Chord c; // default: quarter rest
 
-        // Check for note subdivision and parentheses
-        if (it->find('(') != string::npos) {
-          // Expected output of the form: { '4', '(' }
-          vector<string> parenths_tokens = tokenize(*it, '(');
-
-          // Get the digit in the front as a string, and then as a character
-          char noteDivDigit = parenths_tokens[0][0];
-
-          if (is_note_number(noteDivDigit)) {
-            float wholeNoteLength = 4.0;
-            int noteDivDigitInt = (int) noteDivDigit - '0';
-            // Reminder: quarter notes are manually specified at 4
-            chordLength = wholeNoteLength / noteDivDigitInt;
-          } else {
-            //TODO: Assuming valid input for now
-            std::cout << "Wrong format" << std::endl;
-            exit(1);
-          }
-
+        // Returns true if a parentheses is found (chordLength is thus also changed)
+        if (trk.changeChordDuration(chordLength, it)) {
           // Move the pointer and continue so that we don't write the empty chord
           //   down (which is still a quarter rest)
-          ++it;
-          continue;
-        } else if (it->compare(")") == 0) {
-          chordLength = 1.0;
-
           ++it;
           continue;
         }
