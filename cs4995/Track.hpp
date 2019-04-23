@@ -94,7 +94,7 @@ void operator<<(Track &trk, string s) {
     auto it = tokens.begin();
     while (it < tokens.end()) {
         Chord c; // default: quarter rest
-        std::cout << "On: " << *it << std::endl;
+
         // Check for note subdivision and parentheses
         if (it->find('(') != string::npos) {
           // Expected output of the form: { '4', '(' }
