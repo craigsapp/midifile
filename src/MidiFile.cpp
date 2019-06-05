@@ -502,15 +502,15 @@ bool MidiFile::write(std::ostream& out) {
 
 	// 3. MIDI file format, type 0, 1, or 2
 	ushort shortdata;
-	shortdata = (getNumTracks() == 1) ? 0 : 1;
+	shortdata = static_cast<ushort>(getNumTracks() == 1 ? 0 : 1);
 	writeBigEndianUShort(out,shortdata);
 
 	// 4. write out the number of tracks.
-	shortdata = getNumTracks();
+	shortdata = static_cast<ushort>(getNumTracks());
 	writeBigEndianUShort(out, shortdata);
 
 	// 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
-	shortdata = getTicksPerQuarterNote();
+	shortdata = static_cast<ushort>(getTicksPerQuarterNote());
 	writeBigEndianUShort(out, shortdata);
 
 	// now write each track.
@@ -931,16 +931,16 @@ void MidiFile::splitTracks(void) {
 			maxTrack = (*m_events[0])[i].track;
 		}
 	}
-	int m_trackCount = maxTrack + 1;
+	int trackCount = maxTrack + 1;
 
-	if (m_trackCount <= 1) {
+	if (trackCount <= 1) {
 		return;
 	}
 
 	MidiEventList* olddata = m_events[0];
 	m_events[0] = NULL;
-	m_events.resize(m_trackCount);
-	for (i=0; i<m_trackCount; i++) {
+	m_events.resize(trackCount);
+	for (i=0; i<trackCount; i++) {
 		m_events[i] = new MidiEventList;
 	}
 
@@ -995,16 +995,16 @@ void MidiFile::splitTracksByChannel(void) {
 			maxTrack = eventlist[i][0] & 0x0f;
 		}
 	}
-	int m_trackCount = maxTrack + 2; // + 1 for expression track
+	int trackCount = maxTrack + 2; // + 1 for expression track
 
-	if (m_trackCount <= 1) {
+	if (trackCount <= 1) {
 		// only one channel, so don't do anything (leave as Type-0 file).
 		return;
 	}
 
 	m_events[0] = NULL;
-	m_events.resize(m_trackCount);
-	for (i=0; i<m_trackCount; i++) {
+	m_events.resize(trackCount);
+	for (i=0; i<trackCount; i++) {
 		m_events[i] = new MidiEventList;
 	}
 
