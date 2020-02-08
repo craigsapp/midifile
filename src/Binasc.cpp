@@ -881,6 +881,9 @@ int Binasc::readMidiEvent(std::ostream& out, std::istream& infile,
 						   for (int i=0; i<length; i++) {
 						      infile.read((char*)&ch, 1);
 						      trackbytes++;
+								if (ch == '"') {
+									output << '\\';
+								}
 						      output << (char)ch;
 						   }
 						   output << "\"";
