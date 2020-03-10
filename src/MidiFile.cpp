@@ -12,8 +12,8 @@
 //                class is used for example in the MidiPerform class.
 //
 
-#include "MidiFile.h"
-#include "Binasc.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Binasc.h"
 
 #include <string>
 #include <vector>

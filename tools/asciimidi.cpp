@@ -9,8 +9,8 @@
 //                reconversion into a binary Standard MIDI File.
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 
 using namespace std;

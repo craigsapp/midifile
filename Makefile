@@ -77,10 +77,10 @@ options:
 # necessary if you only want to use the compiled MidiFile library.
 ifneq ($(shell which wget),)
 	wget https://raw.githubusercontent.com/craigsapp/optionlib/master/src/Options.cpp -O src/Options.cpp
-	wget https://raw.githubusercontent.com/craigsapp/optionlib/master/include/Options.h -O include/Options.h
+	wget https://raw.githubusercontent.com/craigsapp/optionlib/master/include/Options.h -O include/midifile/Options.h
 else ifneq ($(shell which curl),)
 	curl https://raw.githubusercontent.com/craigsapp/optionlib/master/src/Options.cpp -o src/Options.cpp
-	curl https://raw.githubusercontent.com/craigsapp/optionlib/master/include/Options.h -O include/Options.h
+	curl https://raw.githubusercontent.com/craigsapp/optionlib/master/include/Options.h -O include/midifile/Options.h
 endif
 
 

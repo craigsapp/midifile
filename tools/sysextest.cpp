@@ -26,7 +26,7 @@
 //                after the first byte in the sysex message.
 //
 
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;

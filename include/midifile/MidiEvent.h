@@ -14,7 +14,7 @@
 #ifndef _MIDIEVENT_H_INCLUDED
 #define _MIDIEVENT_H_INCLUDED
 
-#include "MidiMessage.h"
+#include "midifile/MidiMessage.h"
 #include <vector>
 
 namespace smf {

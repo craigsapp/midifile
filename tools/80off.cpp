@@ -10,8 +10,8 @@
 //                "8? ?? 00".
 //
 
-#include "Options.h"
-#include "MidiFile.h"
+#include "midifile/Options.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;

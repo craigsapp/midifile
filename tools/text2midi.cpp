@@ -11,8 +11,8 @@
 //                MIDI file.
 //
 
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>

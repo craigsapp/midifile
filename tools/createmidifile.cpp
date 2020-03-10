@@ -8,7 +8,7 @@
 // Description:   Demonstration of how to create a Multi-track MIDI file.
 //
 
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;

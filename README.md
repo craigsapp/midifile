@@ -126,7 +126,7 @@ Using in your own project
 -------------------------
 
 The easiest way to use the midifile library in your own project is to
-copy the header files in the `include` directory and the source-code
+copy the header files in the `include/midifile` directory and the source-code
 files in the `src` directory into your own project.  You do not
 need to copy `Options.h` or `Options.cpp` since the `MidiFile` class is
 not dependent on them.  The [verovio](https://github.com/rism-ch/verovio)
@@ -162,8 +162,8 @@ so `using namespace smf;` or `smf::` prefixes are needed to access
 the classes.
 
 ``` cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 #include <iomanip>
 
@@ -325,8 +325,8 @@ of program that joins the `MidiEvents` into a single track so that the
 data can be processed in a single loop:
 
 ``` cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 #include <iomanip>
 
@@ -451,8 +451,8 @@ before being written to a file.
 
 
 ``` cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <random>
 #include <iostream>
 
@@ -605,7 +605,7 @@ into a standard MIDI file:
 
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;
@@ -638,8 +638,8 @@ duration of a MIDI file.  Also, this example shows how to process multiple
 input files when using the Options class.
 
 ```cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 using namespace std;
 using namespace smf;
@@ -675,7 +675,7 @@ them out when found.  The `MidiMessage::getMetaContent()` function extracts
 the text string of the message from the raw MIDI file bytes.
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 
 using namespace std;
@@ -713,7 +713,7 @@ Here is a demonstration of converting a multi-track MIDI file into
 a single-track MIDI file:
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 using namespace std;
 using namespace smf;
@@ -751,7 +751,7 @@ represented by the integer 9.  The following example searches through
 the MIDI events in each track until it finds a note on channel 9:
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 using namespace std;
 using namespace smf;
@@ -794,7 +794,7 @@ notes from a MIDI file.  Here is an example of how that can be done with
 the midifile library.
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 using namespace std;
 using namespace smf;
@@ -844,8 +844,8 @@ reserved for the drum track (and most MIDI files use the General MIDI
 convention).
 
 ```cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 
 using namespace std;
@@ -888,8 +888,8 @@ The following example lists all of the instrument numbers
 used in a MIDI file.  It does not analyze the drum track.
 
 ```cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <set>
 #include <utility>
 #include <iostream>
@@ -938,7 +938,7 @@ to avoid MIDI channel 10, which is reserved for percussion timbres
 in General MIDI.
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 using namespace std;
 using namespace smf;
@@ -1306,7 +1306,7 @@ tracks of the first MIDI file are copied to the 1st track of
 the output MIDI files.
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -1465,8 +1465,8 @@ The `MidiFile::getAbsoluteTickTime()` function calculates the conversion
 between physical time in seconds and tick time in the MIDI file.
 
 ```cpp
-#include "MidiFile.h"
-#include "Options.h"
+#include "midifile/MidiFile.h"
+#include "midifile/Options.h"
 #include <iostream>
 #include <utility>
 #include <cmath>
@@ -1541,7 +1541,7 @@ options are:
 
 
 ```cpp
-#include "MidiFile.h"
+#include "midifile/MidiFile.h"
 #include "Options.h"
 #include <iostream>
 #include <utility>
