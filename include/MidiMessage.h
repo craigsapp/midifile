@@ -63,6 +63,7 @@ class MidiMessage : public std::vector<uchar> {
 		// note-message convenience functions:
 		int            getKeyNumber         (void) const;
 		int            getVelocity          (void) const;
+		int            getPitchbend         (void) const;
 		void           setKeyNumber         (int value);
 		void           setVelocity          (int value);
 		void           setSpelling          (int base7, int accidental);

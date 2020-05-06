@@ -877,6 +877,23 @@ int MidiMessage::getVelocity(void) const {
 
 //////////////////////////////
 //
+// MidiMessage::getPitchbend -- Return the pitch bend.  If the message
+//   is not a pitch bend, then return -1.
+//
+
+int MidiMessage::getPitchbend(void) const {
+	if (isPitchbend()) {
+		return (((*this)[2] & 0x7f) << 7) | (*this)[1];
+	}
+	else {
+		return -1;
+	}
+}
+
+
+
+//////////////////////////////
+//
 // MidiMessage::getControllerNumber -- Return the controller number (such as 1
 //   for modulation wheel).  If the message does not have a controller number
 //   parameter, then return -1.  If the controller number is invalid (above 127
