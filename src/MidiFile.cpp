@@ -1939,6 +1939,43 @@ MidiEvent* MidiFile::addPitchBend(int aTrack, int aTick, int aChannel, double am
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
+//
+// RPN convenience functions:
+//
+
+//////////////////////////////
+//
+// MidiFile::setPitchBendRange -- Set the range for the min/max pitch bend
+//   alteration of a note.  Default is 2.0 (meaning +/- 2 semitones from given pitch).
+//   Fractional values are cents, so 2.5 means a range of two semitones plus 50 cents,
+//   which is two semitones plus a quarter tone.
+//
+
+void MidiFile::setPitchBendRange(int aTrack, int aTick, int aChannel, double range) {
+	if (range < 0.0) {
+		range = -range;
+	}
+	if (range > 24.0) {
+		std::cerr << "Warning: pitch bend range is too large: " << range << std::endl;
+		std::cerr << "Setting to 24." << std::endl;
+		range = 24.0;
+	}
+	int irange = int(range);
+	int cents = int((range - irange) * 100.0 + 0.5);
+
+	// Select pitch bend RPN:
+	addController(aTrack, aTick, aChannel, 101, 0);  // RPN selector (byte 1)
+	addController(aTrack, aTick, aChannel, 100, 0);  // RPN selector (byte 2)
+
+	// Set the semitone range (will be +/-range above/below a note):
+	addController(aTrack, aTick, aChannel,  6,  irange);  // coarse: number of semitones
+	addController(aTrack, aTick, aChannel, 38,  cents);   // fine: cents (1/100ths of semitone)
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////
 //
 // Controller message adding convenience functions:

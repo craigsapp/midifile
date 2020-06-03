@@ -165,6 +165,10 @@ class MidiFile {
 		MidiEvent*        addPitchBend            (int aTrack, int aTick,
 		                                           int aChannel, double amount);
 
+		// RPN settings:
+		void              setPitchBendRange       (int aTrack, int aTick,
+		                                           int aChannel, double range);
+
 		// Controller message adding convenience functions:
 		MidiEvent*        addSustain              (int aTrack, int aTick,
 		                                           int aChannel, int value);
