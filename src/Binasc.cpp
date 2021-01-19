@@ -262,17 +262,17 @@ int Binasc::writeToBinary(std::ostream& out, const std::string& infile) {
 
 
 int Binasc::writeToBinary(std::ostream& out, std::istream& input) {
-	char inputLine[1024] = {0};    // current line being processed
+	std::string inputLine;
+	inputLine.reserve(8196);
 	int  lineNum = 0;              // current line number
-
-	input.getline(inputLine, 1024, '\n');
+	getline(input, inputLine, '\n');
 	lineNum++;
 	while (!input.eof()) {
 		int status = processLine(out, inputLine, lineNum);
 		if (!status) {
 			return 0;
 		}
-		input.getline(inputLine, 1024, '\n');
+		getline(input, inputLine, '\n');
 		lineNum++;
 	}
 	return 1;
@@ -506,7 +506,7 @@ int Binasc::outputStyleBoth(std::ostream& out, std::istream& input) {
 
 ///////////////////////////////
 //
-// processLine -- read a line of input and output any specified bytes
+// Binasc::processLine -- Read a line of input and output any specified bytes.
 //
 
 int Binasc::processLine(std::ostream& out, const std::string& input,
@@ -518,7 +518,7 @@ int Binasc::processLine(std::ostream& out, const std::string& input,
 	while (i<length) {
 		if ((input[i] == ';') || (input[i] == '#') || (input[i] == '/')) {
 			// comment to end of line, so ignore
-			return 1;
+			return status;
 		} else if ((input[i] == ' ') || (input[i] == '\n')
 				|| (input[i] == '\t')) {
 			// ignore whitespace
