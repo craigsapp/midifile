@@ -143,10 +143,11 @@ MidiFile& MidiFile::operator=(MidiFile&& other) {
 // reading/writing functions --
 //
 
+
 //////////////////////////////
 //
-// MidiFile::read -- Parse a Standard MIDI File and store its contents
-//      in the object.
+// MidiFile::read -- Parse a Standard MIDI File or ASCII-encoded Standard MIDI
+//      File and store its contents in the object.
 //
 
 bool MidiFile::read(const std::string& filename) {
@@ -186,10 +187,49 @@ bool MidiFile::read(std::istream& input) {
 			m_rwstatus = false;
 			return m_rwstatus;
 		} else {
-			m_rwstatus = read(binarydata);
+			m_rwstatus = readSmf(binarydata);
 			return m_rwstatus;
 		}
+	} else {
+		m_rwstatus = readSmf(input);
+		return m_rwstatus;
 	}
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::readSmf -- Parse a Standard MIDI File and store its contents
+//      in the object.
+//
+
+bool MidiFile::readSmf(const std::string& filename) {
+	m_timemapvalid = 0;
+	setFilename(filename);
+	m_rwstatus = true;
+
+	std::fstream input;
+	input.open(filename.c_str(), std::ios::binary | std::ios::in);
+
+	if (!input.is_open()) {
+		m_rwstatus = false;
+		return m_rwstatus;
+	}
+
+	m_rwstatus = readSmf(input);
+	return m_rwstatus;
+}
+
+
+
+//////////////////////////////
+//
+// MidiFile::readSmf -- Parse a Standard MIDI File and store its contents in the object.
+//
+
+bool MidiFile::readSmf(std::istream& input) {
+	m_rwstatus = true;
 
 	std::string filename = getFilename();
 

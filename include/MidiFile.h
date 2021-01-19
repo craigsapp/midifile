@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Nov 26 14:12:01 PST 1999
-// Last Modified: Sat Apr 21 10:52:19 PDT 2018 Removed using namespace std;
+// Last Modified: Mon Jan 18 20:54:04 PST 2021 Added readSmf().
 // Filename:      midifile/include/MidiFile.h
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
@@ -49,9 +49,16 @@ class MidiFile {
 		MidiFile&      operator=                   (const MidiFile& other);
 		MidiFile&      operator=                   (MidiFile&& other);
 
-		// reading/writing functions:
+		// Reading/writing functions:
+
+		// Auto-detected SMF or ASCII-encoded SMF (decoded with Binasc class):
 		bool           read                        (const std::string& filename);
 		bool           read                        (std::istream& instream);
+
+		// Only allow Standard MIDI File input:
+		bool           readSmf                     (const std::string& filename);
+		bool           readSmf                     (std::istream& instream);
+
 		bool           write                       (const std::string& filename);
 		bool           write                       (std::ostream& out);
 		bool           writeHex                    (const std::string& filename,
