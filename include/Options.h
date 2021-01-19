@@ -2,7 +2,7 @@
 // Copyright 1998-2018 by Craig Stuart Sapp, All Rights Reserved.
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr  5 13:07:18 PDT 1998
-// Last Modified: Sat Apr 21 10:52:19 PDT 2018 Removed using namespace std;
+// Last Modified: Mon Jan 18 18:25:23 PST 2021 Some cleanup
 // Filename:      midifile/include/Options.h
 // Web Address:   http://midifile.sapp.org
 // Syntax:        C++11
@@ -19,13 +19,13 @@
 #include <string>
 #include <vector>
 
-#define OPTION_BOOLEAN_TYPE   'b'
-#define OPTION_CHAR_TYPE      'c'
-#define OPTION_DOUBLE_TYPE    'd'
-#define OPTION_FLOAT_TYPE     'f'
-#define OPTION_INT_TYPE       'i'
-#define OPTION_STRING_TYPE    's'
-#define OPTION_UNKNOWN_TYPE   'x'
+#define OPTION_TYPE_unknown   '\0'
+#define OPTION_TYPE_boolean   'b'
+#define OPTION_TYPE_char      'c'
+#define OPTION_TYPE_double    'd'
+#define OPTION_TYPE_float     'f'
+#define OPTION_TYPE_int       'i'
+#define OPTION_TYPE_string    's'
 
 namespace smf {
 
@@ -59,12 +59,12 @@ class Option_register {
 	  std::ostream&      print              (std::ostream& out);
 
 	protected:
-		std::string       definition;
-		std::string       description;
-		std::string       defaultOption;
-		std::string       modifiedOption;
-		bool              modifiedQ;
-		char              type;
+		std::string       m_definition;
+		std::string       m_description;
+		std::string       m_defaultOption;
+		std::string       m_modifiedOption;
+		bool              m_modifiedQ;
+		char              m_type;
 
 };
 
@@ -104,17 +104,14 @@ class Options {
 		std::ostream&      print             (std::ostream& out);
 		std::ostream&      printOptionList   (std::ostream& out);
 		std::ostream&      printOptionListBooleanState(std::ostream& out);
-		void               process           (int error_check = 1,
-		                                      int suppress = 0);
-		void               process           (int argc, char** argv,
-		                                      int error_check = 1,
+		void               process           (int error_check = 1, int suppress = 0);
+		void               process           (int argc, char** argv, int error_check = 1,
 		                                      int suppress = 0);
 		void               reset             (void);
 		void               xverify           (int argc, char** argv,
 		                                      int error_check = 1,
 		                                      int suppress = 0);
-		void               xverify           (int error_check = 1,
-		                                      int suppress = 0);
+		void               xverify           (int error_check = 1, int suppress = 0);
 		void               setFlag           (char aFlag);
 		void               setModified       (const std::string& optionName,
 		                                      const std::string& optionValue);
@@ -136,19 +133,17 @@ class Options {
 		std::vector<Option_register*> m_optionRegister;
 		std::map<std::string, int>    m_optionList;
 
-		int                           m_processedQ;
-		int                           m_suppressQ;       // prevent --options
-		int                           m_optionsArgument; // --options present
+		bool                          m_processedQ;
+		bool                          m_suppressQ;       // prevent --options
+		bool                          m_optionsArgument; // --options present
 
 		std::vector<std::string>      m_extraArgv;
 		std::vector<std::string>      m_extraArgv_strings;
 
 	private:
 		int                getRegIndex       (const std::string& optionName);
-		int                optionQ           (const std::string& aString,
-		                                      int& argp);
-		int                storeOption       (int gargp, int& position,
-		                                      int& running);
+		int                optionQ           (const std::string& aString, int& argp);
+		int                storeOption       (int gargp, int& position, int& running);
 
 };
 
