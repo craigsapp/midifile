@@ -198,7 +198,6 @@ bool MidiFile::read(std::istream& input) {
 	ulong  longdata;
 	ushort shortdata;
 
-
 	// Read the MIDI header (4 bytes of ID, 4 byte data size,
 	// anticipated 6 bytes of data.
 
@@ -332,7 +331,6 @@ bool MidiFile::read(std::istream& input) {
 	MidiEvent event;
 	std::vector<uchar> bytes;
 	int xstatus;
-	// int barline;
 
 	for (int i=0; i<tracks; i++) {
 		runningCommand = 0;
@@ -399,59 +397,47 @@ bool MidiFile::read(std::istream& input) {
 		// do not correctly give the track size.
 		longdata = readLittleEndian4Bytes(input);
 
-		// set the size of the track allocation so that it might
+		// Set the size of the track allocation so that it might
 		// approximately fit the data.
 		m_events[i]->reserve((int)longdata/2);
 		m_events[i]->clear();
 
-		// process the track
+		// Read MIDI events in the track, which are pairs of VLV values
+		// and then the bytes for the MIDI message.  Running status messags
+		// will be filled in with their implicit command byte.
+		// The timestamps are converted from delta ticks to absolute ticks,
+		// with the absticks variable accumulating the VLV tick values.
 		int absticks = 0;
-		// barline = 1;
 		while (!input.eof()) {
 			longdata = readVLValue(input);
-			//std::cout << "ticks = " << longdata << std::endl;
 			absticks += longdata;
 			xstatus = extractMidiData(input, bytes, runningCommand);
 			if (xstatus == 0) {
-				m_rwstatus = false;  return m_rwstatus;
+				m_rwstatus = false; return m_rwstatus;
 			}
 			event.setMessage(bytes);
-			//std::cout << "command = " << std::hex << (int)event.data[0] << std::dec << std::endl;
-			if (bytes[0] == 0xff && (bytes[1] == 1 ||
-					bytes[1] == 2 || bytes[1] == 3 || bytes[1] == 4)) {
-				// mididata.push_back('\0');
-				// std::cout << '\t';
-				// for (int m=0; m<event.data[2]; m++) {
-				//    std::cout << event.data[m+3];
-				// }
-				// std::cout.flush();
-			} else if (bytes[0] == 0xff && bytes[1] == 0x2f) {
-				// end of track message
-				// uncomment out the following three lines if you don't want
-				// to see the end of track message (which is always required,
-				// and added automatically when a MIDI is written.
-				event.tick = absticks;
-				event.track = i;
+			event.tick = absticks;
+			event.track = i;
+
+			if (bytes[0] == 0xff && bytes[1] == 0x2f) {
+				// end-of-track message
+				// comment out the following line if you don't want to see the
+				// end of track message (which is always required, and will added
+				// automatically when a MIDI is written, so it is not necessary.
 				m_events[i]->push_back(event);
 				break;
 			}
-
-			if (bytes[0] != 0xff && bytes[0] != 0xf0) {
-				event.tick = absticks;
-				event.track = i;
-				m_events[i]->push_back(event);
-			} else {
-				event.tick = absticks;
-				event.track = i;
-				m_events[i]->push_back(event);
-			}
-
+			m_events[i]->push_back(event);
 		}
-
 	}
 
 	m_theTimeState = TIME_STATE_ABSOLUTE;
+
+	// The original order of the MIDI events is marked with an enumeration which
+	// allows for reconstruction of the order when merging/splitting tracks to/from
+	// a type-0 configuration.
 	markSequence();
+
 	return m_rwstatus;
 }
 
