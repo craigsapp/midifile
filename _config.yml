@@ -19,7 +19,7 @@ exclude: [
 
 
 # Build settings ##########################################################
-markdown: redcarpet
+#markdown: redcarpet  # no longer supported in github
 permalink: pretty
 
 
