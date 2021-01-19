@@ -823,7 +823,6 @@ void Options::appendOptions(const std::vector<std::string>& argv) {
 //
 
 void Options::appendOptions(const std::string& strang) {
-   int i;
    int doublequote = 0;
    int singlequote = 0;
 
@@ -835,10 +834,10 @@ void Options::appendOptions(const std::string& strang) {
    tempargv.reserve(100);
    tempvalue.reserve(1000);
 
-   char ch;
+   char ch = '\0';
 
    int length = (int)strang.size();
-   for (i=0; i<length; i++) {
+   for (int i=0; i<length; i++) {
 
       if (!singlequote && (strang[i] == '"')) {
          if ((i>0) && (strang[i-1] != '\\')) {
@@ -895,7 +894,7 @@ void Options::appendOptions(const std::string& strang) {
    // assemble the argv structure
 
    tempargv.reserve(tokens.size());
-   for (i=0; i<(int)tempargv.size(); i++) {
+   for (int i=0; i<(int)tempargv.size(); i++) {
       tempargv[i] = tokens[i];
    }
 

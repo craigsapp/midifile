@@ -375,7 +375,7 @@ int Binasc::outputStyleAscii(std::ostream& out, std::istream& input) {
 	int type      = 0;             // 0=space, 1=printable
 	uchar ch;                      // current input byte
 
-	ch = input.get();
+	ch = static_cast<uchar>(input.get());
 	while (!input.eof()) {
 		int lastType = type;
 		type = (isprint(ch) && !isspace(ch)) ? 1 : 0;
@@ -401,7 +401,7 @@ int Binasc::outputStyleAscii(std::ostream& out, std::istream& input) {
 		if (type == 1) {
 			outputWord[index++] = ch;
 		}
-		ch = input.get();
+		ch = static_cast<uchar>(input.get());
 	}
 
 	if (index != 0) {
@@ -423,7 +423,7 @@ int Binasc::outputStyleBinary(std::ostream& out, std::istream& input) {
 	int currentByte = 0;    // current byte output in line
 	uchar ch;               // current input byte
 
-	ch = input.get();
+	ch = static_cast<uchar>(input.get());
 	if (input.eof()) {
 		std::cerr << "End of the file right away!" << std::endl;
 		return 0;
@@ -439,7 +439,7 @@ int Binasc::outputStyleBinary(std::ostream& out, std::istream& input) {
 			out << '\n';
 			currentByte = 0;
 		}
-		ch = input.get();
+		ch = static_cast<uchar>(input.get());
 	}
 
 	if (currentByte != 0) {
@@ -463,7 +463,7 @@ int Binasc::outputStyleBoth(std::ostream& out, std::istream& input) {
 	int index = 0;                 // current character in asciiLine
 	uchar ch;                      // current input byte
 
-	ch = input.get();
+	ch = static_cast<uchar>(input.get());
 	while (!input.eof()) {
 		if (index == 0) {
 			asciiLine[index++] = ';';
@@ -490,7 +490,7 @@ int Binasc::outputStyleBoth(std::ostream& out, std::istream& input) {
 			currentByte = 0;
 			index = 0;
 		}
-		ch = input.get();
+		ch = static_cast<uchar>(input.get());
 	}
 
 	if (currentByte != 0) {
@@ -1432,8 +1432,6 @@ int Binasc::processDecimalWord(std::ostream& out, const std::string& word,
 			std::cerr << "invalid byte count specification for decimal number" << std::endl;
 			return 0;
 	}
-
-	return 1;
 }
 
 
