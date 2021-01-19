@@ -7,13 +7,26 @@ title: C++ library for parsing Standard MIDI Files
 
 Download the zip or tar file from the buttons at the top of the page
 and unpack and type <tt>make</tt> in the base directory of the midifile 
-package.  Or if you use git, download on the terminal with these commands:
+package.
 
-``` bash
-git pull https://github.com/craigsapp/midifile
+Or if you use git, download on the terminal with these commands and compile with
+these commands:
+
+```bash
+git clone https://github.com/craigsapp/midifile
 cd midifile
 make
 ```
+
+To update the souce code if you already have cloned previously, go into the
+midifile directory and type:
+
+```bash
+git pull
+make
+```
+
+
 <!-- FEATURE LIST ------------------------------------------------- -->
 
 <details open>
