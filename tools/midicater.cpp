@@ -2,8 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Oct 16 07:34:30 PDT 2012
 // Last Modified: Mon Feb  9 20:40:50 PST 2015 Updated for C++11.
-// Filename:      ...sig/examples/all/midicat.cpp
-// Web Address:   http://museinfo.sapp.org/examples/museinfo/midi/midicat.cpp
+// Filename:      ...sig/examples/all/midicater.cpp
+// Web Address:   http://museinfo.sapp.org/examples/museinfo/midi/midicater.cpp
 // Syntax:        C++; museinfo
 //
 // Description:   Concatenate multiple MIDI files into single type-0 MIDI file.
