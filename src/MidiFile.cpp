@@ -33,16 +33,16 @@ namespace smf {
 //
 
 MidiFile::MidiFile(void) {
-	m_events.resize(m_trackCount);
-	for (int i=0; i<m_trackCount; i++) {
+	m_events.resize(1);
+	for (int i=0; i<(int)m_events.size(); i++) {
 		m_events[i] = new MidiEventList;
 	}
 }
 
 
 MidiFile::MidiFile(const std::string& filename) {
-	m_events.resize(m_trackCount);
-	for (int i=0; i<m_trackCount; i++) {
+	m_events.resize(1);
+	for (int i=0; i<(int)m_events.size(); i++) {
 		m_events[i] = new MidiEventList;
 	}
 	read(filename);
@@ -50,8 +50,8 @@ MidiFile::MidiFile(const std::string& filename) {
 
 
 MidiFile::MidiFile(std::istream& input) {
-	m_events.resize(m_trackCount);
-	for (int i=0; i<m_trackCount; i++) {
+	m_events.resize(1);
+	for (int i=0; i<(int)m_events.size(); i++) {
 		m_events[i] = new MidiEventList;
 	}
 	read(input);
@@ -108,7 +108,6 @@ MidiFile& MidiFile::operator=(const MidiFile& other) {
 		}
 	);
 	m_ticksPerQuarterNote = other.m_ticksPerQuarterNote;
-	m_trackCount          = other.m_trackCount;
 	m_theTrackState       = other.m_theTrackState;
 	m_theTimeState        = other.m_theTimeState;
 	m_readFileName        = other.m_readFileName;
@@ -129,7 +128,6 @@ MidiFile& MidiFile::operator=(MidiFile&& other) {
 	other.m_events.clear();
 	other.m_events.emplace_back(new MidiEventList);
 	m_ticksPerQuarterNote = other.m_ticksPerQuarterNote;
-	m_trackCount          = other.m_trackCount;
 	m_theTrackState       = other.m_theTrackState;
 	m_theTimeState        = other.m_theTimeState;
 	m_readFileName        = other.m_readFileName;

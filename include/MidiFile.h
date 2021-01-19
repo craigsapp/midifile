@@ -255,9 +255,6 @@ class MidiFile {
 		// in MIDI file track data.
 		int m_ticksPerQuarterNote = 120;
 
-		// m_trackCount == the number of tracks in the file.
-		int m_trackCount = 1;
-
 		// m_theTrackState == state variable for whether the tracks
 		// are joined or split.
 		int m_theTrackState = TRACK_STATE_SPLIT;
