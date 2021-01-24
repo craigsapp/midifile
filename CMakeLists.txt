@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(CheckIncludeFiles)
+include(GNUInstallDirs)
 
 include_directories(include)
 
@@ -156,3 +157,11 @@ if(HAVE_HUMDRUM_H)
     target_link_libraries(midiexcerpt midifile)
     target_link_libraries(peep2midi midifile)
 endif()
+
+install(TARGETS midifile
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(FILES ${HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/midifile)
