@@ -22,6 +22,8 @@
 //      -N #      Normalize by the sum of the histogram counts scaled to number #.
 //      -C        Sort histogram by counts (largest to smallest).
 //      --tpq     Print ticks-per-quarter note from MIDI header(s) only.
+//      --notes   Calculate for MIDI notes only.
+//      --on      Calculate for MIDI notes-ons only.
 //
 
 #include "MidiFile.h"
@@ -45,6 +47,9 @@ using namespace smf;
 // Function definitions:
 void processFile(MidiFile& midifile, map<string, int>& histogram, Options& options);
 void printHistogram(map<string, int>& histogram, Options& options);
+void extractDeltaTimesForAllEvents(MidiFile& midifile, map<string, int>& histogram, Options& options);
+void extractDeltaTimesForAllNotes(MidiFile& midifile, map<string, int>& histogram, Options& options);
+void extractDeltaTimesForAllNotesOns(MidiFile& midifile, map<string, int>& histogram, Options& options);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -61,7 +66,9 @@ int main(int argc, char** argv) {
 	options.define("N|normalize-by-total=d:100.0", "Normalize to total count in histogram");
 	options.define("r|reverse=b", "reverse histogram label/count order");
 	options.define("C|sort-by-count=b", "sort histogram by counts rather than times");
-	options.define("tpq=b", "display ticks per quareter note and then exit");
+	options.define("tpq=b", "print only the ticks-per-quarter note value from the MIDI header");
+	options.define("notes|note=b", "delta times only between note on/offs");
+	options.define("on|note-on|note-ons=b", "delta times only between note ons");
 	options.process(argc, argv);
 
 	MidiFile midifile;
@@ -95,11 +102,31 @@ int main(int argc, char** argv) {
 //
 
 void processFile(MidiFile& midifile, map<string, int>& histogram, Options& options) {
-	double tpq = midifile.getTicksPerQuarterNote();
 	if (options.getBoolean("tpq")) {
+			int tpq = midifile.getTicksPerQuarterNote();
 			cerr << tpq << endl;
 			return;
 	}
+
+	if (options.getBoolean("notes")) {
+		extractDeltaTimesForAllNotes(midifile, histogram, options);
+	} else if (options.getBoolean("on")) {
+		extractDeltaTimesForAllNotesOns(midifile, histogram, options);
+	} else {
+		extractDeltaTimesForAllEvents(midifile, histogram, options);
+	}
+}
+
+
+
+//////////////////////////////
+//
+// extractDeltaTimesForAllEvents -- calculate delta timings between all events.
+//
+
+void extractDeltaTimesForAllEvents(MidiFile& midifile, map<string, int>& histogram, 
+		Options& options) {
+	int tpq = midifile.getTicksPerQuarterNote();
 	int timeFormat = TIME_TICKS;
 	bool realtimeQ  = false;
 	bool allQ = options.getBoolean("all");
@@ -169,6 +196,162 @@ void processFile(MidiFile& midifile, map<string, int>& histogram, Options& optio
 			} else {
 				cout << key.str() << endl;
 			}
+		}
+	}
+}
+
+
+
+//////////////////////////////
+//
+// extractDeltaTimesForAllNotes -- calculate delta timings between all note MIDI
+//     messages (ignoring other MIDI messages).
+//
+
+void extractDeltaTimesForAllNotes(MidiFile& midifile, map<string, int>& histogram, 
+		Options& options) {
+	int tpq = midifile.getTicksPerQuarterNote();
+	int timeFormat = TIME_TICKS;
+	bool realtimeQ  = false;
+	bool allQ = options.getBoolean("all");
+	int lastindex = -1;
+	if (allQ) {
+		realtimeQ = true;
+	}
+	if (options.getBoolean("seconds")) {
+		timeFormat = TIME_SECONDS;
+		realtimeQ  = true;
+	} else if (options.getBoolean("milliseconds")) {
+		timeFormat = TIME_MILLISECONDS;
+		realtimeQ  = true;
+	} else if (options.getBoolean("quarters")) {
+		timeFormat = TIME_QUARTERS;
+	}
+	bool histogramQ = options.getBoolean("count");
+
+	if (realtimeQ) {
+		midifile.doTimeAnalysis();
+	}
+
+	for (int i=0; i<midifile.getTrackCount(); i++) {
+		lastindex = -1;
+		for (int j=0; j<midifile[i].getEventCount(); j++) {
+			if (!midifile[i][j].isNote()) {
+				continue;
+			}
+			if (lastindex < 0) {
+				lastindex = j;
+				continue;
+			}
+			double value;
+			stringstream key;
+			if (allQ) {
+				key.str().clear();
+				value = midifile[i][j].tick - midifile[i][lastindex].tick;
+				key << value << "\t";         // MIDI ticks
+				key << value/tpq << "\t";     // quarter notes
+				value = midifile[i][j].seconds - midifile[i][lastindex].seconds;
+				key << value << "\t";         // seconds
+				key << value * 1000.0;        // milliseconds
+			} else if (realtimeQ) {
+				value = midifile[i][j].seconds - midifile[i][lastindex].seconds;
+				if (timeFormat == TIME_MILLISECONDS) {
+					value *= 1000.0;
+				}
+				key.str().clear();
+				key << value;
+			} else {
+				value = midifile[i][j].tick - midifile[i][lastindex].tick;
+				if (timeFormat == TIME_QUARTERS) {
+					value /= tpq;
+				}
+				key.str().clear();
+				key << value;
+			}
+			if (histogramQ) {
+				histogram[key.str()]++;
+			} else {
+				cout << key.str() << endl;
+			}
+			lastindex = j;
+		}
+	}
+}
+
+
+
+//////////////////////////////
+//
+// extractDeltaTimesForAllNoteOns -- calculate delta timings between all note-on MIDI
+//     messages (ignoring other MIDI messages).
+//
+
+void extractDeltaTimesForAllNotesOns(MidiFile& midifile, map<string, int>& histogram, 
+		Options& options) {
+	int tpq = midifile.getTicksPerQuarterNote();
+	int timeFormat = TIME_TICKS;
+	bool realtimeQ  = false;
+	bool allQ = options.getBoolean("all");
+	int lastindex = -1;
+	if (allQ) {
+		realtimeQ = true;
+	}
+	if (options.getBoolean("seconds")) {
+		timeFormat = TIME_SECONDS;
+		realtimeQ  = true;
+	} else if (options.getBoolean("milliseconds")) {
+		timeFormat = TIME_MILLISECONDS;
+		realtimeQ  = true;
+	} else if (options.getBoolean("quarters")) {
+		timeFormat = TIME_QUARTERS;
+	}
+	bool histogramQ = options.getBoolean("count");
+
+	if (realtimeQ) {
+		midifile.doTimeAnalysis();
+	}
+
+	for (int i=0; i<midifile.getTrackCount(); i++) {
+		lastindex = -1;
+		for (int j=0; j<midifile[i].getEventCount(); j++) {
+			if (!midifile[i][j].isNoteOn()) {
+				continue;
+			}
+			if (lastindex < 0) {
+				lastindex = j;
+				continue;
+			}
+			double value;
+			stringstream key;
+			if (allQ) {
+				key.str().clear();
+				value = midifile[i][j].tick - midifile[i][lastindex].tick;
+				key << value << "\t";         // MIDI ticks
+				key << value/tpq << "\t";     // quarter notes
+				value = midifile[i][j].seconds - midifile[i][lastindex].seconds;
+				key << value << "\t";         // seconds
+				key << value * 1000.0;        // milliseconds
+			} else if (realtimeQ) {
+				value = midifile[i][j].seconds - midifile[i][lastindex].seconds;
+				if (timeFormat == TIME_MILLISECONDS) {
+					value *= 1000.0;
+				}
+				key.str().clear();
+				key << value;
+			} else {
+				value = midifile[i][j].tick - midifile[i][lastindex].tick;
+				if (timeFormat == TIME_QUARTERS) {
+					value /= tpq;
+				}
+				key.str().clear();
+				key << value;
+			}
+			if (histogramQ) {
+				histogram[key.str()]++;
+			} else {
+				cout << key.str() << endl;
+			}
+			lastindex = j;
 		}
 	}
 }
