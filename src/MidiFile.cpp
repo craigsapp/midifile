@@ -1408,9 +1408,7 @@ double MidiFile::getAbsoluteTickTime(double starttime) {
 	if (m_timemapvalid == 0) {
 		buildTimeMap();
 		if (m_timemapvalid == 0) {
-			if (m_timemapvalid == 0) {
-				return -1.0;    // something went wrong
-			}
+			return -1.0;    // something went wrong
 		}
 	}
 
