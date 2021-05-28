@@ -160,7 +160,12 @@ void           drawBrace             (ostream& out);
 
 int main(int argc, char* argv[]) {
    checkOptions(options, argc, argv);
-   MidiFile midifile(options.getArg(1));
+   MidiFile midifile;
+   if (options.getArgCount() == 0) {
+      midifile.read(cin);
+   } else {
+      midifile.read(options.getArg(1));
+   }
    stringstream notes;
    int minpitch = -1;
    int maxpitch = -1;
@@ -2212,7 +2217,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
       exit(0);
    }
 
-   if (opts.getArgCount() != 1) {
+   if (opts.getArgCount() > 1) {
       usage(opts.getCommand().c_str());
       exit(1);
    }
