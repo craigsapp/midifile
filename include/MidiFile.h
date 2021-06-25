@@ -65,6 +65,7 @@ class MidiFile {
 		bool           write                       (std::ostream& out);
 		bool           writeBase64                 (const std::string& out, int width = 0);
 		bool           writeBase64                 (std::ostream& out, int width = 0);
+		std::string    getBase64                   (int width = 0);
 		bool           writeHex                    (const std::string& filename, int width = 25);
 		bool           writeHex                    (std::ostream& out, int width = 25);
 		bool           writeBinasc                 (const std::string& filename);

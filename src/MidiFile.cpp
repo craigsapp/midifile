@@ -700,6 +700,24 @@ bool MidiFile::writeBase64(std::ostream& out, int width) {
 
 //////////////////////////////
 //
+// MidiFile::getBase64 -- Convert the MIDI contents to a base-64 string.
+//     Default value: width = 0
+//
+
+std::string MidiFile::getBase64(int width) {
+	std::stringstream output;
+	bool status = MidiFile::writeBase64(output, width);
+	if (!status) {
+		return "";
+	} else {
+		return output.str();
+	}
+}
+
+
+
+//////////////////////////////
+//
 // MidiFile::writeHex -- print the Standard MIDI file as a list of
 //    ASCII Hex bytes, formatted 25 to a line by default, and
 //    two digits for each hex byte code.  If the input width is 0,
