@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Nov 26 14:12:01 PST 1999
-// Last Modified: Thu Jun 24 18:35:30 PDT 2021 Added base64 encodeing read/write
+// Last Modified: Thu Jun 24 18:35:30 PDT 2021 Added base64 encoding read/write
 // Filename:      midifile/src/MidiFile.cpp
 // Website:       http://midifile.sapp.org
 // Syntax:        C++11
