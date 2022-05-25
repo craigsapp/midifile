@@ -15,6 +15,8 @@
 
 #include <iostream>
 #include <iterator>
+#include <stdlib.h>
+
 
 
 namespace smf {
@@ -2094,6 +2096,175 @@ void MidiMessage::makeMts2_KeyTuningsBySemitone(std::vector<std::pair<int, doubl
 		data.push_back(lsb);
 	}
 	this->makeSysExMessage(data);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeMts9_TemperamentByCentsDeviationFromET --
+//
+
+void MidiMessage::makeMts9_TemperamentByCentsDeviationFromET (std::vector<double>& mapping, int referencePitchClass, int channelMask) {
+	if (mapping.size() != 12) {
+		std::cerr << "Error: input mapping must have a size of 12." << std::endl;
+		return;
+	}
+	if (referencePitchClass < 0) {
+		std::cerr << "Error: Cannot have a negative reference pitch class" << std::endl;
+		return;
+	}
+
+	std::vector<uchar> data;
+	data.reserve(24 + 7);
+
+	data.push_back((uchar)0x7f);  // real-time sysex
+	data.push_back((uchar)0x7f);  // all devices
+	data.push_back((uchar)0x08);  // sub-ID#1 (MIDI Tuning)
+	data.push_back((uchar)0x09);  // sub-ID#2 (note change)
+
+	uchar MMSB = (channelMask >> 14) & 0x3;
+	uchar MSB  = (channelMask >> 7)  & 0x7f;
+	uchar LSB  = channelMask & 0x7f;
+
+	data.push_back(MMSB);
+	data.push_back(MSB);
+	data.push_back(LSB);
+
+	for (int i=0; i<(int)mapping.size(); i++) {
+		int ii = (i - referencePitchClass + 48) % 12;
+		double value = mapping.at(ii) / 100.0;
+
+		if (value > 1.0) {
+			value = 1.0;
+		}
+		if (value < -1.0) {
+			value = -1.0;
+		}
+
+		int intval = (int)(((1 << 13)-0.5)  * (value + 1.0) + 0.5);
+		uchar LSB = intval & 0x7f;
+		uchar MSB = (intval >>  7) & 0x7f;
+		data.push_back(MSB);
+		data.push_back(LSB);
+	}
+	this->makeSysExMessage(data);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeEqualTemperament --
+//
+
+void MidiMessage::makeTemperamentEqual(int referencePitchClass, int channelMask) {
+	std::vector<double> temperament(12, 0.0);
+	this->makeMts9_TemperamentByCentsDeviationFromET(temperament, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTemperamentBad -- Detune by random amounts from equal temperament.
+//
+
+void MidiMessage::makeTemperamentBad(double maxDeviationCents, int referencePitchClass, int channelMask) {
+	if (maxDeviationCents < 0.0) {
+		maxDeviationCents = -maxDeviationCents;
+	}
+	if (maxDeviationCents > 100.0) {
+		maxDeviationCents = 100.0;
+	}
+	std::vector<double> temperament(12);
+	for (int i=0; i<(int)temperament.size(); i++) {
+		temperament[i] = ((rand() / (double)RAND_MAX) * 2.0 - 1.0) * maxDeviationCents;
+	}
+	this->makeMts9_TemperamentByCentsDeviationFromET(temperament, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTemperamentPythagorean -- Default reference pitch is 2 (D)
+//
+
+void MidiMessage::makeTemperamentPythagorean(int referencePitchClass, int channelMask) {
+	std::vector<double> temperament(12);
+	double x = 1200.0 * log2(3.0 / 2.0);
+	temperament[1]  = x * -5 + 3500; // -9.775 cents
+	temperament[8]  = x * -4 + 2800; // -7.820 cents
+	temperament[3]  = x * -3 + 2100; // -5.865 cents
+	temperament[10] = x * -2 + 1400; // -3.910 cents
+	temperament[5]  = x * -1 + 700;  // -1.955 cents
+	temperament[0]  = 0.0;           //  0     cents
+	temperament[7]  = x * 1 - 700;   //  1.955 cents
+	temperament[2]  = x * 2 - 1400;  //  3.910 cents
+	temperament[9]  = x * 3 - 2100;  //  5.865 cents
+	temperament[4]  = x * 4 - 2800;  //  7.820 cents
+	temperament[11] = x * 5 - 3500;  //  9.775 cents
+	temperament[6]  = x * 6 - 4200;  // 11.730 cents
+	this->makeMts9_TemperamentByCentsDeviationFromET(temperament, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTemperamentMeantone -- Default type is 1/4-comma meantone.
+//
+
+void MidiMessage::makeTemperamentMeantone(double fraction, int referencePitchClass, int channelMask) {
+	std::vector<double> temperament(12);
+	double x = 1200.0 * log2((3.0/2.0)*pow(81.0/80.0, -fraction));
+	temperament[1]  = x * -5 + 3500; //  17.107 cents (for fraction = 0.25)
+	temperament[8]  = x * -4 + 2800; //  13.686 cents (for fraction = 0.25)
+	temperament[3]  = x * -3 + 2100; //  10.265 cents (for fraction = 0.25)
+	temperament[10] = x * -2 + 1400; //   6.843 cents (for fraction = 0.25)
+	temperament[5]  = x * -1 + 700;  //   3.422 cents (for fraction = 0.25)
+	temperament[0]  = 0.0;           //   0     cents
+	temperament[7]  = x *  1 - 700;  //  -3.422 cents (for fraction = 0.25)
+	temperament[2]  = x *  2 - 1400; //  -6.843 cents (for fraction = 0.25)
+	temperament[9]  = x *  3 - 2100; // -10.265 cents (for fraction = 0.25)
+	temperament[4]  = x *  4 - 2800; // -13.686 cents (for fraction = 0.25)
+	temperament[11] = x *  5 - 3500; // -17.107 cents (for fraction = 0.25)
+	temperament[6]  = x *  6 - 4200; // -20.529 cents (for fraction = 0.25)
+	this->makeMts9_TemperamentByCentsDeviationFromET(temperament, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTemperamentMeantoneCommaQuarter -- 1/4-comma meantone
+//
+
+void MidiMessage::makeTemperamentMeantoneCommaQuarter(int referencePitchClass, int channelMask) {
+	this->makeTemperamentMeantone(1.0 / 4.0, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTemperamentMeantoneCommaThird -- 1/3-comma meantone
+//
+
+void MidiMessage::makeTemperamentMeantoneCommaThird(int referencePitchClass, int channelMask) {
+	this->makeTemperamentMeantone(1.0 / 3.0, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeTemperamentMeantoneCommaHalf -- 1/2-comma meantone
+//
+
+void MidiMessage::makeTemperamentMeantoneCommaHalf(int referencePitchClass, int channelMask) {
+	this->makeTemperamentMeantone(1.0 / 2.0, referencePitchClass, channelMask);
 }
 
 
