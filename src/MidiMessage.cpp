@@ -13,7 +13,6 @@
 
 #include "MidiMessage.h"
 
-#include <vector>
 #include <iostream>
 #include <iterator>
 
@@ -884,7 +883,7 @@ int MidiMessage::getVelocity(void) const {
 //
 
 int MidiMessage::getControllerNumber(void) const {
-  if (isController()) {
+	if (isController()) {
 		int output = getP1();
 		if (output < 0) {
 			// -1 means no P1, although isController() is false in such a case.
@@ -1524,7 +1523,7 @@ std::string MidiMessage::getMetaContent(void) {
 // MidiMessage::setMetaContent - Set the content of a meta-message.  This
 //    function handles the size of the message starting at byte 3 in the
 //    message, and it does not alter the meta message type.  The message
-//    must be a meta-message before calling this function and be assigne
+//    must be a meta-message before calling this function and be assigned
 //    a meta-message type.
 //
 
@@ -1538,37 +1537,12 @@ void MidiMessage::setMetaContent(const std::string& content) {
 		return;
 	}
 	this->resize(2);
-	
+
 	// add the size of the meta message data (VLV)
 	int dsize = (int)content.size();
-	if (dsize < 128) {
-		push_back((uchar)dsize);
-	} else {
-		// calculate VLV bytes and insert into message
-		uchar byte1 = dsize & 0x7f;
-		uchar byte2 = (dsize >>  7) & 0x7f;
-		uchar byte3 = (dsize >> 14) & 0x7f;
-		uchar byte4 = (dsize >> 21) & 0x7f;
-		uchar byte5 = (dsize >> 28) & 0x7f;
-		if (byte5) {
-			byte4 |= 0x80;
-		}
-		if (byte4) {
-			byte4 |= 0x80;
-			byte3 |= 0x80;
-		}
-		if (byte3) {
-			byte3 |= 0x80;
-			byte2 |= 0x80;
-		}
-		if (byte2) {
-			byte2 |= 0x80;
-		}
-		if (byte5) { push_back(byte5); }
-		if (byte4) { push_back(byte4); }
-		if (byte3) { push_back(byte3); }
-		if (byte2) { push_back(byte2); }
-		push_back(byte1);
+	std::vector<uchar> vlv = intToVlv(dsize);
+	for (int i=0; i<(int)vlv.size(); i++) {
+		this->push_back(vlv[i]);
 	}
 	std::copy(content.begin(), content.end(), std::back_inserter(*this));
 }
@@ -1925,6 +1899,201 @@ void MidiMessage::makeMarker(const std::string& text) {
 
 void MidiMessage::makeCue(const std::string& text) {
 	makeMetaMessage(0x07, text);
+}
+
+
+//////////////////////////////
+//
+// MidiMessage::intToVlv -- Convert an integer into a VLV byte sequence.
+//
+
+std::vector<uchar> MidiMessage::intToVlv(int value) {
+	std::vector<uchar> output;
+	if (value < 128) {
+		output.push_back((uchar)value);
+	} else {
+		// calculate VLV bytes and insert into message
+		uchar byte1 = value & 0x7f;
+		uchar byte2 = (value >>  7) & 0x7f;
+		uchar byte3 = (value >> 14) & 0x7f;
+		uchar byte4 = (value >> 21) & 0x7f;
+		uchar byte5 = (value >> 28) & 0x7f;
+		if (byte5) {
+			byte4 |= 0x80;
+		}
+		if (byte4) {
+			byte4 |= 0x80;
+			byte3 |= 0x80;
+		}
+		if (byte3) {
+			byte3 |= 0x80;
+			byte2 |= 0x80;
+		}
+		if (byte2) {
+			byte2 |= 0x80;
+		}
+		if (byte5) { output.push_back(byte5); }
+		if (byte4) { output.push_back(byte4); }
+		if (byte3) { output.push_back(byte3); }
+		if (byte2) { output.push_back(byte2); }
+		output.push_back(byte1);
+	}
+
+	return output;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeSysExMessage -- Add F0 at start and F7 at end (do not include
+//    in data, but they will be double-checked for and ignored if found.
+//
+
+void MidiMessage::makeSysExMessage(const std::vector<uchar>& data) {
+	int startindex = 0;
+	int endindex = data.size() - 1;
+	if (data.size() > 0) {
+		if (data[0] == 0xf0) {
+			startindex++;
+		}
+	}
+	if (data.size() > 0) {
+		if (data.back() == 0xf7) {
+			endindex--;
+		}
+	}
+
+	this->clear();
+	this->reserve(data.size() + 7);
+
+	this->push_back((uchar)0xf0);
+
+	int msize = endindex - startindex + 2;
+	std::vector<uchar> vlv = intToVlv(msize);
+	for (int i=0; i<(int)vlv.size(); i++) {
+		this->push_back(vlv[i]);
+	}
+	for (int i=startindex; i<=endindex; i++) {
+		this->push_back(data.at(i));
+	}
+	this->push_back((uchar)0xf7);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::frequencyToSemitones -- convert from frequency in Hertz to
+//     semitones (MIDI key numbers with fractional values).  Returns 0.0
+//     if too low, and returns 127.0 if too high.
+//
+
+double MidiMessage::frequencyToSemitones(double frequency, double a4frequency) {
+	if (frequency < 1) {
+		return 0.0;
+	}
+	if (a4frequency <= 0) {
+		return 0.0;
+	}
+	double semitones = 69.0 + 12.0 * log2(frequency/a4frequency);
+	if (semitones >= 128.0) {
+		return 127.0;
+	} else if (semitones < 0.0) {
+		return 0.0;
+	}
+	return semitones;
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeMts2_KeyTuningsByFrequency -- Map a list of key numbers to specific pitches by frequency.
+//
+
+void MidiMessage::makeMts2_KeyTuningsByFrequency(int key, double frequency, int program) {
+	std::vector<std::pair<int, double>> mapping;
+	mapping.push_back(std::make_pair(key, frequency));
+	this->makeMts2_KeyTuningsByFrequency(mapping, program);
+}
+
+
+void MidiMessage::makeMts2_KeyTuningByFrequency(int key, double frequency, int program) {
+	this->makeMts2_KeyTuningsByFrequency(key, frequency, program);
+}
+
+
+void MidiMessage::makeMts2_KeyTuningsByFrequency(std::vector<std::pair<int, double>>& mapping, int program) {
+	std::vector<std::pair<int, double>> semimap(mapping.size());
+	for (int i=0; i<(int)mapping.size(); i++) {
+		semimap[i].first = mapping[i].first;
+		semimap[i].second = MidiMessage::frequencyToSemitones(mapping[i].second);
+	}
+	this->makeMts2_KeyTuningsBySemitone(semimap, program);
+}
+
+
+
+//////////////////////////////
+//
+// MidiMessage::makeMts2_KeyTuningsBySemitone -- Map a list of key numbers to specific pitches by absolute
+//    semitones (MIDI key numbers with fractional values).
+//
+
+void MidiMessage::makeMts2_KeyTuningsBySemitone(int key, double semitone, int program) {
+	std::vector<std::pair<int, double>> semimap;
+	semimap.push_back(std::make_pair(key, semitone));
+	this->makeMts2_KeyTuningsBySemitone(semimap, program);
+}
+
+
+void MidiMessage::makeMts2_KeyTuningBySemitone(int key, double semitone, int program) {
+	this->makeMts2_KeyTuningsBySemitone(key, semitone, program);
+}
+
+
+void MidiMessage::makeMts2_KeyTuningsBySemitone(std::vector<std::pair<int, double>>& mapping, int program) {
+	if (program < 0) {
+		program = 0;
+	} else if (program > 127) {
+		program = 127;
+	}
+	std::vector<uchar> data;
+	data.reserve(mapping.size() * 4 + 10);
+	data.push_back((uchar)0x7f);  // real-time sysex
+	data.push_back((uchar)0x7f);  // all devices
+	data.push_back((uchar)0x08);  // sub-ID#1 (MIDI Tuning)
+	data.push_back((uchar)0x02);  // sub-ID#2 (note change)
+	data.push_back((uchar)program);  // tuning program number (0 - 127)
+	std::vector<uchar> vlv = intToVlv(mapping.size());
+	for (int i=0; i<(int)vlv.size(); i++) {
+		data.push_back(vlv[i]);
+	}
+	for (int i=0; i<(int)mapping.size(); i++) {
+		int keynum = mapping[i].first;
+		if (keynum < 0) {
+			keynum = 0;
+		} else if (keynum > 127) {
+			keynum = 127;
+		}
+		data.push_back((uchar)keynum);
+		double semitones = mapping[i].second;
+		int sint = (int)semitones;
+		if (sint < 0) {
+			sint = 0;
+		} else if (sint > 127) {
+			sint = 127;
+		}
+		data.push_back((uchar)sint);
+		double fraction = semitones - sint;
+		int value = int(fraction * (1 << 14));
+		uchar lsb = value & 0x7f;
+		uchar msb = (value >> 7) & 0x7f;
+		data.push_back(msb);
+		data.push_back(lsb);
+	}
+	this->makeSysExMessage(data);
 }
 
 
