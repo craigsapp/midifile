@@ -13,6 +13,7 @@
 
 #include "MidiMessage.h"
 
+#include <cmath>
 #include <iostream>
 #include <iterator>
 #include <stdlib.h>
