@@ -218,7 +218,7 @@ class MidiFile {
 		                                           double aTempo);
         MidiEvent*         addKeySignature        (int aTrack, int aTick,
                                                    int key, bool mode = 0);
-		MidiEvent*         addTimeSignature       (int aTrack, int aTick,
+        MidiEvent*         addTimeSignature       (int aTrack, int aTick,
 		                                           int top, int bottom,
 		                                           int clocksPerClick = 24,
 		                                           int num32dsPerQuarter = 8);
