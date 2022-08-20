@@ -15,6 +15,7 @@
 
 #include "MidiFile.h"
 #include "Options.h"
+#include <cmath>
 #include <vector>
 #include <utility>
 #include <iostream>
