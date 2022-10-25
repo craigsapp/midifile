@@ -27,7 +27,7 @@ class Sonority {
 	public:
 		double qstamp = 0.0;     // quarter-note timestamp
 		double qdur   = 0.0;     // duration to next chord
-	  	vector<int> pitches;     // MIDI pitches in sonority
+		vector<int> pitches;     // MIDI pitches in sonority
 
 		// pcs: pitch classes in chord.  This also counds the number
 		// of notes for each pitch class.  The lowest pitch class
@@ -210,11 +210,11 @@ void printChordSequence(vector<Sonority>& chordSequence);
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;
-   MidiFile  inputfile;
-   Options   options(argc, argv);
+	int       status;
+	MidiFile  inputfile;
+	Options   options(argc, argv);
 	options.define("s|sustained=b", "consider sustained sonorities");
-   options.process(argc, argv);
+	options.process(argc, argv);
 
 	int argcount = options.getArgCount();
 	if (argcount != 1) {
@@ -222,13 +222,13 @@ int main(int argc, char** argv) {
 		exit(1);
 	}
 
-   status = inputfile.read(options.getArg(1));
-   if (status == 0) {
-      cout << "Syntax error in file: " << options.getArg(1) << "\n";
-   }
+	status = inputfile.read(options.getArg(1));
+	if (status == 0) {
+		cout << "Syntax error in file: " << options.getArg(1) << "\n";
+	}
 
-   processMidiFile(options, inputfile);
-   return 0;
+	processMidiFile(options, inputfile);
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -241,8 +241,8 @@ int main(int argc, char** argv) {
 
 void processMidiFile(Options& options, MidiFile& midifile) {
 	// bool sustainedQ = options.getBoolean("sustained");
-   midifile.absoluteTicks();  // convert from delta time to absolute time
-   midifile.joinTracks();     // merge all notes to single timeline.
+	midifile.absoluteTicks();  // convert from delta time to absolute time
+	midifile.joinTracks();     // merge all notes to single timeline.
 
 	vector<Sonority> chordSequence;
 	chordSequence.reserve(10000);
@@ -250,10 +250,10 @@ void processMidiFile(Options& options, MidiFile& midifile) {
 	Sonority currentChord;
 	double tpq = midifile.getTicksPerQuarterNote();
 	
-   int eventcount = midifile.getEventCount(0);
-   MidiEvent *event;
-   for (int i=0; i<eventcount; i++) {
-      event = &(midifile[0][i]);
+	int eventcount = midifile.getEventCount(0);
+	MidiEvent *event;
+	for (int i=0; i<eventcount; i++) {
+		event = &(midifile[0][i]);
 
 		if (!event->isNoteOn()) {
 			// ignore events that are not note-ons
@@ -283,7 +283,7 @@ void processMidiFile(Options& options, MidiFile& midifile) {
 		} else {
 			cerr << "Causality violation at qstamp " << qstamp << endl;
 		}
-   }
+	}
 
 	// Add last chord in file:
 	if (currentChord.countPcs() >= 3) {
