@@ -6,11 +6,11 @@
 // Syntax:        C++
 //
 // Description:   Identify chord sequences in MIDI files.  Whenever
-//                there is are three or more notes a chord will
-//                be identified (currently notes must all attck
-//                at the same time).  Additional chord identifications
-//                can be added to the Sonority::identifySonority()
-//                function.
+//                there are three or more note attacks at a given
+//                time, a chord will be identified (currently notes must
+//                all attck at the same time).  Additional chord
+//                identifications can be added to the
+//                Sonority::identifySonority() function.
 //
 
 #include "Options.h"
@@ -236,7 +236,7 @@ int main(int argc, char** argv) {
 
 //////////////////////////////
 //
-// processMidiFile -- 
+// processMidiFile --
 //
 
 void processMidiFile(Options& options, MidiFile& midifile) {
@@ -249,7 +249,7 @@ void processMidiFile(Options& options, MidiFile& midifile) {
 
 	Sonority currentChord;
 	double tpq = midifile.getTicksPerQuarterNote();
-	
+
 	int eventcount = midifile.getEventCount(0);
 	MidiEvent *event;
 	for (int i=0; i<eventcount; i++) {
@@ -346,7 +346,7 @@ void printChordSequence(vector<Sonority>& chordSequence) {
  *    2	1:	100010010000:	C	major
  *    3	1:	001001010001:	G	dominant seventh
  *    4	1:	100010010000:	C	major
- * 
+ *
  * First number is the time in quarter notes since the
  * start of the MIDI file.  Second number is the duration
  * to the next chord (in quarter notes), then a 12-digit
