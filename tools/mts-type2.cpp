@@ -18,6 +18,7 @@
 #include <vector>
 #include <utility>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 using namespace smf;
