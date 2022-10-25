@@ -91,7 +91,7 @@ void Sonority::identifySonority(void) {
 	vector<int> diminished = {1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0};
 	match = Sonority::checkForMatch(pcs, diminished);
 	if (match >= 0) {
-		setChordLabel(match, "minor");
+		setChordLabel(match, "diminished");
 		return;
 	}
 
