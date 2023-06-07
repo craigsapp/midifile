@@ -1545,8 +1545,8 @@ void MidiMessage::setMetaContent(const std::string& content) {
 	// add the size of the meta message data (VLV)
 	int dsize = (int)content.size();
 	std::vector<uchar> vlv = intToVlv(dsize);
-	for (int i=0; i<(int)vlv.size(); i++) {
-		this->push_back(vlv[i]);
+	for (unsigned char i : vlv) {
+		this->push_back(i);
 	}
 	std::copy(content.begin(), content.end(), std::back_inserter(*this));
 }
@@ -2054,8 +2054,8 @@ void MidiMessage::makeSysExMessage(const std::vector<uchar>& data) {
 
 	int msize = endindex - startindex + 2;
 	std::vector<uchar> vlv = intToVlv(msize);
-	for (int i=0; i<(int)vlv.size(); i++) {
-		this->push_back(vlv[i]);
+	for (unsigned char i : vlv) {
+		this->push_back(i);
 	}
 	for (int i=startindex; i<=endindex; i++) {
 		this->push_back(data.at(i));
@@ -2150,18 +2150,18 @@ void MidiMessage::makeMts2_KeyTuningsBySemitone(std::vector<std::pair<int, doubl
 	data.push_back((uchar)0x02);  // sub-ID#2 (note change)
 	data.push_back((uchar)program);  // tuning program number (0 - 127)
 	std::vector<uchar> vlv = intToVlv((int)mapping.size());
-	for (int i=0; i<(int)vlv.size(); i++) {
-		data.push_back(vlv[i]);
+	for (unsigned char i : vlv) {
+		data.push_back(i);
 	}
-	for (int i=0; i<(int)mapping.size(); i++) {
-		int keynum = mapping[i].first;
+	for (auto &i : mapping) {
+		int keynum = i.first;
 		if (keynum < 0) {
 			keynum = 0;
 		} else if (keynum > 127) {
 			keynum = 127;
 		}
 		data.push_back((uchar)keynum);
-		double semitones = mapping[i].second;
+		double semitones = i.second;
 		int sint = (int)semitones;
 		if (sint < 0) {
 			sint = 0;
@@ -2259,8 +2259,8 @@ void MidiMessage::makeTemperamentBad(double maxDeviationCents, int referencePitc
 		maxDeviationCents = 100.0;
 	}
 	std::vector<double> temperament(12);
-	for (int i=0; i<(int)temperament.size(); i++) {
-		temperament[i] = ((rand() / (double)RAND_MAX) * 2.0 - 1.0) * maxDeviationCents;
+	for (double &i : temperament) {
+		i = ((rand() / (double)RAND_MAX) * 2.0 - 1.0) * maxDeviationCents;
 	}
 	this->makeMts9_TemperamentByCentsDeviationFromET(temperament, referencePitchClass, channelMask);
 }

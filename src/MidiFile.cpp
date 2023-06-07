@@ -76,16 +76,16 @@ const char* MidiFile::GMinstrument[128] = {
 
 MidiFile::MidiFile(void) {
 	m_events.resize(1);
-	for (int i=0; i<(int)m_events.size(); i++) {
-		m_events[i] = new MidiEventList;
+	for (auto &m_event : m_events) {
+		m_event = new MidiEventList;
 	}
 }
 
 
 MidiFile::MidiFile(const std::string& filename) {
 	m_events.resize(1);
-	for (int i=0; i<(int)m_events.size(); i++) {
-		m_events[i] = new MidiEventList;
+	for (auto &m_event : m_events) {
+		m_event = new MidiEventList;
 	}
 	read(filename);
 }
@@ -93,8 +93,8 @@ MidiFile::MidiFile(const std::string& filename) {
 
 MidiFile::MidiFile(std::istream& input) {
 	m_events.resize(1);
-	for (int i=0; i<(int)m_events.size(); i++) {
-		m_events[i] = new MidiEventList;
+	for (auto &m_event : m_events) {
+		m_event = new MidiEventList;
 	}
 	read(input);
 }
@@ -939,8 +939,8 @@ int MidiFile::size(void) const {
 //
 
 void MidiFile::removeEmpties(void) {
-	for (int i=0; i<(int)m_events.size(); i++) {
-		m_events[i]->removeEmpties();
+	for (auto &m_event : m_events) {
+		m_event->removeEmpties();
 	}
 }
 
@@ -2956,13 +2956,18 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 ulong MidiFile::readVLValue(std::istream& input) {
 	uchar b[5] = {0};
 
-	for (int i=0; i<5; i++) {
-		b[i] = readByte(input);
-		if (!status()) { return m_rwstatus; }
-		if (b[i] < 0x80) {
-			break;
-		}
-	}
+    for (unsigned char &i : b)
+    {
+            i = readByte(input);
+            if (!status())
+            {
+                    return m_rwstatus;
+            }
+            if (i < 0x80)
+            {
+                    break;
+            }
+    }
 
     return unpackVLV(b[0], b[1], b[2], b[3], b[4]);
 }
