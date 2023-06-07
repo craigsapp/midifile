@@ -18,7 +18,7 @@
 #include <iterator>
 #include <utility>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace smf {
 
@@ -252,7 +252,7 @@ void MidiEventList::removeEmpties(void) {
 			count++;
 		}
 	}
-	if (count == 0) {
+    if (count == 0) {
 		return;
 	}
 	std::vector<MidiEvent*> newlist;

@@ -17,7 +17,6 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
-#include <stdlib.h> /* needed for MinGW */
 
 namespace smf {
 
