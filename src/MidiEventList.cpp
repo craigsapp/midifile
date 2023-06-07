@@ -141,10 +141,10 @@ const MidiEvent& MidiEventList::getEvent(int index) const {
 //
 
 void MidiEventList::clear(void) {
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i] != NULL) {
-			delete list[i];
-			list[i] = NULL;
+	for (auto &i : list) {
+		if (i != NULL) {
+			delete i;
+			i = NULL;
 		}
 	}
 	list.resize(0);
@@ -245,10 +245,10 @@ int MidiEventList::push_back(MidiEvent& event) {
 
 void MidiEventList::removeEmpties(void) {
 	int count = 0;
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i]->empty()) {
-			delete list[i];
-			list[i] = NULL;
+	for (auto &i : list) {
+		if (i->empty()) {
+			delete i;
+			i = NULL;
 			count++;
 		}
 	}
@@ -257,9 +257,9 @@ void MidiEventList::removeEmpties(void) {
 	}
 	std::vector<MidiEvent*> newlist;
 	newlist.reserve(list.size() - count);
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i]) {
-			newlist.push_back(list[i]);
+	for (auto &i : list) {
+		if (i) {
+			newlist.push_back(i);
 		}
 	}
 	list.swap(newlist);
@@ -292,11 +292,11 @@ int MidiEventList::linkNotePairs(void) {
 	// dimension 3: List of active note-ons or note-offs.
 	std::vector<std::vector<std::vector<MidiEvent*>>> noteons;
 	noteons.resize(16);
-	for (int i=0; i<(int)noteons.size(); i++) {
-		noteons[i].resize(128);
+	for (auto &noteon : noteons) {
+		noteon.resize(128);
 	}
 
-	// Controller linking: The following General MIDI controller numbers are
+    // Controller linking: The following General MIDI controller numbers are
 	// also monitored for linking within the track (but not between tracks).
 	// hex dec  name                                    range
 	// 40  64   Hold pedal (Sustain) on/off             0..63=off  64..127=on
