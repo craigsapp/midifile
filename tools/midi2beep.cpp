@@ -16,7 +16,7 @@
 #include <iostream>
 #include <cmath>
 #include <unistd.h>     // usleep()
-#include <signal.h>
+#include <csignal>
 
 #ifdef __APPLE__
     #include <sys/uio.h>

@@ -11,7 +11,7 @@
 //
 
 #include "Options.h"
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <iostream>
 #include <iomanip>

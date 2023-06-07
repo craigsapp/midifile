@@ -21,10 +21,10 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <ctype.h>
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
+#include <cctype>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
 #include <vector>
 #include <iostream>
 #include <iomanip>
