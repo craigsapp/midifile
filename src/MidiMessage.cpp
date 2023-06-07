@@ -16,9 +16,7 @@
 #include <cmath>
 #include <iostream>
 #include <iterator>
-#include <stdlib.h>
-
-
+#include <cstdlib>
 
 namespace smf {
 
@@ -2095,8 +2093,8 @@ void MidiMessage::makeMts2_KeyTuningsBySemitone(std::vector<std::pair<int, doubl
 		uchar msb = (value >> 7) & 0x7f;
 		data.push_back(msb);
 		data.push_back(lsb);
-	}
-	this->makeSysExMessage(data);
+    }
+    this->makeSysExMessage(data);
 }
 
 

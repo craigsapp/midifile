@@ -13,8 +13,7 @@
 
 #include "MidiEvent.h"
 
-#include <stdlib.h>
-
+#include <cstdlib>
 
 namespace smf {
 
