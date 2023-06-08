@@ -141,10 +141,10 @@ const MidiEvent& MidiEventList::getEvent(int index) const {
 //
 
 void MidiEventList::clear(void) {
-	for (auto &i : list) {
-		if (i != NULL) {
-			delete i;
-			i = NULL;
+	for (auto& item : list) {
+		if (item != NULL) {
+			delete item;
+			item = NULL;
 		}
 	}
 	list.resize(0);
@@ -245,10 +245,10 @@ int MidiEventList::push_back(MidiEvent& event) {
 
 void MidiEventList::removeEmpties(void) {
 	int count = 0;
-	for (auto &i : list) {
-		if (i->empty()) {
-			delete i;
-			i = NULL;
+	for (auto& item : list) {
+		if (item->empty()) {
+			delete item;
+			item = NULL;
 			count++;
 		}
 	}
@@ -257,9 +257,9 @@ void MidiEventList::removeEmpties(void) {
 	}
 	std::vector<MidiEvent*> newlist;
 	newlist.reserve(list.size() - count);
-	for (auto &i : list) {
-		if (i) {
-			newlist.push_back(i);
+	for (auto& item : list) {
+		if (item) {
+			newlist.push_back(item);
 		}
 	}
 	list.swap(newlist);
@@ -292,7 +292,7 @@ int MidiEventList::linkNotePairs(void) {
 	// dimension 3: List of active note-ons or note-offs.
 	std::vector<std::vector<std::vector<MidiEvent*>>> noteons;
 	noteons.resize(16);
-	for (auto &noteon : noteons) {
+	for (auto& noteon : noteons) {
 		noteon.resize(128);
 	}
 
