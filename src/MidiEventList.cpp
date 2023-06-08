@@ -54,8 +54,8 @@ MidiEventList::MidiEventList(const MidiEventList& other) {
 //
 
 MidiEventList::MidiEventList(MidiEventList&& other) {
-   list = std::move(other.list);
-   other.list.clear();
+	list = std::move(other.list);
+	other.list.clear();
 }
 
 
@@ -124,12 +124,12 @@ const MidiEvent& MidiEventList::last(void) const {
 //
 
 MidiEvent& MidiEventList::getEvent(int index) {
-   return *list[index];
+	return *list[index];
 }
 
 
 const MidiEvent& MidiEventList::getEvent(int index) const {
-   return *list[index];
+	return *list[index];
 }
 
 
@@ -252,7 +252,7 @@ void MidiEventList::removeEmpties(void) {
 			count++;
 		}
 	}
-    if (count == 0) {
+	if (count == 0) {
 		return;
 	}
 	std::vector<MidiEvent*> newlist;
@@ -296,7 +296,7 @@ int MidiEventList::linkNotePairs(void) {
 		noteon.resize(128);
 	}
 
-    // Controller linking: The following General MIDI controller numbers are
+	// Controller linking: The following General MIDI controller numbers are
 	// also monitored for linking within the track (but not between tracks).
 	// hex dec  name                                    range
 	// 40  64   Hold pedal (Sustain) on/off             0..63=off  64..127=on
