@@ -1,14 +1,14 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Oct 24 18:54:19 PDT 2022
-// Last Modified: Mon Oct 24 22:17:12 PDT 2022
+// Last Modified: Tue Oct 25 08:52:05 PDT 2022
 // Filename:      midifile/tools/midi2chords.cpp
 // Syntax:        C++
 //
 // Description:   Identify chord sequences in MIDI files.  Whenever
 //                there are three or more note attacks at a given
 //                time, a chord will be identified (currently notes must
-//                all attck at the same time).  Additional chord
+//                all attck at the same tick time).  Additional chord
 //                identifications can be added to the
 //                Sonority::identifySonority() function.
 //
@@ -27,36 +27,55 @@ class Sonority {
 	public:
 		double qstamp = 0.0;     // quarter-note timestamp
 		double qdur   = 0.0;     // duration to next chord
-		vector<int> pitches;     // MIDI pitches in sonority
+		vector<int> attacks;     // MIDI notes in sonority (attacking)
+		vector<int> sustains;    // Sustaining notes (128 states).
 
-		// pcs: pitch classes in chord.  This also counds the number
-		// of notes for each pitch class.  The lowest pitch class
-		// could be converted to a negative number (but not yet done).
-		vector<int> pcs = {0,0,0,0,0,0,0,0,0,0,0,0};
+		// attackPcs: number of notes at each pitch class that are
+		// attacking (starting).
+		vector<int> attackPcs  = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+		// sustainPcs: number of notes that are carrying over from
+		// a previous sonority.
+		vector<int> sustainPcs = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 		string root;             // root pitch of sonority
 		string quality;          // type of chord
 
-		void addNote(int pitch);
-		int  countPcs(void);
-		void clear(void);
-		void identifySonority(void);
-		void setChordLabel(int pc, const string& qual);
+		static bool sustainQ;    // process sustained notes as well
+
+
+		Sonority(void);
+		void       addNoteAttack(int pitch);
+		int        countPcs(void);
+		void       clear(void);
+		void       identifySonority(void);
+		void       setChordLabel(int pc, const string& qual);
 		static int checkForMatch(vector<int>& data, vector<int>& prototype);
 };
 
-void Sonority::addNote(int pitch) {
-	pitches.push_back(pitch);
+bool Sonority::sustainQ = true;  // Consider sustains by default
+
+Sonority::Sonority(void) {
+	sustains.resize(128);
+	fill(sustains.begin(), sustains.end(), 0);
+}
+
+
+void Sonority::addNoteAttack(int pitch) {
+	attacks.push_back(pitch);
 	int pc = pitch % 12;
-	pcs.at(pc)++;
+	attackPcs.at(pc)++;
 }
 
 int Sonority::countPcs(void) {
 	int output = 0;
-	for (int i=0; i<(int)pcs.size(); i++) {
-		if (pcs[i]) {
+	for (int i=0; i<(int)attackPcs.size(); i++) {
+		if (attackPcs.at(i)) {
+			output++;
+		} else if (sustainQ && sustainPcs.at(i)) {
 			output++;
 		}
+		
 	}
 	return output;
 }
@@ -64,13 +83,32 @@ int Sonority::countPcs(void) {
 void Sonority::clear(void) {
 	qstamp = 0.0;
 	qdur   = 0.0;
-	pitches.clear();
-	fill(pcs.begin(), pcs.end(), 0);
+	attacks.clear();
+	fill(sustains.begin(), sustains.end(), 0);
+	fill(attackPcs.begin(), attackPcs.end(), 0);
+	fill(sustainPcs.begin(), sustainPcs.end(), 0);
 }
 
 
 void Sonority::identifySonority(void) {
 	int match;
+
+	vector<int> pcs(12, 0);
+	for (int i=0; i<(int)attackPcs.size(); i++) {
+		pcs.at(i) += attackPcs.at(i);
+	}
+
+
+	if (sustainQ) {
+		for (int i=0; i<(int)sustainPcs.size(); i++) {
+			pcs.at(i) += sustainPcs.at(i);
+		}
+	}
+
+	// convert to booleans:
+	for (int i=0; i<(int)pcs.size(); i++) {
+		pcs.at(i) = !!pcs.at(i);
+	}
 
 	// Triadic chord:
 
@@ -173,6 +211,7 @@ void Sonority::setChordLabel(int pc, const string& qual) {
 int Sonority::checkForMatch(vector<int>& data, vector<int>& prototype) {
 	// returns -1 if no match found; otherwise, returns pitch class
 	// of match (0 = C, 1 = C#, ..., 11 = B).
+
 	int output = -1;
 	bool match = false;
 	if (data.size() != 12) {
@@ -202,9 +241,11 @@ int Sonority::checkForMatch(vector<int>& data, vector<int>& prototype) {
 ///////////////////////////////////////////////////////////////////////////
 
 // function declarations:
-void processMidiFile (Options& options, MidiFile& midifile);
-void calculateDurations(vector<Sonority>& chordSequence, double maxQstamp);
-void printChordSequence(vector<Sonority>& chordSequence);
+void processMidiFile     (Options& options, MidiFile& midifile);
+void calculateDurations  (vector<Sonority>& chordSequence, double maxQstamp);
+void printChordSequence  (vector<Sonority>& chordSequence);
+int  getActiveNoteCount  (vector<int>& states);
+void printPcInfo         (Sonority& sonority);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -213,7 +254,7 @@ int main(int argc, char** argv) {
 	int       status;
 	MidiFile  inputfile;
 	Options   options(argc, argv);
-	options.define("s|sustained=b", "consider sustained sonorities");
+	options.define("S|no-sustains=b", "don't consider sustained notes");
 	options.process(argc, argv);
 
 	int argcount = options.getArgCount();
@@ -240,12 +281,17 @@ int main(int argc, char** argv) {
 //
 
 void processMidiFile(Options& options, MidiFile& midifile) {
-	// bool sustainedQ = options.getBoolean("sustained");
+	Sonority::sustainQ = !options.getBoolean("no-sustains");
 	midifile.absoluteTicks();  // convert from delta time to absolute time
 	midifile.joinTracks();     // merge all notes to single timeline.
 
 	vector<Sonority> chordSequence;
 	chordSequence.reserve(10000);
+
+	vector<int> attackPcs(12, 0);
+	vector<int> sustainPcs(12, 0);
+
+	vector<int> noteStates(128, 0);
 
 	Sonority currentChord;
 	double tpq = midifile.getTicksPerQuarterNote();
@@ -255,39 +301,74 @@ void processMidiFile(Options& options, MidiFile& midifile) {
 	for (int i=0; i<eventcount; i++) {
 		event = &(midifile[0][i]);
 
-		if (!event->isNoteOn()) {
-			// ignore events that are not note-ons
+		if (event->getChannel() == 0x09) {
+			// ignore General MIDI drum tracks
 			continue;
 		}
 
-		if (event->getChannel() == 0x09) {
-			// ignore drum tracks
+		if (!event->isNote()) {
+			// ignore events that are not note-ons or note-offs
 			continue;
 		}
+
+		int pitch = event->getKeyNumber();
+		int pc = pitch % 12;
+
+		if (event->isNoteOff()) {
+			// remove note from sustain buffer
+			sustainPcs.at(pc)--;
+			noteStates.at(pitch)--;
+cerr << "removing note from sustains" << pitch << endl;
+			// negative values in sustainPcs are strange, so print
+			// waring and clip to zero:
+			if (sustainPcs.at(pc) < 0) {
+				sustainPcs.at(pc) = 0;
+				cerr << "Strange case of excess note-offs" << endl;
+			}
+			if (noteStates.at(pitch) < 0) {
+				noteStates.at(pitch) = 0;
+				cerr << "Strange case of excess note-offs, case 2" << endl;
+			}
+			continue;
+		}
+
+		sustainPcs.at(pc)++;
+		noteStates.at(pitch)++;
+cerr << "adding note to sustains" << pitch << endl;
 
 		double qstamp = event->tick / tpq;
-		int pitch = event->getKeyNumber();
 
 		if (qstamp == currentChord.qstamp) {
 			// Add a note to the current chord:
-			currentChord.addNote(pitch);
+			currentChord.addNoteAttack(pitch);
+cerr << "ADDING NOTE ATTACK TO CURRENT CHORD: " << pitch << endl;
 		} else if (qstamp > currentChord.qstamp) {
 			// Store the current chord in the array
 			// if there are at least 3 pitch classes:
-			if (currentChord.countPcs() >= 3) {
+			int activeNoteCount = getActiveNoteCount(sustainPcs);
+			if (activeNoteCount >= 3) {
+cerr << "STORING CHORD IN LIST" << endl;
 				chordSequence.push_back(currentChord);
+				chordSequence.back().sustains = sustainPcs;
+				chordSequence.back().sustainPcs = sustainPcs;
 			}
+cerr << "===========================" << endl;
 			currentChord.clear();
 			currentChord.qstamp = qstamp;
-			currentChord.addNote(pitch);
+			currentChord.addNoteAttack(pitch);
+cerr << "ADDING NOTE ATTACK TO CURRENT CHORD: " << pitch << endl;
 		} else {
 			cerr << "Causality violation at qstamp " << qstamp << endl;
 		}
 	}
 
 	// Add last chord in file:
-	if (currentChord.countPcs() >= 3) {
+	int activeNoteCount = getActiveNoteCount(sustainPcs);
+	if (activeNoteCount >= 3) {
+cerr << "STORING CHORD IN LIST END" << endl;
 		chordSequence.push_back(currentChord);
+		chordSequence.back().sustains = noteStates;
+		chordSequence.back().sustainPcs = sustainPcs;
 	}
 
 
@@ -297,6 +378,21 @@ void processMidiFile(Options& options, MidiFile& midifile) {
 		chordSequence[i].identifySonority();
 	}
 	printChordSequence(chordSequence);
+}
+
+
+
+//////////////////////////////
+//
+// getActiveNoteCount --
+//
+
+int getActiveNoteCount(vector<int>& states) {
+	int output = 0;
+	for (int i=0; i<(int)states.size(); i++) {
+		output++;
+	}
+	return output;
 }
 
 
@@ -326,12 +422,47 @@ void printChordSequence(vector<Sonority>& chordSequence) {
 	vector<Sonority>& cs = chordSequence;
 	for (int i=0; i<(int)cs.size(); i++) {
 		cout << cs[i].qstamp << "\t" << cs[i].qdur << ":\t";
-		for (int j=0; j<cs[i].pcs.size(); j++) {
-			cout << (cs[i].pcs[j] ? 1 : 0);
-		}
+		printPcInfo(cs[i]);
 		cout << ":\t" << cs[i].root;
 		cout << "\t" << cs[i].quality;
 		cout << endl;
+	}
+}
+
+
+
+//////////////////////////////
+//
+// printPcInfo --
+//
+
+void printPcInfo(Sonority& sonority) {
+	for (int i=0; i<sonority.attackPcs.size(); i++) {
+		bool attack = (bool)sonority.attackPcs.at(i);
+		bool sustain = (bool)sonority.sustainPcs.at(i);
+		sustain ^= attack;
+		bool off = !(sustain || attack);
+		char letter;
+		switch (i) {
+			case  0: letter = 'C'; break;
+			case  2: letter = 'D'; break;
+			case  4: letter = 'E'; break;
+			case  5: letter = 'F'; break;
+			case  7: letter = 'G'; break;
+			case  9: letter = 'A'; break;
+			case 11: letter = 'B'; break;
+			default: letter = '1';
+		}
+		if (off) {
+			letter = '0';
+		}
+		if (sustain) {
+			letter = tolower(letter);
+			if (letter == '1') {
+				letter = 'i';
+			}
+		}
+		cout << letter;
 	}
 }
 
