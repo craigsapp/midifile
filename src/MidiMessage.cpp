@@ -15,7 +15,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 #include <iterator>
+
 #include <stdlib.h>
 
 
@@ -315,11 +317,13 @@ bool MidiMessage::isMetaMessage(void) const {
 //
 
 bool MidiMessage::isNoteOff(void) const {
-	if (size() != 3) {
+	const MidiMessage& message = *this;
+	const vector<uchar>& chars = message;
+	if (message.size() != 3) {
 		return false;
-	} else if (((*this)[0] & 0xf0) == 0x80) {
+	} else if ((chars[0] & 0xf0) == 0x80) {
 		return true;
-	} else if ((((*this)[0] & 0xf0) == 0x90) && ((*this)[2] == 0)) {
+	} else if (((chars[0] & 0xf0) == 0x90) && (chars[2] == 0x00)) {
 		return true;
 	} else {
 		return false;
@@ -2266,6 +2270,30 @@ void MidiMessage::makeTemperamentMeantoneCommaThird(int referencePitchClass, int
 
 void MidiMessage::makeTemperamentMeantoneCommaHalf(int referencePitchClass, int channelMask) {
 	this->makeTemperamentMeantone(1.0 / 2.0, referencePitchClass, channelMask);
+}
+
+
+
+//////////////////////////////
+//
+// operator<<(MidiMessage) -- Print MIDI messages as text.  0x80 and above
+//    are printed as hex, below as dec (will look strange for meta messages
+//    and system exclusives which could be dealt with later).
+//
+
+std::ostream& operator<<(std::ostream& out, MidiMessage& message) {
+	for (int i=0; i<(int)message.size(); i++) {
+		if (message[i] >= 0x80) {
+			out << "0x" << std::hex << std::setw(2) << std::setfill('0') << (int)message[i];
+			out << std::dec << std::setw(0) << std::setfill(' ');
+		} else {
+			out << (int)message[i];
+		}
+		if (i<(int)message.size() - 1) {
+			out << ' ';
+		}
+	}
+	return out;
 }
 
 

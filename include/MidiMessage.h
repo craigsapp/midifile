@@ -14,6 +14,7 @@
 #ifndef _MIDIMESSAGE_H_INCLUDED
 #define _MIDIMESSAGE_H_INCLUDED
 
+#include <iostream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -196,6 +197,9 @@ class MidiMessage : public std::vector<uchar> {
 		void           makeTemperamentMeantoneCommaHalf(int referencePitchClass = 2, int channelMask = 0b1111111111111111);
 
 };
+
+
+std::ostream& operator<<(std::ostream& out, MidiMessage& event);
 
 
 } // end of namespace smf
