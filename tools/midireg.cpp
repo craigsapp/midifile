@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
 	Options options;
 	options.define("l|lower-boundary=i:48", "lowest note of mid-register");
 	options.define("u|upper-boundary=i:72", "highest note of mid-register");
+	options.define("s|split=i:60", "dual register split note (value included in higher range");
 	options.define("f|fraction=b");
 	options.process(argc, argv);
 	MidiFile midifile;
@@ -66,6 +67,9 @@ void processFile(MidiFile& midifile, Options& options) {
 	int lowCut = options.getInteger("lower-boundary");
 	int hiCut  = options.getInteger("upper-boundary");
 
+	bool splitQ   = options.getBoolean("split");
+	int  splitCut = options.getInteger("split");
+
 	int lowCount = 0;
 	int midCount = 0;
 	int hiCount  = 0;
@@ -82,7 +86,13 @@ void processFile(MidiFile& midifile, Options& options) {
 			continue;
 		}
 		int key = note->getKeyNumber();
-		if (key < lowCut) {
+		if (splitQ) {
+			if (key < splitCut) {
+				lowCount++;
+			} else {
+				hiCount++;
+			}
+		} else if (key < lowCut) {
 			lowCount++;
 		} else if (key > hiCut) {
 			hiCount++;
@@ -93,10 +103,18 @@ void processFile(MidiFile& midifile, Options& options) {
 
 	double total = lowCount + midCount + hiCount;
 
-	if (fractionQ) {
-		cout << lowCount/total << "\t" << midCount/total << "\t" << hiCount/total << endl;
+	if (splitQ) {
+		if (fractionQ) {
+			cout << lowCount/total << "\t" << hiCount/total << endl;
+		} else {
+			cout << lowCount << "\t" << hiCount << endl;
+		}
 	} else {
-		cout << lowCount << "\t" << midCount << "\t" << hiCount << endl;
+		if (fractionQ) {
+			cout << lowCount/total << "\t" << midCount/total << "\t" << hiCount/total << endl;
+		} else {
+			cout << lowCount << "\t" << midCount << "\t" << hiCount << endl;
+		}
 	}
 }
 
