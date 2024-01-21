@@ -8,10 +8,10 @@
 // $Smake:        g++ -o %b %f && strip %b
 //
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cctype>
+#include <cstring>
 #include <iostream>
 
 using namespace std;

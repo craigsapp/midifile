@@ -18,7 +18,7 @@
 #include <iterator>
 #include <utility>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace smf {
 
@@ -54,8 +54,8 @@ MidiEventList::MidiEventList(const MidiEventList& other) {
 //
 
 MidiEventList::MidiEventList(MidiEventList&& other) {
-   list = std::move(other.list);
-   other.list.clear();
+	list = std::move(other.list);
+	other.list.clear();
 }
 
 
@@ -124,12 +124,12 @@ const MidiEvent& MidiEventList::last(void) const {
 //
 
 MidiEvent& MidiEventList::getEvent(int index) {
-   return *list[index];
+	return *list[index];
 }
 
 
 const MidiEvent& MidiEventList::getEvent(int index) const {
-   return *list[index];
+	return *list[index];
 }
 
 
@@ -141,10 +141,10 @@ const MidiEvent& MidiEventList::getEvent(int index) const {
 //
 
 void MidiEventList::clear(void) {
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i] != NULL) {
-			delete list[i];
-			list[i] = NULL;
+	for (auto& item : list) {
+		if (item != NULL) {
+			delete item;
+			item = NULL;
 		}
 	}
 	list.resize(0);
@@ -245,10 +245,10 @@ int MidiEventList::push_back(MidiEvent& event) {
 
 void MidiEventList::removeEmpties(void) {
 	int count = 0;
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i]->empty()) {
-			delete list[i];
-			list[i] = NULL;
+	for (auto& item : list) {
+		if (item->empty()) {
+			delete item;
+			item = NULL;
 			count++;
 		}
 	}
@@ -257,9 +257,9 @@ void MidiEventList::removeEmpties(void) {
 	}
 	std::vector<MidiEvent*> newlist;
 	newlist.reserve(list.size() - count);
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i]) {
-			newlist.push_back(list[i]);
+	for (auto& item : list) {
+		if (item) {
+			newlist.push_back(item);
 		}
 	}
 	list.swap(newlist);
@@ -292,8 +292,8 @@ int MidiEventList::linkNotePairs(void) {
 	// dimension 3: List of active note-ons or note-offs.
 	std::vector<std::vector<std::vector<MidiEvent*>>> noteons;
 	noteons.resize(16);
-	for (int i=0; i<(int)noteons.size(); i++) {
-		noteons[i].resize(128);
+	for (auto& noteon : noteons) {
+		noteon.resize(128);
 	}
 
 	// Controller linking: The following General MIDI controller numbers are
