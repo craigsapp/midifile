@@ -6,7 +6,7 @@
 | [asciimidi.cpp](https://github.com/craigsapp/midifile/blob/master/tools/asciimidi.cpp) | Print MIDI file in binasc format, allowing for reconversion into a binary Standard MIDI File. |
 | [base642midi.cpp](https://github.com/craigsapp/midifile/blob/master/tools/base642midi.cpp) | Test of base64 import of Standard MIDI files. |
 | [binasc.cpp](https://github.com/craigsapp/midifile/blob/master/tools/binasc.cpp) | Binary to hex-byte ASCII converter. |
-| [channelinfo.cpp](https://github.com/craigsapp/midifile/blob/master/tools/channelinfo.cpp) | List channels used for notes in each track and list timbres used in each channel. |
+| [chaninfo.cpp](https://github.com/craigsapp/midifile/blob/master/tools/chaninfo.cpp) | List channels used for notes in each track and list timbres used in each channel. |
 | [createmidifile.cpp](https://github.com/craigsapp/midifile/blob/master/tools/createmidifile.cpp) | Demonstration of how to create a Multi-track MIDI file. |
 | [createmidifile2.cpp](https://github.com/craigsapp/midifile/blob/master/tools/createmidifile2.cpp) | Demonstration of how to create a Multi-track MIDI file with convenience functions. |
 | [deltatimes.cpp](https://github.com/craigsapp/midifile/blob/master/tools/deltatimes.cpp) | Generate list of delta times in a MIDI file, either as MIDI ticks, quarter notes, or at real-time values in seconds or milliseconds (why applying tempo meta messages to the tick values).  Useful for determining if the MIDI file contains a score or a performance. |
