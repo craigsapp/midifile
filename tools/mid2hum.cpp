@@ -7,7 +7,7 @@
 // Syntax:        C++11
 // vim:           ts=3
 //
-// Description:   Description: Converts a MIDI file into a Humdrum file.
+// Description:   Converts a MIDI file into a Humdrum file.
 //
 // Recommendation: MIDI to notation (such as Humdrum) is a bit of an
 //                open-ended problem.  I am not going to go through the

@@ -7,7 +7,7 @@
 // Syntax:        C++11
 // vim:           ts=3
 //
-// Description:   Description: Converts a text based notelist into a MIDI file.
+// Description:   Converts a text based notelist into a MIDI file.
 //
 
 #include "MidiFile.h"

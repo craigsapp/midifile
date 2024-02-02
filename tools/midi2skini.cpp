@@ -7,8 +7,7 @@
 // Syntax:        C++11
 // vim:           ts=3
 //
-// Description:   Description: Converts a Standard MIDI file into the
-//                SKINI data format.
+// Description:   Converts a Standard MIDI file into the SKINI data format.
 //
 
 #include "MidiFile.h"
