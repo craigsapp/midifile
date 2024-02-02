@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat May 17 19:34:13 PDT 2003
 // Last Modified: Mon Feb  9 21:23:13 PST 2015 Updated for C++11.
-// Filename:      ...sig/doc/examples/all/drumtab/drumtab.cpp
-// Syntax:        C++
+// Filename:      tools/drumtab.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/drumtab.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Demonstration of how to convert a drum tab into
 //                a Multi-track MIDI file with one track for each

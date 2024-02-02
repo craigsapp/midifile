@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr 15 12:11:36 PDT 2018
 // Last Modified: Sun Apr 15 12:11:40 PDT 2018
-// Filename:      midifile/tools/readstatus.cpp
+// Filename:      tools/mid2hex.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/mid2hex.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Convert a binary standard MIDI file (or binasc MIDI file,
 //                or hex-byte MIDI file) into a hex byte-code MIDI file.

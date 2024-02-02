@@ -2,9 +2,12 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 14:45:32 PST 2015 Class-ified binasc functionality
 // Last Modified: Wed Feb 18 14:45:44 PST 2015
-// Filename:      midifile/tools/binasc.cpp
+// Filename:      tools/binasc.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/binasc.cpp
 // Syntax:        C++11
-// vim:           ts=3 expandtab
+// vim:           ts=3
+//
+// Description:   Binary to hex-byte ASCII converter.
 //
 // todo:          Add standard input source.
 //
@@ -54,7 +57,7 @@ int main(int argc, char* argv[]) {
 	for (int i=0; i<options.getArgCount(); i++) {
 		if (options.getBoolean("compile")) {
 			binasc.writeToBinary(options.getString("compile").c_str(),
-               options.getArg(i+1).c_str());
+					options.getArg(i+1).c_str());
 		} else  {
 			binasc.readFromBinary(cout, options.getArg(i+1).c_str());
 		}

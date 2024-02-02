@@ -3,7 +3,9 @@
 // Creation Date: Thu Mar 19 13:42:37 PDT 2015
 // Last Modified: Thu Mar 19 15:34:12 PDT 2015
 // Filename:      tools/sysextest.cpp
-// Syntax:        C++
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/sysextest.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Demonstration of how to create a MIDI file with
 //                system exclusive messages.  A complete sysex message is
@@ -35,64 +37,64 @@ using namespace smf;
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   MidiFile outputfile;        // create an empty MIDI file with one track
-   outputfile.addTrack(2);     // Add another two tracks to the MIDI file
+	MidiFile outputfile;        // create an empty MIDI file with one track
+	outputfile.addTrack(2);     // Add another two tracks to the MIDI file
 
-   vector<uchar> fullsysex(14);
-   fullsysex[0]  = 0xf0;
-   // message size will automatically be inserted here when
-   // writing to a MIDI file.
-   fullsysex[1]  = 0x43;
-   fullsysex[2]  = 0x12;
-   fullsysex[3]  = 0x00;
-   fullsysex[4]  = 0x43;
-   fullsysex[5]  = 0x12;
-   fullsysex[6]  = 0x00;
-   fullsysex[7]  = 0x42;
-   fullsysex[8]  = 0x12;
-   fullsysex[9]  = 0x00;
-   fullsysex[10] = 0x43;
-   fullsysex[11] = 0x12;
-   fullsysex[12] = 0x00;
-   fullsysex[13] = 0xf7;
+	vector<uchar> fullsysex(14);
+	fullsysex[0]  = 0xf0;
+	// message size will automatically be inserted here when
+	// writing to a MIDI file.
+	fullsysex[1]  = 0x43;
+	fullsysex[2]  = 0x12;
+	fullsysex[3]  = 0x00;
+	fullsysex[4]  = 0x43;
+	fullsysex[5]  = 0x12;
+	fullsysex[6]  = 0x00;
+	fullsysex[7]  = 0x42;
+	fullsysex[8]  = 0x12;
+	fullsysex[9]  = 0x00;
+	fullsysex[10] = 0x43;
+	fullsysex[11] = 0x12;
+	fullsysex[12] = 0x00;
+	fullsysex[13] = 0xf7;
 
-   vector<uchar> startsysex(4);
-   startsysex[0] = 0xf0;
-   // Partial message size will automatically be inserted here when
-   // writing to a MIDI file (size = 3 bytes).
-   startsysex[1] = 0x43;
-   startsysex[2] = 0x12;
-   startsysex[3] = 0x00;
+	vector<uchar> startsysex(4);
+	startsysex[0] = 0xf0;
+	// Partial message size will automatically be inserted here when
+	// writing to a MIDI file (size = 3 bytes).
+	startsysex[1] = 0x43;
+	startsysex[2] = 0x12;
+	startsysex[3] = 0x00;
 
-   vector<uchar> midsysex(7);
-   midsysex[0]   = 0xf7;      // sysex continuation marker (not part of msg.)
-   // Partial message size will automatically be inserted here when
-   // writing to a MIDI file (size = 6 bytes).
-   midsysex[1]   = 0x43;
-   midsysex[2]   = 0x12;
-   midsysex[3]   = 0x00;
-   midsysex[4]   = 0x42;
-   midsysex[5]   = 0x12;
-   midsysex[6]   = 0x00;
+	vector<uchar> midsysex(7);
+	midsysex[0]   = 0xf7;      // sysex continuation marker (not part of msg.)
+	// Partial message size will automatically be inserted here when
+	// writing to a MIDI file (size = 6 bytes).
+	midsysex[1]   = 0x43;
+	midsysex[2]   = 0x12;
+	midsysex[3]   = 0x00;
+	midsysex[4]   = 0x42;
+	midsysex[5]   = 0x12;
+	midsysex[6]   = 0x00;
 
-   vector<uchar> endsysex(5);
-   endsysex[0]   = 0xf7;      // sysex continuation marker (not part of msg.)
-   // Partial message size will automatically be inserted here when
-   // writing to a MIDI file (size = 4 bytes).
-   endsysex[1]   = 0x43;
-   endsysex[2]   = 0x12;
-   endsysex[3]   = 0x00;
-   endsysex[4]   = 0xf7;      // sysex termination marker (part of msg.)
+	vector<uchar> endsysex(5);
+	endsysex[0]   = 0xf7;      // sysex continuation marker (not part of msg.)
+	// Partial message size will automatically be inserted here when
+	// writing to a MIDI file (size = 4 bytes).
+	endsysex[1]   = 0x43;
+	endsysex[2]   = 0x12;
+	endsysex[3]   = 0x00;
+	endsysex[4]   = 0xf7;      // sysex termination marker (part of msg.)
 
-   outputfile.setTicksPerQuarterNote(100);
-   outputfile.addEvent(1,   0, fullsysex );
-   outputfile.addEvent(2,   0, startsysex);
-   outputfile.addEvent(2, 100, midsysex  );
-   outputfile.addEvent(2, 200, endsysex  );
+	outputfile.setTicksPerQuarterNote(100);
+	outputfile.addEvent(1,   0, fullsysex );
+	outputfile.addEvent(2,   0, startsysex);
+	outputfile.addEvent(2, 100, midsysex  );
+	outputfile.addEvent(2, 200, endsysex  );
 
-   outputfile.writeBinasc(cout);
-   //outputfile.writeHex(cout);
-   return 0;
+	outputfile.writeBinasc(cout);
+	//outputfile.writeHex(cout);
+	return 0;
 }
 
 /*

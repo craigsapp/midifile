@@ -2,9 +2,9 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jan  8 23:44:16 PST 2018
 // Last Modified: Mon Jan  8 23:44:22 PST 2018
-// Filename:      retick.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/retick.cpp
-// Syntax:        C++; museinfo
+// Filename:      tool/retick.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/retick.cpp
+// Syntax:        C++11
 // vim:           ts=3
 //
 // Description:   Change TPQ to a new value and update timestamps for new TPQ to keep

@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jun 24 21:02:37 PDT 2021
 // Last Modified: Thu Jun 24 21:02:40 PDT 2021
-// Filename:      midifile/tools/base642midi.cpp
+// Filename:      tools/base642midi.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/base642midi.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Test of base64 import of Standard MIDI files.
 //

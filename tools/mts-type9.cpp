@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed May 25 00:44:56 PDT 2022
 // Last Modified: Wed May 25 00:56:47 PDT 2022
-// Filename:      ./midifile/tools/mts-type9.cpp 
-// Syntax:        C++
+// Filename:      tools/mts-type9.cpp 
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/mts-type9.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Test of MTS (MIDI Tuning Specification), nineth type 
 //                (real-time two-byte octave temperaments).
@@ -33,12 +35,12 @@ int main(int argc, char** argv) {
 	int actiontime =  0;
 	int tpq        =  100;
 
-   MidiFile outputfile;
-   outputfile.absoluteTicks();
-   outputfile.addTrack(1);
-   outputfile.setTicksPerQuarterNote(tpq);
+	MidiFile outputfile;
+	outputfile.absoluteTicks();
+	outputfile.addTrack(1);
+	outputfile.setTicksPerQuarterNote(tpq);
 
-   MidiEvent midievent;
+	MidiEvent midievent;
 	midievent.makeTempo(120.0);
 	outputfile.addEvent(0, actiontime, midievent);
 
@@ -81,14 +83,14 @@ int main(int argc, char** argv) {
 	actiontime = addChords(outputfile, actiontime, tpq);
 
 	// make sure data is in correct order before converting to delta times:
-   outputfile.sortTracks(); 
+	outputfile.sortTracks(); 
 	if (stdoutQ) {
 		// output in Binasc syntax
 		cout << outputfile;
 	} else {
-   	outputfile.write(file);
+		outputfile.write(file);
 	}
-   return 0;
+	return 0;
 }
 
 

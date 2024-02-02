@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jul 26 13:10:22 PDT 2010
 // Last Modified: Mon Feb  9 20:34:40 PST 2015 Updated for C++11.
-// Filename:      ...sig/doc/examples/all/miditime/miditime.cpp
-// Syntax:        C++
+// Filename:      tools/miditime.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/miditime.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Displays the absolute tick time and absolute time
 //                in seconds for MIDI events in a MIDI file, along with
@@ -31,19 +33,19 @@ int    onsetQ    = 0;      // used with -o option
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   int       status;
-   MidiFile  inputfile;
-   Options   options(argc, argv);
+	int       status;
+	MidiFile  inputfile;
+	Options   options(argc, argv);
 
-   checkOptions(options);
+	checkOptions(options);
 
-   status = inputfile.read(options.getArg(1));
-   if (status == 0) {
-      cout << "Syntax error in file: " << options.getArg(1) << "\n";
-   }
+	status = inputfile.read(options.getArg(1));
+	if (status == 0) {
+		cout << "Syntax error in file: " << options.getArg(1) << "\n";
+	}
 
-   processMidiFile(inputfile);
-   return 0;
+	processMidiFile(inputfile);
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -55,38 +57,38 @@ int main(int argc, char** argv) {
 //
 
 void processMidiFile(MidiFile& midifile) {
-   midifile.absoluteTicks();
-   midifile.joinTracks();
-   int eventcount = midifile.getEventCount(0);
-   MidiEvent *ptr;
-   for (int i=0; i<eventcount; i++) {
-      ptr = &(midifile[0][i]);
-      int track       = ptr->track;
-      int timeinticks = ptr->tick;
-      double timeinsecs  = midifile.getTimeInSeconds(0, i);
-      int attack = ((*ptr)[0] & 0xf0) == 0x90;
-      if (onsetQ && !attack) {
-         continue;
-      }
-      if (onsetQ && attack) {
-         if ((*ptr)[2] == 0) {
-            continue;
-         }
-      }
-      
-      cout << timeinticks << "\t";
-      cout << timeinsecs << "\t";
-      cout << track << "\t";
-      cout << i << "\t";
-      for (int j=0; j<(int)ptr->size(); j++) {
-         if (j == 0) {
-            cout << "0x" << hex << (int)(*ptr)[j] << dec << " ";
-         } else {
-            cout << (int)(*ptr)[j] << " ";
-         }
-      }
-      cout << endl;
-   }
+	midifile.absoluteTicks();
+	midifile.joinTracks();
+	int eventcount = midifile.getEventCount(0);
+	MidiEvent *ptr;
+	for (int i=0; i<eventcount; i++) {
+		ptr = &(midifile[0][i]);
+		int track       = ptr->track;
+		int timeinticks = ptr->tick;
+		double timeinsecs  = midifile.getTimeInSeconds(0, i);
+		int attack = ((*ptr)[0] & 0xf0) == 0x90;
+		if (onsetQ && !attack) {
+			continue;
+		}
+		if (onsetQ && attack) {
+			if ((*ptr)[2] == 0) {
+				continue;
+			}
+		}
+
+		cout << timeinticks << "\t";
+		cout << timeinsecs << "\t";
+		cout << track << "\t";
+		cout << i << "\t";
+		for (int j=0; j<(int)ptr->size(); j++) {
+			if (j == 0) {
+				cout << "0x" << hex << (int)(*ptr)[j] << dec << " ";
+			} else {
+				cout << (int)(*ptr)[j] << " ";
+			}
+		}
+		cout << endl;
+	}
 }
 
 
@@ -98,32 +100,32 @@ void processMidiFile(MidiFile& midifile) {
 
 void checkOptions(Options& opts) {
 
-   opts.define("author=b");
-   opts.define("version=b");
-   opts.define("example=b");
-   opts.define("help=b");
-   opts.define("o|on|onset=b");
-   opts.process();
+	opts.define("author=b");
+	opts.define("version=b");
+	opts.define("example=b");
+	opts.define("help=b");
+	opts.define("o|on|onset=b");
+	opts.process();
 
-   if (opts.getBoolean("author")) {
-      cout << "Written by Craig Stuart Sapp, "
-           << "craig@ccrma.stanford.edu, July 2010" << endl;
-      exit(0);
-   }
-   if (opts.getBoolean("version")) {
-      cout << "midiextract version 1.0" << endl;
-      cout << "compiled: " << __DATE__ << endl;
-   }
-   if (opts.getBoolean("help")) {
-      usage(opts.getCommand().c_str());
-      exit(0);
-   }
-   if (opts.getBoolean("example")) {
-      example();
-      exit(0);
-   }
+	if (opts.getBoolean("author")) {
+		cout << "Written by Craig Stuart Sapp, "
+			  << "craig@ccrma.stanford.edu, July 2010" << endl;
+		exit(0);
+	}
+	if (opts.getBoolean("version")) {
+		cout << "midiextract version 1.0" << endl;
+		cout << "compiled: " << __DATE__ << endl;
+	}
+	if (opts.getBoolean("help")) {
+		usage(opts.getCommand().c_str());
+		exit(0);
+	}
+	if (opts.getBoolean("example")) {
+		example();
+		exit(0);
+	}
 
-   onsetQ = opts.getBoolean("onset");
+	onsetQ = opts.getBoolean("onset");
 }
 
 
@@ -134,9 +136,9 @@ void checkOptions(Options& opts) {
 //
 
 void example(void) {
-   cout <<
-   "#                                                                        \n"
-   << endl;
+	cout <<
+	"#                                                                        \n"
+	<< endl;
 }
 
 
@@ -147,9 +149,9 @@ void example(void) {
 //
 
 void usage(const char* command) {
-   cout <<
-   "                                                                         \n"
-   << endl;
+	cout <<
+	"                                                                         \n"
+	<< endl;
 }
 
 

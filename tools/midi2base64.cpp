@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jun 24 20:54:59 PDT 2021
 // Last Modified: Thu Jun 24 20:57:18 PDT 2021
-// Filename:      midifile/tools/midi2base64.cpp
+// Filename:      tools/midi2base64.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midi2base64.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Test of base64 export of Standard MIDI files.
 //

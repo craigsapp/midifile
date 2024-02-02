@@ -2,9 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Feb 23 05:34:17 PST 2016
 // Last Modified: Tue Feb 23 05:34:20 PST 2016
-// Filename:      midifile/tools/smfdur.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/smfdur.cpp
+// Filename:      tools/smfdur.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/smfdur.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Calcualte the total duration of a MIDI file.
 //
@@ -30,29 +31,29 @@ string    minutes               (double seconds);
 //////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
-   checkOptions(options, argc, argv);
+	checkOptions(options, argc, argv);
 	int fileQ  = options.getBoolean("filename");
 	int minuteQ = options.getBoolean("minute");
 
-   MidiFile midifile;
+	MidiFile midifile;
 
 	int counter = 0;
 	double sum = 0.0;
-   int numinputs = options.getArgCount();
-   for (int i=0; i < numinputs || i==0; i++) {
-      midifile.clear();
-      if (options.getArgCount() < 1) {
-         midifile.read(cin);
-      } else {
-         midifile.read(options.getArg(i+1));
-      }
-      if (options.getArgCount() > 1) {
-         cout << options.getArg(i+1) << "\t";
-      }
+	int numinputs = options.getArgCount();
+	for (int i=0; i < numinputs || i==0; i++) {
+		midifile.clear();
+		if (options.getArgCount() < 1) {
+			midifile.read(cin);
+		} else {
+			midifile.read(options.getArg(i+1));
+		}
+		if (options.getArgCount() > 1) {
+			cout << options.getArg(i+1) << "\t";
+		}
 		double duration = getTotalDuration(midifile);
 		sum += duration;
 		counter++;
-      cout << duration;
+		cout << duration;
 		if (minuteQ) {
 			cout << "\t" << minutes(duration);
 		}
@@ -60,8 +61,8 @@ int main(int argc, char* argv[]) {
 			cout << "\t";
 			cout << midifile.getFilename();
 		}
-      cout << endl;
-   }
+		cout << endl;
+	}
 	if (counter > 1) {
 		cout << "TOTAL\t" << sum;
 		if (minuteQ) {
@@ -131,9 +132,9 @@ string minutes(double seconds) {
 //
 
 double getTotalDuration(MidiFile& midifile) {
-   midifile.doTimeAnalysis();
-   midifile.joinTracks();
-   return midifile[0].last().seconds;
+	midifile.doTimeAnalysis();
+	midifile.joinTracks();
+	return midifile[0].last().seconds;
 }
 
 
@@ -147,28 +148,28 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 	opts.define("f|filename=b", "display filename after duration");
 	opts.define("m|minute|minutes=b", "also display duration in minutes after seconds display");
 
-   opts.define("author=b",  "author of program");
-   opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");
-   opts.define("h|help=b",  "short description");
-   opts.process(argc, argv);
+	opts.define("author=b",  "author of program");
+	opts.define("version=b", "compilation info");
+	opts.define("example=b", "example usages");
+	opts.define("h|help=b",  "short description");
+	opts.process(argc, argv);
 
-   // handle basic options:
-   if (opts.getBoolean("author")) {
-      cout << "Written by Craig Stuart Sapp, "
-           << "craig@ccrma.stanford.edu, 23 February 2016" << endl;
-      exit(0);
-   } else if (opts.getBoolean("version")) {
-      cout << argv[0] << ", version: 23 February 2016" << endl;
-      cout << "compiled: " << __DATE__ << endl;
-      exit(0);
-   } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand().c_str());
-      exit(0);
-   } else if (opts.getBoolean("example")) {
-      example();
-      exit(0);
-   }
+	// handle basic options:
+	if (opts.getBoolean("author")) {
+		cout << "Written by Craig Stuart Sapp, "
+			  << "craig@ccrma.stanford.edu, 23 February 2016" << endl;
+		exit(0);
+	} else if (opts.getBoolean("version")) {
+		cout << argv[0] << ", version: 23 February 2016" << endl;
+		cout << "compiled: " << __DATE__ << endl;
+		exit(0);
+	} else if (opts.getBoolean("help")) {
+		usage(opts.getCommand().c_str());
+		exit(0);
+	} else if (opts.getBoolean("example")) {
+		example();
+		exit(0);
+	}
 
 }
 
@@ -180,7 +181,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void example(void) {
-
+	// give example here
 }
 
 
@@ -191,7 +192,7 @@ void example(void) {
 //
 
 void usage(const char* command) {
-   cout << "Usage: " << command << " input(s)" << endl;
+	cout << "Usage: " << command << " input(s)" << endl;
 }
 
 

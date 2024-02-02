@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat May 28 09:56:21 PDT 2016
 // Last Modified: Sat May 28 10:34:30 PDT 2016
-// Filename:      midifile/tools/asciimidi.cpp
+// Filename:      tools/asciimidi.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/asciimidi.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Print MIDI file in binasc format, allowing for
 //                reconversion into a binary Standard MIDI File.

@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue May 24 19:54:32 PDT 2022
 // Last Modified: Tue May 24 21:51:29 PDT 2022
-// Filename:      ./midifile/tools/mts-type2.cpp 
-// Syntax:        C++
+// Filename:      tools/mts-type2.cpp 
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/mts-type2.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Test of MTS (MIDI Tuning Specification), second type 
 //                (real-time remaping of any number of pitches).   This example
@@ -43,12 +45,12 @@ int main(int argc, char** argv) {
 	int tpq        =  100;
 	int key;
 
-   MidiFile outputfile;
-   outputfile.absoluteTicks();
-   outputfile.addTrack(1);
-   outputfile.setTicksPerQuarterNote(tpq);
+	MidiFile outputfile;
+	outputfile.absoluteTicks();
+	outputfile.addTrack(1);
+	outputfile.setTicksPerQuarterNote(tpq);
 
-   MidiEvent midievent;
+	MidiEvent midievent;
 	midievent.makeTempo(120.0);
 	outputfile.addEvent(0, actiontime, midievent);
 
@@ -94,14 +96,14 @@ int main(int argc, char** argv) {
 	outputfile.addEvent(1, actiontime, midievent);
 
 	// make sure data is in correct order before converting to delta times:
-   outputfile.sortTracks(); 
+	outputfile.sortTracks(); 
 	if (stdoutQ) {
 		// output in Binasc syntax
 		cout << outputfile;
 	} else {
-   	outputfile.write(file);
+		outputfile.write(file);
 	}
-   return 0;
+	return 0;
 }
 
 

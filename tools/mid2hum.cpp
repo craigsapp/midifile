@@ -2,9 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Mar  5 22:49:55 PST 2004
 // Last Modified: Thu Jan  6 03:41:05 PST 2011 (fixed array out-of-bounds err)
-// Filename:      ...sig/examples/all/mid2hum.cpp
-// Web Address:   http://sig.sapp.org/examples/museinfo/humdrum/mid2hum.cpp
-// Syntax:        C++; museinfo
+// Filename:      tools/mid2hum.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/mid2hum.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Description: Converts a MIDI file into a Humdrum file.
 //

@@ -2,9 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Feb 19 20:43:49 PST 2015
 // Last Modified: Thu Feb 19 20:43:52 PST 2015
-// Filename:      midifile/tools/durations.cpp
-// Website:       http://midifile.sapp.org
+// Filename:      tools/durations.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/durations.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Print note durations in a MidiFile.  Note-ons with no
 //                no matching note-offs (such as for rhythm-channel

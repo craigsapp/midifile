@@ -2,7 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jul  3 11:58:38 PDT 2023
 // Last Modified: Sat Jul  8 21:13:19 PDT 2023
-// Filename:      midifile/tools/mididiss.cpp
+// Filename:      tools/mididiss.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/mididiss.cpp
 // Syntax:        C++11
 // vim:           ts=3
 //
@@ -167,7 +168,7 @@ ostream& operator<<(ostream& out, Sonority& sonority) {
 			}
 		}
 	}
-	
+
 	return out;
 }
 

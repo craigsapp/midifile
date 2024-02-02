@@ -29,7 +29,7 @@
 ##
 
 # targets which don't actually refer to files
-.PHONY : all info library examples programs bin options clean lib
+.PHONY : all info library tools programs bin options clean lib
 
 
 all: info library programs lib
@@ -62,6 +62,7 @@ clean:
 	-rm -rf lib
 
 
+tools:    programs
 bin:      programs
 examples: programs
 programs:

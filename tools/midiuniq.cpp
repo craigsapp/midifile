@@ -2,12 +2,13 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jun 29 14:05:26 PDT 2023
 // Last Modified: Thu Jun 29 14:05:31 PDT 2023
-// Filename:      midifile/tools/midiuniq.cpp
+// Filename:      tools/midiuniq.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midiuniq.cpp
 // Syntax:        C++11
 // vim:           ts=3
 //
 // Description:   When notes attacks for the same pitch occur at
-//                the same time, 
+//                the same time, remove one of them.
 //
 
 #include "MidiFile.h"
@@ -30,7 +31,7 @@ int main(int argc, char** argv) {
 	if (options.getArgCount() == 0) {
 		midifile.read(cin);
 		processFile(midifile, options);
-		
+
 	} else {
 		int count = options.getArgCount();
 		if (count != 2) {

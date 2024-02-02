@@ -2,12 +2,14 @@
 // Programmer:    Tom M. <tom.mbrt@gmail.com>
 // Creation Date: Sat Nov 05 14:51:00 PST 2016
 // Last Modified: Sat Nov 05 14:51:00 PST 2016
-// Filename:      midifile/tools/mid2beep.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/mid2beep.cpp
-// Syntax:        C++
+// Filename:      tools/mid2beep.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midi2beep.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
-// Description:   Linux-only: Play a monophonic midi file on the PC Speaker (i.e. the midi file contains only a single track
-//                on a single channel playing a single note at a time)
+// Description:   Linux-only: Play a monophonic midi file on the PC Speaker (i.e. the
+//                midifile contains only a single track on a single channel playing
+//                a single note at a time).
 //
 
 #include "MidiFile.h"
@@ -15,104 +17,98 @@
 
 #include <iostream>
 #include <cmath>
-#include <unistd.h>     // usleep()
+#include <unistd.h> // usleep()
 #include <signal.h>
 
 #ifdef __APPLE__
-    #include <sys/uio.h>
+	#include <sys/uio.h>
 #else
-    #include <sys/io.h>
+	#include <sys/io.h>
 #endif
 
 
 using namespace std;
 using namespace smf;
 
-void beepOff(int)
-{
-    int r = inb(0x61);
-    outb(r|3, 0x61);
-    outb(r & 0xFC, 0x61);
+void beepOff(int) {
+	int r = inb(0x61);
+	outb(r|3, 0x61);
+	outb(r & 0xFC, 0x61);
 
-    exit(0);
+	exit(0);
 }
 
-void beep(int fre, int usDuration)
-{
-    if (fre > 0) {
-        int ff = 1193180/fre;
-        outb( 0xB6,            0x43);
-        outb( ff & 0xff,       0x42);
-        outb((ff >> 8) & 0xff, 0x42);
-    }
+void beep(int fre, int usDuration) {
+	if (fre > 0) {
+		int ff = 1193180/fre;
+		outb( 0xB6,            0x43);
+		outb( ff & 0xff,       0x42);
+		outb((ff >> 8) & 0xff, 0x42);
+	}
 
-    int r = inb(0x61);
-    if(fre > 0) outb(r|3, 0x61);
-    usleep(usDuration);
-    outb(r & 0xFC, 0x61);
+	int r = inb(0x61);
+	if(fre > 0) outb(r|3, 0x61);
+	usleep(usDuration);
+	outb(r & 0xFC, 0x61);
 }
 
-int main(int argc, char** argv)
-{
-    signal(SIGINT, beepOff);
+int main(int argc, char** argv) {
+	signal(SIGINT, beepOff);
 
-    Options options;
-    options.process(argc, argv);
-    MidiFile midifile;
-    if (options.getArgCount() == 1) {
-        midifile.read(options.getArg(1));
-    }
-    else
-    {
-        cout << "usage: " << argv[0] << " file.mid" << endl;
-        return -1;
-    }
+	Options options;
+	options.process(argc, argv);
+	MidiFile midifile;
+	if (options.getArgCount() == 1) {
+		midifile.read(options.getArg(1));
+	}
+	else {
+		cout << "usage: " << argv[0] << " file.mid" << endl;
+		return -1;
+	}
 
-    int k= iopl(3);
+	int k= iopl(3);
 
-    printf("\n Result iopl: %d \n", k);
-    if (k<0)
-    {
-        cerr << " iopl() " << endl;
-        return k;
-    }
+	printf("\n Result iopl: %d \n", k);
+	if (k<0) {
+		cerr << " iopl() " << endl;
+		return k;
+	}
 
-    midifile.linkNotePairs();
-    midifile.joinTracks();
-    midifile.doTimeAnalysis();
+	midifile.linkNotePairs();
+	midifile.joinTracks();
+	midifile.doTimeAnalysis();
 
-    midifile.absoluteTicks();
+	midifile.absoluteTicks();
 
-    double lastNoteFinished = 0.0;
-    for (int track=0; track < midifile.getTrackCount(); track++) {
-        for (int i=0; i<midifile[track].size(); i++) {
-            MidiEvent* mev = &midifile[track][i];
-            if (!mev->isNoteOn() || mev->getLinkedEvent() == NULL) {
-                continue;
-            }
+	double lastNoteFinished = 0.0;
+	for (int track=0; track < midifile.getTrackCount(); track++) {
+		for (int i=0; i<midifile[track].size(); i++) {
+			MidiEvent* mev = &midifile[track][i];
+			if (!mev->isNoteOn() || mev->getLinkedEvent() == NULL) {
+				continue;
+			}
 
-            // pause, silence
-            int silence = static_cast<int>((midifile.getTimeInSeconds(mev->tick) - lastNoteFinished) * 1000 * 1000);
-            if(silence >0)
-            {
-                usleep(silence);
-            }
+			// pause, silence
+			int silence = static_cast<int>((midifile.getTimeInSeconds(mev->tick) - lastNoteFinished) * 1000 * 1000);
+			if(silence >0) {
+				usleep(silence);
+			}
 
-            double duration = mev->getDurationInSeconds();
+			double duration = mev->getDurationInSeconds();
 
-            int halfTonesFromA4 = mev->getKeyNumber() - 69; // 69 == A4 == 440Hz
-            int frq = 440 * pow(2, halfTonesFromA4/12.0);
+			int halfTonesFromA4 = mev->getKeyNumber() - 69; // 69 == A4 == 440Hz
+			int frq = 440 * pow(2, halfTonesFromA4/12.0);
 
-            // play note
-            beep(frq, static_cast<int>(duration*1000*1000));
+			// play note
+			beep(frq, static_cast<int>(duration*1000*1000));
 
-            MidiEvent* off = mev->getLinkedEvent();
-            lastNoteFinished = midifile.getTimeInSeconds(off->tick);
+			MidiEvent* off = mev->getLinkedEvent();
+			lastNoteFinished = midifile.getTimeInSeconds(off->tick);
 
-        }
-    }
+		}
+	}
 
-    return 0;
+	return 0;
 }
 
 

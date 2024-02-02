@@ -2,13 +2,15 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Oct 24 18:54:19 PDT 2022
 // Last Modified: Tue Oct 25 08:52:05 PDT 2022
-// Filename:      midifile/tools/midi2chords.cpp
-// Syntax:        C++
+// Filename:      tools/midi2chords.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midi2chords.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Identify chord sequences in MIDI files.  Whenever
 //                there are three or more note attacks at a given
 //                time, a chord will be identified (currently notes must
-//                all attck at the same tick time).  Additional chord
+//                all attack all at the same tick time).  Additional chord
 //                identifications can be added to the
 //                Sonority::identifySonority() function.
 //
@@ -75,7 +77,7 @@ int Sonority::countPcs(void) {
 		} else if (sustainQ && sustainPcs.at(i)) {
 			output++;
 		}
-		
+
 	}
 	return output;
 }

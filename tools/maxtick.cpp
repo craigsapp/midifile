@@ -2,7 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Apr 16 07:25:01 PDT 2018
 // Last Modified: Mon Apr 16 08:01:18 PDT 2018
-// Filename:      midifile/tools/maxtick.cpp
+// Filename:      tools/maxtick.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/maxtick.cpp
 // Syntax:        C++11
 // vim:           ts=3
 //

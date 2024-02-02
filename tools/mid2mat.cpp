@@ -1,13 +1,11 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Tue Jan 22 22:09:46 PST 2002
-// Last Modified: Thu Nov 20 17:09:08 PST 2003
-// Last Modified: Mon Sep  6 23:21:17 PDT 2004 Changed pow(2) to pow(2.0).
-// Last Modified: Fri Jul 23 12:32:31 PDT 2010 Generalized tempo parsing.
 // Last Modified: Mon Feb  9 21:17:36 PST 2015 Updated for C++11.
-// Filename:      ...sig/examples/all/mid2mat.cpp
-// Web Address:   http://sig.sapp.org/examples/museinfo/midi/mid2mat.cpp
-// Syntax:        C++; museinfo
+// Filename:      tools/mid2mat.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midi2mat.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Converts a MIDI file into a text-based note matrix.
 //

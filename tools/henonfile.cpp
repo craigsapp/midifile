@@ -1,15 +1,15 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Jan  9 14:29:54 PST 2002
-// Last Modified: Thu Jan 10 23:19:05 PST 2002
 // Last Modified: Thu Apr  3 10:23:41 PST 2008 (added Humdrum output)
-// Filename:      ...sig/examples/all/henonfile.cpp
-// Web Address:   http://sig.sapp.org/examples/improv/improv/henonfile.cpp
-// Syntax:        C++; museinfo
+// Filename:      tools/henonfile.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/henonfile.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Creates a fractal melodic line based on the
-//                Henon Map.  Output can be either a MIDI file or
-//                plain text.
+//                Henon Map.  Output can be either a MIDI file, Guido
+//                Music Notation (GMN), Humdrum, or plain text.
 //
 
 #include "MidiFile.h"
@@ -34,8 +34,8 @@ void        storeInMidiFile     (MidiFile& midifile, int key);
 void        printGuidoNotation  (void);
 void        printHumdrumNotation(void);
 char*       convertMidiToGuido  (char* buffer, Array<char> notelist, int index);
-void        printLeftHand       (void);
-void        printRightHand      (void);
+void        printLeftHandGuido  (void);
+void        printRightHandGuido (void);
 
 // User interface variables:
 Options     options;
@@ -324,8 +324,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void example(void) {
-
-
+	// to add
 }
 
 
@@ -337,7 +336,6 @@ void example(void) {
 
 void usage(const char* command) {
    cout << "Usage: " << command << " outputfile" << endl;
-
 }
 
 
@@ -349,9 +347,9 @@ void usage(const char* command) {
 
 void printGuidoNotation(void) {
    cout << "{ ";
-   printRightHand();
+   printRightHandGuido();
    cout << ", ";
-   printLeftHand();
+   printLeftHandGuido();
    cout << " }\n";
 }
 
@@ -389,10 +387,10 @@ void printHumdrumNotation(void) {
 
 //////////////////////////////
 //
-// printRightHand --
+// printRightHandGuido --
 //
 
-void printRightHand(void) {
+void printRightHandGuido(void) {
    char buffer[128] = {0};
    cout << "[";
    int i;
@@ -414,10 +412,10 @@ void printRightHand(void) {
 
 //////////////////////////////
 //
-// printLeftHand --
+// printLeftHandGuido --
 //
 
-void printLeftHand(void) {
+void printLeftHandGuido(void) {
    char buffer[128] = {0};
    cout << "[";
    int i;

@@ -2,7 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Jun  5 13:56:03 PDT 2022
 // Last Modified: Sun Jun  5 14:06:06 PDT 2022
-// Filename:      midifile/tools/channelinfo.cpp
+// Filename:      tools/channelinfo.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/channelinfo.cpp
 // Syntax:        C++11
 // vim:           ts=3
 //

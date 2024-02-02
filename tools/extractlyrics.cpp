@@ -2,8 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Apr 15 19:09:11 PDT 2018
 // Last Modified: Sun Apr 15 19:09:22 PDT 2018
-// Filename:      midifile/tools/extractlyrics.cpp
+// Filename:      tools/extractlyrics.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/extractlyrics.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Demonstration of how to extract lyrics from a MIDI file.
 //                Used the -s option to display the timestamp in seconds

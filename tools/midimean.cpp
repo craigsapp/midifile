@@ -2,14 +2,19 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Thu Jun 29 14:05:26 PDT 2023
 // Last Modified: Thu Jun 29 14:05:31 PDT 2023
-// Filename:      midifile/tools/mean.cpp
+// Filename:      tools/midimean.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midimean.cpp
 // Syntax:        C++11
 // vim:           ts=3
 //
-// Description:   Calculate the mean pitch (excluding any notes in
-//                drum track)
+// Description:   Calculate the mean pitch of MIDI notes in a midifile,
+//                excluding any notes in drum track.
 //
 // To do:         Select specific channel(s) to analyze.
+//                Maybe add a separate census of notes in the drum track.
+//                Allow multiple input midifiles.
+//                Add -f option to print filenames when processing
+//                   multiple midifile.
 //
 
 #include "MidiFile.h"
@@ -68,7 +73,6 @@ void processFile(MidiFile& midifile, Options& options) {
 				// ignore percussion channel
 				continue;
 			}
-			// cout << "MIDI NOTE: " << event.getKeyNumber() << endl;
 			sum += event.getKeyNumber();
 			count++;
 		}

@@ -2,9 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Fri Feb 19 22:25:22 PST 2016
 // Last Modified: Sat Feb 27 18:16:39 PST 2016
-// Filename:      midifile/tools/mid2svg.cpp
-// Web Address:   https://github.com/craigsapp/midifile/blob/master/tools/mid2svg.cpp
-// Syntax:        C++; museinfo
+// Filename:      tools/mid2svg.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/mid2svg.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Convert a MIDI file into an SVG piano roll.
 //
@@ -2002,7 +2003,7 @@ int base12ToBase7(int pitch) {
 void printDoubleClass(ostream& out, double value) {
    value = int(value * 1000.0 + 0.5)/1000.0;
    char buffer[32] = {0};
-   sprintf(buffer, "%.3lf", value);
+   snprintf(buffer, 32, "%.3lf", value);
    char* decimal = strchr(buffer, '.');
    if (decimal != NULL) {
       decimal[0] = 'd';
@@ -2419,7 +2420,7 @@ void makeMappings(vector<int>& mapping, const string& mapstring) {
 //
 
 void example(void) {
-
+	// add example usages here
 }
 
 

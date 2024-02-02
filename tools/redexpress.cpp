@@ -2,9 +2,9 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sat Feb 24 20:20:18 PST 2018
 // Last Modified: Sat Feb 24 20:20:21 PST 2018
-// Filename:      midifile/tools/redexpress.cpp
-// Web Address:   
-// Syntax:        C++; midifile
+// Filename:      tools/redexpress.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/redexpress.cpp
+// Syntax:        C++11
 // vim:           ts=3
 //
 // Description:   Adds expression information to notes extracted from
@@ -285,6 +285,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void example(void) {
+	// add examples here
 
 }
 
@@ -296,9 +297,8 @@ void example(void) {
 //
 
 void usage(const char* command) {
-
+	// add usage here
 }
-
 
 
 

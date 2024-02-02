@@ -2,7 +2,8 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Sun Feb  7 11:37:52 PST 2021
 // Last Modified: Sun Feb  7 14:12:31 PST 2021
-// Filename:      midifile/tools/deltatimes.cpp
+// Filename:      tools/deltatimes.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/deltatimes.cpp
 // Syntax:        C++11
 // vim:           ts=3
 //
@@ -124,7 +125,7 @@ void processFile(MidiFile& midifile, map<string, int>& histogram, Options& optio
 // extractDeltaTimesForAllEvents -- calculate delta timings between all events.
 //
 
-void extractDeltaTimesForAllEvents(MidiFile& midifile, map<string, int>& histogram, 
+void extractDeltaTimesForAllEvents(MidiFile& midifile, map<string, int>& histogram,
 		Options& options) {
 	int tpq = midifile.getTicksPerQuarterNote();
 	int timeFormat = TIME_TICKS;
@@ -208,7 +209,7 @@ void extractDeltaTimesForAllEvents(MidiFile& midifile, map<string, int>& histogr
 //     messages (ignoring other MIDI messages).
 //
 
-void extractDeltaTimesForAllNotes(MidiFile& midifile, map<string, int>& histogram, 
+void extractDeltaTimesForAllNotes(MidiFile& midifile, map<string, int>& histogram,
 		Options& options) {
 	int tpq = midifile.getTicksPerQuarterNote();
 	int timeFormat = TIME_TICKS;
@@ -286,7 +287,7 @@ void extractDeltaTimesForAllNotes(MidiFile& midifile, map<string, int>& histogra
 //     messages (ignoring other MIDI messages).
 //
 
-void extractDeltaTimesForAllNotesOns(MidiFile& midifile, map<string, int>& histogram, 
+void extractDeltaTimesForAllNotesOns(MidiFile& midifile, map<string, int>& histogram,
 		Options& options) {
 	int tpq = midifile.getTicksPerQuarterNote();
 	int timeFormat = TIME_TICKS;

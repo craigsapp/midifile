@@ -2,16 +2,18 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Feb  9 16:51:58 PST 2015
 // Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
-// Filename:      midifile/tools/80off.cpp
-// Website:       http://midifile.sapp.org
+// Filename:      tools/80off.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/80off.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
-// Description:   Converts any note-off messages in the for "9? ?? 00" to
-//                "8? ?? 00".
+// Description:   Converts any note-off messages in the form "9? ?? 00" to
+//                "8? ?? 40".  Release velocity can be set with the -v option.
 //
 
 #include "Options.h"
 #include "MidiFile.h"
+
 #include <iostream>
 
 using namespace std;
@@ -19,11 +21,12 @@ using namespace smf;
 
 // Global variables for command-line options.
 Options  options;              // for command-line processing
+int releaseVelocity = 64;
 
 
 // function declarations:
 void     checkOptions        (Options& opts);
-void     convertFile         (const string& inputfilename,
+void     processFile         (const string& inputfilename,
                               const string& outputfilename);
 void     example             (void);
 void     usage               (const string& command);
@@ -34,8 +37,10 @@ void     usage               (const string& command);
 
 int main(int argc, char** argv) {
    options.setOptions(argc, argv);
+	options.define("v|velocity|release-velocity=i:64", "release velocity");
    checkOptions(options);
-   convertFile(options.getArg(1), options.getArg(2));
+	releaseVelocity = options.getInteger("release-velocity");
+   processFile(options.getArg(1), options.getArg(2));
    return 0;
 }
 
@@ -45,10 +50,10 @@ int main(int argc, char** argv) {
 
 //////////////////////////////
 //
-// convertFile -- Convert "9? ?? 00" MIDI messages into "8? ?? 00" messages.
+// processFile -- Convert "9? ?? 00" MIDI messages into "8? ?? 00" messages.
 //
 
-void convertFile(const string& inputfilename, const string& outputfilename) {
+void processFile(const string& inputfilename, const string& outputfilename) {
    MidiFile midifile(inputfilename);
    for (int i=0; i<midifile.getTrackCount(); i++) {
       for (int j=0; j<midifile.getEventCount(i); j++) {
@@ -56,6 +61,7 @@ void convertFile(const string& inputfilename, const string& outputfilename) {
             continue;
          }
          midifile[i][j].setCommandNibble(0x80);
+			midifile[i][j].setVelocity(releaseVelocity);
       }
    }
    midifile.write(outputfilename);

@@ -2,9 +2,10 @@
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Feb 18 20:42:18 PST 2015
 // Last Modified: Wed Feb 18 22:25:17 PST 2015
-// Filename:      midifile/tools/toascii.cpp
-// Website:       http://midifile.sapp.org
+// Filename:      tools/toascii.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/toascii.cpp
 // Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Convert a Standard MIDI file into binasc format
 //                (ASCII version of the MIDI file which can be converted
@@ -29,27 +30,27 @@ void     usage               (const string& command);
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   options.setOptions(argc, argv);
-   checkOptions(options);
+	options.setOptions(argc, argv);
+	checkOptions(options);
 
-   int status;
-   MidiFile midifile;
-   if (options.getArgCount()) {
-      status = midifile.read(options.getArg(1));
-   } else {
-      status = midifile.read(cin);
-   }
-   if (status == 0) {
-      cerr << "Error: could not read MIDI file" << endl;
-      exit(1);
-   }
-   status = midifile.writeBinasc(cout);
-   if (status == 0) {
-      cerr << "Error: could not write MIDI file" << endl;
-      exit(1);
-   }
+	int status;
+	MidiFile midifile;
+	if (options.getArgCount()) {
+		status = midifile.read(options.getArg(1));
+	} else {
+		status = midifile.read(cin);
+	}
+	if (status == 0) {
+		cerr << "Error: could not read MIDI file" << endl;
+		exit(1);
+	}
+	status = midifile.writeBinasc(cout);
+	if (status == 0) {
+		cerr << "Error: could not write MIDI file" << endl;
+		exit(1);
+	}
 
-   return 0;
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -61,32 +62,32 @@ int main(int argc, char** argv) {
 //
 
 void checkOptions(Options& opts) {
-   opts.define("author=b",   "Author of the program");
-   opts.define("version=b",  "Version of the program");
-   opts.define("example=b",  "Example useage of the program");
-   opts.define("h|help=b",   "List of options for the program");
-   opts.process();
+	opts.define("author=b",   "Author of the program");
+	opts.define("version=b",  "Version of the program");
+	opts.define("example=b",  "Example useage of the program");
+	opts.define("h|help=b",   "List of options for the program");
+	opts.process();
 
-   if (opts.getBoolean("author")) {
-      cout << "Written by Craig Stuart Sapp, "
-              "craig@ccrma.stanford.edu, February 2015" << endl;
-      exit(0);
-   } else if (opts.getBoolean("version")) {
-      cout << "toascii, version 1.0 (18 Feb 2015)\n"
-              "compiled: " << __DATE__ << endl;
-      exit(0);
-   } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
-      exit(0);
-   } else if (opts.getBoolean("example")) {
-      example();
-      exit(0);
-   }
+	if (opts.getBoolean("author")) {
+		cout << "Written by Craig Stuart Sapp, "
+				  "craig@ccrma.stanford.edu, February 2015" << endl;
+		exit(0);
+	} else if (opts.getBoolean("version")) {
+		cout << "toascii, version 1.0 (18 Feb 2015)\n"
+		     << "compiled: " << __DATE__ << endl;
+		exit(0);
+	} else if (opts.getBoolean("help")) {
+		usage(opts.getCommand());
+		exit(0);
+	} else if (opts.getBoolean("example")) {
+		example();
+		exit(0);
+	}
 
-   if (opts.getArgCount() > 1) {
-      cerr << "Error: One input file or standard input is required." << endl;
-      exit(1);
-   }
+	if (opts.getArgCount() > 1) {
+		cerr << "Error: One input file or standard input is required." << endl;
+		exit(1);
+	}
 
 }
 
@@ -98,9 +99,9 @@ void checkOptions(Options& opts) {
 //
 
 void example(void) {
-   cout <<
-   "\n"
-   << endl;
+	cout <<
+	"\n"
+	<< endl;
 }
 
 
@@ -111,9 +112,9 @@ void example(void) {
 //
 
 void usage(const string& command) {
-   cout <<
-   "\n"
-   << endl;
+	cout <<
+	"\n"
+	<< endl;
 }
 
 

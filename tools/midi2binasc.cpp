@@ -1,15 +1,15 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Wed Apr  3 23:43:56 PDT 2013
-// Last Modified: Thu Apr  4 01:39:09 PDT 2013
 // Last Modified: Mon Feb  9 21:26:32 PST 2015 Updated for C++11.
-// Filename:      ...sig/examples/all/midi2binasc.cpp
-// Web Address:   http://sig.sapp.org/examples/museinfo/midi/midi2binasc.cpp
-// Syntax:        C++; museinfo
+// Filename:      tools/midi2binasc.cpp
+// URL:           https://github.com/craigsapp/midifile/blob/master/tools/midi2binasc.cpp
+// Syntax:        C++11
+// vim:           ts=3
 //
 // Description:   Converts a MIDI file into an ASCII format which can be
 //                converted back into a MIDI file with the binasc program:
-//                   http://binasc.googlecode.com
+//                   https://github.com/craigsapp/binasc
 //
 
 #include "MidiFile.h"
@@ -302,7 +302,7 @@ void checkOptions(Options& opts, int argc, char* argv[]) {
 //
 
 void example(void) {
-
+	// add example usage here
 }
 
 
