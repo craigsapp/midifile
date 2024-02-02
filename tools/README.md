@@ -16,7 +16,7 @@
 | [henonfile.cpp](https://github.com/craigsapp/midifile/blob/master/tools/henonfile.cpp) | Creates a fractal melodic line based on the Henon Map.  Output can be either a MIDI file, Guido Music Notation (GMN), Humdrum, or plain text. |
 | [maxtick.cpp](https://github.com/craigsapp/midifile/blob/master/tools/maxtick.cpp) | Calculate the maximum timestamp in a MIDI file. |
 | [mid2hex.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2hex.cpp) | Convert a binary standard MIDI file (or binasc MIDI file, or hex-byte MIDI file) into a hex byte-code MIDI file. |
-| [mid2hum.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2hum.cpp) | Description: Converts a MIDI file into a Humdrum file. |
+| [mid2hum.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2hum.cpp) | Converts a MIDI file into a Humdrum file. |
 | [mid2mat.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2mat.cpp) | Converts a MIDI file into a text-based note matrix. |
 | [mid2mtb.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2mtb.cpp) | Converts a MIDI file into a MIDI Toolbox compatible text file. |
 | [mid2svg.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2svg.cpp) | Convert a MIDI file into an SVG piano roll. |
@@ -25,9 +25,9 @@
 | [midi2binasc.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2binasc.cpp) | Converts a MIDI file into an ASCII format which can be converted back into a MIDI file with the binasc program: https://github.com/craigsapp/binasc |
 | [midi2chords.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2chords.cpp) | Identify chord sequences in MIDI files.  Whenever there are three or more note attacks at a given time, a chord will be identified (currently notes must all attack all at the same tick time).  Additional chord identifications can be added to the Sonority::identifySonority() function. |
 | [midi2melody.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2melody.cpp) | Converts a single melody MIDI file/track into an ASCII text format with starting time and pitch. |
-| [midi2notes.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2notes.cpp) | Description: Converts a MIDI file into a text based notelist. |
-| [midi2skini.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2skini.cpp) | Description: Converts a Standard MIDI file into the SKINI data format. |
-| [midi2text.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2text.cpp) | Description: Converts a MIDI file into a text based notelist. |
+| [midi2notes.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2notes.cpp) | Converts a MIDI file into a text based notelist. |
+| [midi2skini.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2skini.cpp) | Converts a Standard MIDI file into the SKINI data format. |
+| [midi2text.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midi2text.cpp) | Converts a MIDI file into a text based notelist. |
 | [midicat.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midicat.cpp) | Concatenate multiple MIDI files into single type-0 MIDI file. |
 | [mididiss.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mididiss.cpp) | Calculate an average dissonance score.  The input MIDI file is expected to be quantized.  Scores: -1 = rest (ignore) 0 = unison / octave 1 = other perfect intervals P4 P5 2 = imperfect intervals m3 M3 m6 M6 3 = weak dissonance M2 m7 4 = strong dissonant M7 m9 A4 (other than minor second) 5 = minor second M2 The score of a sonority is the maximum value of any interval pairing Then the scores a duration-weighted to calculate an average score for all individual sonority scores. |
 | [midiexcerpt.cpp](https://github.com/craigsapp/midifile/blob/master/tools/midiexcerpt.cpp) | Extracts a time region from a MIDI file.  Notes starting before the start time will be ignored. Notes not ending before the end time of the file will be turned off at the given end time. |
@@ -50,7 +50,7 @@
 | [stretch.cpp](https://github.com/craigsapp/midifile/blob/master/tools/stretch.cpp) | Stretches (or shrinks): 1. The position of bars (measures) in tracks, without affecting tempo, and/or 2. The tempo (BPM) itself. |
 | [sysextest.cpp](https://github.com/craigsapp/midifile/blob/master/tools/sysextest.cpp) | Demonstration of how to create a MIDI file with system exclusive messages.  A complete sysex message is given in track 1 and the same sysex messages is given in segmented form in track 2.  MIDI files require the size of the sysex message to be give after the first byte of the message (and the count excludes the first byte.  F7 continuation messages also require a size after the initial message byte.  The MidiFile class transparently handles inserting this size parameter into the MIDI file, so you should not add it yourself. |
 | [temper.cpp](https://github.com/craigsapp/midifile/blob/master/tools/temper.cpp) | Split a single-timbre MIDI file into 12 channels, one for each pitch class. Then apply pitch bends to turn each channel to a specific temerament. |
-| [text2midi.cpp](https://github.com/craigsapp/midifile/blob/master/tools/text2midi.cpp) | Description: Converts a text based notelist into a MIDI file. |
+| [text2midi.cpp](https://github.com/craigsapp/midifile/blob/master/tools/text2midi.cpp) | Converts a text based notelist into a MIDI file. |
 | [textmidi.cpp](https://github.com/craigsapp/midifile/blob/master/tools/textmidi.cpp) | Reads a MIDI file and converts data to/from ASCII text. |
 | [toascii.cpp](https://github.com/craigsapp/midifile/blob/master/tools/toascii.cpp) | Convert a Standard MIDI file into binasc format (ASCII version of the MIDI file which can be converted back into the binary format without information loss). |
 | [tobin.cpp](https://github.com/craigsapp/midifile/blob/master/tools/tobin.cpp) | Convert binary numbers to decimal. |
