@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+#
+# Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+# Creation Date: Fri Feb  2 12:17:03 PST 2024
+# Last Modified: Fri Feb  2 12:17:07 PST 2024
+# Filename:      tools/.makeReadme
+# URL:           https://github.com/craigsapp/midifile/blob/master/tools/.makeReadme
+# Syntax:        PERL 5;
+# vim:           ts=3
+#
+# Description:   Create README.md index of example programs.
+#
+
+use strict;
+
+my $urlbase = "https://github.com/craigsapp/midifile/blob/master/tools";
+
+open(RFILE, ">README.md") or die "Cannot read README.md\n";
+
+print RFILE "# Example programs that use the midifile library\n\n";
+
+my @files = sort glob("*.cpp");
+
+print RFILE "| Program | Description |\n";
+print RFILE "| ------- | ----------- |\n";
+foreach my $file (@files) {
+	my $url = "$urlbase/$file";
+	my $description = getDescription($file);
+	print RFILE "| [$file]($url) | $description |\n";
+}
+close FILE;
+exit(0);
+
+
+##############################
+##
+## getDescription -- Get description from header.
+##
+
+sub getDescription {
+	my ($file) = @_;
+	open(PFILE, $file) or die "Cannot read $file\n";
+	my @contents = <PFILE>;
+	chomp @contents;
+	close PFILE;
+	my $output = "";
+	my $descQ = 0;
+	foreach my $line (@contents) {
+		if (!$descQ) {
+			if ($line =~ /^\/\/ Description:\s*(.*)\s*$/) {
+				$output = $1;
+				$descQ = 1;
+				next;
+			}
+		} else {
+			if (($line =~ /^\/\/\s*$/) or ($line =~ /^\s*$/)) {
+				$descQ = 0;
+				last;
+			} elsif ($line =~ /^\/\/\s*(.*)\s*$/) {
+				$output .= " $1";
+			}
+		}
+	}
+
+	return $output;
+}
+
+
+

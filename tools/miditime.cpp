@@ -10,6 +10,7 @@
 // Description:   Displays the absolute tick time and absolute time
 //                in seconds for MIDI events in a MIDI file, along with
 //                the track information.
+//
 
 #include "Options.h"
 #include "MidiFile.h"
