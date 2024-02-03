@@ -9,7 +9,7 @@
 //
 // Description:   Split a single-timbre MIDI file into 12 channels,
 //                one for each pitch class.  Then apply pitch bends
-//                to turn each channel to a specific temerament.
+//                to tune each channel to a specific temperament.
 //                This method should work on all synthesizers.
 //
 //                But could also use another MIDI standard for assigning pitch to keys:
