@@ -12,12 +12,13 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-#include <sstream>
-#include <iostream>
+
 #include <algorithm>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 using namespace smf;

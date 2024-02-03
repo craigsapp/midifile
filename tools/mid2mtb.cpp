@@ -15,12 +15,12 @@
 #include "Options.h"
 
 #include <ctype.h>
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include <vector>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <vector>
 
 using namespace std;
 using namespace smf;

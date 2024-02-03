@@ -17,10 +17,11 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-#include <vector>
-#include <utility>
-#include <iostream>
+
 #include <cmath>
+#include <iostream>
+#include <utility>
+#include <vector>
 
 using namespace std;
 using namespace smf;

@@ -13,9 +13,9 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <ctype.h>
-#include <string.h>
-#include <stdio.h>
+#include <cctype>
+#include <cstdio>
+#include <cstring>
 #include <iostream>
 #include <vector>
 

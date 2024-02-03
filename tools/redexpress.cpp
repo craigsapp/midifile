@@ -49,8 +49,9 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-#include <vector>
+
 #include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace smf;

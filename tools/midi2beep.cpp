@@ -15,10 +15,10 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <iostream>
 #include <cmath>
-#include <unistd.h> // usleep()
+#include <iostream>
 #include <signal.h>
+#include <unistd.h> // usleep()
 
 #ifdef __APPLE__
 	#include <sys/uio.h>

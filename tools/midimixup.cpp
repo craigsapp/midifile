@@ -13,10 +13,11 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-#include <iostream>
-#include <random>
+
 #include <algorithm>
+#include <iostream>
 #include <iterator>
+#include <random>
 
 using namespace std;
 using namespace smf;

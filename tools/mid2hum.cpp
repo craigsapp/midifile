@@ -46,12 +46,11 @@
 #include "Options.h"
 #include "Convert.h"
 #include "HumdrumFile.h"
-#include <math.h>
+
 #include <cctype>
+#include <cmath>
 #include <iostream>
 #include <sstream>
-#define SSTREAM stringstream
-#define CSTRING str().c_str()
 
 using namespace std;
 using namespace smf;
@@ -499,7 +498,7 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
    HumdrumFile extra;
    HumdrumFile tempfile;
    int baseQ = 0;
-   SSTREAM *buffstream;
+   stringstream *buffstream;
    HumdrumFile* hpointer[2];
    hpointer[0] = &base;
    hpointer[1] = &extra;
@@ -528,7 +527,7 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
       if ((extracttrack > -1) && (i != (extracttrack-1))) {
          continue;
       }
-      buffstream = new SSTREAM;
+      buffstream = new stringstream;
       (*buffstream) << "**kern\n";
       metaindex = 0;
       for (j=0; j<mididata[i].getSize(); j++) {
@@ -577,7 +576,7 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
       (*buffstream) << "*-\n";
       (*buffstream) << ends;
       if (serialQ) {
-         // cout << (*buffstream).CSTRING;
+         // cout << (*buffstream).str().c_str();
          base.clear();
          base.read(*buffstream);
          printHumdrumFileWithBarlines(cout, base);
@@ -585,7 +584,7 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
          tempfile.clear();
          tempfile.read(*buffstream);
          delete buffstream;
-         buffstream = new SSTREAM;
+         buffstream = new stringstream;
          printHumdrumFileWithBarlines(*buffstream, tempfile);
          (*buffstream) << ends;
          if (baseQ == 0) {

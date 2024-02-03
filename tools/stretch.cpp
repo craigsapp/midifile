@@ -23,9 +23,9 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <iostream>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 
 using namespace std;
 using namespace smf;

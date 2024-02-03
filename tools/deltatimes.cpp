@@ -30,12 +30,12 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <map>
-#include <string>
-#include <sstream>
-#include <iostream>
 #include <algorithm>
 #include <functional>
+#include <iostream>
+#include <map>
+#include <sstream>
+#include <string>
 
 using namespace std;
 using namespace smf;

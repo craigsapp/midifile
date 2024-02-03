@@ -12,8 +12,9 @@
 
 #include "MidiFile.h"
 #include "Options.h"
-#include <iostream>
+
 #include <iomanip>
+#include <iostream>
 
 using namespace std;
 using namespace smf;

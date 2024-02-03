@@ -15,9 +15,9 @@
 #include "humdrum.h"
 #include "Options.h"
 
-#include <ctype.h>
-#include <string.h>
-#include <stdio.h>
+#include <cctype>
+#include <cstdio>
+#include <cstring>
 
 using namespace std;
 using namespace smf;

@@ -13,10 +13,10 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <ctype.h>
+#include <cctype>
+#include <cstdio>
+#include <cstring>
 #include <iostream>
-#include <stdio.h>
-#include <string.h>
 
 using namespace std;
 using namespace smf;

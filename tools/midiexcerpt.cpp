@@ -16,7 +16,8 @@
 #include "Options.h"
 #include "MidiFile.h"
 #include "PerlRegularExpression.h"
-#include <stdlib.h>
+
+#include <cstdlib>
 
 using namespace std;
 using namespace smf;

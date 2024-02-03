@@ -10,10 +10,10 @@
 // Description:   Convert hex bytes into decimal equivalents.
 //
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 
 using namespace std;

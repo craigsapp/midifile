@@ -19,13 +19,13 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <ctype.h>
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-#include <vector>
-#include <iostream>
+#include <cctype>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
 #include <iomanip>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace smf;

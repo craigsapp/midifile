@@ -14,7 +14,8 @@
 
 #include "Options.h"
 #include "MidiFile.h"
-#include <stdlib.h>
+
+#include <cstdlib>
 #include <iostream>
 
 using namespace std;
