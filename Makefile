@@ -62,6 +62,10 @@ clean:
 	-rm -rf lib
 
 
+readme:
+	(cd tools; ./.makeReadme)
+
+
 tools:    programs
 bin:      programs
 examples: programs
