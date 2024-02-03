@@ -40,10 +40,10 @@ int main(int argc, char** argv) {
 	int removekey = 63;
 	for (int i=0; i<midifile[0].getSize(); i++) {
 		if (!midifile[0][i].isNote()) {
-		   continue;
+			continue;
 		}
 		if (midifile[0][i].getP1() == removekey) {
-		   midifile[0][i].clear();
+			midifile[0][i].clear();
 		}
 	}
 

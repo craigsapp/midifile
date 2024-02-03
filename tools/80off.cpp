@@ -20,14 +20,13 @@ using namespace std;
 using namespace smf;
 
 // Global variables for command-line options.
-Options  options;              // for command-line processing
+Options  options;
 int releaseVelocity = 64;
 
 
 // function declarations:
 void     checkOptions        (Options& opts);
-void     processFile         (const string& inputfilename,
-                              const string& outputfilename);
+void     processFile         (const string& inputfilename, const string& outputfilename);
 void     example             (void);
 void     usage               (const string& command);
 
@@ -36,12 +35,12 @@ void     usage               (const string& command);
 
 
 int main(int argc, char** argv) {
-   options.setOptions(argc, argv);
+	options.setOptions(argc, argv);
 	options.define("v|velocity|release-velocity=i:64", "release velocity");
-   checkOptions(options);
+	checkOptions(options);
 	releaseVelocity = options.getInteger("release-velocity");
-   processFile(options.getArg(1), options.getArg(2));
-   return 0;
+	processFile(options.getArg(1), options.getArg(2));
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -54,17 +53,17 @@ int main(int argc, char** argv) {
 //
 
 void processFile(const string& inputfilename, const string& outputfilename) {
-   MidiFile midifile(inputfilename);
-   for (int i=0; i<midifile.getTrackCount(); i++) {
-      for (int j=0; j<midifile.getEventCount(i); j++) {
-         if (!midifile[i][j].isNoteOff()) {
-            continue;
-         }
-         midifile[i][j].setCommandNibble(0x80);
+	MidiFile midifile(inputfilename);
+	for (int i=0; i<midifile.getTrackCount(); i++) {
+		for (int j=0; j<midifile.getEventCount(i); j++) {
+			if (!midifile[i][j].isNoteOff()) {
+				continue;
+			}
+			midifile[i][j].setCommandNibble(0x80);
 			midifile[i][j].setVelocity(releaseVelocity);
-      }
-   }
-   midifile.write(outputfilename);
+		}
+	}
+	midifile.write(outputfilename);
 }
 
 
@@ -75,37 +74,37 @@ void processFile(const string& inputfilename, const string& outputfilename) {
 //
 
 void checkOptions(Options& opts) {
-   opts.define("author=b",   "author of the program");
-   opts.define("version=b",  "version of the program");
-   opts.define("example=b",  "example useage of the program");
-   opts.define("h|help=b",   "list of options for the program");
-   opts.process();
+	opts.define("author=b",   "author of the program");
+	opts.define("version=b",  "version of the program");
+	opts.define("example=b",  "example useage of the program");
+	opts.define("h|help=b",   "list of options for the program");
+	opts.process();
 
-   if (opts.getBoolean("author")) {
-      cout << "Written by Craig Stuart Sapp, "
-              "craig@ccrma.stanford.edu, February 2015" << endl;
-      exit(0);
-   } else if (opts.getBoolean("version")) {
-      cout << "80off, version 1.0 (9 Feb 2015)\n"
-              "compiled: " << __DATE__ << endl;
-      exit(0);
-   } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
-      exit(0);
-   } else if (opts.getBoolean("example")) {
-      example();
-      exit(0);
-   }
+	if (opts.getBoolean("author")) {
+		cout << "Written by Craig Stuart Sapp, "
+		     << "craig@ccrma.stanford.edu, February 2015" << endl;
+		exit(0);
+	} else if (opts.getBoolean("version")) {
+		cout << "80off, version 1.0 (9 Feb 2015)\n"
+		     << "compiled: " << __DATE__ << endl;
+		exit(0);
+	} else if (opts.getBoolean("help")) {
+		usage(opts.getCommand());
+		exit(0);
+	} else if (opts.getBoolean("example")) {
+		example();
+		exit(0);
+	}
 
-   if (options.getArgCount() > 2) {
-      cerr << "Error: too many filenames, expecting only two" << endl;
-      exit(1);
-   }
-   if (options.getArgCount() < 2) {
-      cerr << "Error: too few filenames, expecting two:" << endl;
-      cerr << "(1) input file to process, (2) name of output file." << endl;
-      exit(1);
-   }
+	if (options.getArgCount() > 2) {
+		cerr << "Error: too many filenames, expecting only two" << endl;
+		exit(1);
+	}
+	if (options.getArgCount() < 2) {
+		cerr << "Error: too few filenames, expecting two:" << endl;
+		cerr << "(1) input file to process, (2) name of output file." << endl;
+		exit(1);
+	}
 }
 
 
@@ -116,9 +115,9 @@ void checkOptions(Options& opts) {
 //
 
 void example(void) {
-   cout <<
-   "\n"
-   << endl;
+	cout <<
+	"\n"
+	<< endl;
 }
 
 
@@ -129,9 +128,9 @@ void example(void) {
 //
 
 void usage(const string& command) {
-   cout <<
-   "\n"
-   << endl;
+	cout <<
+	"\n"
+	<< endl;
 }
 
 

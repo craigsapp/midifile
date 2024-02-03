@@ -21,9 +21,9 @@ using namespace smf;
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   Options opts;
+	Options opts;
 	opts.setOptions(argc, argv);
-   opts.define("o|output=s:test.mid", "Output filename");
+	opts.define("o|output=s:test.mid", "Output filename");
 	opts.process();
 	if (opts.getArgCount() != 0) {
 		cerr << "Usage: cat base64.txt | " << opts.getCommand() << " -o output.mid " << endl;
@@ -32,10 +32,10 @@ int main(int argc, char** argv) {
 
 	string filename = opts.getString("output");
 
-   MidiFile midifile;
+	MidiFile midifile;
 	midifile.readBase64(cin);
 	midifile.write(filename);
-   return 0;
+	return 0;
 }
 
 

@@ -21,9 +21,9 @@ using namespace smf;
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   Options opts;
+	Options opts;
 	opts.setOptions(argc, argv);
-   opts.define("w|width=i:0", "Line-wrap length for base-64 output");
+	opts.define("w|width=i:0", "Line-wrap length for base-64 output");
 	opts.process();
 	if (opts.getArgCount() != 1) {
 		cerr << "Usage: " << opts.getCommand() << " midifile" << endl;
@@ -31,10 +31,10 @@ int main(int argc, char** argv) {
 	}
 	int width = opts.getInteger("width");
 
-   MidiFile midifile;
+	MidiFile midifile;
 	midifile.read(argv[1]);
-   midifile.writeBase64(cout, width);
-   return 0;
+	midifile.writeBase64(cout, width);
+	return 0;
 }
 
 

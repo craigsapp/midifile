@@ -20,28 +20,28 @@ using namespace std;
 using namespace smf;
 
 int main(int argc, char** argv) {
-   Options options;
-   options.define("o|output=s", "output file name");
-   options.define("w|width=i:25", "hex bytes per text line");
-   options.process(argc, argv);
-   MidiFile midifile;
-   if (options.getArgCount() == 0) {
-      midifile.read(cin);
-   } else if (options.getArgCount() == 1) {
-      midifile.read(options.getArg(1));
-   } else {
-      cerr << "Only one file input allowed" << endl;
-      exit(1);
-   }
+	Options options;
+	options.define("o|output=s", "output file name");
+	options.define("w|width=i:25", "hex bytes per text line");
+	options.process(argc, argv);
+	MidiFile midifile;
+	if (options.getArgCount() == 0) {
+		midifile.read(cin);
+	} else if (options.getArgCount() == 1) {
+		midifile.read(options.getArg(1));
+	} else {
+		cerr << "Only one file input allowed" << endl;
+		exit(1);
+	}
 
-   string filename = options.getString("output");
-   if (filename.empty()) {
-      midifile.writeHex(cout, options.getInteger("width"));
-   } else {
-      midifile.writeHex(filename, options.getInteger("width"));
-   }
+	string filename = options.getString("output");
+	if (filename.empty()) {
+		midifile.writeHex(cout, options.getInteger("width"));
+	} else {
+		midifile.writeHex(filename, options.getInteger("width"));
+	}
 
-   return 0;
+	return 0;
 }
 
 /* test data save to a file:

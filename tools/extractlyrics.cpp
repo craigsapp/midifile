@@ -25,22 +25,22 @@ void extractLyrics(MidiFile& midifile, int seconds);
 ///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
-   Options options;
-   options.define("s|seconds|timestamp=b", "display timestamp for lyrics");
-   options.process(argc, argv);
+	Options options;
+	options.define("s|seconds|timestamp=b", "display timestamp for lyrics");
+	options.process(argc, argv);
 
-   MidiFile midifile;
-   if (options.getArgCount() == 0) {
-      midifile.read(cin);
-   } else if (options.getArgCount() == 1) {
-      midifile.read(options.getArg(1));
-   } else {
-      cerr << "Too many filenames" << endl;
-      exit(1);
-   }
+	MidiFile midifile;
+	if (options.getArgCount() == 0) {
+		midifile.read(cin);
+	} else if (options.getArgCount() == 1) {
+		midifile.read(options.getArg(1));
+	} else {
+		cerr << "Too many filenames" << endl;
+		exit(1);
+	}
 
-   extractLyrics(midifile, options.getBoolean("seconds"));
-   return 0;
+	extractLyrics(midifile, options.getBoolean("seconds"));
+	return 0;
 }
 
 
@@ -50,21 +50,21 @@ int main(int argc, char** argv) {
 //
 
 void extractLyrics(MidiFile& midifile, int seconds) {
-   if (seconds) {
-      midifile.doTimeAnalysis();
-   }
-   for (int i=0; i<midifile.size(); i++) {
-      for (int j=0; j<midifile[i].size(); j++) {
-         if (!midifile[i][j].isLyricText()) {
-            continue;
-         }
-         string lyric = midifile[i][j].getMetaContent();
-         if (seconds) {
-            cout << midifile[i][j].seconds << "\t";
-         }
-         cout << lyric << endl;
-      }
-   }
+	if (seconds) {
+		midifile.doTimeAnalysis();
+	}
+	for (int i=0; i<midifile.size(); i++) {
+		for (int j=0; j<midifile[i].size(); j++) {
+			if (!midifile[i][j].isLyricText()) {
+				continue;
+			}
+			string lyric = midifile[i][j].getMetaContent();
+			if (seconds) {
+				cout << midifile[i][j].seconds << "\t";
+			}
+			cout << lyric << endl;
+		}
+	}
 }
 
 
@@ -122,5 +122,6 @@ $ bin/extractlyrics lyric.txt  -s
 4.23529	rain-
 
 */
+
 
 

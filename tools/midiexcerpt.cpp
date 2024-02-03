@@ -28,7 +28,7 @@ void   example             (void);
 void   usage               (const char* command);
 double getTimeInSeconds    (const char* timestring);
 void   extractMidi         (MidiFile& outputfile, MidiFile& inputfile,
-					             double starttime, double endtime);
+                            double starttime, double endtime);
 int    getStartIndex       (MidiFile& midifile, int starttick);
 int    getStopIndex        (MidiFile& midifile, int startindex, int stoptick);
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
 //
 
 void extractMidi(MidiFile& outputfile, MidiFile& inputfile, double starttime,
-	  double endtime) {
+		double endtime) {
 
 	outputfile.absoluteTime();
 	outputfile.setTicksPerQuarterNote(inputfile.getTicksPerQuarterNote());
@@ -189,11 +189,11 @@ void extractMidi(MidiFile& outputfile, MidiFile& inputfile, double starttime,
 					eventcopy.track = track;
 					eventcopy.data[1] = pitch;
 					if (offtype90 > offtype80) {
-					   eventcopy.data[0] = (uchar)(0x90 | channel);
-					   eventcopy.data[0] = 0;
+						eventcopy.data[0] = (uchar)(0x90 | channel);
+						eventcopy.data[0] = 0;
 					} else {
-					   eventcopy.data[0] = (uchar)(0x80 | channel);
-					   eventcopy.data[2] = 64;
+						eventcopy.data[0] = (uchar)(0x80 | channel);
+						eventcopy.data[2] = 64;
 					}
 					outputfile.addEvent(eventcopy);
 				}
@@ -292,8 +292,8 @@ void checkOptions(Options& opts) {
 	if (opts.getBoolean("duration")) {
 		double duration = getTimeInSeconds(opts.getString("duration"));
 		if (duration <= 0.0) {
-			 cerr << "ERROR: duration must be positive" << endl;
-			 exit(1);
+			cerr << "ERROR: duration must be positive" << endl;
+			exit(1);
 		}
 		endtime = starttime + duration;
 	} else {

@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 			infile.read(options.getArg(i+1).c_str());
 			cout << infile;
 			if (i<options.getArgCount()-1) {
-			   cout << "\n=========================================\n";
+				cout << "\n=========================================\n";
 			}
 		}
 		exit(0);
@@ -92,7 +92,7 @@ void checkOptions(Options& opts) {
 	if (opts.getBoolean("a") + opts.getBoolean("b") +
 			opts.getBoolean("c") > 1) {
 		cerr << "Error: only one of the opts -a, -b, or -c can be used"
-	           "at one time." << endl;
+		     << "at one time." << endl;
 		usage(opts.getCommand().c_str());
 		exit(1);
 	}

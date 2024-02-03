@@ -441,25 +441,25 @@ double calculateFinalScore(vector<Sonority>& sonorities) {
 //
 
 double weightedAverage(vector<int>& values, vector<int>& weights) {
-    if (values.size() != weights.size()) {
-        cerr << "Error: The number of values and weights must be the same." << endl;
-        return 0.0;
-    }
+	if (values.size() != weights.size()) {
+		cerr << "Error: The number of values and weights must be the same." << endl;
+		return 0.0;
+	}
 
-    int sumValues = 0;
-    int sumWeights = 0;
+	int sumValues = 0;
+	int sumWeights = 0;
 
-    for (size_t i = 0; i < values.size(); ++i) {
-        sumValues += values[i] * weights[i];
-        sumWeights += weights[i];
-    }
+	for (size_t i = 0; i < values.size(); ++i) {
+		sumValues += values[i] * weights[i];
+		sumWeights += weights[i];
+	}
 
-    if (sumWeights == 0) {
-        cerr << "Error: Sum of weights is zero." << endl;
-        return 0.0;
-    }
+	if (sumWeights == 0) {
+		cerr << "Error: Sum of weights is zero." << endl;
+		return 0.0;
+	}
 
-    return (double)sumValues / sumWeights;
+	return (double)sumValues / sumWeights;
 }
 
 

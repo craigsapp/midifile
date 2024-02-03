@@ -57,36 +57,37 @@ using namespace smf;
 
 
 class MidiInfo {
-   public:
-      int track;
-      int state;
-      int index;
-      int tickdur;
-      int starttick;
-      int key;         // MIDI key number of note
-      int chord;       // boolean for chord notes
+	public:
+		int track;
+		int state;
+		int index;
+		int tickdur;
+		int starttick;
+		int key;         // MIDI key number of note
+		int chord;       // boolean for chord notes
 
-      MidiInfo(void) { clear(); }
-      void clear(void) { key = -1;
-            chord = track = state = index = tickdur = starttick = 0; }
+		MidiInfo(void) { clear(); }
+		void clear(void) { key = -1;
+				chord = track = state = index = tickdur = starttick = 0; }
 };
 
 class MetaInfo {
-   public:
-      int type;
-      int tempo;
-      int starttick;
-      int numerator;
-      int denominator;
-      int mode;
-      int keysig;
-      char text[512];
-      int tsize;  // text size in bytes
-      MetaInfo(void) { clear(); }
-      void clear(void) { type = starttick = numerator = denominator = 0;
-                         tempo = keysig = mode = 0;
-                         text[0] = '\0'; tsize = 0;
-                        }
+	public:
+		int type;
+		int tempo;
+		int starttick;
+		int numerator;
+		int denominator;
+		int mode;
+		int keysig;
+		char text[512];
+		int tsize;  // text size in bytes
+		MetaInfo(void) { clear(); }
+		void clear(void) {
+			type = starttick = numerator = denominator = 0;
+			tempo = keysig = mode = 0;
+			text[0] = '\0'; tsize = 0;
+		}
 };
 
 // user interface variables
@@ -126,11 +127,11 @@ void      usage             (const char* command);
 //////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
-   checkOptions(options, argc, argv);
-   MidiFile midifile(options.getArg(1));
-   convertToHumdrum(midifile);
+	checkOptions(options, argc, argv);
+	MidiFile midifile(options.getArg(1));
+	convertToHumdrum(midifile);
 
-   return 0;
+	return 0;
 }
 
 
@@ -142,12 +143,12 @@ int main(int argc, char* argv[]) {
 //
 
 void convertToHumdrum(MidiFile& midifile) {
-   int ticksperquarter = midifile.getTicksPerQuarterNote();
-   cout << "!! Converted from MIDI with mid2hum" << endl;
-   cout << "!! Ticks Per Quarter Note = " << ticksperquarter << endl;
-   cout << "!! Track count: " << midifile.getNumTracks() << endl;
-   Array<Array<MidiInfo> > mididata;
-   getMidiData(mididata, midifile);
+	int ticksperquarter = midifile.getTicksPerQuarterNote();
+	cout << "!! Converted from MIDI with mid2hum" << endl;
+	cout << "!! Ticks Per Quarter Note = " << ticksperquarter << endl;
+	cout << "!! Track count: " << midifile.getNumTracks() << endl;
+	Array<Array<MidiInfo> > mididata;
+	getMidiData(mididata, midifile);
 }
 
 
@@ -158,16 +159,16 @@ void convertToHumdrum(MidiFile& midifile) {
 //
 
 void storenote(MidiInfo& info, Array<Array<MidiInfo> >& mididata,
-      int i, int currtick) {
-   if (info.state == 0) {
-      // don't store a note already in the off state.
-      cout << "Can not store an empty note" << endl;
-      return;
-   }
+		int i, int currtick) {
+	if (info.state == 0) {
+		// don't store a note already in the off state.
+		cout << "Can not store an empty note" << endl;
+		return;
+	}
 
-   info.tickdur = currtick - info.starttick;
-   mididata[i].append(info);
-   info.clear();
+	info.tickdur = currtick - info.starttick;
+	mididata[i].append(info);
+	info.clear();
 }
 
 
@@ -178,80 +179,79 @@ void storenote(MidiInfo& info, Array<Array<MidiInfo> >& mididata,
 //
 
 void getMidiData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile) {
-   mididata.setSize(midifile.getNumTracks());
-   int i;
-   int j;
-   for  (i=0; i<mididata.getSize(); i++) {
-      mididata[i].setSize(10000);
-      mididata[i].setGrowth(10000);
-      mididata[i].setSize(0);
-   }
+	mididata.setSize(midifile.getNumTracks());
+	int i;
+	int j;
+	for  (i=0; i<mididata.getSize(); i++) {
+		mididata[i].setSize(10000);
+		mididata[i].setGrowth(10000);
+		mididata[i].setSize(0);
+	}
 
-   Array<MetaInfo> metadata;
-   metadata.setSize(1000);
-   metadata.setGrowth(1000);
-   metadata.setSize(0);
+	Array<MetaInfo> metadata;
+	metadata.setSize(1000);
+	metadata.setGrowth(1000);
+	metadata.setSize(0);
 
-   Array<Array<MidiInfo> > notestates;
-   notestates.setSize(midifile.getNumTracks());
-   for (i=0; i<notestates.getSize(); i++) {
-      notestates[i].setSize(128);
-      notestates[i].allowGrowth(0);
-   }
+	Array<Array<MidiInfo> > notestates;
+	notestates.setSize(midifile.getNumTracks());
+	for (i=0; i<notestates.getSize(); i++) {
+		notestates[i].setSize(128);
+		notestates[i].allowGrowth(0);
+	}
 
-   // extract a list of notes in the MIDI file along with their durations
-   int k;
-   for (i=0; i<midifile.getNumTracks(); i++) {
-      for (j=0; j<midifile.getNumEvents(i); j++) {
-         if (((midifile.getEvent(i, j).data[0] & 0xf0) == 0x90) &&
-             (midifile.getEvent(i, j).data[2] > 0) ) {
-            // a note-on message. Store the state
-            k = midifile.getEvent(i, j).data[1];
-            if (notestates[i][k].state == 1) {
-               storenote(notestates[i][k], mididata, i,
-                     midifile.getEvent(i, j).time);
-            }
-            notestates[i][k].track = i;
-            notestates[i][k].key = k;
-            notestates[i][k].state = 1;
-            notestates[i][k].index = j;
-            notestates[i][k].starttick = midifile.getEvent(i, j).time;
-            notestates[i][k].tickdur = -1;
-         } else if (((midifile.getEvent(i, j).data[0] & 0xf0) == 0x80) ||
-             (((midifile.getEvent(i, j).data[0] & 0xf0) == 0x90) &&
-             (midifile.getEvent(i, j).data[2] == 0)) ) {
-            // a note-off message.  Print the previous stored note-on message
-            k = midifile.getEvent(i, j).data[1];
-            storenote(notestates[i][k], mididata, i,
-                  midifile.getEvent(i, j).time);
-         } else {
-            processMetaMessage(midifile, i, j, metadata);
-         }
-      }
-   }
+	// extract a list of notes in the MIDI file along with their durations
+	int k;
+	for (i=0; i<midifile.getNumTracks(); i++) {
+		for (j=0; j<midifile.getNumEvents(i); j++) {
+			if (((midifile.getEvent(i, j).data[0] & 0xf0) == 0x90) &&
+				 (midifile.getEvent(i, j).data[2] > 0) ) {
+				// a note-on message. Store the state
+				k = midifile.getEvent(i, j).data[1];
+				if (notestates[i][k].state == 1) {
+					storenote(notestates[i][k], mididata, i, midifile.getEvent(i, j).time);
+				}
+				notestates[i][k].track = i;
+				notestates[i][k].key = k;
+				notestates[i][k].state = 1;
+				notestates[i][k].index = j;
+				notestates[i][k].starttick = midifile.getEvent(i, j).time;
+				notestates[i][k].tickdur = -1;
+			} else if (((midifile.getEvent(i, j).data[0] & 0xf0) == 0x80) ||
+				 (((midifile.getEvent(i, j).data[0] & 0xf0) == 0x90) &&
+				 (midifile.getEvent(i, j).data[2] == 0)) ) {
+				// a note-off message.  Print the previous stored note-on message
+				k = midifile.getEvent(i, j).data[1];
+				storenote(notestates[i][k], mididata, i,
+						midifile.getEvent(i, j).time);
+			} else {
+				processMetaMessage(midifile, i, j, metadata);
+			}
+		}
+	}
 
 /*
-   // test print the note information
-   for (i=0; i<mididata.getSize(); i++) {
-      cout << "Track " << i << endl;
-      for (j=0; j<mididata[i].getSize(); j++) {
-         cout << "\tNote: pitch = "
-              << (int)midifile.getEvent(i, mididata[i][j].index).data[1]
-              << "\tduration = "
-              << (double)mididata[i][j].tickdur/midifile.getTicksPerQuarterNote()
-              << endl;
-      }
-   }
+	// test print the note information
+	for (i=0; i<mididata.getSize(); i++) {
+		cout << "Track " << i << endl;
+		for (j=0; j<mididata[i].getSize(); j++) {
+			cout << "\tNote: pitch = "
+				  << (int)midifile.getEvent(i, mididata[i][j].index).data[1]
+				  << "\tduration = "
+				  << (double)mididata[i][j].tickdur/midifile.getTicksPerQuarterNote()
+				  << endl;
+		}
+	}
 */
 
-   for (i=0; i<mididata.getSize(); i++) {
-      qsort(mididata[i].getBase(), mididata[i].getSize(), sizeof(MidiInfo),
-            MidiInfoCompare);
-   }
-   identifyChords(mididata);
-   correctdurations(mididata, midifile.getTicksPerQuarterNote());
+	for (i=0; i<mididata.getSize(); i++) {
+		qsort(mididata[i].getBase(), mididata[i].getSize(), sizeof(MidiInfo),
+				MidiInfoCompare);
+	}
+	identifyChords(mididata);
+	correctdurations(mididata, midifile.getTicksPerQuarterNote());
 
-   printKernData(mididata, midifile, metadata);
+	printKernData(mididata, midifile, metadata);
 }
 
 
@@ -262,65 +262,65 @@ void getMidiData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile) {
 //
 
 void processMetaMessage(MidiFile& midifile, int track, int event,
-      Array<MetaInfo>& metadata) {
-   MetaInfo tempmeta;
-   tempmeta.type = midifile.getEvent(track, event).data[1];
-   tempmeta.starttick = midifile.getEvent(track, event).time;
-   int tempo = 0;
-   int d;  // counter into data field of meta message
-   switch (tempmeta.type) {
-      case 0x00:   // sequence number
-         break;
-      case 0x01:   // text
-         break;
-      case 0x02:   // copyright notice
-         break;
-      case 0x03:   // sequence/track name
-         break;
-      case 0x04:   // instrument name
-         break;
-      case 0x05:   // lyric
-         break;
-      case 0x06:   // marker
-         tempmeta.tsize = (uchar)midifile.getEvent(track, event).data[2];
-         for (d=0; d<tempmeta.tsize; d++) {
-            tempmeta.text[d] = midifile.getEvent(track, event).data[3+d];
-         }
-         tempmeta.text[tempmeta.tsize] = '\0';
-         break;
-      case 0x07:   // cue point
-         tempmeta.tsize = (uchar)midifile.getEvent(track, event).data[2];
-         for (d=0; d<tempmeta.tsize; d++) {
-            tempmeta.text[d] = midifile.getEvent(track, event).data[3+d];
-         }
-         tempmeta.text[tempmeta.tsize] = '\0';
-         break;
-      case 0x20:   // MIDI channel prefix
-         break;
-      case 0x54:   // SMPTE Offset
-         break;
-      case 0x2F:   // end of track marker
-         break;
-      case 0x7F:   // sequencer-specific meta event
-         break;
-      case 0x51:   // tempo marking
-         tempo = midifile.getEvent(track, event).data[3];
-         tempo = (tempo << 8) | midifile.getEvent(track, event).data[4];
-         tempo = (tempo << 8) | midifile.getEvent(track, event).data[5];
-         tempmeta.tempo = (int)(60.0/tempo*1000000.0 + 0.5);
-         break;
-      case 0x58:   // time signature
-         tempmeta.numerator   = midifile.getEvent(track, event).data[3];
-         tempmeta.denominator = (int)pow(2.0,
-               midifile.getEvent(track, event).data[4]);
-         break;
-      case 0x59:   // key signature
-         tempmeta.keysig = midifile.getEvent(track, event).data[3];
-         tempmeta.mode   = midifile.getEvent(track, event).data[4];
-   }
+		Array<MetaInfo>& metadata) {
+	MetaInfo tempmeta;
+	tempmeta.type = midifile.getEvent(track, event).data[1];
+	tempmeta.starttick = midifile.getEvent(track, event).time;
+	int tempo = 0;
+	int d;  // counter into data field of meta message
+	switch (tempmeta.type) {
+		case 0x00:   // sequence number
+			break;
+		case 0x01:   // text
+			break;
+		case 0x02:   // copyright notice
+			break;
+		case 0x03:   // sequence/track name
+			break;
+		case 0x04:   // instrument name
+			break;
+		case 0x05:   // lyric
+			break;
+		case 0x06:   // marker
+			tempmeta.tsize = (uchar)midifile.getEvent(track, event).data[2];
+			for (d=0; d<tempmeta.tsize; d++) {
+				tempmeta.text[d] = midifile.getEvent(track, event).data[3+d];
+			}
+			tempmeta.text[tempmeta.tsize] = '\0';
+			break;
+		case 0x07:   // cue point
+			tempmeta.tsize = (uchar)midifile.getEvent(track, event).data[2];
+			for (d=0; d<tempmeta.tsize; d++) {
+				tempmeta.text[d] = midifile.getEvent(track, event).data[3+d];
+			}
+			tempmeta.text[tempmeta.tsize] = '\0';
+			break;
+		case 0x20:   // MIDI channel prefix
+			break;
+		case 0x54:   // SMPTE Offset
+			break;
+		case 0x2F:   // end of track marker
+			break;
+		case 0x7F:   // sequencer-specific meta event
+			break;
+		case 0x51:   // tempo marking
+			tempo = midifile.getEvent(track, event).data[3];
+			tempo = (tempo << 8) | midifile.getEvent(track, event).data[4];
+			tempo = (tempo << 8) | midifile.getEvent(track, event).data[5];
+			tempmeta.tempo = (int)(60.0/tempo*1000000.0 + 0.5);
+			break;
+		case 0x58:   // time signature
+			tempmeta.numerator   = midifile.getEvent(track, event).data[3];
+			tempmeta.denominator = (int)pow(2.0,
+					midifile.getEvent(track, event).data[4]);
+			break;
+		case 0x59:   // key signature
+			tempmeta.keysig = midifile.getEvent(track, event).data[3];
+			tempmeta.mode   = midifile.getEvent(track, event).data[4];
+	}
 
-   metadata.append(tempmeta);
-   // cout << "!!meta:" << hex << tempmeta.type << dec << endl;
+	metadata.append(tempmeta);
+	// cout << "!!meta:" << hex << tempmeta.type << dec << endl;
 }
 
 
@@ -333,26 +333,26 @@ void processMetaMessage(MidiFile& midifile, int track, int event,
 //
 
 void correctdurations  (Array<Array<MidiInfo> >& mididata, int tpq) {
-   int i, j;
-   double duration = 0.0;
-   double fraction = 0.0;
-   int    count = 0;
-   int    durationcorrection = 0;
+	int i, j;
+	double duration = 0.0;
+	double fraction = 0.0;
+	int    count = 0;
+	int    durationcorrection = 0;
 
-   for (i=0; i<mididata.getSize(); i++) {
-      if (mididata[i].getSize() == 0) {
-         continue;
-      }
-      for (j=0; j<mididata[i].getSize(); j++) {
-         duration = (double)mididata[i][j].tickdur/tpq;
-         fraction = duration/quantlevel;
-         count = (int)fraction;
-         fraction = fraction - count;
-         if (fraction > 0.50) {
-            durationcorrection = -(int)((1.0 - fraction) * tpq + 0.5);
-         } else {
-            durationcorrection = (int)(fraction * tpq + 0.5);
-         }
+	for (i=0; i<mididata.getSize(); i++) {
+		if (mididata[i].getSize() == 0) {
+			continue;
+		}
+		for (j=0; j<mididata[i].getSize(); j++) {
+			duration = (double)mididata[i][j].tickdur/tpq;
+			fraction = duration/quantlevel;
+			count = (int)fraction;
+			fraction = fraction - count;
+			if (fraction > 0.50) {
+				durationcorrection = -(int)((1.0 - fraction) * tpq + 0.5);
+			} else {
+				durationcorrection = (int)(fraction * tpq + 0.5);
+			}
 
 //         cout << "tpq: "  << tpq << endl;
 //         cout << "\tFraction value: "  << fraction << endl;
@@ -368,11 +368,11 @@ void correctdurations  (Array<Array<MidiInfo> >& mididata, int tpq) {
 //                 << endl;
 //         }
 
-         if (-durationcorrection != mididata[i][j].tickdur) {
-            mididata[i][j].tickdur += durationcorrection;
-         }
-      }
-   }
+			if (-durationcorrection != mididata[i][j].tickdur) {
+				mididata[i][j].tickdur += durationcorrection;
+			}
+		}
+	}
 }
 
 
@@ -383,15 +383,15 @@ void correctdurations  (Array<Array<MidiInfo> >& mididata, int tpq) {
 //
 
 void identifyChords(Array<Array<MidiInfo> >& mididata) {
-   int i, j;
-   for (i=0; i<mididata.getSize(); i++) {
-      for (j=1; j<mididata[i].getSize(); j++) {
-         if ((mididata[i][j].starttick == mididata[i][j-1].starttick) &&
-             (mididata[i][j].tickdur == mididata[i][j-1].tickdur) ) {
-            mididata[i][j].chord = 1;
-         }
-      }
-   }
+	int i, j;
+	for (i=0; i<mididata.getSize(); i++) {
+		for (j=1; j<mididata[i].getSize(); j++) {
+			if ((mididata[i][j].starttick == mididata[i][j-1].starttick) &&
+				 (mididata[i][j].tickdur == mididata[i][j-1].tickdur) ) {
+				mididata[i][j].chord = 1;
+			}
+		}
+	}
 }
 
 
@@ -402,30 +402,30 @@ void identifyChords(Array<Array<MidiInfo> >& mididata) {
 //
 
 int MidiInfoCompare(const void* a, const void* b) {
-   const MidiInfo& A = *static_cast<const MidiInfo*>(a);
-   const MidiInfo& B = *static_cast<const MidiInfo*>(b);
+	const MidiInfo& A = *static_cast<const MidiInfo*>(a);
+	const MidiInfo& B = *static_cast<const MidiInfo*>(b);
 
-   if (A.starttick < B.starttick) {
-      return -1;
-   } else if (A.starttick > B.starttick) {
-      return +1;
-   } else {
-      // separate voices by duration:
-      if (A.tickdur < B.tickdur)  {
-         return -1;
-      } else if (A.tickdur > B.tickdur) {
-         return +1;
-      } else {
-         // break ties by key number
-         if (A.key < B.key) {
-            return -1;
-         } else if (A.key > B.key) {
-            return +1;
-         } else {
-            return 0;
-         }
-      }
-   }
+	if (A.starttick < B.starttick) {
+		return -1;
+	} else if (A.starttick > B.starttick) {
+		return +1;
+	} else {
+		// separate voices by duration:
+		if (A.tickdur < B.tickdur)  {
+			return -1;
+		} else if (A.tickdur > B.tickdur) {
+			return +1;
+		} else {
+			// break ties by key number
+			if (A.key < B.key) {
+				return -1;
+			} else if (A.key > B.key) {
+				return +1;
+			} else {
+				return 0;
+			}
+		}
+	}
 }
 
 
@@ -436,174 +436,174 @@ int MidiInfoCompare(const void* a, const void* b) {
 //
 
 void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
-      Array<MetaInfo>& metadata) {
-   int i;
-   int j;
+		Array<MetaInfo>& metadata) {
+	int i;
+	int j;
 
-   Array<int> kerntrack;
-   kerntrack.setSize(mididata.getSize());
-   for (i=0; i<mididata.getSize(); i++) {
-      if (mididata[i].getSize() == 0) {
-         kerntrack[i] = 0;
-      } else {
-         kerntrack[i] = 1;
-      }
-   }
+	Array<int> kerntrack;
+	kerntrack.setSize(mididata.getSize());
+	for (i=0; i<mididata.getSize(); i++) {
+		if (mididata[i].getSize() == 0) {
+			kerntrack[i] = 0;
+		} else {
+			kerntrack[i] = 1;
+		}
+	}
 
-   Array<int> restcorrection;
-   restcorrection.setSize(mididata.getSize());
-   restcorrection.setGrowth(0);
-   restcorrection.setAll(0);
-   int maxticks = 0;
-   int testticks = 0;
-   for (i=0; i<mididata.getSize(); i++) {
-      if (mididata[i].getSize() > 0) {
-         testticks = mididata[i][mididata[i].getSize()-1].starttick +
-             mididata[i][mididata[i].getSize()-1].tickdur;
-         if (testticks > maxticks) {
-            maxticks = testticks;
-         }
-      }
-   }
-   for (i=0; i<mididata.getSize(); i++) {
-      if (kerntrack[i] == 0) {
-         continue;
-      }
-      testticks = mididata[i][mididata[i].getSize()-1].starttick +
-          mididata[i][mididata[i].getSize()-1].tickdur;
-      restcorrection[i] = maxticks - testticks;
-   }
+	Array<int> restcorrection;
+	restcorrection.setSize(mididata.getSize());
+	restcorrection.setGrowth(0);
+	restcorrection.setAll(0);
+	int maxticks = 0;
+	int testticks = 0;
+	for (i=0; i<mididata.getSize(); i++) {
+		if (mididata[i].getSize() > 0) {
+			testticks = mididata[i][mididata[i].getSize()-1].starttick +
+				 mididata[i][mididata[i].getSize()-1].tickdur;
+			if (testticks > maxticks) {
+				maxticks = testticks;
+			}
+		}
+	}
+	for (i=0; i<mididata.getSize(); i++) {
+		if (kerntrack[i] == 0) {
+			continue;
+		}
+		testticks = mididata[i][mididata[i].getSize()-1].starttick +
+			 mididata[i][mididata[i].getSize()-1].tickdur;
+		restcorrection[i] = maxticks - testticks;
+	}
 
-   Array<int> startrestcorrection;
-   startrestcorrection.setSize(mididata.getSize());
-   startrestcorrection.setGrowth(0);
-   startrestcorrection.setAll(0);
-   int minstartticks = 999999;
-   for (i=0; i<mididata.getSize(); i++) {
-      if (kerntrack[i] == 0) {
-         continue;
-      }
-      if (minstartticks > mididata[i][0].starttick) {
-         minstartticks = mididata[i][0].starttick;
-      }
-   }
-   for (i=0; i<mididata.getSize(); i++) {
-      if (kerntrack[i] == 0) {
-         continue;
-      }
-      startrestcorrection[i] = mididata[i][0].starttick - minstartticks;
-   }
+	Array<int> startrestcorrection;
+	startrestcorrection.setSize(mididata.getSize());
+	startrestcorrection.setGrowth(0);
+	startrestcorrection.setAll(0);
+	int minstartticks = 999999;
+	for (i=0; i<mididata.getSize(); i++) {
+		if (kerntrack[i] == 0) {
+			continue;
+		}
+		if (minstartticks > mididata[i][0].starttick) {
+			minstartticks = mididata[i][0].starttick;
+		}
+	}
+	for (i=0; i<mididata.getSize(); i++) {
+		if (kerntrack[i] == 0) {
+			continue;
+		}
+		startrestcorrection[i] = mididata[i][0].starttick - minstartticks;
+	}
 
-   HumdrumFile base;
-   HumdrumFile extra;
-   HumdrumFile tempfile;
-   int baseQ = 0;
-   stringstream *buffstream;
-   HumdrumFile* hpointer[2];
-   hpointer[0] = &base;
-   hpointer[1] = &extra;
+	HumdrumFile base;
+	HumdrumFile extra;
+	HumdrumFile tempfile;
+	int baseQ = 0;
+	stringstream *buffstream;
+	HumdrumFile* hpointer[2];
+	hpointer[0] = &base;
+	hpointer[1] = &extra;
 
-   char buffer[1024] = {0};
-   int tpq = midifile.getTicksPerQuarterNote();
-   int difference = 0;
-   int chordnote = 0;
-   int starttime = 0;
-   int metaindex = 0;
+	char buffer[1024] = {0};
+	int tpq = midifile.getTicksPerQuarterNote();
+	int difference = 0;
+	int chordnote = 0;
+	int starttime = 0;
+	int metaindex = 0;
 
-   int ii;
-   for (ii=0; ii<mididata.getSize(); ii++) {
-      // go in reverse order with the tracks because the ordering is
-      // usually from highest to lowest which should be reversed
-      // in the Humdrum file according to the specification
-      if (reverseQ) {
-         i = ii;
-      } else {
-         i = mididata.getSize() - 1 - ii;
-      }
+	int ii;
+	for (ii=0; ii<mididata.getSize(); ii++) {
+		// go in reverse order with the tracks because the ordering is
+		// usually from highest to lowest which should be reversed
+		// in the Humdrum file according to the specification
+		if (reverseQ) {
+			i = ii;
+		} else {
+			i = mididata.getSize() - 1 - ii;
+		}
 
-      if (kerntrack[i] == 0) {
-         continue;
-      }
-      if ((extracttrack > -1) && (i != (extracttrack-1))) {
-         continue;
-      }
-      buffstream = new stringstream;
-      (*buffstream) << "**kern\n";
-      metaindex = 0;
-      for (j=0; j<mididata[i].getSize(); j++) {
-         while ((metaindex < metadata.getSize()) &&
-             (metadata[metaindex].starttick <= mididata[i][j].starttick)) {
-            printMetaData(*buffstream, metadata, metaindex);
-            metaindex++;
-         }
-         // check for a rest
-         if (j>0) {
-            difference = mididata[i][j].starttick - mididata[i][j-1].starttick;
-            difference -= mididata[i][j-1].tickdur;
-            if (difference < 0) {
-               (*buffstream) << "!funny timing: " << difference << "\n";
-            } else if (difference > 0) {
-               // temporary fix for duration of rests
-               while ((double)difference/tpq > 4.0) {
-                  (*buffstream) << "1r" << endl;
-                  difference -= tpq * 4;
-               }
-               (*buffstream) << Convert::durationToKernRhythm(buffer,
-                  (double)difference/tpq);
-               (*buffstream) << "r" << endl;
-            }
-         } else {
-            printRestCorrection(*buffstream, startrestcorrection[i], tpq);
-         }
-         starttime = mididata[i][j].starttick;
+		if (kerntrack[i] == 0) {
+			continue;
+		}
+		if ((extracttrack > -1) && (i != (extracttrack-1))) {
+			continue;
+		}
+		buffstream = new stringstream;
+		(*buffstream) << "**kern\n";
+		metaindex = 0;
+		for (j=0; j<mididata[i].getSize(); j++) {
+			while ((metaindex < metadata.getSize()) &&
+				 (metadata[metaindex].starttick <= mididata[i][j].starttick)) {
+				printMetaData(*buffstream, metadata, metaindex);
+				metaindex++;
+			}
+			// check for a rest
+			if (j>0) {
+				difference = mididata[i][j].starttick - mididata[i][j-1].starttick;
+				difference -= mididata[i][j-1].tickdur;
+				if (difference < 0) {
+					(*buffstream) << "!funny timing: " << difference << "\n";
+				} else if (difference > 0) {
+					// temporary fix for duration of rests
+					while ((double)difference/tpq > 4.0) {
+						(*buffstream) << "1r" << endl;
+						difference -= tpq * 4;
+					}
+					(*buffstream) << Convert::durationToKernRhythm(buffer,
+						(double)difference/tpq);
+					(*buffstream) << "r" << endl;
+				}
+			} else {
+				printRestCorrection(*buffstream, startrestcorrection[i], tpq);
+			}
+			starttime = mididata[i][j].starttick;
 
-         chordnote = 0;
-         while ((j < mididata[i].getSize()) &&
-                  (starttime == mididata[i][j].starttick)) {
-            if (chordnote) {
-               (*buffstream) << ' ';
-            }
-            (*buffstream) << Convert::durationToKernRhythm(buffer,
-                  (double)mididata[i][j].tickdur/tpq);
-            (*buffstream) << Convert::base12ToKern(buffer, mididata[i][j].key);
-            chordnote = 1;
-            j++;
-         }
-         (*buffstream) << endl;
-         j--;
-      }
-      printRestCorrection(*buffstream, restcorrection[i], tpq);
-      (*buffstream) << "*-\n";
-      (*buffstream) << ends;
-      if (serialQ) {
-         // cout << (*buffstream).str().c_str();
-         base.clear();
-         base.read(*buffstream);
-         printHumdrumFileWithBarlines(cout, base);
-      } else {
-         tempfile.clear();
-         tempfile.read(*buffstream);
-         delete buffstream;
-         buffstream = new stringstream;
-         printHumdrumFileWithBarlines(*buffstream, tempfile);
-         (*buffstream) << ends;
-         if (baseQ == 0) {
-            base.clear();
-            base.read(*buffstream);
-            baseQ = 1;
-         } else {
-            extra.clear();
-            extra.read(*buffstream);
-            base.assemble(tempfile, 2, hpointer);
-            base = tempfile;
-         }
-      }
-      delete buffstream;
-   }
+			chordnote = 0;
+			while ((j < mididata[i].getSize()) &&
+						(starttime == mididata[i][j].starttick)) {
+				if (chordnote) {
+					(*buffstream) << ' ';
+				}
+				(*buffstream) << Convert::durationToKernRhythm(buffer,
+						(double)mididata[i][j].tickdur/tpq);
+				(*buffstream) << Convert::base12ToKern(buffer, mididata[i][j].key);
+				chordnote = 1;
+				j++;
+			}
+			(*buffstream) << endl;
+			j--;
+		}
+		printRestCorrection(*buffstream, restcorrection[i], tpq);
+		(*buffstream) << "*-\n";
+		(*buffstream) << ends;
+		if (serialQ) {
+			// cout << (*buffstream).str().c_str();
+			base.clear();
+			base.read(*buffstream);
+			printHumdrumFileWithBarlines(cout, base);
+		} else {
+			tempfile.clear();
+			tempfile.read(*buffstream);
+			delete buffstream;
+			buffstream = new stringstream;
+			printHumdrumFileWithBarlines(*buffstream, tempfile);
+			(*buffstream) << ends;
+			if (baseQ == 0) {
+				base.clear();
+				base.read(*buffstream);
+				baseQ = 1;
+			} else {
+				extra.clear();
+				extra.read(*buffstream);
+				base.assemble(tempfile, 2, hpointer);
+				base = tempfile;
+			}
+		}
+		delete buffstream;
+	}
 
-   if (!serialQ) {
-      cout << base;
-   }
+	if (!serialQ) {
+		cout << base;
+	}
 }
 
 
@@ -614,60 +614,60 @@ void printKernData(Array<Array<MidiInfo> >& mididata, MidiFile& midifile,
 //
 
 void printMetaData(ostream& out, Array<MetaInfo>& metadata, int metaindex) {
-   int ii;
-   int count = 0;
-   switch (metadata[metaindex].type) {
-      case 0x06:   // marker
-         break;    // ignore for now
+	int ii;
+	int count = 0;
+	switch (metadata[metaindex].type) {
+		case 0x06:   // marker
+			break;    // ignore for now
 
-         for (ii=0; ii<metadata[metaindex].tsize; ii++) {
-            if (std::isprint(metadata[metaindex].text[ii])) {
-               count++;
-            }
-         }
-         if (count > 0) {
-            out << "! ";
-            for (ii=0; ii<metadata[metaindex].tsize; ii++) {
-               if (std::isprint(metadata[metaindex].text[ii])) {
-                  out << metadata[metaindex].text[ii];
-               }
-            }
-            out << "\n";
-         }
-         break;
+			for (ii=0; ii<metadata[metaindex].tsize; ii++) {
+				if (std::isprint(metadata[metaindex].text[ii])) {
+					count++;
+				}
+			}
+			if (count > 0) {
+				out << "! ";
+				for (ii=0; ii<metadata[metaindex].tsize; ii++) {
+					if (std::isprint(metadata[metaindex].text[ii])) {
+						out << metadata[metaindex].text[ii];
+					}
+				}
+				out << "\n";
+			}
+			break;
 
-      case 0x07:   // cue point
-         break;    // ignore for now
+		case 0x07:   // cue point
+			break;    // ignore for now
 
-         for (ii=0; ii<metadata[metaindex].tsize; ii++) {
-            if (std::isprint(metadata[metaindex].text[ii])) {
-               count++;
-            }
-         }
-         if (count > 0) {
-            out << "! ";
-            for (ii=0; ii<metadata[metaindex].tsize; ii++) {
-               if (std::isprint(metadata[metaindex].text[ii])) {
-                  out << metadata[metaindex].text[ii];
-               }
-            }
-            out << "\n";
-         }
-         break;
+			for (ii=0; ii<metadata[metaindex].tsize; ii++) {
+				if (std::isprint(metadata[metaindex].text[ii])) {
+					count++;
+				}
+			}
+			if (count > 0) {
+				out << "! ";
+				for (ii=0; ii<metadata[metaindex].tsize; ii++) {
+					if (std::isprint(metadata[metaindex].text[ii])) {
+						out << metadata[metaindex].text[ii];
+					}
+				}
+				out << "\n";
+			}
+			break;
 
-      case 0x51:    // tempo marking
-         out << "*MM" << metadata[metaindex].tempo << "\n";
-         break;
-      case 0x58:    // time signature
-         out << "*M" << metadata[metaindex].numerator << "/"
-                     << metadata[metaindex].denominator << "\n";
-         break;
-      case 0x59:    // key signature
-           out << Convert::keyNumberToKern(metadata[metaindex].keysig) << "\n";
-        break;
+		case 0x51:    // tempo marking
+			out << "*MM" << metadata[metaindex].tempo << "\n";
+			break;
+		case 0x58:    // time signature
+			out << "*M" << metadata[metaindex].numerator << "/"
+			            << metadata[metaindex].denominator << "\n";
+			break;
+		case 0x59:    // key signature
+			  out << Convert::keyNumberToKern(metadata[metaindex].keysig) << "\n";
+		  break;
 //      default:
 //         out << "!meta:" << hex << metadata[metaindex].type << dec << endl;
-   }
+	}
 
 }
 
@@ -679,19 +679,19 @@ void printMetaData(ostream& out, Array<MetaInfo>& metadata, int metaindex) {
 //
 
 void printRestCorrection (ostream& out, int restcorr, int tqp) {
-   double totaldur = (double)restcorr/tqp;
-   while (totaldur >= 1.0) {
-      out << "4r\n";
-      totaldur -= 1.0;
-   }
+	double totaldur = (double)restcorr/tqp;
+	while (totaldur >= 1.0) {
+		out << "4r\n";
+		totaldur -= 1.0;
+	}
 
-   char buffer[1024] = {0};
-   if (totaldur <= 0.0) {
-      return;
-   }
+	char buffer[1024] = {0};
+	if (totaldur <= 0.0) {
+		return;
+	}
 
-   out << Convert::durationToKernRhythm(buffer, totaldur);
-   out << "r\n";
+	out << Convert::durationToKernRhythm(buffer, totaldur);
+	out << "r\n";
 }
 
 
@@ -702,47 +702,47 @@ void printRestCorrection (ostream& out, int restcorr, int tqp) {
 //
 
 void checkOptions(Options& opts, int argc, char* argv[]) {
-   opts.define("s|serial=b",    "print tracks serially rather than assembled");
-   opts.define("r|reverse=b",   "print spines in reverse order");
-   opts.define("M|no-measure-numbers=b",   "don't print measure numbers");
-   opts.define("p|pickup=d:0.0","pickup beat at start of music before barline");
-   opts.define("t|track=i:-1",  "track number to extract (offset from 1)");
-   opts.define("q|quantization=d:0.25",  "quantization level");
+	opts.define("s|serial=b",    "print tracks serially rather than assembled");
+	opts.define("r|reverse=b",   "print spines in reverse order");
+	opts.define("M|no-measure-numbers=b",   "don't print measure numbers");
+	opts.define("p|pickup=d:0.0","pickup beat at start of music before barline");
+	opts.define("t|track=i:-1",  "track number to extract (offset from 1)");
+	opts.define("q|quantization=d:0.25",  "quantization level");
 
-   opts.define("author=b",  "author of program");
-   opts.define("version=b", "compilation info");
-   opts.define("example=b", "example usages");
-   opts.define("h|help=b",  "short description");
-   opts.process(argc, argv);
+	opts.define("author=b",  "author of program");
+	opts.define("version=b", "compilation info");
+	opts.define("example=b", "example usages");
+	opts.define("h|help=b",  "short description");
+	opts.process(argc, argv);
 
-   // handle basic options:
-   if (opts.getBoolean("author")) {
-      cout << "Written by Craig Stuart Sapp, "
-           << "craig@ccrma.stanford.edu, 5 March 2004" << endl;
-      exit(0);
-   } else if (opts.getBoolean("version")) {
-      cout << argv[0] << ", version: March 2003" << endl;
-      cout << "compiled: " << __DATE__ << endl;
-      exit(0);
-   } else if (opts.getBoolean("help")) {
-      usage(opts.getCommand());
-      exit(0);
-   } else if (opts.getBoolean("example")) {
-      example();
-      exit(0);
-   }
+	// handle basic options:
+	if (opts.getBoolean("author")) {
+		cout << "Written by Craig Stuart Sapp, "
+			  << "craig@ccrma.stanford.edu, 5 March 2004" << endl;
+		exit(0);
+	} else if (opts.getBoolean("version")) {
+		cout << argv[0] << ", version: March 2003" << endl;
+		cout << "compiled: " << __DATE__ << endl;
+		exit(0);
+	} else if (opts.getBoolean("help")) {
+		usage(opts.getCommand());
+		exit(0);
+	} else if (opts.getBoolean("example")) {
+		example();
+		exit(0);
+	}
 
-   if (opts.getArgCount() != 1) {
-      usage(opts.getCommand());
-      exit(1);
-   }
+	if (opts.getArgCount() != 1) {
+		usage(opts.getCommand());
+		exit(1);
+	}
 
-   extracttrack = opts.getInteger("track");
-   quantlevel   = opts.getDouble("quantization");
-   serialQ      = opts.getBoolean("serial");
-   reverseQ     = opts.getBoolean("reverse");
-   measurenumQ  =!opts.getBoolean("no-measure-numbers");
-   pickupbeat   = opts.getDouble("pickup");
+	extracttrack = opts.getInteger("track");
+	quantlevel   = opts.getDouble("quantization");
+	serialQ      = opts.getBoolean("serial");
+	reverseQ     = opts.getBoolean("reverse");
+	measurenumQ  =!opts.getBoolean("no-measure-numbers");
+	pickupbeat   = opts.getDouble("pickup");
 }
 
 
@@ -775,42 +775,41 @@ void usage(const char* command) {
 //
 
 void printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile) {
-   hfile.analyzeRhythm("4");
-   double firstdur = 0.0;
-   int i;
-   int measurenum = 1;
-   int startmeasure = 0;
-   int endmeasure = 0;
-   double bpos = 0.0;
-   for (i=0; i<hfile.getNumLines(); i++) {
-      if (hfile[i].isData()) {
-         bpos = (hfile[i].getAbsBeat() - pickupbeat) /
-                   timesigtop*4.0 / timesigbottom;
-         startmeasure = (int)bpos;
-         endmeasure = (int)(bpos + Convert::kernToDuration(hfile[i][0]) /
-                      timesigtop*4.0 / timesigbottom - 0.001);
-         if (fabs(bpos - (int)bpos) < 0.001) {
-            out << "=";
-            if (measurenumQ) {
-               out << measurenum;
-            }
-            if ((measurenum == 1) && (pickupbeat = 0.0)) {
-               out << "-"; // non-printed barline
-            }
-            measurenum++;
-            out << "\n";
-         }
-         if (startmeasure == endmeasure) {
-            out << hfile[i] << "\n";
-         } else {
-            firstdur = ((double)endmeasure * timesigtop /
-                         4.0 * timesigbottom) - hfile[i].getAbsBeat();
-            splitDataWithMeasure(out, hfile, i, measurenum, firstdur);
-         }
-      } else {
-         out << hfile[i] << "\n";
-      }
-   }
+	hfile.analyzeRhythm("4");
+	double firstdur = 0.0;
+	int i;
+	int measurenum = 1;
+	int startmeasure = 0;
+	int endmeasure = 0;
+	double bpos = 0.0;
+	for (i=0; i<hfile.getNumLines(); i++) {
+		if (hfile[i].isData()) {
+			bpos = (hfile[i].getAbsBeat() - pickupbeat) / timesigtop*4.0 / timesigbottom;
+			startmeasure = (int)bpos;
+			endmeasure = (int)(bpos + Convert::kernToDuration(hfile[i][0]) /
+					timesigtop*4.0 / timesigbottom - 0.001);
+			if (fabs(bpos - (int)bpos) < 0.001) {
+				out << "=";
+				if (measurenumQ) {
+					out << measurenum;
+				}
+				if ((measurenum == 1) && (pickupbeat = 0.0)) {
+					out << "-"; // non-printed barline
+				}
+				measurenum++;
+				out << "\n";
+			}
+			if (startmeasure == endmeasure) {
+				out << hfile[i] << "\n";
+			} else {
+				firstdur = ((double)endmeasure * timesigtop /
+						4.0 * timesigbottom) - hfile[i].getAbsBeat();
+				splitDataWithMeasure(out, hfile, i, measurenum, firstdur);
+			}
+		} else {
+			out << hfile[i] << "\n";
+		}
+	}
 
 }
 
@@ -822,59 +821,59 @@ void printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile) {
 //
 
 void splitDataWithMeasure(ostream& out, HumdrumFile& hfile, int index,
-      int& measurenum, double firstdur) {
-   double seconddur = Convert::kernToDuration(hfile[index][0]) - firstdur;
-   int i;
-   int tokencount = hfile[index].getTokenCount(0);
-   char buffer[1024] = {0};
-   char tokenbuffer[1024] = {0};
-   int base40 = 0;
+		int& measurenum, double firstdur) {
+	double seconddur = Convert::kernToDuration(hfile[index][0]) - firstdur;
+	int i;
+	int tokencount = hfile[index].getTokenCount(0);
+	char buffer[1024] = {0};
+	char tokenbuffer[1024] = {0};
+	int base40 = 0;
 
-   // print first part
-   for (i=0; i<tokencount; i++) {
-      hfile[index].getToken(tokenbuffer, 0, i);
-      base40 = Convert::kernToBase40(tokenbuffer);
-      if (base40 >= 0) {  // not a rest
-         out << '[';
-         out << Convert::durationToKernRhythm(buffer, firstdur);
-         out << Convert::base40ToKern(buffer, base40);
-      } else {
-         out << Convert::durationToKernRhythm(buffer, firstdur);
-         out << "r";
-      }
-      if (i<tokencount-1) {
-         out << ' ';
-      }
-   }
-   out << "\n";
+	// print first part
+	for (i=0; i<tokencount; i++) {
+		hfile[index].getToken(tokenbuffer, 0, i);
+		base40 = Convert::kernToBase40(tokenbuffer);
+		if (base40 >= 0) {  // not a rest
+			out << '[';
+			out << Convert::durationToKernRhythm(buffer, firstdur);
+			out << Convert::base40ToKern(buffer, base40);
+		} else {
+			out << Convert::durationToKernRhythm(buffer, firstdur);
+			out << "r";
+		}
+		if (i<tokencount-1) {
+			out << ' ';
+		}
+	}
+	out << "\n";
 
-   // print barline
-   out << "=";
-   if (measurenumQ) {
-      out << measurenum;
-   }
-   if ((measurenum == 1) && (pickupbeat = 0.0)) {
-      out << "-"; // non-printed barline
-   }
-   out << "\n";
-   measurenum++;
+	// print barline
+	out << "=";
+	if (measurenumQ) {
+		out << measurenum;
+	}
+	if ((measurenum == 1) && (pickupbeat = 0.0)) {
+		out << "-"; // non-printed barline
+	}
+	out << "\n";
+	measurenum++;
 
-   // print second part
-   for (i=0; i<tokencount; i++) {
-      hfile[index].getToken(tokenbuffer, 0, i);
-      base40 = Convert::kernToBase40(tokenbuffer);
-      out << Convert::durationToKernRhythm(buffer, seconddur);
-      if (base40 >= 0) {  // not a rest
-         out << Convert::base40ToKern(buffer, base40);
-         out << ']';
-      } else {
-         out << "r";
-      }
-      if (i<tokencount-1) {
-         out << ' ';
-      }
-   }
-   out << "\n";
+	// print second part
+	for (i=0; i<tokencount; i++) {
+		hfile[index].getToken(tokenbuffer, 0, i);
+		base40 = Convert::kernToBase40(tokenbuffer);
+		out << Convert::durationToKernRhythm(buffer, seconddur);
+		if (base40 >= 0) {  // not a rest
+			out << Convert::base40ToKern(buffer, base40);
+			out << ']';
+		} else {
+			out << "r";
+		}
+		if (i<tokencount-1) {
+			out << ' ';
+		}
+	}
+	out << "\n";
 
 }
 

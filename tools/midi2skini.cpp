@@ -81,8 +81,6 @@ void printMidiAsSkini(MidiFile& midifile) {
 //
 
 void processEvent(MidiEvent& event, double& tempo, double& curtime) {
-	int i;
-
 	if (((event[0] & 0xf0) == 0x80) || (((event[0] & 0xf0) == 0x90) &&
 			(event[2] == 0)) ) {
 		// note-off MIDI message
@@ -134,7 +132,7 @@ void processEvent(MidiEvent& event, double& tempo, double& curtime) {
 		cout << " time:=" << curtime;
 		cout << " track:" << event.track;
 		cout << " text: ";
-		for (i=3; i<(int)event.size(); i++) {
+		for (int i=3; i<(int)event.size(); i++) {
 			cout << (char)event[i];
 		}
 		cout << endl;
@@ -145,8 +143,8 @@ void processEvent(MidiEvent& event, double& tempo, double& curtime) {
 		     << " time:=" << curtime
 		     << " track:" << event.track
 		     << " midi-data: ";
-		for (i=0; i<(int)event.size(); i++) {
-			  cout << (int)event[i] << " ";
+		for (int i=0; i<(int)event.size(); i++) {
+			cout << (int)event[i] << " ";
 		}
 		cout << endl;
 	}

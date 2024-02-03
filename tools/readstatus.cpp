@@ -57,14 +57,14 @@ int main(int argc, char** argv) {
 void printResult(const string& filename, int status, int status2) {
 		cout << "Reading from " << filename << ":\t";
 		if (status) {
-			 cout << "SUCCESS";
+			cout << "SUCCESS";
 		} else {
-			 cout << "FAILURE";
+			cout << "FAILURE";
 		}
 		if (status2) {
-			 cout << "\tSUCCESS";
+			cout << "\tSUCCESS";
 		} else {
-			 cout << "\tFAILURE";
+			cout << "\tFAILURE";
 		}
 
 		cout << endl;

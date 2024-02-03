@@ -72,7 +72,7 @@ void convertTextToMidiFile(istream& textfile, MidiFile& midifile) {
 	midifile.setTicksPerQuarterNote(tpq);
 	midifile.absoluteTicks();
 	midifile.allocateEvents(0, 2 * maxcount + 500);  // pre allocate space for
-	                                                 // max expected MIDI events
+                                                    // max expected MIDI events
 
 	// write the tempo to the midifile
 	mididata.resize(6);

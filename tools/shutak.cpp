@@ -42,10 +42,10 @@ Options  options;            // for command-line processing
 // function declarations:
 void     checkOptions        (Options& opts);
 void     createMidiFile      (const char* filename,
-			                     vector<vector<int> >& sequence);
+                              vector<vector<int> >& sequence);
 void     processFile         (const string& filename);
 void     getData             (vector<vector<int> >& sequence,
-			                     const string& filename);
+                              const string& filename);
 void     example             (void);
 void     usage               (const string& command);
 
@@ -126,7 +126,7 @@ void createMidiFile(const char* filename, vector<vector<int> >& sequence) {
 		notelist.clear();
 		for (j=0; j<(int)sequence.size(); j++) {
 			if (i<(int)sequence[j].size()) {
-			   notelist.push_back(sequence[j][i]);
+				notelist.push_back(sequence[j][i]);
 			}
 		}
 		for (j=0; j<(int)notelist.size(); j++) {
@@ -191,11 +191,11 @@ void checkOptions(Options& opts) {
 
 	if (opts.getBoolean("author")) {
 		cout << "Written by Craig Stuart Sapp, "
-		        "craig@ccrma.stanford.edu, February 2015" << endl;
+		     << "craig@ccrma.stanford.edu, February 2015" << endl;
 		exit(0);
 	} else if (opts.getBoolean("version")) {
 		cout << "shutak, version 1.0 (10 Feb 2015)\n"
-		        "compiled: " << __DATE__ << endl;
+		     << "compiled: " << __DATE__ << endl;
 		exit(0);
 	} else if (opts.getBoolean("help")) {
 		usage(opts.getCommand());
