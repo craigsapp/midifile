@@ -1745,6 +1745,60 @@ void MidiMessage::makeController(int channel, int num, int value) {
 
 /////////////////////////////
 //
+// MidiMessage::makePitchBend -- Create a pitch-bend message.  lsb is
+//     least-significant 7 bits of the 14-bit range, and msb is the
+//     most-significant 7 bits of the 14-bit range.  The range depth
+//     is determined by a setting in the synthesizer.  Typically it is
+//     +/- two semitones by default.  See MidiFile::setPitchBendRange()
+//     to change the default (or change to the typical default).
+//
+
+void MidiMessage::makePitchBend(int channel, int lsb, int msb) {
+	resize(0);
+	push_back(0xe0 | (0x0e & channel));
+	push_back(0x7f & lsb);
+	push_back(0x7f & msb);
+}
+
+//
+// value is a 14-bit number, where 0 is the lowest pitch of the range, and
+//    2^15-1 is the highest pitch of the range.
+//
+
+void MidiMessage::makePitchBend(int channel, int value) {
+	resize(0);
+	int lsb = value & 0x7f;
+	int msb = (value >> 7) & 0x7f;
+	push_back(0xe0 | (0x7f & channel));
+	push_back(lsb);
+	push_back(msb);
+}
+
+//
+// value is a number between -1.0 and +1.0.
+//
+
+void MidiMessage::makePitchBendDouble(int channel, double value) {
+	// value is in the range from -1 for minimum and 2^18 - 1 for the maximum
+	resize(0);
+	int ivalue = (value + 1.0) * (pow(2, 15));
+	if (ivalue < 0) {
+		ivalue = 0;
+	}
+	if (ivalue > pow(2, 15) - 1) {
+		ivalue = pow(2, 15) - 1;
+	}
+	int lsb = ivalue & 0x7f;
+	int msb = (ivalue >> 7) & 0x7f;
+	push_back(0xe0 | (0x7f & channel));
+	push_back(lsb);
+	push_back(msb);
+}
+
+
+
+/////////////////////////////
+//
 // MidiMessage::makeSustain -- Create a sustain pedal message.
 //   Value in 0-63 range is a sustain off.  Value in the
 //   64-127 value is a sustain on.
