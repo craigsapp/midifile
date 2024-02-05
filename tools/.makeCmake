@@ -50,7 +50,6 @@ chomp @contents;
 my @output;
 for (my $i=0; $i<@contents; $i++) {
 	my $line = $contents[$i];
-print STDERR "Processing line $line\n";
 	if ($line !~ /^#+\s*Programs:\s*$/) {
 		$output[@output] = $line;
 		next;
@@ -59,8 +58,8 @@ print STDERR "Processing line $line\n";
 
 	# Arrived at target line, the next line should be "#"
 	# and then an empty line, followed by lines like
-   #     add_executable(80off tools/80off.cpp)
-   # That should be updated to the new program list.
+	#     add_executable(80off tools/80off.cpp)
+	# That should be updated to the new program list.
 	# This list ends with a blank line.
 	$i++;
 	$line = $contents[$i];
@@ -82,7 +81,7 @@ print STDERR "Processing line $line\n";
 	
 	# Skip over old code block for add_executables:
 	while ($contents[$i] =~ /^\s*add_executable/) {
-		print STDERR "Removing: $contents[$i]\n";
+		# print STDERR "Removing: $contents[$i]\n";
 		$i++;
 	}
 	# Now print a list of the tools/*.cpp programs:
@@ -90,7 +89,7 @@ print STDERR "Processing line $line\n";
 		my $base = $file;
 		$base =~ s/\.cpp$//;
 		$output[@output] = "add_executable($base tools/$file)";
-		print STDERR "Adding: $output[$#output]\n";
+		# print STDERR "Adding: $output[$#output]\n";
 	}
 
 	# Current line should be empty:
@@ -103,7 +102,7 @@ print STDERR "Processing line $line\n";
 	$i++;
 
 	# Next should be a code block with lines like this:
-   #      target_link_libraries(80off midifile)
+	#      target_link_libraries(80off midifile)
 	# First print updated code block:
 	foreach my $file (@files) {
 		my $base = $file;
