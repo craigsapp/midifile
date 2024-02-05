@@ -1,0 +1,141 @@
+#!/usr/bin/env perl
+#
+# Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
+# Creation Date: Sun Feb  4 16:26:00 PST 2024
+# Last Modified: Sun Feb  4 16:26:04 PST 2024
+# Filename:      tools/.makeCmake
+# URL:           https://github.com/craigsapp/midifile/blob/master/tools/.makeCmake
+# Syntax:        PERL 5;
+# vim:           ts=3
+#
+# Description:   Update the list of tools in ../CMakeLists.txt
+#
+
+use strict;
+
+my $cmakefile = "../CMakeLists.txt";
+
+print STDERR "Updating tools program list in $cmakefile\n";
+
+my @infiles = sort glob("*.cpp");
+
+my @files;
+# filter out exceptions
+foreach my $file (@infiles) {
+	next if $file eq "midi2beep.cpp";
+	next if $file eq "henonfile.cpp";
+	next if $file eq "midi2hum.cpp";
+	next if $file eq "midiexcerpt.cpp";
+	next if $file eq "peep2midi.cpp";
+	$files[@files] = $file;
+}
+
+open(CFILE, $cmakefile) or die "Cannot read $cmakefile\n";
+my @contents = <CFILE>;
+close(CFILE);
+chomp @contents;
+
+# Replace the two code blocks after the lines:
+# ##############################
+# ##
+# ## Programs:
+# ##
+#
+# The first block lists the executable names in the form:
+#      add_executable(80off tools/80off.cpp)
+# And the second block links the library to the programs:
+#      target_link_libraries(80off midifile)
+#
+
+my @output;
+for (my $i=0; $i<@contents; $i++) {
+	my $line = $contents[$i];
+print STDERR "Processing line $line\n";
+	if ($line !~ /^#+\s*Programs:\s*$/) {
+		$output[@output] = $line;
+		next;
+	}
+	$output[@output] = $line;
+
+	# Arrived at target line, the next line should be "#"
+	# and then an empty line, followed by lines like
+   #     add_executable(80off tools/80off.cpp)
+   # That should be updated to the new program list.
+	# This list ends with a blank line.
+	$i++;
+	$line = $contents[$i];
+	if ($line !~ /^##\s*$/) {
+		my $plusone = $i + 1;
+		die "Expected a blank comment line at line $plusone of $cmakefile\n";
+	}
+	$output[@output] = $line;
+
+	# Next line should be blank.
+	$i++;
+	$line = $contents[$i];
+	if ($line !~ /^\s*$/) {
+		my $plusone = $i + 1;
+		die "Expected a blank line at line $plusone of $cmakefile\n";
+	}
+	$output[@output] = "";
+	$i++;
+	
+	# Skip over old code block for add_executables:
+	while ($contents[$i] =~ /^\s*add_executable/) {
+		print STDERR "Removing: $contents[$i]\n";
+		$i++;
+	}
+	# Now print a list of the tools/*.cpp programs:
+	foreach my $file (@files) {
+		my $base = $file;
+		$base =~ s/\.cpp$//;
+		$output[@output] = "add_executable($base tools/$file)";
+		print STDERR "Adding: $output[$#output]\n";
+	}
+
+	# Current line should be empty:
+	$line = $contents[$i];
+	if ($line !~ /^\s*$/) {
+		my $plusone = $i + 1;
+		die "Expected a blank line at line $plusone of $cmakefile after add_executable block for tools executables\n";
+	}
+	$output[@output] = "";
+	$i++;
+
+	# Next should be a code block with lines like this:
+   #      target_link_libraries(80off midifile)
+	# First print updated code block:
+	foreach my $file (@files) {
+		my $base = $file;
+		$base =~ s/\.cpp$//;
+		$output[@output] = "target_link_libraries($base midifile)";
+	}
+	# Then suppress the original contents:
+	while ($contents[$i] =~ /^\s*target_link_libraries/) {
+		$i++;
+	}
+
+	# Now there should be a blank line.
+	$line = $contents[$i];
+	if ($line !~ /^\s*$/) {
+		my $plusone = $i + 1;
+		die "Expected a blank line at line $plusone of $cmakefile after target_link_libraries block for tools library dependencies\n";
+	}
+	$output[@output] = "";
+	$i++;
+
+	# Now store the rest of the CMakeLists.txt contents:
+	for (my $j=$i; $j < @contents; $j++) {
+		$output[@output] = $contents[$j];
+	}
+	last;
+}
+
+open(CFILE, ">$cmakefile") or die "Cannot write to $cmakefile\n";
+for (my $i=0; $i<@output; $i++) {
+	print CFILE "$output[$i]\n";
+}
+close(CFILE);
+
+
+
