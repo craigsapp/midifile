@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(midifile C CXX)
 set(CMAKE_CXX_STANDARD 11)
@@ -69,6 +69,14 @@ add_library(midifile STATIC ${SRCS} ${HDRS})
 ##
 ## Programs:
 ##
+
+if(MIDIFILE_BUILD_TESTS)
+  add_executable(midifile_test test/test.cpp)
+  target_include_directories(
+    midifile_test PRIVATE external_libraries/Catch2/single_include/
+  )
+  target_link_libraries(midifile_test midifile)
+endif()
 
 add_executable(80off tools/80off.cpp)
 add_executable(asciimidi tools/asciimidi.cpp)

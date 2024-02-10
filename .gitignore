@@ -1,5 +1,3 @@
-
-.*
 !.gitignore
 _site
 temp
@@ -24,3 +22,4 @@ err
 *.idb
 *.ilk
 *.opendb
+build*
