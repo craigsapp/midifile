@@ -71,7 +71,7 @@ const char* MidiFile::GMinstrument[128] = {
 
 //////////////////////////////
 //
-// MidiFile::MidiFile -- Constuctor.
+// MidiFile::MidiFile -- Constructor.
 //
 
 MidiFile::MidiFile(void) {
@@ -507,7 +507,7 @@ bool MidiFile::readSmf(std::istream& input) {
 		m_events[i]->clear();
 
 		// Read MIDI events in the track, which are pairs of VLV values
-		// and then the bytes for the MIDI message.  Running status messags
+		// and then the bytes for the MIDI message.  Running status messages
 		// will be filled in with their implicit command byte.
 		// The timestamps are converted from delta ticks to absolute ticks,
 		// with the absticks variable accumulating the VLV tick values.
@@ -597,7 +597,7 @@ bool MidiFile::write(std::ostream& out) {
 	shortdata = static_cast<ushort>(getNumTracks());
 	writeBigEndianUShort(out, shortdata);
 
-	// 5. write out the number of ticks per quarternote. (avoiding SMTPE for now)
+	// 5. write out the number of ticks per quarternote. (avoiding SMPTE for now)
 	shortdata = static_cast<ushort>(getTicksPerQuarterNote());
 	writeBigEndianUShort(out, shortdata);
 
@@ -836,7 +836,7 @@ bool MidiFile::writeBinasc(std::ostream& output) {
 
 //////////////////////////////
 //
-// MidiFile::writeBinascWithComents -- write a standard MIDI
+// MidiFile::writeBinascWithComments -- write a standard MIDI
 //    file from data into the binasc format (ASCII version
 //    of the MIDI file), including commentary about the MIDI messages.
 //
@@ -954,7 +954,7 @@ void MidiFile::removeEmpties(void) {
 //   a track when they occur at the same tick time.  Particularly
 //   for use with joinTracks() or sortTracks().  markSequence will
 //   be done automatically when a MIDI file is read, in case the
-//   ordering of m_events occuring at the same time is important.
+//   ordering of m_events occurring at the same time is important.
 //   Use clearSequence() to use the default sorting behavior of
 //   sortTracks().
 //
@@ -982,7 +982,7 @@ void MidiFile::markSequence(int track, int sequence) {
 
 //////////////////////////////
 //
-// MidiFile::clearSequence -- Remove any seqence serial numbers from
+// MidiFile::clearSequence -- Remove any sequence serial numbers from
 //   MidiEvents in the MidiFile.  This will cause the default ordering by
 //   sortTracks() to be used, in which case the ordering of MidiEvents
 //   occurring at the same tick may switch their ordering.
@@ -1311,7 +1311,7 @@ void MidiFile::deltaTicks(void) {
 //    absolute time, which means that the time field
 //    in the MidiEvent struct represents the exact tick
 //    time to play the event rather than the time since
-//    the last event to wait untill playing the current
+//    the last event to wait until playing the current
 //    event.
 //
 
@@ -1422,7 +1422,7 @@ int MidiFile::getFileDurationInTicks(void) {
 //    in units of quarter notes.  If the MidiFile is in delta tick mode,
 //    then temporarily got into absolute tick mode to do the calculations.
 //    Note that this is expensive, so you should normally call this function
-//    while in aboslute tick (default) mode.
+//    while in absolute tick (default) mode.
 //
 
 double MidiFile::getFileDurationInQuarters(void) {
@@ -1434,7 +1434,7 @@ double MidiFile::getFileDurationInQuarters(void) {
 //////////////////////////////
 //
 // MidiFile::getFileDurationInSeconds -- returns the duration of the
-//    logest track in the file.  The tracks must be sorted before
+//    longest track in the file.  The tracks must be sorted before
 //    calling this function, since this function assumes that the
 //    last MidiEvent in the track has the highest timestamp.
 //    The file state can be in delta ticks since this function
@@ -1906,7 +1906,7 @@ MidiEvent* MidiFile::addTimeSignature(int aTrack, int aTick, int top, int bottom
 //
 // MidiFile::addCompoundTimeSignature -- Add a time signature meta message
 //      (meta #0x58), where the clocksPerClick parameter is set to three
-//      eighth notes for compount meters such as 6/8 which represents
+//      eighth notes for compound meters such as 6/8 which represents
 //      two beats per measure.
 //
 // Default values:
@@ -2347,7 +2347,7 @@ int MidiFile::getTicksPerQuarterNote(void) const {
 		// setting for 25 frames a second with 40 subframes
 		// which means one tick per millisecond.  When SMPTE is
 		// being used, there is no real concept of the quarter note,
-		// so presume 60 bpm as a simiplification here.
+		// so presume 60 bpm as a simplification here.
 		// return 1000;
 	}
 	return m_ticksPerQuarterNote;
@@ -2696,7 +2696,7 @@ double MidiFile::linearSecondInterpolationAtTick(int ticktime) {
 // MidiFile::buildTimeMap -- build an index of the absolute tick values
 //      found in a MIDI file, and their corresponding time values in
 //      seconds, taking into consideration tempo change messages.  If no
-//      tempo messages are given (or untill they are given, then the
+//      tempo messages are given (or until they are given, then the
 //      tempo is set to 120 beats per minute).  If SMPTE time code is
 //      used, then ticks are actually time values.  So don't build
 //      a time map for SMPTE ticks, and just calculate the time in
@@ -3010,7 +3010,7 @@ ulong MidiFile::unpackVLV(uchar a, uchar b, uchar c, uchar d, uchar e) {
 //
 // MidiFile::writeVLValue -- write a number to the midifile
 //    as a variable length value which segments a file into 7-bit
-//    values and adds a contination bit to each.  Maximum size of input
+//    values and adds a continuation bit to each.  Maximum size of input
 //    aValue is 0x0FFFffff.
 //
 
