@@ -21,13 +21,18 @@
 #include <istream>
 #include <fstream>
 
-#define TIME_STATE_DELTA       0
-#define TIME_STATE_ABSOLUTE    1
-
-#define TRACK_STATE_SPLIT      0
-#define TRACK_STATE_JOINED     1
 
 namespace smf {
+
+enum {
+    TRACK_STATE_SPLIT  = 0, // Tracks are separated into separate vector postions.
+    TRACK_STATE_JOINED = 1  // Tracks are mered into a single vector position,
+};                          // like a Type-0 MIDI file, but reversible.
+
+enum {
+    TIME_STATE_DELTA    = 0, // MidiMessage::ticks are in delta time format (like MIDI file).
+    TIME_STATE_ABSOLUTE = 1  // MidiMessage::ticks are in absolute time format (0=start time).
+};
 
 class _TickTime {
 	public:
