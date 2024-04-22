@@ -1797,21 +1797,22 @@ void MidiMessage::makePitchBend(int channel, int value) {
 }
 
 //
-// value is a number between -1.0 and +1.0.
+// Input value is a number between -1.0 and +1.0.
 //
 
 void MidiMessage::makePitchBendDouble(int channel, double value) {
 	// value is in the range from -1 for minimum and 2^18 - 1 for the maximum
 	resize(0);
-	int ivalue = (value + 1.0) * (pow(2, 15));
-	if (ivalue < 0) {
-		ivalue = 0;
+	double dvalue = (value + 1.0) * (pow(2.0, 15.0));
+	if (dvalue < 0.0) {
+		dvalue = 0.0;
 	}
-	if (ivalue > pow(2, 15) - 1) {
-		ivalue = pow(2, 15) - 1;
+	if (dvalue > pow(2.0, 15.0) - 1.0) {
+		dvalue = pow(2.0, 15.0) - 1.0;
 	}
-	int lsb = ivalue & 0x7f;
-	int msb = (ivalue >> 7) & 0x7f;
+	ulong uivalue = (ulong)dvalue;
+	uchar lsb = uivalue & 0x7f;
+	uchar msb = (uivalue >> 7) & 0x7f;
 	push_back(0xe0 | (0x7f & channel));
 	push_back(lsb);
 	push_back(msb);
