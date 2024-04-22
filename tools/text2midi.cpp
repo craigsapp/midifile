@@ -21,15 +21,7 @@
 using namespace std;
 using namespace smf;
 
-// user interface variables
-Options options;
-int     tpq = 480;              // ticks per quarter note
-int     debugQ = 0;             // use with --debug option
-int     maxcount = 100000;      // maxiumum number of notes expected
-double  tempo = 120.0;          // time units will be in seconds
-int     channel = 0;            // default channel
 
-// function declarations:
 void      convertTextToMidiFile (istream& textfile, MidiFile& midifile);
 void      adjustbuffer          (char* buffer);
 void      readvalues            (char* buffer, int& eventtype, double& start,
@@ -37,6 +29,15 @@ void      readvalues            (char* buffer, int& eventtype, double& start,
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
 void      usage                 (const char* command);
+
+// User interface variables:
+Options options;
+int     tpq      = 480;     // ticks per quarter note
+int     debugQ   = 0;       // use with --debug option
+int     maxcount = 100000;  // maxiumum number of notes expected
+double  tempo    = 120.0;   // time units will be in seconds
+int     channel  = 0;       // default channel
+
 
 //////////////////////////////////////////////////////////////////////////
 

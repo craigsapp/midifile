@@ -23,42 +23,7 @@
 using namespace std;
 using namespace smf;
 
-// User interface variables:
-Options options;
-int      dataQ        = 0;         // used with -d option
-int      roundedQ     = 0;         // used with -r option
-int      darkQ        = 0;         // used with --dark option
-int      bwQ          = 0;         // used with --bw option
-double   Scale        = 1.0;       // used with -s option
-double   Border       = 2.0;       // used with -b option
-double   Opacity      = 0.75;      // used with -o option
-double   drumQ        = 0;         // used with --drum option
-int      lineQ        = 0;         // used with -l option
-int      curveQ       = 0;         // used with --cl option
-int      radiusQ      = 0;         // used with --rl option
-double   radius       = 1.0;       // used with --rl option
-int      staffQ       = 0;         // used with --staff option
-int      clefQ        = 0;         // used with --clef option
-int      braceQ       = 0;         // used with --clef option
-int      diatonicQ    = 0;         // used with --diatonic option
-int      grandQ       = 0;         // used with --gs option
-int      finalQ       = 0;         // used with -f option
-int      doubleQ      = 0;         // used with --double option
-int      transparentQ = 1;         // used with -T option
-bool     velocitybQ   = false;     // used with -v option
-double   ClefFactor   = 6;
-double   StaffThickness = 2.0;     // used with --staff-width
-double   LineThickness  = 2.0;     // used with --line-width
-string   StaffColor   = "#555555"; // used with -staff-color
-string   ClefColor    = "#555555"; // used with -clef-color
-double   MaxRest      = 4.0;       // used with --max-rest option
-double   EndSpace     = 0.0;       // used with -e option
-int      percmapQ     = 0;         // used with --perc option
-double   AspectRatio  = 2.5;       // used with -a option
-vector<int> PercussionMap;         // used with --perc option
-vector<string> Shapes;
 
-// Function declarations:
 void           checkOptions          (Options& opts, int argc, char* argv[]);
 void           usage                 (const char* command);
 void           example               (void);
@@ -156,6 +121,41 @@ void           drawHexThin           (ostream& out, double x, double y,
 string         getTrackShape         (int track);
 void           drawClefs             (ostream& out);
 void           drawBrace             (ostream& out);
+
+// User interface variables:
+Options options;
+int      dataQ        = 0;         // used with -d option
+int      roundedQ     = 0;         // used with -r option
+int      darkQ        = 0;         // used with --dark option
+int      bwQ          = 0;         // used with --bw option
+double   Scale        = 1.0;       // used with -s option
+double   Border       = 2.0;       // used with -b option
+double   Opacity      = 0.75;      // used with -o option
+double   drumQ        = 0;         // used with --drum option
+int      lineQ        = 0;         // used with -l option
+int      curveQ       = 0;         // used with --cl option
+int      radiusQ      = 0;         // used with --rl option
+double   radius       = 1.0;       // used with --rl option
+int      staffQ       = 0;         // used with --staff option
+int      clefQ        = 0;         // used with --clef option
+int      braceQ       = 0;         // used with --clef option
+int      diatonicQ    = 0;         // used with --diatonic option
+int      grandQ       = 0;         // used with --gs option
+int      finalQ       = 0;         // used with -f option
+int      doubleQ      = 0;         // used with --double option
+int      transparentQ = 1;         // used with -T option
+bool     velocitybQ   = false;     // used with -v option
+double   ClefFactor   = 6;
+double   StaffThickness = 2.0;     // used with --staff-width
+double   LineThickness  = 2.0;     // used with --line-width
+string   StaffColor   = "#555555"; // used with -staff-color
+string   ClefColor    = "#555555"; // used with -clef-color
+double   MaxRest      = 4.0;       // used with --max-rest option
+double   EndSpace     = 0.0;       // used with -e option
+int      percmapQ     = 0;         // used with --perc option
+double   AspectRatio  = 2.5;       // used with -a option
+vector<int> PercussionMap;         // used with --perc option
+vector<string> Shapes;
 
 
 //////////////////////////////////////////////////////////////////////////

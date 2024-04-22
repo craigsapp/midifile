@@ -52,7 +52,6 @@ using namespace smf;
 #define OP_METER_NAME   "METER"
 #define OP_KEYSIG_NAME  "KEYSIG"
 
-
 // General MIDI instrument names:
 const char *GMinstrument[128] = {
 	"acpiano",   "britepno",  "synpiano",  "honkytonk", "epiano1",   "epiano2",
@@ -79,6 +78,7 @@ const char *GMinstrument[128] = {
 	"applause",  "ringwhsl"
 };
 
+
 vector<int> legend_instr;
 vector<int> legend_opcode;
 vector<int> legend_controller;
@@ -99,7 +99,7 @@ double  tempo    = 60.0;
 int     maxcount = 100000;
 vector<vector<double> > matlabarray;
 
-// function declarations:
+
 void      convertMidiFile       (MidiFile& midifile,
                                  vector<vector<double> >& matlab);
 //void    setTempo              (MidiFile& midifile, int index, double& tempo);

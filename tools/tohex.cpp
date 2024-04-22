@@ -19,9 +19,12 @@
 
 using namespace std;
 
+
 int   atohd       (const char* aNumber);
 void  exitUsage   (const char* command);
 
+
+///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
@@ -35,6 +38,8 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+
+///////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////
 //

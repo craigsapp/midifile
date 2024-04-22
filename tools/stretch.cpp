@@ -30,7 +30,11 @@
 using namespace std;
 using namespace smf;
 
+
 void doStretch (MidiFile& midifile, double bars, double duration);
+
+
+///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
 	Options options;
@@ -65,6 +69,8 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
+
+///////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////
 //

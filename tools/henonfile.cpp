@@ -17,14 +17,13 @@
 #include "Options.h"
 #include "CircularBuffer.h"
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 using namespace std;
 using namespace smf;
 
 
-// function declarations:
 void        checkOptions        (Options& opts, int argc, char** argv);
 void        example             (void);
 void        usage               (const char* command);
@@ -57,6 +56,7 @@ double      tempo = 120.0;      // used with the -t option
 Array<char> notelist;           // for printing in Guido Music Notation
 int         minNote = 30;       // minimum note to play
 int         maxNote = 100;      // maximum note to play
+
 
 //////////////////////////////////////////////////////////////////////////
 

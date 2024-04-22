@@ -26,17 +26,18 @@
 using namespace std;
 using namespace smf;
 
-void processFile(MidiFile& midifile, Options& options);
-void applyInstrument(MidiFile& midifile, int timbre);
-void removeInstruments(MidiFile& midifile);
-void applyTemperament(MidiFile& midifile, const string& temperament, int base = 0);
-void applyEqualTemperament(MidiFile& midifile, int base = 0);
-void applyMeantoneTemperament(MidiFile& midifile, int base = 0);
-void applyPythagoreanTemperament(MidiFile& midifile, int base = 0);
-void applyKirnberger3Temperament(MidiFile& midifile, int base = 0);
-void applyValottiTemperament(MidiFile& midifile, int base = 0);
-void applyBadTemperament(MidiFile& midifile, int base = 0);
-void applyWeirdTemperament(MidiFile& midifile, int base = 0);
+
+void processFile                  (MidiFile& midifile, Options& options);
+void applyInstrument              (MidiFile& midifile, int timbre);
+void removeInstruments            (MidiFile& midifile);
+void applyTemperament             (MidiFile& midifile, const string& temperament, int base = 0);
+void applyEqualTemperament        (MidiFile& midifile, int base = 0);
+void applyMeantoneTemperament     (MidiFile& midifile, int base = 0);
+void applyPythagoreanTemperament  (MidiFile& midifile, int base = 0);
+void applyKirnberger3Temperament  (MidiFile& midifile, int base = 0);
+void applyValottiTemperament      (MidiFile& midifile, int base = 0);
+void applyBadTemperament          (MidiFile& midifile, int base = 0);
+void applyWeirdTemperament        (MidiFile& midifile, int base = 0);
 
 
 ///////////////////////////////////////////////////////////////////////////

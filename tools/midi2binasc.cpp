@@ -21,6 +21,7 @@
 using namespace std;
 using namespace smf;
 
+
 void    convertMidiFile         (MidiFile& midifile);
 void    printMidiHeader         (MidiFile& midifile);
 void    checkOptions            (Options& opts, int argc, char* argv[]);
@@ -33,11 +34,11 @@ void    printHexByte            (int value);
 void    usage                   (const char* command);
 void    example                 (void);
 
-
-// user interface variables
+// User interface variables:
 Options options;
 int     debugQ   = 0;           // use with --debug option
 int     type0Q   = 0;           // force MIDI file to type 0 (single track)
+
 
 //////////////////////////////////////////////////////////////////////////
 

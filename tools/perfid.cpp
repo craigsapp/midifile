@@ -21,7 +21,18 @@
 using namespace std;
 using namespace smf;
 
-// user interface variables:
+
+void   checkOptions     (Options& opts, int argc, char** argv);
+void   example          (void);
+void   getNoteOnDeltas  (vector<int>& noteondeltas, MidiFile& midifile);
+void   addNoteOnEvents  (vector<int>& noteondeltas, MidiFile& midifile, int track);
+void   usage            (const char* command);
+int    intcompare       (const void* a, const void* b);
+void   sortArray        (vector<int>& noteondeltas);
+void   printDeltas      (vector<int>& noteondeltas);
+void   printID          (vector<int>& noteondeltas);
+
+// User interface variables:
 Options options;
 int     track    = -1;         // track to extract from (starting from 0)
 int     debugQ   = 0;          // use with --debug option
@@ -30,16 +41,6 @@ int     rawQ     = 0;          // display raw data used to determine id
 int     cutoff   = 1000000;    // maximum duration to consider
 int     fileQ    = 0;          // print file name before id
 
-// function declarations:
-void      checkOptions          (Options& opts, int argc, char** argv);
-void      example               (void);
-void      getNoteOnDeltas       (vector<int>& noteondeltas, MidiFile& midifile);
-void      addNoteOnEvents       (vector<int>& noteondeltas, MidiFile& midifile, int track);
-void      usage                 (const char* command);
-int       intcompare            (const void* a, const void* b);
-void      sortArray             (vector<int>& noteondeltas);
-void      printDeltas           (vector<int>& noteondeltas);
-void      printID               (vector<int>& noteondeltas);
 
 //////////////////////////////////////////////////////////////////////////
 

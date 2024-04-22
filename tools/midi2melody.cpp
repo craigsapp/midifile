@@ -20,6 +20,7 @@
 using namespace std;
 using namespace smf;
 
+
 class Melody {
 	public:
 		double tick;
@@ -27,11 +28,7 @@ class Melody {
 		int    pitch;
 };
 
-// user interface variables
-Options options;
-int     track = 0;          // used with the -t option
 
-// function declarations:
 void      checkOptions      (Options& opts, int argc, char** argv);
 void      example           (void);
 void      usage             (const char* command);
@@ -39,6 +36,11 @@ void      convertToMelody   (MidiFile& midifile, vector<Melody>& melody);
 void      printMelody       (vector<Melody>& melody, int tpq);
 void      sortMelody        (vector<Melody>& melody);
 int       notecompare       (const void* a, const void* b);
+
+// User interface variables:
+Options options;
+int     track = 0;          // used with the -t option
+
 
 //////////////////////////////////////////////////////////////////////////
 

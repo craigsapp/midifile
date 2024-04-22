@@ -31,6 +31,7 @@
 using namespace std;
 using namespace smf;
 
+
 vector<int> Errors(128, 0);
 
 bool dataQ = false;

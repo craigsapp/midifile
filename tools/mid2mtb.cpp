@@ -15,28 +15,27 @@
 #include "Options.h"
 
 #include <cctype>
-#include <cstring>
-#include <cstdio>
 #include <cmath>
+#include <cstdio>
+#include <cstring>
 #include <vector>
 
 using namespace std;
 using namespace smf;
 
-// user interface variables
+
+void  convertMidiFile   (MidiFile& midifile, vector<vector<double> >& matlab);
+void  checkOptions      (Options& opts, int argc, char** argv);
+void  example           (void);
+void  usage             (const char* command);
+void  printEvent        (vector<double>& event);
+void  printLegend       (MidiFile& midifile);
+void  printMatlabArray  (MidiFile& midifile, vector<vector<double> >& matlab);
+
+// User interface variables
 Options options;
 vector<vector<double> > matlabarray;
 
-// function declarations:
-void      convertMidiFile       (MidiFile& midifile,
-                                 vector<vector<double> >& matlab);
-void      checkOptions          (Options& opts, int argc, char** argv);
-void      example               (void);
-void      usage                 (const char* command);
-void      printEvent            (vector<double>& event);
-void      printLegend           (MidiFile& midifile);
-void      printMatlabArray      (MidiFile& midifile,
-                                 vector<vector<double> >& matlab);
 
 //////////////////////////////////////////////////////////////////////////
 

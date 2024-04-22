@@ -18,10 +18,11 @@
 #include "Options.h"
 #include "MidiFile.h"
 
+#include <iostream>
+
 using namespace std;
 using namespace smf;
 
-#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -242,7 +243,6 @@ int Sonority::checkForMatch(vector<int>& data, vector<int>& prototype) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-// function declarations:
 void processMidiFile     (Options& options, MidiFile& midifile);
 void calculateDurations  (vector<Sonority>& chordSequence, double maxQstamp);
 void printChordSequence  (vector<Sonority>& chordSequence);

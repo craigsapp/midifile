@@ -90,18 +90,7 @@ class MetaInfo {
 		}
 };
 
-// user interface variables
-Options options;
-int     extracttrack = -1;   // a single track to output
-double  quantlevel = 0.25;   // quatization level for durations.
-int     serialQ = 0;         // used with the -s option
-int     reverseQ = 0;        // used with the -r option
-int     measurenumQ = 1;     // used with the -M option
-double  pickupbeat = 0.0;    // used with the -p option
-double  timesigtop = 4.0;    // used to print barlines
-double  timesigbottom = 4.0; // used to print barlines
 
-// function declarations:
 void      convertToHumdrum  (MidiFile& midifile);
 void      getMidiData       (Array<Array<MidiInfo> >& mididata,
                              MidiFile& midifile);
@@ -123,6 +112,18 @@ void      printHumdrumFileWithBarlines(ostream& out, HumdrumFile& hfile);
 void      checkOptions      (Options& opts, int argc, char** argv);
 void      example           (void);
 void      usage             (const char* command);
+
+// user interface variables
+Options options;
+int     extracttrack = -1;   // a single track to output
+double  quantlevel = 0.25;   // quatization level for durations.
+int     serialQ = 0;         // used with the -s option
+int     reverseQ = 0;        // used with the -r option
+int     measurenumQ = 1;     // used with the -M option
+double  pickupbeat = 0.0;    // used with the -p option
+double  timesigtop = 4.0;    // used to print barlines
+double  timesigbottom = 4.0; // used to print barlines
+
 
 //////////////////////////////////////////////////////////////////////////
 

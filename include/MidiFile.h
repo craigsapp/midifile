@@ -16,10 +16,10 @@
 
 #include "MidiEventList.h"
 
-#include <vector>
-#include <string>
-#include <istream>
 #include <fstream>
+#include <istream>
+#include <string>
+#include <vector>
 
 
 namespace smf {

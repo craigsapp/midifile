@@ -45,7 +45,7 @@ using namespace smf;
 #define TIME_MILLISECONDS 2
 #define TIME_QUARTERS     3
 
-// Function definitions:
+
 void processFile(MidiFile& midifile, map<string, int>& histogram, Options& options);
 void printHistogram(map<string, int>& histogram, Options& options);
 void extractDeltaTimesForAllEvents(MidiFile& midifile, map<string, int>& histogram, Options& options);
@@ -54,7 +54,6 @@ void extractDeltaTimesForAllNotesOns(MidiFile& midifile, map<string, int>& histo
 
 
 ///////////////////////////////////////////////////////////////////////////
-
 
 int main(int argc, char** argv) {
 	Options options;

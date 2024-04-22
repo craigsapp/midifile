@@ -18,9 +18,12 @@
 
 using namespace std;
 
+
 unsigned long atohd      (const char* aNumber);
 void          exitUsage  (const char* command);
 
+
+///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char* argv[]) {
 	char* numberstring = NULL;
@@ -57,6 +60,7 @@ int main(int argc, char* argv[]) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////
 //

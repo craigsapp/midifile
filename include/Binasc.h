@@ -14,9 +14,10 @@
 #define _BINASC_H_INCLUDED
 
 #include <cstdlib>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
+
 
 namespace smf {
 

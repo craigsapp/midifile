@@ -62,9 +62,25 @@ const char *GMinstrument[128] = {
 	"applause",  "ringwhsl"
 };
 
-vector<int> legend_instr;
-vector<int> legend_opcode;
-vector<int> legend_controller;
+void      convertMidiFile       (MidiFile& midifile,
+                                 vector<vector<double> >& matlab);
+void      setTempo              (MidiFile& midifile, int index, double& tempo);
+void      checkOptions          (Options& opts, int argc, char** argv);
+void      example               (void);
+void      usage                 (const char* command);
+double    getTime               (int ticks, double tempo, int tpq);
+void      processMetaEvent      (MidiFile& midifile, int i,
+                                 vector<double>& event);
+void      printEvent            (vector<double>& event);
+void      printLegend           (MidiFile& midifile);
+void      printMatlabArray      (MidiFile& midifile,
+                                 vector<vector<double> >& matlab);
+void      sortArray             (vector<vector<double> >& matlab);
+int       eventcmp              (const void* a, const void* b);
+void      printNotesData        (MidiFile& midifile,
+                                 vector<vector<double> >& matlab);
+void      printNotesEvent       (vector<double>& event);
+void      setFilterOptions      (vector<int>& channelfilter, const char* exclude);
 
 // user interface variables
 Options options;
@@ -82,27 +98,9 @@ int     maxcount = 100000;
 vector<vector<double> > matlabarray;
 vector<int> channelfilter;
 
-// function declarations:
-void      convertMidiFile       (MidiFile& midifile,
-                                 vector<vector<double> >& matlab);
-void      setTempo              (MidiFile& midifile, int index, double& tempo);
-void      checkOptions          (Options& opts, int argc, char** argv);
-void      example               (void);
-void      usage                 (const char* command);
-double    getTime               (int ticks, double tempo, int tpq);
-void      processMetaEvent      (MidiFile& midifile, int i,
-                                 vector<double>& event);
-void      printEvent            (vector<double>& event);
-void      printLegend           (MidiFile& midifile);
-void      printMatlabArray      (MidiFile& midifile,
-                                 vector<vector<double> >& matlab);
-void      sortArray             (vector<vector<double> >& matlab);
-int       eventcmp              (const void* a, const void* b);
-
-void      printNotesData       (MidiFile& midifile,
-                                 vector<vector<double> >& matlab);
-void      printNotesEvent      (vector<double>& event);
-void      setFilterOptions     (vector<int>& channelfilter, const char* exclude);
+vector<int> legend_instr;
+vector<int> legend_opcode;
+vector<int> legend_controller;
 
 
 //////////////////////////////////////////////////////////////////////////

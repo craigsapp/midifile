@@ -15,9 +15,10 @@
 
 #include <cmath>
 #include <cstdlib>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <iterator>
+
 
 namespace smf {
 

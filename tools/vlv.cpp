@@ -24,7 +24,14 @@ using namespace smf;
 #define DECODE 0
 #define ENCODE 1
 
-// Global variables for command-line options.
+
+void     checkOptions        (Options& opts);
+void     displayVLV          (int number, ostream& out);
+void     example             (void);
+void     printBinary         (int number, ostream& out);
+void     usage               (const string& command);
+
+// User interface variables:
 Options  options;              // for command-line processing
 int      Direction   = DECODE; // decoding=0, encoding=1
 int      InputStyle  = 16;     // number base of the input (2, 10, or 16)
@@ -32,16 +39,7 @@ int      OutputStyle = 16;     // number base of the output (2, 10, or 16)
 vector<int> Input;             // storage of input numbers
 
 
-// function declarations:
-void     checkOptions        (Options& opts);
-void     displayVLV          (int number, ostream& out);
-void     example             (void);
-void     printBinary         (int number, ostream& out);
-void     usage               (const string& command);
-
-
 ///////////////////////////////////////////////////////////////////////////
-
 
 int main(int argc, char** argv) {
 	options.setOptions(argc, argv);
@@ -77,8 +75,8 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-///////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////
 //

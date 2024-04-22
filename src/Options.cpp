@@ -12,12 +12,12 @@
 
 #include "Options.h"
 
+#include <algorithm>
+#include <cctype>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <cctype>
-#include <iostream>
-#include <algorithm>
 
 
 namespace smf {

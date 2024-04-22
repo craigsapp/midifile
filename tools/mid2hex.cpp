@@ -19,6 +19,9 @@
 using namespace std;
 using namespace smf;
 
+
+///////////////////////////////////////////////////////////////////////////
+
 int main(int argc, char** argv) {
 	Options options;
 	options.define("o|output=s", "output file name");
@@ -43,6 +46,8 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
+
+///////////////////////////////////////////////////////////////////////////
 
 /* test data save to a file:
 

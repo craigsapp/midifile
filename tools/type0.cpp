@@ -19,13 +19,14 @@
 using namespace std;
 using namespace smf;
 
-// Global variables for command-line options.
-Options  options;
 
-// function declarations:
 void     checkOptions        (Options& opts);
 void     example             (void);
 void     usage               (const string& command);
+
+// User interface functions:
+Options  options;
+
 
 ///////////////////////////////////////////////////////////////////////////
 

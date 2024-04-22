@@ -22,7 +22,7 @@
 using namespace std;
 using namespace smf;
 
-// function declarations:
+
 void   checkOptions        (Options& opts);
 void   example             (void);
 void   usage               (const char* command);
@@ -32,9 +32,10 @@ void   extractMidi         (MidiFile& outputfile, MidiFile& inputfile,
 int    getStartIndex       (MidiFile& midifile, int starttick);
 int    getStopIndex        (MidiFile& midifile, int startindex, int stoptick);
 
-// user interface variables:
+// User interface variables:
 double starttime = 0.0;    // used with -s option
 double endtime   = 0.0;    // used with -e option
+
 
 ///////////////////////////////////////////////////////////////////////////
 

@@ -10,15 +10,14 @@
 // Description:   A class which stores a MidiEvents for a MidiFile track.
 //
 
-
 #include "MidiEventList.h"
 
-#include <vector>
 #include <algorithm>
+#include <cstdlib>
 #include <iterator>
 #include <utility>
+#include <vector>
 
-#include <cstdlib>
 
 namespace smf {
 

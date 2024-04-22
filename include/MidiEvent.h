@@ -19,6 +19,7 @@
 #include <ostream>
 #include <vector>
 
+
 namespace smf {
 
 class MidiEvent : public MidiMessage {

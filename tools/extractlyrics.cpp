@@ -20,7 +20,9 @@
 using namespace std;
 using namespace smf;
 
+
 void extractLyrics(MidiFile& midifile, int seconds);
+
 
 ///////////////////////////////////////////////////////////////////////////
 

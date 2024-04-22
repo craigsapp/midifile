@@ -18,15 +18,15 @@
 using namespace std;
 using namespace smf;
 
-// User interface variables:
-Options options;
 
-// Function declarations:
 void      checkOptions          (Options& opts, int argc, char* argv[]);
 void      usage                 (const char* command);
 void      example               (void);
 double    getTotalDuration      (MidiFile& midifile);
 string    minutes               (double seconds);
+
+// User interface variables:
+Options options;
 
 
 //////////////////////////////////////////////////////////////////////////

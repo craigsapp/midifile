@@ -33,11 +33,12 @@
 using namespace std;
 using namespace smf;
 
-void processFile(MidiFile& midifile, Options& options);
-double getPitchMeanByNoteAttack(MidiFile& midifile, int strack = -1, int schan = -1,
-                                double mindur = -1.0, double maxdur = -1.0);
+
+void   processFile               (MidiFile& midifile, Options& options);
+double getPitchMeanByNoteAttack  (MidiFile& midifile, int strack = -1, int schan = -1,
+                                  double mindur = -1.0, double maxdur = -1.0);
 double getPitchMeanByNoteDuration(MidiFile& midifile, int strack = -1, int schan = -1,
-                                double mindur = -1.0, double maxdur = -1.0, bool secondsQ = false);
+                                  double mindur = -1.0, double maxdur = -1.0, bool secondsQ = false);
 
 
 ///////////////////////////////////////////////////////////////////////////

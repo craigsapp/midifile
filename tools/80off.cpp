@@ -19,12 +19,12 @@
 using namespace std;
 using namespace smf;
 
+
 // Global variables for command-line options.
 Options  options;
 int releaseVelocity = 64;
 
 
-// function declarations:
 void     checkOptions        (Options& opts);
 void     processFile         (const string& inputfilename, const string& outputfilename);
 void     example             (void);
@@ -32,7 +32,6 @@ void     usage               (const string& command);
 
 
 ///////////////////////////////////////////////////////////////////////////
-
 
 int main(int argc, char** argv) {
 	options.setOptions(argc, argv);

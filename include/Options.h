@@ -27,6 +27,7 @@
 #define OPTION_TYPE_int       'i'
 #define OPTION_TYPE_string    's'
 
+
 namespace smf {
 
 class Option_register {

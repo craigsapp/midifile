@@ -23,6 +23,7 @@
 using namespace std;
 using namespace smf;
 
+
 void processFile(MidiFile& midifile, Options& options);
 
 

@@ -22,7 +22,16 @@
 using namespace std;
 using namespace smf;
 
-// user interface variables
+
+void      checkOptions          (Options& opts, int argc, char** argv);
+void      createMidiFile        (MidiFile& midifile, HumdrumFile& infile);
+int       getMIDIKeyNum         (const char* string);
+int       getTrackNumber        (const char* string);
+void      example               (void);
+void      usage                 (const char* command);
+
+
+// User interface variables:
 Options options;
 int     debugQ = 0;             // use with --debug option
 int     maxcount = 100000;
@@ -31,14 +40,6 @@ int     maxdyn = 120;           // use with -r option
 double  duration = 0.1;         // use with -d option
 const char* filename = "";      // use with -o option
 
-
-// function declarations:
-void      checkOptions          (Options& opts, int argc, char** argv);
-void      createMidiFile        (MidiFile& midifile, HumdrumFile& infile);
-int       getMIDIKeyNum         (const char* string);
-int       getTrackNumber        (const char* string);
-void      example               (void);
-void      usage                 (const char* command);
 
 //////////////////////////////////////////////////////////////////////////
 

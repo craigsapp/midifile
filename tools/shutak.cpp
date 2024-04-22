@@ -36,10 +36,7 @@
 using namespace std;
 using namespace smf;
 
-// Global variables for command-line options.
-Options  options;            // for command-line processing
 
-// function declarations:
 void     checkOptions        (Options& opts);
 void     createMidiFile      (const char* filename,
                               vector<vector<int> >& sequence);
@@ -48,6 +45,10 @@ void     getData             (vector<vector<int> >& sequence,
                               const string& filename);
 void     example             (void);
 void     usage               (const string& command);
+
+// User interface variables:
+Options  options;            // for command-line processing
+
 
 ///////////////////////////////////////////////////////////////////////////
 

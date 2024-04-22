@@ -15,14 +15,14 @@
 #include "MidiFile.h"
 #include "Binasc.h"
 
+#include <algorithm>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <iterator>
-#include <algorithm>
 
 
 namespace smf {

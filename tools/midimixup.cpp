@@ -22,7 +22,7 @@
 using namespace std;
 using namespace smf;
 
-// function declarations:
+
 void checkOptions         (Options& opts);
 void example              (void);
 void usage                (const char* command);
@@ -36,8 +36,9 @@ class pairing {
 		double value;
 };
 
-// variables related to command-line options
+// User interface variables:
 int     reverseQ = 0;         // used with -r option: reverse notes
+
 
 ///////////////////////////////////////////////////////////////////////////
 

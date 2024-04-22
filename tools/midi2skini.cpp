@@ -19,19 +19,20 @@
 using namespace std;
 using namespace smf;
 
-// user interface variables:
-Options options;
-int     track    = -1;         // track to extract from (starting from 0)
-int     debugQ   = 0;          // use with --debug option
-int     maxcount = 100000;     // maxiumum number of notes expected
 
-// function declarations:
 void      checkOptions          (Options& opts, int argc, char** argv);
 void      example               (void);
 void      printMidiAsSkini      (MidiFile& midifile);
 void      processEvent          (MidiEvent& event, double& tempo,
                                 double& curtime);
 void      usage                 (const char* command);
+
+// User interface variables:
+Options options;
+int     track    = -1;         // track to extract from (starting from 0)
+int     debugQ   = 0;          // use with --debug option
+int     maxcount = 100000;     // maxiumum number of notes expected
+
 
 //////////////////////////////////////////////////////////////////////////
 

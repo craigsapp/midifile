@@ -56,7 +56,7 @@
 using namespace std;
 using namespace smf;
 
-// function declarations:
+
 void    checkOptions   (Options& opts, int argc, char** argv);
 void    example        (void);
 void    usage          (const char* command);
@@ -77,6 +77,7 @@ int PedalOnKey  = 106;
 int PedalOffKey = 107;
 int SoftOnKey   = 21;
 int SoftOffKey  = 20;
+
 
 //////////////////////////////////////////////////////////////////////////
 

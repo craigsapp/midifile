@@ -20,16 +20,18 @@
 using namespace std;
 using namespace smf;
 
+
 // Global variables for command-line options.
 Options  options;
 int      quarterQ = 0;  // used with -q option: time units in quarter notes.
 int      joinQ    = 0;  // used with -j option: join tracks before printing.
 int      secondsQ = 0;  // used with -s option: print times in seconds.
 
-// function declarations:
+
 void     checkOptions        (Options& opts);
 void     example             (void);
 void     usage               (const string& command);
+
 
 ///////////////////////////////////////////////////////////////////////////
 

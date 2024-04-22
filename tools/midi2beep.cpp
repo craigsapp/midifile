@@ -26,31 +26,15 @@
 	#include <sys/io.h>
 #endif
 
-
 using namespace std;
 using namespace smf;
 
-void beepOff(int) {
-	int r = inb(0x61);
-	outb(r|3, 0x61);
-	outb(r & 0xFC, 0x61);
 
-	exit(0);
-}
+void beepOff   (int);
+void beep      (int fre, int usDuration);
 
-void beep(int fre, int usDuration) {
-	if (fre > 0) {
-		int ff = 1193180/fre;
-		outb( 0xB6,            0x43);
-		outb( ff & 0xff,       0x42);
-		outb((ff >> 8) & 0xff, 0x42);
-	}
 
-	int r = inb(0x61);
-	if(fre > 0) outb(r|3, 0x61);
-	usleep(usDuration);
-	outb(r & 0xFC, 0x61);
-}
+///////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {
 	signal(SIGINT, beepOff);
@@ -109,6 +93,42 @@ int main(int argc, char** argv) {
 	}
 
 	return 0;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////
+//
+// beepOff --
+
+void beepOff(int) {
+	int r = inb(0x61);
+	outb(r|3, 0x61);
+	outb(r & 0xFC, 0x61);
+
+	exit(0);
+}
+
+
+
+//////////////////////////////
+//
+// beep --
+//
+
+void beep(int fre, int usDuration) {
+	if (fre > 0) {
+		int ff = 1193180/fre;
+		outb( 0xB6,            0x43);
+		outb( ff & 0xff,       0x42);
+		outb((ff >> 8) & 0xff, 0x42);
+	}
+
+	int r = inb(0x61);
+	if(fre > 0) outb(r|3, 0x61);
+	usleep(usDuration);
+	outb(r & 0xFC, 0x61);
 }
 
 

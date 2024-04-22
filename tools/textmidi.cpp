@@ -21,13 +21,13 @@ using namespace smf;
 #define STYLE_TIME_DELTA      'd'
 #define STYLE_TIME_ABSOLUTE   'a'
 
-// global variables:
-int timestyle = STYLE_TIME_DELTA;    // command-line style options (-a | -d)
 
-// function declarations:
 void  checkOptions    (Options& opts);
 void  example         (void);
 void  usage           (const char* command);
+
+// Global variables:
+int timestyle = STYLE_TIME_DELTA;    // command-line style options (-a | -d)
 
 
 ///////////////////////////////////////////////////////////////////////////
