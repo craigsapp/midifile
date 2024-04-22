@@ -1,7 +1,7 @@
 //
 // Programmer:    Craig Stuart Sapp <craig@ccrma.stanford.edu>
 // Creation Date: Mon Jul  3 11:58:38 PDT 2023
-// Last Modified: Sat Jul  8 21:13:19 PDT 2023
+// Last Modified: Mon Jul 10 22:02:03 PDT 2023
 // Filename:      tools/mididiss.cpp
 // URL:           https://github.com/craigsapp/midifile/blob/master/tools/mididiss.cpp
 // Syntax:        C++11
@@ -10,7 +10,7 @@
 // Description:   Calculate an average dissonance score.  The input MIDI file
 //                is expected to be quantized.  Scores:
 //                   -1 = rest (ignore)
-//                    0 = unison / octave
+//                    0 = unison / octave / single note (no intervals)
 //                    1 = other perfect intervals P4 P5
 //                    2 = imperfect intervals m3 M3 m6 M6
 //                    3 = weak dissonance M2 m7
@@ -50,19 +50,18 @@ class Sonority {
 };
 
 
-void     processFile(MidiFile& midifile, Options& options);
-int      doSonorityAnalysis(MidiFile& midifile);
 void     addSonority(int tick, vector<Sonority>& sonorities, vector<int>& activeNotes);
-void     doSonorityAnalysis(vector<Sonority>& sonorities, MidiFile& midifile);
-void     calculateSonorityDurations(vector<Sonority>& sonorities, MidiFile& midifile);
-int      getIntervalScore(int a, int b);
-double   calculateFinalScore(vector<Sonority>& sonorities);
-double   weightedAverage(vector<int>& values, vector<int>& weights);
-double   calculateFinaleScore(vector<Sonority>& sonorities);
-int      updateActiveNotes(MidiEventList& events, int start, vector<int>& activeNotes);
-void     calculateSonorityScores(vector<Sonority>& sonorities);
 int      calculateSonorityScore(Sonority& sonority);
+double   calculateFinalScore(vector<Sonority>& sonorities);
+void     calculateSonorityDurations(vector<Sonority>& sonorities, MidiFile& midifile);
+void     calculateSonorityScores(vector<Sonority>& sonorities);
+void     doSonorityAnalysis(vector<Sonority>& sonorities, MidiFile& midifile);
+int      getIntervalScore(int a, int b);
 void     printSonorityInfo(vector<Sonority>& sonorities, bool restQ = true);
+void     processFile(MidiFile& midifile, Options& options);
+int      updateActiveNotes(MidiEventList& events, int start, vector<int>& activeNotes);
+double   weightedAverage(vector<int>& values, vector<int>& weights);
+
 ostream& operator<<(ostream& output, Sonority& sonority);
 
 
@@ -263,6 +262,16 @@ void calculateSonorityScores(vector<Sonority>& sonorities) {
 
 int calculateSonorityScore(Sonority& sonority) {
 	vector<int>& p = sonority.pitches;
+	if (p.empty()) {
+		sonority.pitchIndex1 = -1;
+		sonority.pitchIndex2 = -1;
+		return -1; // rest
+	}
+	if (p.size() == 1) {
+		sonority.pitchIndex1 = 0;
+		sonority.pitchIndex2 = 0;
+		return 0; // unison equivalent
+	}
 	int score = -1;
 	int pi = -1;
 	int pj = -1;
