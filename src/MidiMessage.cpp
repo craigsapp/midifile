@@ -677,7 +677,7 @@ bool MidiMessage::isInstrumentName(void) const {
 //////////////////////////////
 //
 // MidiMessage::isLyricText -- Returns true if message is a meta message
-//      describing some lyric text (for karakoke MIDI files)
+//      describing some lyric text (for karaoke MIDI files)
 //      (meta message type 0x05).
 //
 
@@ -858,7 +858,7 @@ int MidiMessage::getKeyNumber(void) const {
 
 //////////////////////////////
 //
-// MidiMessage::getVelocity -- Return the key veolocity.  If the message
+// MidiMessage::getVelocity -- Return the key velocity.  If the message
 //   is not a note-on or a note-off, then return -1.  If the value is
 //   out of the range 0-127, then chop off the high-bits.
 //
@@ -962,7 +962,7 @@ void MidiMessage::setP1(int value) {
 
 //////////////////////////////
 //
-// MidiMessage::setP2 -- Set the second paramter value.
+// MidiMessage::setP2 -- Set the second paramater value.
 //     If the MidiMessage is too short, add extra spaces
 //     to allow for P2.  The command byte and/or the P1 value
 //     will be undefined if extra space needs to be added and
@@ -981,7 +981,7 @@ void MidiMessage::setP2(int value) {
 
 //////////////////////////////
 //
-// MidiMessage::setP3 -- Set the third paramter value.
+// MidiMessage::setP3 -- Set the third paramater value.
 //     If the MidiMessage is too short, add extra spaces
 //     to allow for P3.  The command byte and/or the P1/P2 values
 //     will be undefined if extra space needs to be added and
@@ -1365,7 +1365,7 @@ void MidiMessage::setSpelling(int base7, int accidental) {
 //        pc + octave * 7
 //     where pc is the numbers 0 through 6 representing the pitch classes
 //     C through B, the octave is MIDI octave (not the scientific pitch
-//     octave which is one less than the MIDI ocatave, such as C4 = middle C).
+//     octave which is one less than the MIDI octave, such as C4 = middle C).
 //     The second number is the accidental for the base-7 pitch.
 //
 
