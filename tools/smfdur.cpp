@@ -90,8 +90,8 @@ int main(int argc, char* argv[]) {
 //
 
 string minutes(double seconds) {
-	int minutes = seconds / 60;
-	seconds = seconds - minutes * 60;
+	int minutes = (int)(seconds / 60);
+	seconds = seconds - minutes * 60.0;
 	if (seconds - int(seconds) >= 0.5) {
 		seconds = int(seconds) + 1;
 	} else{
