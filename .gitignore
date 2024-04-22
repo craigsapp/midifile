@@ -12,6 +12,9 @@ err
 *.lib
 *.err
 *.exe
+*.mid
+*.krn
+*.mp3
 *.pdb
 *.log
 *.tlog
