@@ -2055,11 +2055,6 @@ void MidiMessage::makeSysExMessage(const std::vector<uchar>& data) {
 
 	this->push_back((uchar)0xf0);
 
-	int msize = endindex - startindex + 2;
-	std::vector<uchar> vlv = intToVlv(msize);
-	for (int i=0; i<(int)vlv.size(); i++) {
-		this->push_back(vlv[i]);
-	}
 	for (int i=startindex; i<=endindex; i++) {
 		this->push_back(data.at(i));
 	}
