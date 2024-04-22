@@ -14,12 +14,10 @@
 #include "MidiFile.h"
 #include "Options.h"
 
-#include <ctype.h>
-#include <iomanip>
-#include <iostream>
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include <cctype>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
 #include <vector>
 
 using namespace std;

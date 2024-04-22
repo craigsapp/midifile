@@ -18,7 +18,7 @@
 #include <iterator>
 #include <utility>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace smf {
 
@@ -54,8 +54,8 @@ MidiEventList::MidiEventList(const MidiEventList& other) {
 //
 
 MidiEventList::MidiEventList(MidiEventList&& other) {
-   list = std::move(other.list);
-   other.list.clear();
+	list = std::move(other.list);
+	other.list.clear();
 }
 
 
@@ -124,12 +124,12 @@ const MidiEvent& MidiEventList::last(void) const {
 //
 
 MidiEvent& MidiEventList::getEvent(int index) {
-   return *list[index];
+	return *list[index];
 }
 
 
 const MidiEvent& MidiEventList::getEvent(int index) const {
-   return *list[index];
+	return *list[index];
 }
 
 
@@ -141,10 +141,10 @@ const MidiEvent& MidiEventList::getEvent(int index) const {
 //
 
 void MidiEventList::clear(void) {
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i] != NULL) {
-			delete list[i];
-			list[i] = NULL;
+	for (auto& item : list) {
+		if (item != NULL) {
+			delete item;
+			item = NULL;
 		}
 	}
 	list.resize(0);
@@ -245,10 +245,10 @@ int MidiEventList::push_back(MidiEvent& event) {
 
 void MidiEventList::removeEmpties(void) {
 	int count = 0;
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i]->empty()) {
-			delete list[i];
-			list[i] = NULL;
+	for (auto& item : list) {
+		if (item->empty()) {
+			delete item;
+			item = NULL;
 			count++;
 		}
 	}
@@ -257,9 +257,9 @@ void MidiEventList::removeEmpties(void) {
 	}
 	std::vector<MidiEvent*> newlist;
 	newlist.reserve(list.size() - count);
-	for (int i=0; i<(int)list.size(); i++) {
-		if (list[i]) {
-			newlist.push_back(list[i]);
+	for (auto& item : list) {
+		if (item) {
+			newlist.push_back(item);
 		}
 	}
 	list.swap(newlist);
@@ -292,8 +292,8 @@ int MidiEventList::linkNotePairs(void) {
 	// dimension 3: List of active note-ons or note-offs.
 	std::vector<std::vector<std::vector<MidiEvent*>>> noteons;
 	noteons.resize(16);
-	for (int i=0; i<(int)noteons.size(); i++) {
-		noteons[i].resize(128);
+	for (auto& noteon : noteons) {
+		noteon.resize(128);
 	}
 
 	// Controller linking: The following General MIDI controller numbers are
@@ -433,7 +433,7 @@ void MidiEventList::clearLinks(void) {
 
 //////////////////////////////
 //
-// MidiEventList::clearSequence -- Remove any seqence serial numbers from
+// MidiEventList::clearSequence -- Remove any sequence serial numbers from
 //   MidiEvents in the list.  This will cause the default ordering by
 //   sortTracks() to be used, in which case the ordering of MidiEvents
 //   occurring at the same tick may switch their ordering.
@@ -454,7 +454,7 @@ void MidiEventList::clearSequence(void) {
 //   to preseve the order of MIDI messages in a track when they occur
 //   at the same tick time.  Particularly for use with joinTracks()
 //   or sortTracks().  markSequence will be done automatically when
-//   a MIDI file is read, in case the ordering of events occuring at
+//   a MIDI file is read, in case the ordering of events occurring at
 //   the same time is important.  Use clearSequence() to use the
 //   default sorting behavior of sortTracks() when events occur at the
 //   same time.  Returns the next serial number that has not yet been

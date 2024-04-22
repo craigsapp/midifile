@@ -12,7 +12,7 @@
 
 #include "Options.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <cctype>
@@ -330,7 +330,7 @@ const std::vector<std::string>& Options::argv(void) const {
 //////////////////////////////
 //
 // Options::define -- store an option definition in the register.  Option
-//     definitions have this sructure:
+//     definitions have this structure:
 //        option-name|alias-name1|alias-name2=option-type:option-default
 // option-name :: name of the option (one or more character, not including
 //      spaces or equal signs.
@@ -360,7 +360,7 @@ int Options::define(const std::string& aDefinition) {
 		ovalue = rest.substr(location+1);
 	}
 
-	// Remove anyspaces in the option type field
+	// Remove any spaces in the option type field
 	otype.erase(remove_if(otype.begin(), otype.end(), ::isspace), otype.end());
 
 	// Option types are only a single charater (b, i, d, c or s)
@@ -442,7 +442,7 @@ bool Options::isDefined(const std::string& name) {
 //////////////////////////////
 //
 // Options::getArg -- returns the specified argument.
-//	argurment 0 is the command name.
+//	argument 0 is the command name.
 //
 
 const std::string& Options::getArg(int index) {
@@ -660,9 +660,9 @@ int Options::optionsArg(void) {
 //
 
 std::ostream& Options::print(std::ostream& out) {
-	for (unsigned int i=0; i<m_optionRegister.size(); i++) {
-		out << m_optionRegister[i]->getDefinition() << "\t"
-			  << m_optionRegister[i]->getDescription() << std::endl;
+	for (auto &item : m_optionRegister) {
+		out << item->getDefinition() << "\t"
+			  << item->getDescription() << std::endl;
 	}
 	return out;
 }
@@ -841,7 +841,7 @@ void Options::appendOptions(const std::string& strang) {
 			if ((i>0) && (strang[i-1] != '\\')) {
 				doublequote = !doublequote;
 				if (doublequote == 0) {
-					// finished a doublequoted section of data, so store
+					// finished a doublequote section of data, so store
 					// even if it is the empty string
 					ch = '\0';
 					tempvalue += (ch);
@@ -1177,8 +1177,8 @@ int Options::storeOption(int gargp, int& position, int& running) {
 //
 
 std::ostream& Options::printOptionList(std::ostream& out) {
-	for (auto it = m_optionList.begin(); it != m_optionList.end(); it++) {
-		out << it->first << "\t" << it->second << std::endl;
+	for (auto &item : m_optionList) {
+		out << item.first << "\t" << item.second << std::endl;
 	}
 	return out;
 }
@@ -1191,9 +1191,9 @@ std::ostream& Options::printOptionList(std::ostream& out) {
 //
 
 std::ostream& Options::printOptionListBooleanState(std::ostream& out) {
-	for (auto it = m_optionList.begin(); it != m_optionList.end(); it++) {
-		out << it->first << "\t"
-			 << m_optionRegister[it->second]->isModified() << std::endl;
+	for (auto &item : m_optionList) {
+		out << item.first << "\t"
+			 << m_optionRegister[item.second]->isModified() << std::endl;
 	}
 	return out;
 }
@@ -1206,8 +1206,8 @@ std::ostream& Options::printOptionListBooleanState(std::ostream& out) {
 //
 
 std::ostream& Options::printRegister(std::ostream& out) {
-	for (auto it = m_optionRegister.begin(); it != m_optionRegister.end(); it++) {
-		(*it)->print(out);
+	for (auto &item : m_optionRegister) {
+		item->print(out);
 	}
 	return out;
 }
