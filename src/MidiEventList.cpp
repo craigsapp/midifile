@@ -433,7 +433,7 @@ void MidiEventList::clearLinks(void) {
 
 //////////////////////////////
 //
-// MidiEventList::clearSequence -- Remove any seqence serial numbers from
+// MidiEventList::clearSequence -- Remove any sequence serial numbers from
 //   MidiEvents in the list.  This will cause the default ordering by
 //   sortTracks() to be used, in which case the ordering of MidiEvents
 //   occurring at the same tick may switch their ordering.
@@ -454,7 +454,7 @@ void MidiEventList::clearSequence(void) {
 //   to preseve the order of MIDI messages in a track when they occur
 //   at the same tick time.  Particularly for use with joinTracks()
 //   or sortTracks().  markSequence will be done automatically when
-//   a MIDI file is read, in case the ordering of events occuring at
+//   a MIDI file is read, in case the ordering of events occurring at
 //   the same time is important.  Use clearSequence() to use the
 //   default sorting behavior of sortTracks() when events occur at the
 //   same time.  Returns the next serial number that has not yet been
