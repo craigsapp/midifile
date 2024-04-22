@@ -1545,8 +1545,8 @@ void MidiMessage::setMetaContent(const std::string& content) {
 	// add the size of the meta message data (VLV)
 	int dsize = (int)content.size();
 	std::vector<uchar> vlv = intToVlv(dsize);
-	for (unsigned char i : vlv) {
-		this->push_back(i);
+	for (uchar item : vlv) {
+		this->push_back(item);
 	}
 	std::copy(content.begin(), content.end(), std::back_inserter(*this));
 }
@@ -2054,8 +2054,8 @@ void MidiMessage::makeSysExMessage(const std::vector<uchar>& data) {
 
 	int msize = endindex - startindex + 2;
 	std::vector<uchar> vlv = intToVlv(msize);
-	for (unsigned char i : vlv) {
-		this->push_back(i);
+	for (uchar item : vlv) {
+		this->push_back(item);
 	}
 	for (int i=startindex; i<=endindex; i++) {
 		this->push_back(data.at(i));
@@ -2150,8 +2150,8 @@ void MidiMessage::makeMts2_KeyTuningsBySemitone(std::vector<std::pair<int, doubl
 	data.push_back((uchar)0x02);  // sub-ID#2 (note change)
 	data.push_back((uchar)program);  // tuning program number (0 - 127)
 	std::vector<uchar> vlv = intToVlv((int)mapping.size());
-	for (unsigned char i : vlv) {
-		data.push_back(i);
+	for (uchar item : vlv) {
+		data.push_back(item);
 	}
 	for (auto &item : mapping) {
 		int keynum = item.first;

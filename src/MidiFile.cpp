@@ -774,7 +774,7 @@ bool MidiFile::writeHex(std::ostream& out, int width) {
 	int wordcount = 1;
 	int linewidth = width >= 0 ? width : 25;
 	for (int i=0; i<len; i++) {
-		int value = (unsigned char)tempstream.str()[i];
+		int value = (uchar)tempstream.str()[i];
 		out << std::hex << std::setw(2) << std::setfill('0') << value;
 		if (linewidth) {
 			if (i < len - 1) {
@@ -2956,14 +2956,14 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 ulong MidiFile::readVLValue(std::istream& input) {
 	uchar b[5] = {0};
 
-    for (unsigned char &i : b)
+    for (uchar &item : b)
     {
-            i = readByte(input);
+            item = readByte(input);
             if (!status())
             {
                     return m_rwstatus;
             }
-            if (i < 0x80)
+            if (item < 0x80)
             {
                     break;
             }
@@ -3397,7 +3397,7 @@ std::string MidiFile::base64Encode(const std::string& input) {
 	output.reserve(((input.size()/3) + (input.size() % 3 > 0)) * 4);
 	int vala = 0;
 	int valb = -6;
-	for (unsigned char c : input) {
+	for (uchar c : input) {
 		vala = (vala << 8) + c;
 		valb += 8;
 		while (valb >=0) {
@@ -3428,7 +3428,7 @@ std::string MidiFile::base64Decode(const std::string& input) {
 	std::string output;
 	int vala = 0;
 	int valb = -8;
-	for (unsigned char c : input) {
+	for (uchar c : input) {
 		if (c == '=') {
 			break;
 		} else if (MidiFile::decodeLookup[c] == -1) {
