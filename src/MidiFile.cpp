@@ -2956,15 +2956,12 @@ int MidiFile::extractMidiData(std::istream& input, std::vector<uchar>& array,
 ulong MidiFile::readVLValue(std::istream& input) {
 	uchar b[5] = {0};
 
-    for (uchar &item : b)
-    {
+    for (uchar &item : b) {
             item = readByte(input);
-            if (!status())
-            {
+            if (!status()) {
                     return m_rwstatus;
             }
-            if (item < 0x80)
-            {
+            if (item < 0x80) {
                     break;
             }
     }
