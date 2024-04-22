@@ -2153,15 +2153,15 @@ void MidiMessage::makeMts2_KeyTuningsBySemitone(std::vector<std::pair<int, doubl
 	for (unsigned char i : vlv) {
 		data.push_back(i);
 	}
-	for (auto &i : mapping) {
-		int keynum = i.first;
+	for (auto &item : mapping) {
+		int keynum = item.first;
 		if (keynum < 0) {
 			keynum = 0;
 		} else if (keynum > 127) {
 			keynum = 127;
 		}
 		data.push_back((uchar)keynum);
-		double semitones = i.second;
+		double semitones = item.second;
 		int sint = (int)semitones;
 		if (sint < 0) {
 			sint = 0;

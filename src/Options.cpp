@@ -660,9 +660,9 @@ int Options::optionsArg(void) {
 //
 
 std::ostream& Options::print(std::ostream& out) {
-	for (auto &i : m_optionRegister) {
-		out << i->getDefinition() << "\t"
-			  << i->getDescription() << std::endl;
+	for (auto &item : m_optionRegister) {
+		out << item->getDefinition() << "\t"
+			  << item->getDescription() << std::endl;
 	}
 	return out;
 }
@@ -1177,8 +1177,8 @@ int Options::storeOption(int gargp, int& position, int& running) {
 //
 
 std::ostream& Options::printOptionList(std::ostream& out) {
-	for (auto &it : m_optionList) {
-		out << it.first << "\t" << it.second << std::endl;
+	for (auto &item : m_optionList) {
+		out << item.first << "\t" << item.second << std::endl;
 	}
 	return out;
 }
@@ -1191,9 +1191,9 @@ std::ostream& Options::printOptionList(std::ostream& out) {
 //
 
 std::ostream& Options::printOptionListBooleanState(std::ostream& out) {
-	for (auto &it : m_optionList) {
-		out << it.first << "\t"
-			 << m_optionRegister[it.second]->isModified() << std::endl;
+	for (auto &item : m_optionList) {
+		out << item.first << "\t"
+			 << m_optionRegister[item.second]->isModified() << std::endl;
 	}
 	return out;
 }
@@ -1206,8 +1206,8 @@ std::ostream& Options::printOptionListBooleanState(std::ostream& out) {
 //
 
 std::ostream& Options::printRegister(std::ostream& out) {
-	for (auto &it : m_optionRegister) {
-		it->print(out);
+	for (auto &item : m_optionRegister) {
+		item->print(out);
 	}
 	return out;
 }

@@ -76,16 +76,16 @@ const char* MidiFile::GMinstrument[128] = {
 
 MidiFile::MidiFile(void) {
 	m_events.resize(1);
-	for (auto &m_event : m_events) {
-		m_event = new MidiEventList;
+	for (auto &event : m_events) {
+		event = new MidiEventList;
 	}
 }
 
 
 MidiFile::MidiFile(const std::string& filename) {
 	m_events.resize(1);
-	for (auto &m_event : m_events) {
-		m_event = new MidiEventList;
+	for (auto &event : m_events) {
+		event = new MidiEventList;
 	}
 	read(filename);
 }
@@ -93,8 +93,8 @@ MidiFile::MidiFile(const std::string& filename) {
 
 MidiFile::MidiFile(std::istream& input) {
 	m_events.resize(1);
-	for (auto &m_event : m_events) {
-		m_event = new MidiEventList;
+	for (auto &event : m_events) {
+		event = new MidiEventList;
 	}
 	read(input);
 }
@@ -939,7 +939,7 @@ int MidiFile::size(void) const {
 //
 
 void MidiFile::removeEmpties(void) {
-	for (auto &m_event : m_events) {
+	for (auto &event : m_events) {
 		m_event->removeEmpties();
 	}
 }
