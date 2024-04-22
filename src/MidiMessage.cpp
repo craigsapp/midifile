@@ -2259,8 +2259,8 @@ void MidiMessage::makeTemperamentBad(double maxDeviationCents, int referencePitc
 		maxDeviationCents = 100.0;
 	}
 	std::vector<double> temperament(12);
-	for (double &i : temperament) {
-		i = ((rand() / (double)RAND_MAX) * 2.0 - 1.0) * maxDeviationCents;
+	for (double &item : temperament) {
+		item = ((rand() / (double)RAND_MAX) * 2.0 - 1.0) * maxDeviationCents;
 	}
 	this->makeMts9_TemperamentByCentsDeviationFromET(temperament, referencePitchClass, channelMask);
 }
