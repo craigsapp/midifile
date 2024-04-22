@@ -214,7 +214,7 @@ void processFile(MidiFile& midifile, Options& options) {
 //
 
 void printSonorityInfo(vector<Sonority>& sonorities, bool restQ) {
-	for (int i=0; i<sonorities.size(); i++) {
+	for (int i=0; i<(int)sonorities.size(); i++) {
 		if (restQ) {
 			cout << sonorities[i] << endl;
 		} else {
@@ -248,7 +248,7 @@ void doSonorityAnalysis(vector<Sonority>& sonorities, MidiFile& midifile) {
 //
 
 void calculateSonorityScores(vector<Sonority>& sonorities) {
-	for (int i=0; i<sonorities.size(); i++) {
+	for (int i=0; i<(int)sonorities.size(); i++) {
 		sonorities[i].score = calculateSonorityScore(sonorities[i]);
 	}
 }
@@ -348,7 +348,7 @@ int getIntervalScore(int a, int b) {
 //
 
 void calculateSonorityDurations(vector<Sonority>& sonorities, MidiFile& midifile) {
-	for (int i=0; i<sonorities.size() - 1; i++) {
+	for (int i=0; i<(int)sonorities.size() - 1; i++) {
 		int diff= sonorities[i+1].startTick - sonorities[i].startTick;
 		sonorities[i].durTick = diff;
 	}
