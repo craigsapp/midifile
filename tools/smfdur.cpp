@@ -119,7 +119,7 @@ string minutes(double seconds) {
 	if (seconds < 10) {
 		output += "0";
 	}
-	int isec = seconds;
+	int isec = (int)seconds;
 	output += to_string(isec);
 	return output;
 }
