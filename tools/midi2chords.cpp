@@ -439,7 +439,7 @@ void printChordSequence(vector<Sonority>& chordSequence) {
 //
 
 void printPcInfo(Sonority& sonority) {
-	for (int i=0; i<sonority.attackPcs.size(); i++) {
+	for (int i=0; i<(int)sonority.attackPcs.size(); i++) {
 		bool attack = (bool)sonority.attackPcs.at(i);
 		bool sustain = (bool)sonority.sustainPcs.at(i);
 		sustain ^= attack;
