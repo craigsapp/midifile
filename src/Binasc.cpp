@@ -11,8 +11,8 @@
 
 #include "Binasc.h"
 
-#include <sstream>
 #include <cstdlib>
+#include <sstream>
 
 namespace smf {
 
