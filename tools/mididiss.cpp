@@ -60,7 +60,7 @@ int      getIntervalScore(int a, int b);
 void     printSonorityInfo(vector<Sonority>& sonorities, bool restQ = true);
 void     processFile(MidiFile& midifile, Options& options);
 int      updateActiveNotes(MidiEventList& events, int start, vector<int>& activeNotes);
-double   weightedAverage(vector<int>& values, vector<int>& weights);
+double   weightedAverage(vector<double>& values, vector<double>& weights);
 
 ostream& operator<<(ostream& output, Sonority& sonority);
 
@@ -421,8 +421,8 @@ void addSonority(int tick, vector<Sonority>& sonorities, vector<int>& activeNote
 //
 
 double calculateFinalScore(vector<Sonority>& sonorities) {
-	vector<int> scores;
-	vector<int> ticks;
+	vector<double> scores;
+	vector<double> ticks;
 	for (int i=0; i<(int)sonorities.size(); i++) {
 		if (sonorities[i].pitches.empty()) {
 			//rest
@@ -449,26 +449,26 @@ double calculateFinalScore(vector<Sonority>& sonorities) {
 // weightedAverage --
 //
 
-double weightedAverage(vector<int>& values, vector<int>& weights) {
+double weightedAverage(vector<double>& values, vector<double>& weights) {
 	if (values.size() != weights.size()) {
 		cerr << "Error: The number of values and weights must be the same." << endl;
 		return 0.0;
 	}
 
-	int sumValues = 0;
-	int sumWeights = 0;
+	double sumValues = 0.0;
+	double sumWeights = 0.0;
 
 	for (size_t i = 0; i < values.size(); ++i) {
 		sumValues += values[i] * weights[i];
 		sumWeights += weights[i];
 	}
 
-	if (sumWeights == 0) {
+	if (sumWeights == 0.0) {
 		cerr << "Error: Sum of weights is zero." << endl;
 		return 0.0;
 	}
 
-	return (double)sumValues / sumWeights;
+	return sumValues / sumWeights;
 }
 
 
