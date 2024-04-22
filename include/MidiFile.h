@@ -26,7 +26,7 @@ namespace smf {
 
 enum {
     TRACK_STATE_SPLIT  = 0, // Tracks are separated into separate vector postions.
-    TRACK_STATE_JOINED = 1  // Tracks are mered into a single vector position,
+    TRACK_STATE_JOINED = 1  // Tracks are merged into a single vector position,
 };                          // like a Type-0 MIDI file, but reversible.
 
 enum {
