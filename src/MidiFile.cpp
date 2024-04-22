@@ -940,7 +940,7 @@ int MidiFile::size(void) const {
 
 void MidiFile::removeEmpties(void) {
 	for (auto &event : m_events) {
-		m_event->removeEmpties();
+		event->removeEmpties();
 	}
 }
 
