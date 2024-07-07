@@ -1495,7 +1495,7 @@ void MidiMessage::getSpelling(int& base7, int& accidental) {
 //   message after the length (which is a variable-length-value).
 //
 
-std::string MidiMessage::getMetaContent(void) {
+std::string MidiMessage::getMetaContent(void) const {
 	std::string output;
 	if (!isMetaMessage()) {
 		return output;
