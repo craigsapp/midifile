@@ -72,6 +72,9 @@ examples: programs
 programs:
 	$(MAKE) -f Makefile.programs
 
+install:
+	cp -r bin/* /usr/local/bin
+
 
 options:
 # The Options class is borrowed from optionlib:
