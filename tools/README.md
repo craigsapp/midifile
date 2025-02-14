@@ -15,6 +15,7 @@
 | [echomidi.cpp](https://github.com/craigsapp/midifile/blob/master/tools/echomidi.cpp) | Read in a MIDI file and output it with minimal processing. |
 | [extractlyrics.cpp](https://github.com/craigsapp/midifile/blob/master/tools/extractlyrics.cpp) | Demonstration of how to extract lyrics from a MIDI file. Used the -s option to display the timestamp in seconds that the lyric occurs at. |
 | [henonfile.cpp](https://github.com/craigsapp/midifile/blob/master/tools/henonfile.cpp) | Creates a fractal melodic line based on the Henon Map.  Output can be either a MIDI file, Guido Music Notation (GMN), Humdrum, or plain text. |
+| [linkinfo.cpp](https://github.com/craigsapp/midifile/blob/master/tools/linkinfo.cpp) | Demo program for linking note-ons and note-offs. |
 | [maxtick.cpp](https://github.com/craigsapp/midifile/blob/master/tools/maxtick.cpp) | Calculate the maximum timestamp in a MIDI file. |
 | [mid2hex.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2hex.cpp) | Convert a binary standard MIDI file (or binasc MIDI file, or hex-byte MIDI file) into a hex byte-code MIDI file. |
 | [mid2hum.cpp](https://github.com/craigsapp/midifile/blob/master/tools/mid2hum.cpp) | Converts a MIDI file into a Humdrum file. |
