@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iterator>
+#include <list>
 #include <utility>
 #include <vector>
 
@@ -279,11 +280,103 @@ void MidiEventList::removeEmpties(void) {
 //
 
 int MidiEventList::linkEventPairs(void) {
-	return linkNotePairs();
+	return linkNotePairsFIFO();
 }
 
 
-int MidiEventList::linkNotePairs(void) {
+int MidiEventList::linkNotePairsFIFO(void) {
+	// Note-on states:
+	// dimension 1: MIDI channel (0-15)
+	// dimension 2: MIDI key     (0-127)  (but 0 not used for note-ons)
+	// dimension 3: List of active note-ons or note-offs (FIFO behavior).
+	std::vector<std::vector<std::list<MidiEvent*>>> noteons;
+	noteons.resize(16);
+	for (auto& noteon : noteons) {
+		noteon.resize(128);
+	}
+
+	// Controller linking: The following General MIDI controller numbers are
+	// also monitored for linking within the track (but not between tracks).
+	// hex dec  name                                    range
+	// 40  64   Hold pedal (Sustain) on/off             0..63=off  64..127=on
+	// 41  65   Portamento on/off                       0..63=off  64..127=on
+	// 42  66   Sustenuto Pedal on/off                  0..63=off  64..127=on
+	// 43  67   Soft Pedal on/off                       0..63=off  64..127=on
+	// 44  68   Legato Pedal on/off                     0..63=off  64..127=on
+	// 45  69   Hold Pedal 2 on/off                     0..63=off  64..127=on
+	// 50  80   General Purpose Button                  0..63=off  64..127=on
+	// 51  81   General Purpose Button                  0..63=off  64..127=on
+	// 52  82   General Purpose Button                  0..63=off  64..127=on
+	// 53  83   General Purpose Button                  0..63=off  64..127=on
+	// 54  84   Undefined on/off                        0..63=off  64..127=on
+	// 55  85   Undefined on/off                        0..63=off  64..127=on
+	// 56  86   Undefined on/off                        0..63=off  64..127=on
+	// 57  87   Undefined on/off                        0..63=off  64..127=on
+	// 58  88   Undefined on/off                        0..63=off  64..127=on
+	// 59  89   Undefined on/off                        0..63=off  64..127=on
+	// 5A  90   Undefined on/off                        0..63=off  64..127=on
+	// 7A 122   Local Keyboard On/Off                   0..63=off  64..127=on
+
+	// first keep track of whether the controller is an on/off switch:
+	std::vector<std::pair<int, int>> contmap(128, {0, 0});
+	contmap[64] = {1, 0}; contmap[65] = {1, 1}; contmap[66] = {1, 2}; 
+	contmap[67] = {1, 3}; contmap[68] = {1, 4}; contmap[69] = {1, 5};
+	contmap[80] = {1, 6}; contmap[81] = {1, 7}; contmap[82] = {1, 8}; 
+	contmap[83] = {1, 9}; contmap[84] = {1, 10}; contmap[85] = {1, 11};
+	contmap[86] = {1, 12}; contmap[87] = {1, 13}; contmap[88] = {1, 14}; 
+	contmap[89] = {1, 15}; contmap[90] = {1, 16}; contmap[122] = {1, 17};
+
+	std::vector<std::vector<MidiEvent*>> contevents(18, std::vector<MidiEvent*>(16, nullptr));
+	std::vector<std::vector<int>> oldstates(18, std::vector<int>(16, -1));
+
+	int counter = 0;
+	for (int i = 0; i < getSize(); i++) {
+		MidiEvent* mev = &getEvent(i);
+		mev->unlinkEvent();
+
+		if (mev->isNoteOn()) {
+			int key = mev->getKeyNumber();
+			int channel = mev->getChannel();
+			noteons[channel][key].push_back(mev);  // Enqueue (FIFO)
+		} else if (mev->isNoteOff()) {
+			int key = mev->getKeyNumber();
+			int channel = mev->getChannel();
+			if (!noteons[channel][key].empty()) {  // **Check before accessing**
+				MidiEvent* noteon = noteons[channel][key].front(); // Safely access first event
+				noteons[channel][key].pop_front(); // Remove first event (FIFO)
+				noteon->linkEvent(mev);
+				counter++;
+			}
+		} else if (mev->isController()) {
+			int contnum = mev->getP1();
+			if (contmap[contnum].first) {
+				int conti = contmap[contnum].second;
+				int channel = mev->getChannel();
+				int contval = mev->getP2();
+				int contstate = contval < 64 ? 0 : 1;
+
+				if ((oldstates[conti][channel] == -1) && contstate) {
+					contevents[conti][channel] = mev;
+					oldstates[conti][channel] = contstate;
+				} else if (oldstates[conti][channel] == contstate) {
+					// Redundant controller state, ignore.
+				} else if ((oldstates[conti][channel] == 0) && contstate) {
+					contevents[conti][channel] = mev;
+					oldstates[conti][channel] = contstate;
+				} else if ((oldstates[conti][channel] == 1) && (contstate == 0)) {
+					contevents[conti][channel]->linkEvent(mev);
+					oldstates[conti][channel] = contstate;
+					contevents[conti][channel] = mev;
+				}
+			}
+		}
+	}
+	return counter;
+}
+
+
+
+int MidiEventList::linkNotePairsLIFO(void) {
 
 	// Note-on states:
 	// dimension 1: MIDI channel (0-15)
