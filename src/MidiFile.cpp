@@ -1574,14 +1574,28 @@ double MidiFile::getAbsoluteTickTime(double starttime) {
 //     that were linked.
 //
 
-int MidiFile::linkNotePairs(void) {
+int MidiFile::linkNotePairsFIFO(void) {
 	int i;
 	int sum = 0;
 	for (i=0; i<getTrackCount(); i++) {
 		if (m_events[i] == NULL) {
 			continue;
 		}
-		sum += m_events[i]->linkNotePairs();
+		sum += m_events[i]->linkNotePairsFIFO();
+	}
+	m_linkedEventsQ = true;
+	return sum;
+}
+
+
+int MidiFile::linkNotePairsLIFO(void) {
+	int i;
+	int sum = 0;
+	for (i=0; i<getTrackCount(); i++) {
+		if (m_events[i] == NULL) {
+			continue;
+		}
+		sum += m_events[i]->linkNotePairsLIFO();
 	}
 	m_linkedEventsQ = true;
 	return sum;
@@ -1592,7 +1606,7 @@ int MidiFile::linkNotePairs(void) {
 //
 
 int MidiFile::linkEventPairs(void) {
-	return linkNotePairs();
+	return linkNotePairsFIFO();
 }
 
 

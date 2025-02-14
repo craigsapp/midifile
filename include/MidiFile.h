@@ -139,7 +139,9 @@ class MidiFile {
 		double           getFileDurationInSeconds  (void);
 
 		// note-analysis functions:
-		int              linkNotePairs             (void);
+		int              linkNotePairsFIFO         (void);
+		int              linkNotePairsLIFO         (void);
+		int              linkNotePairs             (void) { return linkNotePairsFIFO(); }
 		int              linkEventPairs            (void);
 		void             clearLinks                (void);
 
