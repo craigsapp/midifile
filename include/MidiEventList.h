@@ -46,7 +46,7 @@ class MidiEventList {
 		void             removeEmpties      (void);
 		int              linkNotePairsFIFO  (void);
 		int              linkNotePairsLIFO  (void);
-		int              linkNotePairs      (void);
+		int              linkNotePairs      (void) { return linkNotePairsFIFO(); }
 		int              linkEventPairs     (void);
 		void             clearLinks         (void);
 		void             clearSequence      (void);
