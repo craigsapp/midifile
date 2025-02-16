@@ -619,8 +619,12 @@ MidiEventList& MidiEventList::operator=(MidiEventList& other) {
 //    does not know about delta/absolute tick states of its contents).
 //
 
-void MidiEventList::sort(void) {
-	qsort(data(), getEventCount(), sizeof(MidiEvent*), eventcompare);
+void MidiEventList::sortNoteOnsBeforeOffs(void) {
+	qsort(data(), getEventCount(), sizeof(MidiEvent*), MidiEventList::eventCompareNoteOnsBeforeOffs);
+}
+
+void MidiEventList::sortNoteOffsBeforeOns(void) {
+	qsort(data(), getEventCount(), sizeof(MidiEvent*), MidiEventList::eventCompareNoteOnsBeforeOffs);
 }
 
 
@@ -632,7 +636,7 @@ void MidiEventList::sort(void) {
 
 //////////////////////////////
 //
-// eventcompare -- Event comparison function for sorting tracks.
+// MidiEventList::eventCompare -- Event comparison function for sorting tracks.
 //
 // Sorting rules:
 //    (1) sort by (absolute) tick value; otherwise, if tick values are the same:
@@ -649,7 +653,7 @@ void MidiEventList::sort(void) {
 // occur at the same time).
 //
 
-int eventcompare(const void* a, const void* b) {
+int MidiEventList::eventCompareNoteOnsBeforeOffs(const void* a, const void* b) {
 	MidiEvent& aevent = **((MidiEvent**)a);
 	MidiEvent& bevent = **((MidiEvent**)b);
 
@@ -684,7 +688,99 @@ int eventcompare(const void* a, const void* b) {
 		// other meta-messages are placed before real MIDI messages
 		return +1;
 	} else if ((aevent.getP0() == 0xff) && (bevent.getP0() == 0xff)) {
-		// could sort by meta-message event number here
+		// could sort by meta-message number here
+		return 0;
+	} else if (aevent.isNote() && !bevent.isNote()) {
+		// notes come after all other message types
+		return +1;
+	} else if (!aevent.isNote() && bevent.isNote()) {
+		// notes come after all other message types
+		return -1;
+	} else if (aevent.isNoteOff() && bevent.isNoteOn()) {
+		// note-offs come after note-ons
+		return +1;
+	} else if (aevent.isNoteOn() && bevent.isNoteOff()) {
+		// note-ons come before all other types of MIDI messages
+		return -1;
+	} else if (aevent.isNoteOn() && bevent.isNoteOn()) {
+		// sorted further by key number
+		if (aevent.getP1() < bevent.getP1()) {
+			return -1;
+		} else if (aevent.getP1() > bevent.getP1()) {
+			return +1;
+		} else {
+			return 0;
+		}
+		return 0;
+	} else if (aevent.isNoteOff() && bevent.isNoteOff()) {
+		// sorted further by key number
+		if (aevent.getP1() < bevent.getP1()) {
+			return -1;
+		} else if (aevent.getP1() > bevent.getP1()) {
+			return +1;
+		} else {
+			return 0;
+		}
+		// could be sorted further by key number.
+		return 0;
+	} else if (((aevent.getP0() & 0xf0) == 0xb0) && ((bevent.getP0() & 0xf0) == 0xb0)) {
+		// both events are continuous controllers.  Sort them by controller number and value if equal
+		if (aevent.getP1() > bevent.getP1()) {
+			return +1;
+		} if (aevent.getP1() < bevent.getP1()) {
+			return -1;
+		} else {
+			// same controller number, so sort by data value
+			// useful for sustain pedalling, for example.
+			if (aevent.getP2() > bevent.getP2()) {
+				return +1;
+			} if (aevent.getP2() < bevent.getP2()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
+	} else {
+		return 0;
+	}
+}
+
+int MidiEventList::eventCompareNoteOffsBeforeOns(const void* a, const void* b) {
+	MidiEvent& aevent = **((MidiEvent**)a);
+	MidiEvent& bevent = **((MidiEvent**)b);
+
+	if (aevent.tick < bevent.tick) {
+		// aevent occurs before bevent
+		return -1;
+	} else if (aevent.tick > bevent.tick) {
+		// aevent occurs after bevent
+		return +1;
+	} else if ((aevent.seq != 0) && (bevent.seq != 0) && (aevent.seq < bevent.seq)) {
+		// aevent sequencing state occurs before bevent
+		// see MidiEventList::markSequence()
+		return -1;
+	} else if ((aevent.seq != 0) && (bevent.seq != 0) && (aevent.seq > bevent.seq)) {
+		// aevent sequencing state occurs after bevent
+		// see MidiEventList::markSequence()
+		return +1;
+	} else if ((aevent.getP0() == 0xff) && (aevent.getP1() == 0x2f)) {
+		// end-of-track meta-message should always be last (but this won't really
+		// matter since the writing function ignores all end-of-track messages
+		// and writes its own.
+		return +1;
+	} else if ((bevent.getP0() == 0xff) && (bevent.getP1() == 0x2f)) {
+		// end-of-track meta-message should always be last (but won't really
+		// matter since the writing function ignores all end-of-track messages
+		// and writes its own.
+		return -1;
+	} else if (aevent.getP0() == 0xff && bevent.getP0() != 0xff) {
+		// other meta-messages are placed before real MIDI messages
+		return -1;
+	} else if ((aevent.getP0() != 0xff) && (bevent.getP0() == 0xff)) {
+		// other meta-messages are placed before real MIDI messages
+		return +1;
+	} else if ((aevent.getP0() == 0xff) && (bevent.getP0() == 0xff)) {
+		// could sort by meta-message number here
 		return 0;
 	} else if (aevent.isNote() && !bevent.isNote()) {
 		// notes come after all other message types
