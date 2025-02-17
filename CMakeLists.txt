@@ -63,7 +63,7 @@ set(HDRS
     include/Options.h
 )
 
-add_library(midifile STATIC ${SRCS} ${HDRS})
+add_library(midifile ${SRCS} ${HDRS})
 
 ##############################
 ##
