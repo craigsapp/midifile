@@ -1,0 +1,52 @@
+name: Actions
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Install dependencies
+      run: sudo apt-get install cmake g++
+    - name: Configure CMake
+      run: cmake -S . -B build -DMIDIFILE_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    - name: Build project
+      run: cmake --build build
+    - name: Run tests
+      run: ./build/midifile_test
+
+  windows:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Configure CMake
+      run: cmake -S . -B build -DMIDIFILE_BUILD_TESTS=ON -G "Visual Studio 16 2019" -A x64
+    - name: Build project
+      run: cmake --build build --config ${{env.BUILD_TYPE}}
+    - name: Run tests
+      run: ./build/${{env.BUILD_TYPE}}/midifile_test.exe
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Configure CMake
+      run: cmake -S . -B build -DMIDIFILE_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    - name: Build project
+      run: cmake --build build
+    - name: Run tests
+      run: ./build/midifile_test

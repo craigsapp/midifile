@@ -1,0 +1,4 @@
+[submodule "Catch2"]
+	path = external_libraries/Catch2
+	url = https://github.com/catchorg/Catch2.git
+	branch = v3.x
