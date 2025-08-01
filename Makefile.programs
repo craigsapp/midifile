@@ -33,6 +33,7 @@
 ARCH   =
 ENV    =
 OSTYPE =
+EXTEN  =
 ifeq ($(shell uname),Darwin)
    # This is an Apple OS X computer.
    OSTYPE = OSX
@@ -48,19 +49,21 @@ ifeq ($(shell uname),Darwin)
    # (for linking with other 32-bit libraries).
    #ARCH = -m32 -arch i386
 else
+ifeq ($(shell uname -o),Msys)
+   # This is probably a windows computer with MinGW toolchain (Msys shell).
+   OSTYPE = WINDOWS
+
+   # MinGW (and Cygwin?) adds the string ".exe" to the end of compiled programs.
+   # so set EXTEN = .exe when compiling on Windows.
+   EXTEN   = .exe
+else
    # This is probably a linux computer.
    OSTYPE = LINUX
 
    # The ARCH variable has to be set up slightly different for 32-bit compiling:
    #ARCH = -m32
 endif
-
-# Cygwin (and MinGW?) adds the string ".exe" to the end of compiled programs.
-# so set EXTEN = .exe when compiling in cygwin. (Need a test for cygwin
-# so that the EXTEN variable is setup automatically...)
-EXTEN     =
-# EXTEN   = .exe
-
+endif
 
 ##############################
 #
@@ -106,12 +109,15 @@ vpath %.cpp   $(SRCDIR)
 
 # generating a list of the programs to compile with "make all"
 PROGS1=$(notdir $(patsubst %.cpp,%,$(wildcard $(SRCDIR)/*.cpp)))
-ifeq ($(shell uname),Darwin)
+ifeq ($(OSTYPE),OSX)
+	PROGS := $(filter-out midi2beep,$(PROGS1))
+else
+ifeq ($(OSTYPE),WINDOWS)
 	PROGS := $(filter-out midi2beep,$(PROGS1))
 else
 	PROGS := $(PROGS1)
 endif
-
+endif
 
 ##############################
 ##
@@ -119,7 +125,7 @@ endif
 ##
 
 # targets which don't actually refer to files
-.PHONY : all info library examples programs bin options clean 
+.PHONY : all info library examples programs bin options clean
 
 examples: all
 all: bin $(addprefix $(TARGDIR)/,$(PROGS))
